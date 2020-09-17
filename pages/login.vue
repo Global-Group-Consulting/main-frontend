@@ -75,22 +75,13 @@ export default {
     saveStatus (state) {
       this.formValid = !state.invalid
     },
-    onFormSubmit () {
-      debugger
-
+    async onFormSubmit () {
       // first must be validate
 
       try {
         this.$auth.reset()
 
-        this.$auth.setUser({
-          email: this.formData.email,
-          firstName: 'Mario',
-          lastName: 'Rossi',
-          role: this.$enums.UserRoles.ADMIN
-        })
-
-        this.$router.push('/')
+        await this.$auth.loginWith('local', {})
       } catch (e) {
         this.$alerts.error(e)
       }

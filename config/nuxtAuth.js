@@ -1,14 +1,13 @@
 export default {
+  fullPathRedirect: true,
   strategies: {
     local: {
-      autoFetchUser: false,
-      endpoints:     {
-        login:  { url: '/api/auth/login', method: 'post', propertyName: 'data' },
+      // autoFetchUser: false,
+      endpoints: {
+        login: { url: '/api/auth/login', method: 'post', propertyName: 'data' },
         logout: { url: '/api/auth/logout', method: 'delete' },
-        user:   false
-      },
-      tokenRequired: false,
-      tokenType:     false
+        user: { url: '/api/auth/user', method: 'get' }
+      }
     }
   },
 }

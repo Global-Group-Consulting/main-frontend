@@ -1,8 +1,10 @@
 import colors from 'vuetify/es5/util/colors'
 
+import nuxtAxios from './config/nuxtAxios'
 import nuxtAuth from './config/nuxtAuth'
 import nuxtI18n from './config/nuxtI18n'
 import nuxtMoment from './config/nuxtMoment'
+import nuxtProxy from './config/nuxtProxy'
 import nuxtVuetify from './config/nuxtVuetify'
 
 export default {
@@ -44,6 +46,7 @@ export default {
     './plugins/filters.js',
     './plugins/alerts.js',
     './plugins/enums.js',
+    { src: './plugins/vuex-persist', ssr: false }
   ],
   /*
   ** Auto import components
@@ -61,15 +64,14 @@ export default {
   ** Nuxt.js modules
   */
   modules: [
-    '@nuxtjs/axios',
+    ['@nuxtjs/axios', nuxtAxios],
     ['@nuxtjs/auth', nuxtAuth],
-    ['nuxt-i18n', nuxtI18n]
+    ['nuxt-i18n', nuxtI18n],
+    ['@nuxtjs/proxy']
   ],
-  /*
-  ** Axios module configuration
-  ** See https://axios.nuxtjs.org/options
-  */
-  axios: {},
+
+  proxy: nuxtProxy,
+
   /*
   ** vuetify module configuration
   ** https://github.com/nuxt-community/vuetify-module
