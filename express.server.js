@@ -25,7 +25,8 @@ app.get('/api/auth/user', (req, res) => {
       email: 'mario.rossi@gmail.com',
       firstName: 'Mario',
       lastName: 'Rossi',
-      role: UserRoles.CLIENTE
+      role: UserRoles.CLIENTE,
+      contractNumber: '000123'
     }
   })
 })

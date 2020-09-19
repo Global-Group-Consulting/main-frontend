@@ -34,7 +34,7 @@ export default {
   'last-name': 'Cognome',
   'legal-representative': 'Rappresentante legale',
   'legal-representative-address': 'Indirizzo',
-  'legal-representative-birth-data': 'Data di nascita del Rappresentante legale',
+  'legal-representative-birth-date': 'Data di nascita del Rappresentante legale',
   'legal-representative-city': 'Città',
   'legal-representative-country': 'Nazione',
   'legal-representative-province': 'Provincia',

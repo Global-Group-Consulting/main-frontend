@@ -32,7 +32,9 @@ export default {
         key: null,
         timer: null
       },
-      formData: {}
+      formData: {
+        ...this.$auth.user
+      }
     }
   },
   props: {

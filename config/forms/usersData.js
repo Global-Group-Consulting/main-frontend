@@ -136,6 +136,7 @@ export function contactsData (context) {
       legend: 'contacts',
       cols: {
         'email': {
+          disabled: context.formData.contractNumber,
           validations: {
             required: {},
             email: {}

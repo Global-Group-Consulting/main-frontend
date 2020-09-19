@@ -25,7 +25,7 @@ export default function (context) {
     'contract-sign': [
       {
         cols: {
-          'otp': {
+          'otpCode': {
             component: 'contract-sign',
           }
         }
