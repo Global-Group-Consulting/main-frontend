@@ -5,6 +5,7 @@
       <dynamic-fieldset
         :schema="loginSchema"
         v-model="formData"
+        fill-row
         @status="saveStatus($event)"
       />
     </v-form>

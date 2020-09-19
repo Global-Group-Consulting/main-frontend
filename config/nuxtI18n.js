@@ -5,5 +5,8 @@ export default {
   ],
   defaultLocale: 'it',
   lazy: true,
-  langDir: 'lang/'
+  langDir: 'lang/',
+  vuex: {
+    syncLocale: true
+  }
 }

@@ -4,11 +4,11 @@ class Genders extends BasicEnum {
   /**
    * @enum
    */
-  constructor() {
-    super()
+  constructor () {
+    super('Genders')
 
-    this.MASCHIO = "m"
-    this.FEMMINA = "f"
+    this.MASCHIO = 'm'
+    this.FEMMINA = 'f'
 
     this.data = {
       [this.MASCHIO]: {

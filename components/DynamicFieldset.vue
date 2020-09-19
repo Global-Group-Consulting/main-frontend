@@ -6,7 +6,7 @@
 
       <h3 class="primary--text mt-5"
           v-if="row.legend">
-        {{ $t('usersForm.' + row.legend) }}
+        {{ $t('forms.' + row.legend) }}
       </h3>
 
       <v-row>
@@ -15,10 +15,11 @@
                v-if="field.hasOwnProperty('if') ? field.if : true"
                :key="key">
           <component :is="field.component || 'v-text-field'"
-                     :label="$t('forms.' + key)"
+                     :label="getLabel(key)"
                      v-bind="field"
+                     :items="translateItems(field)"
                      :value="getValue(field, key)"
-                     @input="update(key, $event)"
+                     @change="update(key, $event)"
                      :error-messages="errorMessages[key]"
           ></component>
         </v-col>
@@ -28,16 +29,21 @@
 </template>
 
 <script>
-import { VTextField, VSelect } from 'vuetify/lib'
+import { VTextField, VSelect, VFileInput } from 'vuetify/lib'
 import DatePicker from '@/components/forms/inputs/DatePicker'
+import ContractSign from '@/components/hompage/activationWizard/ContractSign'
 
 import { validationRules, errorMessages } from '@/mixins/ValidationsParser'
 import { validationMixin } from 'vuelidate'
+import {
+  kebabCase as _kebabCase,
+  get as _get
+} from 'lodash'
 
 export default {
   name: 'DynamicFieldset',
   components: {
-    VTextField, VSelect, DatePicker
+    VTextField, VSelect, DatePicker, VFileInput, ContractSign
   },
   mixins: [validationMixin],
   validations () {
@@ -53,7 +59,8 @@ export default {
     value: {
       type: Object,
       default: () => ({})
-    }
+    },
+    fillRow: Boolean
   },
   data () {
     return {
@@ -65,7 +72,7 @@ export default {
   },
   methods: {
     getColumns (row) {
-      if (Object.keys(row.cols).length === 1) {
+      if (Object.keys(row.cols).length === 1 && this.fillRow) {
         return
       }
 
@@ -84,15 +91,44 @@ export default {
 
       return value
     },
+    getLabel (key) {
+      return this.$t('forms.' + _kebabCase(key))
+    },
+    translateItems (field) {
+      if (!field.items) {
+        return
+      }
+
+      if (typeof field.items === 'string') {
+        return _get(this.$store.getters, field.items.replace(/\./g, '/'))
+      }
+
+      const enumInstance = field.items
+      const enumName = enumInstance.enumName
+
+      return enumInstance.list.map(item => {
+        item.id = item.text
+        item.text = this.$t(`enums.${enumName}.${item.id}`)
+
+        return item
+      })
+    },
     update (key, value) {
+      const mustValidate = !!this.$v.form[key]
+
+      // stores the new value
       this.form[key] = value
-      this.$v.form[key].$touch()
+
+      // trigger touch only if must be validated
+      mustValidate && this.$v.form[key].$touch()
 
       this.$emit('input', {
         ...this.value,
         [key]: value
       })
-      this.announceStatus()
+
+      // announce validation statu only if must be validated
+      mustValidate && this.announceStatus()
     },
     announceStatus () {
       this.$emit('status', {

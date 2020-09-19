@@ -5,7 +5,7 @@ class DocumentTypes extends BasicEnum {
    * @enum
    */
   constructor () {
-    super()
+    super("DocumentTypes")
 
     this.GENERICO     = 1
     this.DOC_IDENTITA = 2

@@ -5,7 +5,7 @@ class PersonTypes extends BasicEnum {
    * @enum
    */
   constructor() {
-    super()
+    super("PersonTypes")
 
     this.FISICA = 1
     this.GIURIDICA = 2

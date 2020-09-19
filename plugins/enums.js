@@ -5,10 +5,10 @@ import DocumentTypes from '../enums/DocumentTypes'
 
 export default (context, inject) => {
   const enums = {
+    DocumentTypes,
+    Genders,
     PersonTypes,
     UserRoles,
-    Genders,
-    DocumentTypes
   }
 
   inject('enums', enums)

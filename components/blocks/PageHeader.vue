@@ -10,7 +10,7 @@
             </v-icon>
 
             <h1 class=" display-3 white--text">
-              {{ title }} ({{ $t('enums.UserRoles.' + $enums.UserRoles.get($auth.user.role).id.toUpperCase()) }})
+              {{ title }} ({{ $t('enums.UserRoles.' + $enums.UserRoles.get($auth.user.role).id) }})
             </h1>
           </div>
           <h3 v-html="subtitle" v-if="subtitle" class="display-1 font-weight-light white--text"

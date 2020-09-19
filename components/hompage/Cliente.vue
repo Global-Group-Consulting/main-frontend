@@ -30,7 +30,7 @@ import ActivationWizard from '@/components/hompage/activationWizard/ActivationWi
 
 export default {
   name: 'Cliente',
-  components: [Grafico, ActivationWizard],
+  components: { Grafico, ActivationWizard },
   computed: {
     ...mapGetters({
       userMustActivate: 'user/mustActivate'

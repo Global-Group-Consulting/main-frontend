@@ -4,47 +4,68 @@
              align="left"
              type="warning">
       <p class="mb-0">
-        Gentile utente,
-        per completare l'attiv\azione del suo account, e necesario che esegua i seguenti passi.
+        {{ $t('pages.activationWizard.user-info') }}
       </p>
     </v-alert>
 
-    <v-stepper v-model="currentPhase">
+    <v-stepper v-model="currentStepIndex">
       <v-stepper-header class="primary-light">
         <div v-for="step in steps"
              :key="step.id">
-          <v-stepper-step :step="step.id"
-                          :complete="currentPhase > step.id"
-                          :color="currentPhase > step.id ? 'success' : 'accent'"
+          <v-stepper-step :step="step.stepText"
+                          :complete="currentStepIndex > step.id"
+                          :color="currentStepIndex > step.id ? 'success' : 'accent'"
                           edit-icon="mdi-check">
-            {{ $t(`activationWizard.phase${step.id}.step-title`) }}
+            {{ $t(`pages.activationWizard.phase-${step.id}`) }}
           </v-stepper-step>
           <v-divider></v-divider>
         </div>
       </v-stepper-header>
 
-      <v-stepper-content v-for="step in this.$siteConfig.activationWizard.steps"
+      <v-stepper-content v-for="step in steps"
                          :key="step.id"
-                         :step="step.id">
+                         :step="step.stepText">
         <phase-container
-          :curr-step="step"
+          :current-step="step"
           @back="onBackClick"
           @next="onNextClick"
-          @confirmAll="onConfirmAll"
-          @change="onChangeEvent"/>
+          @confirmAll="onConfirmAll"/>
       </v-stepper-content>
+
+      <v-divider/>
+
+      <v-card-text class="bg-light-gray">
+        <div class="d-flex">
+          <v-btn color="secondary"
+                 v-if="currentStepIndex > 1"
+                 @click="onBackClick">
+            <v-icon>mdi-chevron-left</v-icon>
+            {{ $t('pages.activationWizard.btn-back') }}
+          </v-btn>
+
+          <v-spacer></v-spacer>
+
+          <v-btn color="primary"
+                 @click="onNextClick">
+            <template v-if="currentStepIndex === steps.length">
+              {{ $t('pages.activationWizard.btn-sign-confirm') }}
+              <v-icon>mdi-check</v-icon>
+            </template>
+
+            <template v-else>
+              {{ $t('pages.activationWizard.btn-next') }}
+              <v-icon>mdi-chevron-right</v-icon>
+            </template>
+          </v-btn>
+        </div>
+      </v-card-text>
     </v-stepper>
   </div>
 </template>
 
 <script>
-// import DatiBase from '~/components/forms/DatiBase'
-// import DatiIndirizzo from '~/components/forms/DatiIndirizzo'
-// import DatiContatti from '~/components/forms/DatiContatti'
-
-import StepperContent from './PhaseContainer'
 import PhaseContainer from './PhaseContainer'
-
+import activationWizardSteps from '@/config/activationWizardSteps'
 /*
 
  Occorre cambiare le variabili attuali con le nuove presenti in "activationPhases"
@@ -59,63 +80,16 @@ export default {
   name: 'ActivationWizard',
   components: {
     PhaseContainer,
-    StepperContent,
-    // DatiContatti, DatiIndirizzo, DatiBase
   },
   data () {
     return {
       fetchingData: false,
-      steps: [
-        {
-          id: '1',
-          editable: true
-        }, {
-          id: '2',
-          editable: true
-        }, {
-          id: '3',
-          editable: true
-        }
-        /* {
-         id:       '4',
-         editable: false
-         }, {
-         id:       '5',
-         editable: false
-         }*/
-      ]
+      steps: activationWizardSteps,
+      currentStepIndex: 1
     }
   },
-  computed: {
-
-    currentPhase: {
-      get () {
-        let phase = this['activationPhases-current']
-        let phase2Valid = this['activationPhases-phase2Valid']
-
-        // TODO:: Riattivare per la produzione!!!
-        /*if (phase === 3 && !phase2Valid) {
-         phase = 2
-         this.$store.dispatch('activationPhases/setCurrentPhase', phase)
-         }*/
-
-        return phase
-      },
-      set (value) {
-        this.$store.dispatch('activationPhases/setCurrentPhase', value)
-      }
-    }
-  },
+  computed: {},
   methods: {
-    onNextClick (phaseData) {
-      this.$store.dispatch('activationPhases/storePhaseData', {
-        phase: this.currentPhase,
-        data: phaseData
-      })
-
-      this.currentPhase < 3 && this.currentPhase++
-    },
-
     async onConfirmAll () {
       /* try {
          const storeData = {
@@ -130,11 +104,15 @@ export default {
          this.$notifier.error(e)
        }*/
     },
-    onBackClick () {
-      this.currentPhase--
+    onNextClick () {
+      if (this.currentStepIndex < 3) {
+        return this.currentStepIndex++
+      }
+
+      this.onConfirmAll()
     },
-    onChangeEvent (changedData) {
-      console.log(changedData)
+    onBackClick () {
+      this.currentStepIndex--
     }
   }
 
