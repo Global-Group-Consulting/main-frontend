@@ -1,4 +1,4 @@
-import { basicData, contactsData, addressData } from './usersData'
+import { basicData, contactsData, addressData } from './usersDataSchema'
 
 export default function (context) {
   return {

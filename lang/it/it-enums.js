@@ -4,7 +4,8 @@ export default {
     'admin': 'Admin',
     'servClienti': 'Servizio clienti',
     'agente': 'Agente',
-    'cliente': 'Cliente'
+    'cliente': 'Cliente',
+    'cliente-new': 'Cliente (da attivare)'
   },
   'Genders': {
     'm': 'Maschio',
@@ -20,5 +21,11 @@ export default {
     'patente': 'Patente di guida',
     'passaporto': 'Passaporto',
     'contabile': 'Contabile di pagamento'
+  },
+  'RequestTypes': {
+    'admin': 'Admin',
+    'versamento': 'Versamento',
+    'risc_capitale': 'Riscossione capitale',
+    'risc_interessi': 'Riscossione interessi'
   }
 }

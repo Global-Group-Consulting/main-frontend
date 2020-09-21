@@ -33,14 +33,17 @@
         <nuxt ref="viewEl"></nuxt>
       </v-container>
     </v-main>
+
+    <dynamic-dialog></dynamic-dialog>
   </v-app>
 </template>
 
 <script>
 import Drawer from '@/components/drawer/Drawer'
+import DynamicDialog from '@/components/DynamicDialog'
 
 export default {
-  components: { Drawer },
+  components: { DynamicDialog, Drawer },
   data () {
     return {
       title: 'Global Group Consulting',

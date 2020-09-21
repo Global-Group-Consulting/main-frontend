@@ -26,10 +26,10 @@ const menuItems = [
       .includes(ruolo) ? 'Gestione utenti' : 'Il mio conto',
     childs: [
       {
-        id: 'utenti',
+        id: 'users',
         text: 'Utenti',
         icon: 'mdi-account-group',
-        link: '/utenti',
+        link: '/users',
         ruoli: [UserRoles.ADMIN, UserRoles.SERV_CLIENTI, UserRoles.AGENTE]
         /*childs: [
           {
@@ -59,49 +59,17 @@ const menuItems = [
         ]*/
       },
       {
-        id: 'movimenti',
+        id: 'movements',
         text: 'Movimenti',
         icon: 'mdi-swap-horizontal',
-        link: '/movimenti',
+        link: '/movements',
         ruoli: [UserRoles.CLIENTE, UserRoles.AGENTE]
       },
       {
-        id: 'richieste',
+        id: 'requests',
         text: 'Richieste',
         icon: 'mdi-fire',
-        link: '/richieste'
-        /*childs: [
-          {
-            id: 'richieste.tutte',
-            text: 'Tutte',
-            icon: 'mdi-account',
-            link: '/richieste'
-          },
-          {
-            id: 'richieste.nuove',
-            text: 'Nuove',
-            icon: 'mdi-account',
-            link: '/richieste?type=1'
-          },
-          {
-            id: 'richieste.inLavorazione',
-            text: 'In Lavorazione',
-            icon: 'mdi-account',
-            link: '/richieste?type=2'
-          },
-          {
-            id: 'richieste.accettate',
-            text: 'Accettate',
-            icon: 'mdi-account',
-            link: '/richieste?type=3'
-          },
-          {
-            id: 'richieste.rifiutate',
-            text: 'Rifiutate',
-            icon: 'mdi-account',
-            link: '/richieste?type=4'
-          }
-        ]*/
+        link: '/requests'
       }
     ]
   },
@@ -207,6 +175,5 @@ function _loopEntries (childs, ruolo) {
 function getMenuItems (ruolo) {
   return _loopEntries(menuItems, ruolo)
 }
-
 
 export { getMenuItems }

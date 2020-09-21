@@ -63,7 +63,8 @@ export default {
     return {
       formData: {
         email: 'mario.rossi@gmail.com',
-        password: 'mario.rossi'
+        password: 'mario.rossi',
+        role: 4
       },
       formValid: true,
       recover: false
@@ -82,7 +83,7 @@ export default {
       try {
         this.$auth.reset()
 
-        await this.$auth.loginWith('local', {})
+        await this.$auth.loginWith('local', { data: this.formData })
       } catch (e) {
         this.$alerts.error(e)
       }

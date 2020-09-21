@@ -4,6 +4,7 @@
       :title="title"
       :subtitle="subtitle"
       :icon="icon"
+      show-user-role
     ></page-header>
 
     <component :is="userPage"/>
@@ -14,10 +15,13 @@
 
 import Admin from '@/components/hompage/Admin'
 import Cliente from '@/components/hompage/Cliente'
+import Agente from '@/components/hompage/Agente'
+import ServClienti from '@/components/hompage/ServClienti'
+
 import PageHeader from '@/components/blocks/PageHeader'
 
 export default {
-  components: { PageHeader, Admin, Cliente },
+  components: { PageHeader, Admin, Cliente, Agente, ServClienti },
   middleware: 'auth',
   data () {
     return {
@@ -38,6 +42,14 @@ export default {
           break
         case this.$enums.UserRoles.CLIENTE:
           pageToReturn = 'Cliente'
+
+          break
+        case this.$enums.UserRoles.AGENTE:
+          pageToReturn = 'Agente'
+
+          break
+        case this.$enums.UserRoles.SERV_CLIENTI:
+          pageToReturn = 'ServClienti'
 
           break
       }

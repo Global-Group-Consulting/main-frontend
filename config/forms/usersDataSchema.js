@@ -136,7 +136,7 @@ export function contactsData (context) {
       legend: 'contacts',
       cols: {
         'email': {
-          disabled: context.formData.contractNumber,
+          disabled: !!context.formData.contractNumber,
           validations: {
             required: {},
             email: {}
@@ -154,7 +154,9 @@ export function contractData (context) {
   return [
     {
       cols: {
-        'contractNumber': {},
+        'contractNumber': {
+          disabled: true
+        },
         'contractDate': {},
         'contractPercentage': {},
         'contractIban': {},
@@ -170,7 +172,7 @@ export function extraData (context) {
       cols: {
         'role': {
           component: 'v-select',
-          items: context.$enums.UserRoles.list
+          items: context.$enums.UserRoles
         },
         'referenceAgent': {
           if: context.showReferenceAgent

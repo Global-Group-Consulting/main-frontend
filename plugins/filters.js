@@ -1,8 +1,8 @@
-import Vue    from 'vue'
+import Vue from 'vue'
 import moment from 'moment'
 import Cleave from 'cleave.js'
 
-export function userIdFormatter (value) {
+export function contractNumberFormatter (value) {
   if (!value) {
     return ''
   }
@@ -44,23 +44,19 @@ export function datePickerFormatter (value) {
   return moment(value).format('YYYY-MM-DD')
 }
 
-Vue.filter('dateFormatter', dateFormatter)
-Vue.filter('dateHourFormatter', dateHourFormatter)
-Vue.filter('datePickerFormatter', datePickerFormatter)
-
-Vue.filter('moneyFormatter', function (value) {
+export function moneyFormatter (value) {
   if (!value) {
     return ''
   }
 
   value = value.toString().replace(/\./g, ',')
 
-  const numeralFormatter               = new Cleave.NumeralFormatter()
-  numeralFormatter.delimiter           = '.'
+  const numeralFormatter = new Cleave.NumeralFormatter()
+  numeralFormatter.delimiter = '.'
   numeralFormatter.numeralDecimalScale = 2
   numeralFormatter.numeralPositiveOnly = true
-  numeralFormatter.numeralDecimalMark  = ','
-  numeralFormatter.prefix              = '€ '
+  numeralFormatter.numeralDecimalMark = ','
+  numeralFormatter.prefix = '€ '
 
   let formatted = numeralFormatter.format(value)
 
@@ -71,6 +67,17 @@ Vue.filter('moneyFormatter', function (value) {
   }
 
   return formatted.split(',')[0] + ',' + decimals
-})
+}
 
-Vue.filter('userIdFormatter', userIdFormatter)
+export function regionFormatter (value, list) {
+  const region = list.find(_region => _region.value === value)
+
+  return region?.text || value
+}
+
+Vue.filter('dateFormatter', dateFormatter)
+Vue.filter('dateHourFormatter', dateHourFormatter)
+Vue.filter('datePickerFormatter', datePickerFormatter)
+Vue.filter('moneyFormatter', moneyFormatter)
+Vue.filter('contractNumberFormatter', contractNumberFormatter)
+Vue.filter('regionFormatter', regionFormatter)

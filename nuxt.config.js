@@ -46,6 +46,7 @@ export default {
     './plugins/filters.js',
     './plugins/alerts.js',
     './plugins/enums.js',
+    './plugins/vue-composition-api.js',
     './plugins/vue-portal.js',
     { src: './plugins/vuex-persist', ssr: false }
   ],

@@ -17,7 +17,7 @@
       <v-col style="max-width: 350px">
         <v-text-field
           :value="value"
-          @input="$emit('input', $event)"
+          @change="update($event)"
           :label="$t('forms.otp-code')"
           :hint="$t('forms.otp-code-hint')"
         ></v-text-field>
@@ -42,6 +42,9 @@ export default {
   methods: {
     onSendOtp () {
       this.otpSent = true
+    },
+    update (value) {
+      this.$emit('change', value)
     }
   }
 }

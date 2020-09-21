@@ -10,7 +10,9 @@
             </v-icon>
 
             <h1 class=" display-3 white--text">
-              {{ title }} ({{ $t('enums.UserRoles.' + $enums.UserRoles.get($auth.user.role).id) }})
+              {{ title }}
+              <small v-if="showUserRole"
+                     class="italic">({{ $t('enums.UserRoles.' + userRole) }})</small>
             </h1>
           </div>
           <h3 v-html="subtitle" v-if="subtitle" class="display-1 font-weight-light white--text"
@@ -28,7 +30,13 @@ export default {
   props: {
     title: '',
     subtitle: '',
-    icon: ''
+    icon: '',
+    showUserRole: Boolean
+  },
+  computed: {
+    userRole () {
+      return this.$enums.UserRoles.get(this.$auth.user.role)?.id
+    }
   }
 }
 </script>

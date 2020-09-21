@@ -52,10 +52,12 @@ class BasicEnum {
     return Object.entries(this.data).reduce((acc, curr) => {
       const value = +curr[0]
 
-      acc.push({
-        value: Number.isNaN(value) ? curr[0] : value,
-        text:  curr[1].id
-      })
+      if (!curr[1].hidden) {
+        acc.push({
+          value: Number.isNaN(value) ? curr[0] : value,
+          text: curr[1].id
+        })
+      }
 
       return acc
     }, [])

@@ -18,6 +18,36 @@ export default {
     'btn-back': 'Indietro',
     'btn-sign-confirm': 'Firma e Conferma',
     'btn-send-otp': 'Invia codice OTP',
+  },
+  users: {
+    'title': 'Elenco degli utenti',
+    'subtitle': '',
+    'btn-add-user': 'Aggiungi utente',
+    'btn-filter-data': 'Filtra i dati'
+  },
+  usersId: {
+    'title': 'Anagrafica',
+    'title-new-user': 'Anagrafica',
+    'title-new-with-role': 'Nuovo ${role}',
+    'subtitle': '',
+    'subtitle-new-user': 'Creazione di un nuovo utente',
+    'subtitle-new-user-with-role': 'Creazione di un nuovo utente con ruolo <strong>"${role}"</strong>',
+    'btn-go-back': 'Torna all\'elenco degli utenti',
+    'btn-send-activation-email': 'Invia email di attivazione',
+    'btn-reset-password': 'Resetta password',
+    'btn-send-email': 'Invia comunicazione',
+    'btn-next': 'Avanti',
+    'btn-save': 'Salva',
+    'btn-previous': 'Indietro',
+
+    tabs: {
+      'user-data': 'Dati Utente',
+      'user-residence': 'Residenza',
+      'user-legal-residence': 'Sede legale / Residenza',
+      'contacts': 'Contatti',
+      'contract': 'Contratto',
+      'other': 'Varie'
+    }
 
   }
 }

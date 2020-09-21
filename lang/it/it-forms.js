@@ -22,7 +22,7 @@ export default {
   'contract-percentage': 'Percentuale assegnata',
   'doc-expiration': 'Data scadenza documento',
   'doc-number': 'Numero documento',
-  'doc-type': 'Tipologia document',
+  'doc-type': 'Tipologia documento',
   'doc-front': 'Documento Fronte',
   'doc-back': 'Documento Retro',
   'doc-payment': 'Contabile di pagamento',
@@ -42,6 +42,7 @@ export default {
   'legal-representative-residence': 'Residenza del Rappresentante legale',
   'legal-representative-zip': 'Cap',
   'mobile': 'Cellulare',
+  'message': 'Messaggio',
   'otp-code': 'Codice di verifica',
   'otp-code-hint': 'Inserire il codice di verifica ricevuto per email.',
   'password': 'Password',
@@ -51,4 +52,10 @@ export default {
   'reference-agent': 'Agente di riferimento',
   'role': 'Ruolo',
   'vat-number': 'Partita IVA',
+  'available-amount': 'Importo disponibile',
+  'request-type': 'Tipologia richiesta',
+  'request-amount': 'Importo richiesto',
+  'request-date': 'Data richiesta',
+  'request-attachment': 'Contabile',
+  'request-notes': 'Note'
 }

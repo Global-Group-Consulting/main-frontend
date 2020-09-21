@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { VTextField, VSelect, VFileInput } from 'vuetify/lib'
+import { VTextField, VTextarea, VSelect, VFileInput } from 'vuetify/lib'
 import DatePicker from '@/components/forms/inputs/DatePicker'
 import ContractSign from '@/components/hompage/activationWizard/ContractSign'
 
@@ -43,7 +43,7 @@ import {
 export default {
   name: 'DynamicFieldset',
   components: {
-    VTextField, VSelect, DatePicker, VFileInput, ContractSign
+    VTextField, VSelect, DatePicker, VFileInput, ContractSign, VTextarea
   },
   mixins: [validationMixin],
   validations () {
@@ -53,7 +53,7 @@ export default {
   },
   props: {
     schema: {
-      type: Array,
+      type: Array|Object,
       required: true
     },
     value: {
@@ -101,6 +101,10 @@ export default {
 
       if (typeof field.items === 'string') {
         return _get(this.$store.getters, field.items.replace(/\./g, '/'))
+      }
+
+      if (field.items instanceof Array) {
+        return field.items
       }
 
       const enumInstance = field.items

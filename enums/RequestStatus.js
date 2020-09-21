@@ -1,8 +1,8 @@
-import { BasicEnum } from '~/assets/enums/BasicEnum'
+import { BasicEnum } from '@/classes/BasicEnum'
 
-class StatiRichieste extends BasicEnum {
-  constructor() {
-    super()
+class RequestStatus extends BasicEnum {
+  constructor () {
+    super('RequestStatus')
 
     this.NUOVA = 1
     this.LAVORAZIONE = 2
@@ -30,4 +30,4 @@ class StatiRichieste extends BasicEnum {
   }
 }
 
-export default new StatiRichieste()
+export default new RequestStatus()

@@ -2,18 +2,18 @@ import { BasicEnum } from '@/classes/BasicEnum'
 
 class RequestTypes extends BasicEnum {
   constructor () {
-    super()
+    super('RequestTypes')
 
-    this.ADMIN = 1
+    // this.ADMIN = 1
     this.VERSAMENTO = 2
     this.RISC_CAPITALE = 3
     this.RISC_INTERESSI = 4
 
     this.data = {
-      [this.ADMIN]: {
-        id: 'admin',
-        text: 'Admin'
-      },
+      /*  [this.ADMIN]: {
+          id: 'admin',
+          text: 'Admin'
+        },*/
       [this.VERSAMENTO]: {
         id: 'versamento',
         text: 'Versamento'

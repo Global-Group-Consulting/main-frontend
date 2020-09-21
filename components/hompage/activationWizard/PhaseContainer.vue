@@ -5,20 +5,18 @@
                     v-html="$t(`pages.activationWizard.phase-${currentStep.id}`)"/>
 
       <v-form>
-        <dynamic-fieldset :schema="activationWizardForms[currentStep.id]"
+        <dynamic-fieldset :schema="activationWizardSchema[currentStep.id]"
                           :fill-row="currentStep.id === 'contract-sign'"
                           v-model="formData"/>
       </v-form>
     </v-card>
 
-    <portal-target :name="`actionButtons${currentStep.id}`"/>
+    <!--    <portal-target :name="`actionButtons${currentStep.id}`"/>-->
   </div>
 </template>
 
 <script>
-import activationWizardForms from '@/config/forms/activationWizard'
-
-import { mapState } from 'vuex'
+import activationWizardSchema from '@/config/forms/activationWizardSchema'
 import DynamicFieldset from '@/components/DynamicFieldset'
 
 export default {
@@ -41,7 +39,7 @@ export default {
     currentStep: {}
   },
   computed: {
-    activationWizardForms,
+    activationWizardSchema,
     personaGiuridica () {
       return this.formData.personType === this.$enums.PersonTypes.GIURIDICA
     },

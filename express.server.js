@@ -7,8 +7,19 @@ const UserRoles = {
   ADMIN: 1,
   SERV_CLIENTI: 2,
   AGENTE: 3,
-  CLIENTE: 4
+  CLIENTE: 4,
 }
+
+const user = {
+  email: '',
+  firstName: 'Mario',
+  lastName: 'Rossi',
+  role: 4,
+  activatedAt: null,
+  contractNumber: '000123'
+}
+
+app.use(express.json())
 
 app.all('*', (req, res, next) => {
   console.log(req.url)
@@ -21,20 +32,28 @@ app.get('/', (req, res) => {
 
 app.get('/api/auth/user', (req, res) => {
   res.json({
-    user: {
-      email: 'mario.rossi@gmail.com',
-      firstName: 'Mario',
-      lastName: 'Rossi',
-      role: UserRoles.CLIENTE,
-      contractNumber: '000123'
-    }
+    user
   })
 })
 
 app.post('/api/auth/login', (req, res) => {
+  const incomingData = req.body
+  const activatedAt = +incomingData.role === 5 ? null : '2020-06-20 10:15:00'
+
+  let role = +incomingData.role
+
+  if (role === 5) {
+    role = 4
+  }
+
+  Object.assign(user, {
+    email: incomingData.email,
+    role,
+    activatedAt
+  })
 
   res.json({
-    data: '87ad87a6s8d76as8d68asd687as6d867a'
+    data: '87ad87a6s8d76as8d68asd687as6d867a',
   })
 })
 
