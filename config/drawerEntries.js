@@ -14,7 +14,7 @@ import UserRoles from '../enums/UserRoles'
 const menuItems = [
   {
     id: 'dashboard',
-    text: 'Dashboard',
+    text: 'dashboard',
     icon: 'mdi-home',
     link: '/'
   },
@@ -23,11 +23,11 @@ const menuItems = [
     text: ruolo => [UserRoles.SUPER_ADMIN,
       UserRoles.ADMIN,
       UserRoles.SERV_CLIENTI]
-      .includes(ruolo) ? 'Gestione utenti' : 'Il mio conto',
+      .includes(ruolo) ? 'users-management' : 'my-account',
     childs: [
       {
         id: 'users',
-        text: 'Utenti',
+        text: ruolo => UserRoles.AGENTE ? 'clients' : 'users',
         icon: 'mdi-account-group',
         link: '/users',
         ruoli: [UserRoles.ADMIN, UserRoles.SERV_CLIENTI, UserRoles.AGENTE]
@@ -60,14 +60,14 @@ const menuItems = [
       },
       {
         id: 'movements',
-        text: 'Movimenti',
+        text: 'movements',
         icon: 'mdi-swap-horizontal',
         link: '/movements',
         ruoli: [UserRoles.CLIENTE, UserRoles.AGENTE]
       },
       {
         id: 'requests',
-        text: 'Richieste',
+        text: 'requests',
         icon: 'mdi-fire',
         link: '/requests'
       }
@@ -75,17 +75,17 @@ const menuItems = [
   },
   {
     type: 'group',
-    text: 'Utilità',
+    text: 'utilities',
     childs: [
       {
         id: 'calcolatrice',
-        text: 'Calcolatrice',
+        text: 'calculator',
         icon: 'mdi-calculator-variant',
         link: '/calcolatrice'
       },
       {
         id: 'comunicazioni',
-        text: 'Comunicazioni',
+        text: 'comunications',
         icon: 'mdi-email-multiple',
         link: '/comunicazioni'
       }
@@ -134,7 +134,7 @@ const menuItems = [
  * @return {{}|null}
  * @private
  */
-function _analyzeEntry (entry, ruolo) {
+function _analyzeEntry (entry, ruolo, i18n) {
   const newEntry = { ...entry }
 
   // Se il parametro è una function la esegue, passando il ruolo e l'entry come parametri
@@ -142,9 +142,11 @@ function _analyzeEntry (entry, ruolo) {
     newEntry.text = entry.text(ruolo, entry)
   }
 
+  newEntry.text = i18n.t('drawer.' + newEntry.text)
+
   // Se ci sono childs, li analizza tutti.
   if (entry.childs) {
-    newEntry.childs = _loopEntries(entry.childs, ruolo)
+    newEntry.childs = _loopEntries(entry.childs, ruolo, i18n)
   }
 
   if (!entry.ruoli
@@ -160,9 +162,9 @@ function _analyzeEntry (entry, ruolo) {
  * @return {[]}
  * @private
  */
-function _loopEntries (childs, ruolo) {
+function _loopEntries (childs, ruolo, i18n) {
   return childs.reduce((acc, curr) => {
-    const newCurr = _analyzeEntry(curr, ruolo)
+    const newCurr = _analyzeEntry(curr, ruolo, i18n)
 
     if (newCurr) {
       acc.push(newCurr)
@@ -172,8 +174,6 @@ function _loopEntries (childs, ruolo) {
   }, [])
 }
 
-function getMenuItems (ruolo) {
-  return _loopEntries(menuItems, ruolo)
+export default function (context) {
+  return _loopEntries(menuItems, context.$auth.user.role, context.$i18n)
 }
-
-export { getMenuItems }

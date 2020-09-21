@@ -1,4 +1,7 @@
 export default {
+  home: {
+    title: 'La mia dashboard'
+  },
   login: {
     'access-private-area': 'Accedi all\'area personale',
     'log-in': 'Accedi',

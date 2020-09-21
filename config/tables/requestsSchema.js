@@ -5,13 +5,13 @@ export default function (context) {
       { text: context.$t('tables.first-name'), value: 'firstName' },
       { text: context.$t('tables.last-name'), value: 'lastName' },
       { text: context.$t('tables.email'), value: 'email' },
-      { text: context.$t('tables.reference-agent'), value: 'referenceAgent' },
+      { text: context.$t('tables.request-type'), value: 'requestType' },
+      { text: context.$t('tables.request-amount'), value: 'requestAmount' },
       {
         text: context.$t('tables.action'),
         value: 'actions',
         sortable: false,
         align: 'center',
-        visible: false,
         width: '1%'
       }
     ]

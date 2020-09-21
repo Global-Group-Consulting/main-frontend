@@ -57,5 +57,6 @@ export default {
   'request-amount': 'Importo richiesto',
   'request-date': 'Data richiesta',
   'request-attachment': 'Contabile',
-  'request-notes': 'Note'
+  'request-notes': 'Note',
+  'wallet-type': 'Wallet'
 }

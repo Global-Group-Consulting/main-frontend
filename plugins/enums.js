@@ -4,6 +4,8 @@ import Genders from '../enums/Genders'
 import DocumentTypes from '../enums/DocumentTypes'
 import RequestTypes from '../enums/RequestTypes'
 import RequestStatus from '../enums/RequestStatus'
+import WalletTypes from '../enums/WalletTypes'
+import CurrencyType from '../enums/CurrencyType'
 
 export default (context, inject) => {
   const enums = {
@@ -12,7 +14,9 @@ export default (context, inject) => {
     PersonTypes,
     UserRoles,
     RequestTypes,
-    RequestStatus
+    RequestStatus,
+    WalletTypes,
+    CurrencyType
   }
 
   inject('enums', enums)

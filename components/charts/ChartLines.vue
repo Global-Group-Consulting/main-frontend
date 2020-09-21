@@ -1,39 +1,47 @@
 <script>
-  import { Line } from 'vue-chartjs'
+import { Line } from 'vue-chartjs'
 
-  export default {
-    name:    'ChartLines',
-    extends: Line,
-    props:   {
-      labels: {
-        type:    Array,
-        default: []
-      },
-      values: {
-        type:    Array,
-        default: []
+export default {
+  name: 'ChartLines',
+  extends: Line,
+  props: {
+    labels: {
+      type: Array,
+      default () {
+        return []
       }
     },
-    mounted () {
-      // Overwriting base render method with actual data.
-      this.renderChart({
-        labels:   this.labels,
-        datasets: [
+    values: {
+      type: Array,
+      default () {
+        return []
+      }
+    },
+    datasets: {
+      type: Array,
+      default () {
+        return [
           {
-            // label:           'GitHub Commits',
-            // backgroundColor: '#f87979',
             data: this.values
           }
         ]
-      }, {
-        responsive:          true,
-        maintainAspectRatio: false,
-        legend:              {
-          display: false
-        }
-      })
+      }
     }
+  },
+  mounted () {
+    // Overwriting base render method with actual data.
+    this.renderChart({
+      labels: this.labels,
+      datasets: this.datasets
+    }, {
+      responsive: true,
+      maintainAspectRatio: false,
+      legend: {
+        display: true
+      }
+    })
   }
+}
 </script>
 
 <style scoped></style>

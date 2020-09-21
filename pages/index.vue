@@ -1,9 +1,9 @@
 <template>
   <div>
     <page-header
-      :title="title"
-      :subtitle="subtitle"
-      :icon="icon"
+      :title="pageTitle"
+      :subtitle="pageSubtitle"
+      :icon="pageIcon"
       show-user-role
     ></page-header>
 
@@ -12,6 +12,8 @@
 </template>
 
 <script>
+
+import pageMeta from '@/mixins/pageMeta'
 
 import Admin from '@/components/hompage/Admin'
 import Cliente from '@/components/hompage/Cliente'
@@ -23,11 +25,10 @@ import PageHeader from '@/components/blocks/PageHeader'
 export default {
   components: { PageHeader, Admin, Cliente, Agente, ServClienti },
   middleware: 'auth',
+  mixins: [pageMeta],
   data () {
     return {
-      title: 'La mia Dashboard',
-      subtitle: 'Possibile sottotitolo della dashboard',
-      icon: 'mdi-home'
+
     }
   },
   computed: {

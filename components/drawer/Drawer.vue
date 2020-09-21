@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { getMenuItems } from '@/config/drawerEntries'
+import drawerItems from '@/config/drawerEntries'
 import DrawerItem from '@/components/drawer/DrawerItem'
 import DrawerGroup from '~/components/drawer/DrawerGroup'
 import { mapGetters } from 'vuex'
@@ -49,14 +49,12 @@ export default {
     }
   },
   computed: {
+    drawerItems,
     ...mapGetters({
-      userMustActivate: "user/mustActivate"
+      userMustActivate: 'user/mustActivate'
     }),
     user () {
       return this.$auth.user || {}
-    },
-    drawerItems () {
-      return getMenuItems(this.$auth.user.role)
     },
     drawerBgSrc () {
       const root = '/drawerBackgrounds/'

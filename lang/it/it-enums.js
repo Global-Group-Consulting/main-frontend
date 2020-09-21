@@ -25,7 +25,16 @@ export default {
   'RequestTypes': {
     'admin': 'Admin',
     'versamento': 'Versamento',
+    'interessi': 'Reinvestimento interessi',
     'risc_capitale': 'Riscossione capitale',
-    'risc_interessi': 'Riscossione interessi'
+    'risc_interessi': 'Riscossione interessi',
+  },
+  'WalletTypes': {
+    'deposit': 'Deposito',
+    'commision': 'Provvigioni',
+  },
+  'CurrencyType': {
+    'euro': 'Euro',
+    'brite': 'Brite'
   }
 }

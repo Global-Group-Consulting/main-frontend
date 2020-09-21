@@ -8,6 +8,7 @@ class RequestTypes extends BasicEnum {
     this.VERSAMENTO = 2
     this.RISC_CAPITALE = 3
     this.RISC_INTERESSI = 4
+    this.INTERESSI = 4
 
     this.data = {
       /*  [this.ADMIN]: {
@@ -25,6 +26,10 @@ class RequestTypes extends BasicEnum {
       [this.RISC_INTERESSI]: {
         id: 'risc_interessi',
         text: 'Riscossione interessi'
+      },
+      // interessi maturati mensilmente
+      [this.INTERESSI]: {
+        id: 'interessi',
       }
     }
   }
