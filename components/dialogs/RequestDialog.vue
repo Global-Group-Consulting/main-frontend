@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-layout>
     <portal to="dialog-content">
       <v-form :disabled="readonly">
         <dynamic-fieldset :schema="requestSchema"
@@ -27,14 +27,14 @@
         {{ $t('dialogs.requestDialog.btn-send') }}
       </v-btn>
     </portal>
-  </div>
+  </v-layout>
 </template>
 
 <script>
 import DynamicFieldset from '@/components/DynamicFieldset'
 import requestSchema from '@/config/forms/requestSchema'
 
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default {
   name: 'RequestDialog',
@@ -42,7 +42,9 @@ export default {
   data () {
     return {
       opened: false,
-      formData: {}
+      formData: {
+        walletType: 1
+      }
     }
   },
   props: {
@@ -53,15 +55,39 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({
-      dialogData: 'dialog/dialogData'
-    }),
     requestSchema,
+    ...mapGetters({
+      dialogData: 'dialog/dialogData',
+      userWallets: 'user/availableWallets'
+    }),
+    requestTypes () {
+      return this.$enums.RequestTypes.list
+        .reduce((acc, item) => {
+          acc.push({
+            value: item.text,
+            text: this.$t(`enums.RequestTypes.${item.text}`)
+          })
+
+          return acc
+        }, [])
+    },
+    availableAmount () {
+      if (this.formData.availableAmount
+        && [this.$enums.UserRoles.ADMIN, this.$enums.UserRoles.SERV_CLIENTI].includes(this.$auth.user.role)) {
+        return this.formData.availableAmount
+      }
+
+      const wallet = this.userWallets.find(_wallet => _wallet.type === (this.formData.walletType || 1))
+
+      console.log(wallet)
+
+      return wallet?.amount ?? 0
+    },
     isNew () {
       return Object.keys(this.formData).length === 0
     },
     readonly () {
-      return !!this.requestData.requestState
+      return this.formData.requestState
       // return this.$enums.RequestStatus.NUOVA !== this.requestData.requestState
     },
     canEdit () {
@@ -78,16 +104,35 @@ export default {
     }
   },
   watch: {
+    'formData.requestType': {
+      immediate: true,
+      handler () {
+        this.formData.walletType = this.$enums.WalletTypes.DEPOSIT
+        this.formData.currencyType = this.$enums.CurrencyType.EURO
+      }
+    },
+    'formData.walletType': {
+      immediate: true,
+      handler (walletType) {
+        this.formData.availableAmount = this.availableAmount
+      }
+    },
     'dialogData.data': {
       deep: true,
       immediate: true,
       handler (value) {
-        this.formData = {
-          ...value,
-          availableAmount: 65000
-        }
+        Object.keys(value || {}).forEach(key => {
+          if (key.indexOf('_') < 0) {
+            this.$set(this.formData, key, value[key])
+          }
+        })
+
+        this.$set(this.formData, 'requestType', value?.requestType || this.$enums.RequestTypes['VERSAMENTO'])
+        this.$set(this.formData, 'walletType', value?.walletType || this.$enums.WalletTypes['DEPOSIT'])
+        this.$set(this.formData, 'availableAmount', value?.availableAmount || this.availableAmount)
+        this.$set(this.formData, 'currencyType', value?.currencyType || this.$enums.CurrencyType['EURO'])
       }
-    }
+    },
   }
 
 }

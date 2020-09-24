@@ -31,6 +31,7 @@
 <script>
 import { VTextField, VTextarea, VSelect, VFileInput } from 'vuetify/lib'
 import DatePicker from '@/components/forms/inputs/DatePicker'
+import MoneyInput from '@/components/forms/inputs/MoneyInput'
 import ContractSign from '@/components/hompage/activationWizard/ContractSign'
 
 import { validationRules, errorMessages } from '@/mixins/ValidationsParser'
@@ -43,7 +44,8 @@ import {
 export default {
   name: 'DynamicFieldset',
   components: {
-    VTextField, VSelect, DatePicker, VFileInput, ContractSign, VTextarea
+    VTextField, VSelect, DatePicker, VFileInput, ContractSign, VTextarea,
+    MoneyInput
   },
   mixins: [validationMixin],
   validations () {
@@ -53,7 +55,7 @@ export default {
   },
   props: {
     schema: {
-      type: Array|Object,
+      type: Array | Object,
       required: true
     },
     value: {
@@ -86,7 +88,7 @@ export default {
       let value = this.value[key]
 
       if (field.formatter) {
-        value = this.$options.filters[field.formatter](value)
+        value = this.$options.filters[field.formatter](value, field.formatterParams)
       }
 
       return value

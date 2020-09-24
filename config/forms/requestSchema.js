@@ -2,17 +2,6 @@ export default function (context) {
   return [
     {
       cols: {
-        walletType: {
-          component: 'v-select',
-          items: context.$enums.WalletTypes,
-          if: [context.$enums.UserRoles.ADMIN,
-            context.$enums.UserRoles.SERV_CLIENTI,
-            context.$enums.UserRoles.AGENTE].includes(context.$auth.user.role)
-        },
-      }
-    },
-    {
-      cols: {
         requestType: {
           component: 'v-select',
           items: context.$enums.RequestTypes
@@ -21,9 +10,22 @@ export default function (context) {
     },
     {
       cols: {
+        walletType: {
+          component: 'v-select',
+          items: context.$enums.WalletTypes,
+          disabled: context.formData.requestType === context.$enums.RequestTypes.VERSAMENTO,
+          if: [context.$enums.UserRoles.ADMIN,
+            context.$enums.UserRoles.SERV_CLIENTI,
+            context.$enums.UserRoles.AGENTE].includes(context.$auth.user.role)
+        },
+      }
+    },
+    {
+      cols: {
         currencyType: {
           component: 'v-select',
-          items: context.$enums.CurrencyType
+          items: context.$enums.CurrencyType,
+          disabled: context.formData.requestType === context.$enums.RequestTypes.VERSAMENTO,
         },
       }
     },
@@ -31,14 +33,19 @@ export default function (context) {
       cols: {
         availableAmount: {
           readonly: true,
-          formatter: 'moneyFormatter'
+          component: 'money-input',
+          currency: context.formData.currencyType,
+          if: context.formData.requestType !== context.$enums.RequestTypes.VERSAMENTO
         }
       }
     },
     {
       cols: {
         requestAmount: {
-          formatter: 'moneyFormatter'
+          component: 'money-input',
+          currency: context.formData.currencyType,
+          showMax: context.formData.walletType === 2,
+          maxValue: context.formData.availableAmount
         },
       }
     },

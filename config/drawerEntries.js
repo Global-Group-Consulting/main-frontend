@@ -70,7 +70,7 @@ const menuItems = [
         text: 'requests',
         icon: 'mdi-fire',
         link: '/requests'
-      }
+      },
     ]
   },
   {

@@ -2,6 +2,27 @@ import Vue from 'vue'
 import moment from 'moment'
 import Cleave from 'cleave.js'
 
+import CurrencyType from '@/enums/CurrencyType'
+
+class BriteConverter {
+  static toBrite (value) {
+    if (!value) {
+      return value
+    }
+
+    const numeralFormatter = new Cleave.NumeralFormatter()
+    const numericValue = numeralFormatter.getRawValue(value.toString())
+
+    console.log(numericValue, numericValue)
+
+    return +numericValue * 2
+  }
+
+  static toEuro (value) {
+    return +value / 2
+  }
+}
+
 export function contractNumberFormatter (value) {
   if (!value) {
     return ''
@@ -44,7 +65,7 @@ export function datePickerFormatter (value) {
   return moment(value).format('YYYY-MM-DD')
 }
 
-export function moneyFormatter (value) {
+export function moneyFormatter (value, formatBrite = false) {
   if (!value) {
     return ''
   }
@@ -53,20 +74,18 @@ export function moneyFormatter (value) {
 
   const numeralFormatter = new Cleave.NumeralFormatter()
   numeralFormatter.delimiter = '.'
-  numeralFormatter.numeralDecimalScale = 2
+  numeralFormatter.numeralDecimalScale = !formatBrite ? 2 : 0
   numeralFormatter.numeralPositiveOnly = true
   numeralFormatter.numeralDecimalMark = ','
-  numeralFormatter.prefix = '€ '
 
   let formatted = numeralFormatter.format(value)
-
   let decimals = formatted.split(',')[1] || ''
 
-  while (decimals.length < 2) {
+  while (decimals.length < numeralFormatter.numeralDecimalScale) {
     decimals += '0'
   }
 
-  return formatted.split(',')[0] + ',' + decimals
+  return formatted.split(',')[0] + (decimals ? ',' + decimals : '')
 }
 
 export function regionFormatter (value, list) {

@@ -24,4 +24,7 @@ class WalletTypes extends BasicEnum {
   }
 }
 
+/**
+ * @export {{test: string}}
+ */
 export default new WalletTypes()

@@ -10,9 +10,11 @@ class CurrencyType extends BasicEnum {
     this.data = {
       [this.EURO]: {
         id: 'euro',
+        symbol: '€'
       },
       [this.BRITE]: {
         id: 'brite',
+        symbol: 'B'
       }
     }
   }
