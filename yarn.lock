@@ -8159,6 +8159,11 @@ vuetify@^2:
   resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-2.3.10.tgz#c8cbc77ee1224b5a132f501a3762dee6d8c95a06"
   integrity sha512-KzL/MhZ7ajubm9kwbdCoA/cRV50RX+a5Hcqiwt7Am1Fni2crDtl2no05UNwKroTfscrYYf07gq3WIFSurPsnCA==
 
+vuex-composition-helpers@^1.0.21:
+  version "1.0.21"
+  resolved "https://registry.yarnpkg.com/vuex-composition-helpers/-/vuex-composition-helpers-1.0.21.tgz#5ee420365cad294aa0ac2d41729718d1643c36ae"
+  integrity sha512-HpezDGuF4aaQ7/xtnPcjDKnWMiFyOuyW8a6uejs5t+iar76xmAw9ASGyvHGe8/vDEXR9Z3qp9nGqzCFBH2Gy+g==
+
 vuex-persist@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/vuex-persist/-/vuex-persist-2.2.0.tgz#4acec75562896b045c43d319690b93d6bc1b2bbc"

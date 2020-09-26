@@ -78,16 +78,16 @@ const menuItems = [
     text: 'utilities',
     childs: [
       {
-        id: 'calcolatrice',
+        id: 'calculator',
         text: 'calculator',
         icon: 'mdi-calculator-variant',
-        link: '/calcolatrice'
+        link: '/calculator'
       },
       {
-        id: 'comunicazioni',
+        id: 'comunications',
         text: 'comunications',
         icon: 'mdi-email-multiple',
-        link: '/comunicazioni'
+        link: '/comunications'
       }
     ]
   },

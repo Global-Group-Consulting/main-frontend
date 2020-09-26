@@ -18,7 +18,7 @@
               :headers="usersTable.headers"
               :items="group"
               :items-per-page="10"
-              @click:row="onRowClick"
+              @click:row="onRowClick($event._id)"
             >
               <template v-slot:item.contractNumber="{ item }">
                 {{ $options.filters.contractNumberFormatter(item.contractNumber) }}
@@ -97,14 +97,25 @@ import usersTable from '@/config/tables/usersSchema'
 import fakeUsers from '@/assets/fakeUsers'
 import UsersCrudActions from '@/components/table/UsersCrudActions'
 
+import pageBasic from '@/functions/pageBasic'
+
 export default {
   name: 'index',
   components: { UsersCrudActions, PageHeader },
+  setup (props, { root }) {
+    const pageData = pageBasic(root, 'users')
+
+    function goToUser (userId) {
+      root.$router.push('/users/' + userId)
+    }
+
+    return {
+      ...pageData,
+      onRowClick: goToUser
+    }
+  },
   data () {
     return {
-      title: this.$t('pages.users.title'),
-      subtitle: this.$t('pages.users.subtitle'),
-      icon: 'mdi-account-group',
       rawUsersGroups: {},
       floatingBtn: false
     }
@@ -139,11 +150,7 @@ export default {
       return data
     },
   },
-  methods: {
-    onRowClick (row) {
-      this.$router.push('/users/' + row._id)
-    }
-  },
+  methods: {},
   created () {
     // const {data} = await context.$axios.get('/api/users/getAll')
 

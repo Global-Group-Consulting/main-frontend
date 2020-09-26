@@ -8,7 +8,7 @@ class RequestTypes extends BasicEnum {
     this.VERSAMENTO = 2
     this.RISC_CAPITALE = 3
     this.RISC_INTERESSI = 4
-    this.INTERESSI = 4
+    this.INTERESSI = 5
 
     this.data = {
       /*  [this.ADMIN]: {

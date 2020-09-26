@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="dynamic-fieldset">
     <div v-for="(row, index) in schema"
          :key="index"
          v-if="row.hasOwnProperty('if') ? row.if : true">
@@ -21,7 +21,14 @@
                      :value="getValue(field, key)"
                      @change="update(key, $event)"
                      :error-messages="errorMessages[key]"
-          ></component>
+                     :class="{'edit-mode': editMode}"
+                     :edit-mode="editMode"
+          >
+            <template v-slot:prepend v-if="editMode">
+              <v-checkbox></v-checkbox>
+            </template>
+
+          </component>
         </v-col>
       </v-row>
     </div>
@@ -62,7 +69,8 @@ export default {
       type: Object,
       default: () => ({})
     },
-    fillRow: Boolean
+    fillRow: Boolean,
+    editMode: Boolean
   },
   data () {
     return {
@@ -156,6 +164,16 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.dynamic-fieldset::v-deep {
+  .edit-mode {
+    .v-input__prepend-outer {
 
+      .v-input--checkbox {
+        margin-top: 0;
+        padding-top: 0;
+      }
+    }
+  }
+}
 </style>

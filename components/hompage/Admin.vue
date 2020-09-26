@@ -24,6 +24,7 @@
           :headers="usersTableHeaders"
           :items="pendingUsers"
           :items-per-page="10"
+          @click:row="goToUser($event._id)"
         >
         </v-data-table>
       </v-card-text>
@@ -64,10 +65,17 @@ import pendingUsers from '@/assets/fakeUsers'
 import adminDashboardChart from '@/config/charts/adminDashboard'
 import usersTableSchema from '@/config/tables/usersSchema'
 import requestsTableSchema from '@/config/tables/requestsSchema'
+import users from '@/functions/users'
 
 export default {
   name: 'Admin',
   components: { ChartLines, Chart },
+  setup (props, { root }) {
+
+    return {
+      goToUser: users(root).goToUser
+    }
+  },
   data () {
     return {
       pendingRequests,

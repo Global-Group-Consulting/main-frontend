@@ -35,10 +35,13 @@ export default {
     'subtitle': '',
     'subtitle-new-user': 'Creazione di un nuovo utente',
     'subtitle-new-user-with-role': 'Creazione di un nuovo utente con ruolo <strong>"${role}"</strong>',
-    'btn-go-back': 'Torna all\'elenco degli utenti',
+    'btn-go-back-tooltip': 'Torna all\'elenco degli utenti',
     'btn-send-activation-email': 'Invia email di attivazione',
+    'btn-send-activation-email-tooltip': 'Invia email di attivazione',
     'btn-reset-password': 'Resetta password',
+    'btn-reset-password-tooltip': 'Resetta password',
     'btn-send-email': 'Invia comunicazione',
+    'btn-send-email-tooltip': 'Invia comunicazione',
     'btn-next': 'Avanti',
     'btn-save': 'Salva',
     'btn-previous': 'Indietro',
@@ -52,5 +55,9 @@ export default {
       'other': 'Varie'
     }
 
+  },
+  comunications: {
+    title: 'Comunicazioni con gli utenti',
+    subtitle: ''
   }
 }

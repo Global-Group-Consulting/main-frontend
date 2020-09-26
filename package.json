@@ -28,6 +28,7 @@
     "vue-chartjs": "^3.5.1",
     "vue-server-renderer": "^2.6.12",
     "vuelidate": "^0.7.5",
+    "vuex-composition-helpers": "^1.0.21",
     "vuex-persist": "^2.2.0"
   },
   "devDependencies": {

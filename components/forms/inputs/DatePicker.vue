@@ -17,14 +17,20 @@
         v-on="on"
         @change="onInput"
         :clearable="!readonly"
-      ></v-text-field>
+        :class="{'edit-mode': editMode}"
+      >
+        <template v-slot:prepend>
+          <slot name="prepend"></slot>
+        </template>
+      </v-text-field>
     </template>
     <v-date-picker v-model="dateValue"
                    @input="onInput"
                    :readonly="readonly"
                    v-bind:picker-date="(dateValue ? '' : initialDate)|datePickerFormatter"
                    v-bind:min="min|datePickerFormatter"
-                   locale="it"></v-date-picker>
+                   locale="it">
+    </v-date-picker>
 
   </v-menu>
 </template>
@@ -45,7 +51,8 @@ export default {
     label: '',
     initialDate: '',
     min: '',
-    readonly: Boolean
+    readonly: Boolean,
+    editMode: Boolean,
   },
   computed: {},
   methods: {

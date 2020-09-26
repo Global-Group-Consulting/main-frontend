@@ -9,39 +9,35 @@
 
       <v-toolbar v-if="formData.contractNumber" class="mb-5">
         <v-toolbar-items class="flex-fill">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn icon
-                     to="/users"
-                     v-on="on">
-                <v-icon>mdi-arrow-left</v-icon>
-              </v-btn>
-            </template>
-            <span>{{ $t('pages.usersId.btn-go-back') }}</span>
-          </v-tooltip>
+          <tooltip-btn :tooltip="$t('pages.usersId.btn-go-back-tooltip')"
+                       icon
+                       icon-name="mdi-arrow-left"
+                       @click="$router.back()"
+          >
+          </tooltip-btn>
 
           <v-spacer></v-spacer>
 
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn text v-if="!formData.accountVerifiedAt"
-                     v-on="formData.accountVerifiedAt ? on : null"
-              >
-                <v-icon>mdi-at</v-icon>
-                {{ $t('pages.usersId.btn-send-activation-email') }}
-              </v-btn>
-            </template>
-            <span>Ultima email inviata il {{ formData.accountCreatedAt|dateFormatter(true) }}</span>
-          </v-tooltip>
+          <tooltip-btn :tooltip="$t('pages.usersId.btn-send-activation-email-tooltip')"
+                       icon-name="mdi-at"
+                       text
+                       v-if="!formData.accountVerifiedAt">
+            {{ $t('pages.usersId.btn-send-activation-email') }}
+          </tooltip-btn>
 
-          <v-btn text v-if="formData.accountVerifiedAt">
-            <v-icon>mdi-lock-reset</v-icon>
+          <tooltip-btn :tooltip="$t('pages.usersId.btn-reset-password-tooltip')"
+                       icon-name="mdi-lock-reset"
+                       v-if="formData.accountVerifiedAt"
+                       text>
             {{ $t('pages.usersId.btn-reset-password') }}
-          </v-btn>
-          <v-btn text @click="onSendEmail">
-            <v-icon>mdi-email-plus</v-icon>
+          </tooltip-btn>
+
+          <tooltip-btn :tooltip="$t('pages.usersId.btn-send-email-tooltip')"
+                       icon-name="mdi-email-plus"
+                       text
+                       @click="onSendEmail">
             {{ $t('pages.usersId.btn-send-email') }}
-          </v-btn>
+          </tooltip-btn>
 
           <v-spacer></v-spacer>
         </v-toolbar-items>
@@ -74,6 +70,7 @@
                       v-model="formData"
                       :ref="'dynamicForm_' + index"
                       @status="saveStatus(tab.schema, $event)"
+                      :edit-mode="editMode"
                     />
                   </v-card-text>
                 </v-card>
@@ -140,6 +137,7 @@ export default {
     return {
       formData: {},
       currentTab: 0,
+      editMode: true
     }
   },
   computed: {
@@ -211,7 +209,7 @@ export default {
     onSaveClick () {},
     onSendEmail () {
       this.$store.dispatch('dialog/updateStatus', {
-        title: this.$t("dialogs.userMessage.title")
+        title: this.$t('dialogs.userMessage.title')
       })
     }
   },

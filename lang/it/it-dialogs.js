@@ -10,5 +10,9 @@ export default {
     'btn-send': 'Invia',
     'btn-accept': 'Accetta',
     'btn-reject': 'Rifiuta',
+  },
+  comunicationDialog: {
+    'timeline-opposite': 'Inviato da <strong>{firstName} {lastName}</strong> il {timestamp}.',
+    'timeline-opposite-dense': 'Inviato il {timestamp}.'
   }
 }

@@ -9,16 +9,20 @@
 
       <v-row>
         <v-col cols="12">
-          <v-card color="warning" dark>
-<!--            <v-card-title>Nuove</v-card-title>-->
+          <v-card color="success" dark>
+            <v-card-title>Entrate</v-card-title>
+
             <v-data-table
               light
-              :headers="getTableHeaders(true)"
-              :items="requestsList"
+              :headers="movementsSchema.headers"
+              :items="requestsList.in"
               :items-per-page="10"
             >
               <template v-slot:item.requestAmount="{ item }">
-                {{ $options.filters.moneyFormatter(item.requestAmount) }}
+                <span :class="getAmountClass(getAmountSign(item.type))">
+                  {{ getAmountSign(item.type) }}
+                  € {{ $options.filters.moneyFormatter(item.requestAmount) }}
+                </span>
               </template>
 
               <template v-slot:item.requestDate="{ item }">
@@ -29,8 +33,43 @@
                 {{ $options.filters.dateFormatter(item.data_update, true) }}
               </template>
 
-              <template v-slot:item.requestType="{ item }">
-                {{ getTipoRichiesta(item.requestType) }}
+              <template v-slot:item.type="{ item }">
+                {{ getTipoRichiesta(item.type) }}
+              </template>
+            </v-data-table>
+          </v-card>
+
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col cols="12">
+          <v-card color="error" dark>
+            <v-card-title>Uscite</v-card-title>
+
+            <v-data-table
+              light
+              :headers="movementsSchema.headers"
+              :items="requestsList.out"
+              :items-per-page="10"
+            >
+              <template v-slot:item.requestAmount="{ item }">
+                <span :class="getAmountClass(getAmountSign(item.type))">
+                  {{ getAmountSign(item.type) }}
+                  € {{ $options.filters.moneyFormatter(item.requestAmount) }}
+                </span>
+              </template>
+
+              <template v-slot:item.requestDate="{ item }">
+                {{ $options.filters.dateFormatter(item.requestDate, true) }}
+              </template>
+
+              <template v-slot:item.data_update="{ item }">
+                {{ $options.filters.dateFormatter(item.data_update, true) }}
+              </template>
+
+              <template v-slot:item.type="{ item }">
+                {{ getTipoRichiesta(item.type) }}
               </template>
             </v-data-table>
           </v-card>
@@ -41,8 +80,10 @@
 </template>
 
 <script>
-import { requests } from '~/assets/fakeRichieste'
+import fakeMovements from '~/assets/fakeMovements'
 import PageHeader from '@/components/blocks/PageHeader'
+
+import movementsSchema from '@/config/tables/movementsSchema'
 
 export default {
   component: {
@@ -53,38 +94,49 @@ export default {
       title: 'Lista movimenti',
       subtitle: '',
       icon: 'mdi-fire',
-      requestsList: []
+      requestsList: {
+        in: [],
+        out: []
+      }
     }
   },
+  computed: {
+    movementsSchema
+  },
   methods: {
-    getTableHeaders (includeCrud) {
-      const columns = [
-        { text: 'Importo', value: 'requestAmount' },
-        { text: 'Tipo', value: 'requestType' },
-        { text: 'Data richiesta', value: 'requestDate' },
-        { text: 'Data lavorazione', value: 'data_update' },
-      ]
+    getTipoRichiesta (_id) {
+      const id = this.$enums.RequestTypes.get(_id).id
 
-      if (includeCrud && this.canEdit) {
-        columns.push(
-          { text: 'Utente', value: 'user_id' },
-          {
-            text: '',
-            value: 'actions',
-            sortable: false,
-            align: 'center',
-            width: '1%',
-          })
-      }
+      return this.$t('enums.RequestTypes.' + id)
+    },
+    getAmountSign (type) {
+      return [this.$enums.RequestTypes['VERSAMENTO'],
+        this.$enums.RequestTypes['INTERESSI']].includes(type) ? '+' : '-'
+    },
+    getAmountClass (sign) {
+      const minus = 'red--text'
+      const plus = 'green--text'
 
-      return columns
-    },
-    getTipoRichiesta (id) {
-      return this.$enums.RequestTypes.get(id).text
-    },
+      return sign === '-' ? minus : plus
+    }
   },
   created () {
-    this.requestsList = requests
+    const positiveTypes = [this.$enums.RequestTypes['VERSAMENTO'],
+      this.$enums.RequestTypes['INTERESSI']]
+
+    for (const movement of fakeMovements) {
+      if (this.$auth.user.role === this.$enums.UserRoles['CLIENTE']
+        && movement.type === this.$enums.RequestTypes['INTERESSI']) {
+        continue
+      }
+
+      if (positiveTypes.includes(movement.type)) {
+        this.requestsList.in.push(movement)
+      } else {
+        this.requestsList.out.push(movement)
+      }
+    }
+
   }
 }
 </script>

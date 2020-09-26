@@ -2,7 +2,10 @@ export const state = () => ({
   show: false,
   data: {
     title: '',
-    readonly: false
+    readonly: false,
+    fullscreen: false,
+    noActions: false,
+    data: {}
   }
 })
 

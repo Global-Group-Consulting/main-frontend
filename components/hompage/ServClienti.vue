@@ -1,89 +1,55 @@
 <template>
   <v-layout column>
-    <v-row>
-
-      <v-col cols="4">
-        <v-card
-          class="mx-auto text-center"
-          max-width="400"
-        >
-          <v-card-text>
-            <chart label="Patrimonio Aziendale"/>
-          </v-card-text>
-        </v-card>
-      </v-col>
-
-      <v-col cols="4">
-        <v-card
-          class="mx-auto text-center"
-          max-width="400"
-        >
-          <v-card-text>
-            <chart label="Utenti attivi"></chart>
-          </v-card-text>
-        </v-card>
-      </v-col>
-
-      <v-col cols="4">
-        <v-card
-          class="mx-auto text-center"
-          max-width="400"
-        >
-          <v-card-text>
-            <chart label="Uscite patrimoniali" color="red"/>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-
-
-    <v-card>
+    <v-card
+      width="100%"
+      class="text-center mb-5"
+    >
       <v-card-text>
-        <p class="text-h4 text--primary">
-          Utenti in attesa di approvazione
-        </p>
-
-        <v-simple-table height="300px">
-          <template v-slot:default>
-            <thead>
-            <tr>
-              <th class="text-left">Name</th>
-              <th class="text-left">Calories</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="item in fakeTableData" :key="item.name">
-              <td>{{ item.name }}</td>
-              <td>{{ item.email }}</td>
-            </tr>
-            </tbody>
-          </template>
-        </v-simple-table>
+        <chart-lines
+          :labels="adminDashboardChart.labels"
+          :datasets="chartsAdminDataset"
+        />
       </v-card-text>
     </v-card>
 
-    <v-card class="mt-4">
+
+    <v-card class="mb-5">
       <v-card-text>
-        <p class="text-h4 text--primary">
-          Richieste da evadere
+        <p class="text-h5 text--primary">
+          <v-icon>mdi-account-clock</v-icon>
+          {{ this.$t('tables.pending-users-table') }}
         </p>
 
-        <v-simple-table height="300px">
-          <template v-slot:default>
-            <thead>
-            <tr>
-              <th class="text-left">Name</th>
-              <th class="text-left">Calories</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="item in fakeTableData" :key="item.name">
-              <td>{{ item.name }}</td>
-              <td>{{ item.email }}</td>
-            </tr>
-            </tbody>
+        <v-data-table
+          :headers="usersTableHeaders"
+          :items="pendingUsers"
+          :items-per-page="10"
+          @click:row="goToUser($event._id)"
+        >
+        </v-data-table>
+      </v-card-text>
+    </v-card>
+
+    <v-card class="mb-5">
+      <v-card-text>
+        <p class="text-h5 text--primary">
+          <v-icon>mdi-compare-vertical</v-icon>
+          {{ this.$t('tables.pending-requests-table') }}
+        </p>
+
+        <v-data-table
+          :headers="requestsTableHeaders"
+          :items="pendingRequests"
+          :items-per-page="10"
+        >
+          <template v-slot:item.requestType="{item}">
+            {{ $t('enums.RequestTypes.' + $enums.RequestTypes.get(item.requestType).id) }}
           </template>
-        </v-simple-table>
+
+          <template v-slot:item.requestAmount="{item}">
+            {{ item.requestAmount | moneyFormatter }}
+          </template>
+        </v-data-table>
       </v-card-text>
     </v-card>
   </v-layout>
@@ -91,35 +57,56 @@
 
 <script>
 import Chart from '@/components/charts/Chart'
+import ChartLines from '@/components/charts/ChartLines'
+
+import { requests as pendingRequests } from '@/assets/fakeRichieste'
+import pendingUsers from '@/assets/fakeUsers'
+
+import adminDashboardChart from '@/config/charts/adminDashboard'
+import usersTableSchema from '@/config/tables/usersSchema'
+import requestsTableSchema from '@/config/tables/requestsSchema'
+
+import users from '@/functions/users'
 
 export default {
   name: 'Admin',
-  components: { Chart },
+  components: { ChartLines, Chart },
+  setup (props, { root }) {
+
+    return {
+      goToUser: users(root).goToUser
+    }
+  },
   data () {
     return {
-      fakeTableData: [
-        {
-          name: 'Mario Rossi',
-          email: 'mario.rossi@email.com'
-        },
-        {
-          name: 'Mario Rossi',
-          email: 'mario.rossi@email.com'
-        }, {
-          name: 'Mario Rossi',
-          email: 'mario.rossi@email.com'
-        },
-        {
-          name: 'Mario Rossi',
-          email: 'mario.rossi@email.com'
-        }, {
-          name: 'Mario Rossi',
-          email: 'mario.rossi@email.com'
-        }, {
-          name: 'Mario Rossi',
-          email: 'mario.rossi@email.com'
+      pendingRequests,
+      adminDashboardChart
+    }
+  },
+  computed: {
+    usersTableHeaders () {
+      return usersTableSchema(this).headers.filter(col => {
+        if (col.value !== 'actions') {
+          return true
         }
-      ]
+      })
+    },
+    requestsTableHeaders () {
+      return requestsTableSchema(this).headers.filter(col => {
+        if (col.value !== 'actions') {
+          return true
+        }
+      })
+    },
+    pendingUsers () {
+      return pendingUsers.map(group => group.data[0])
+    },
+    chartsAdminDataset () {
+      return adminDashboardChart.datasets.map(set => {
+        set.label = this.$t(set.label)
+
+        return set
+      })
     }
   }
 }

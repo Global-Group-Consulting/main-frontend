@@ -30,7 +30,10 @@
               </template>
 
               <template v-slot:item.requestAmount="{ item }">
-                {{ $options.filters.moneyFormatter(item.requestAmount) }}
+                <span :class="getAmountClass(getAmountSign(item.requestType))">
+                  {{ getAmountSign(item.requestType) }}
+                  € {{ $options.filters.moneyFormatter(item.requestAmount) }}
+                </span>
               </template>
 
               <template v-slot:item.requestDate="{ item }">
@@ -59,7 +62,10 @@
               @click:row="onRowClick"
             >
               <template v-slot:item.requestAmount="{ item }">
-                {{ $options.filters.moneyFormatter(item.requestAmount) }}
+                <span :class="getAmountClass(getAmountSign(item.requestType))">
+                  {{ getAmountSign(item.requestType) }}
+                  € {{ $options.filters.moneyFormatter(item.requestAmount) }}
+                </span>
               </template>
 
               <template v-slot:item.requestDate="{ item }">
@@ -88,7 +94,10 @@
               @click:row="onRowClick"
             >
               <template v-slot:item.requestAmount="{ item }">
-                {{ $options.filters.moneyFormatter(item.requestAmount) }}
+                <span :class="getAmountClass(getAmountSign(item.requestType))">
+                  {{ getAmountSign(item.requestType) }}
+                  € {{ $options.filters.moneyFormatter(item.requestAmount) }}
+                </span>
               </template>
 
               <template v-slot:item.requestDate="{ item }">
@@ -115,6 +124,8 @@
 
 <script>
 import { requests } from '~/assets/fakeRichieste'
+
+import requestsSchema from '@/config/tables/requestsSchema'
 
 import PageHeader from '@/components/blocks/PageHeader'
 import CrudActions from '@/components/table/RequestsCrudAction'
@@ -144,27 +155,18 @@ export default {
     }
   },
   methods: {
+    getAmountSign (requestType) {
+      return [this.$enums.RequestTypes['VERSAMENTO'],
+        this.$enums.RequestTypes['INTERESSI']].includes(requestType) ? '+' : '-'
+    },
+    getAmountClass (sign) {
+      const minus = 'red--text'
+      const plus = 'green--text'
+
+      return sign === '-' ? minus : plus
+    },
     getTableHeaders (includeCrud) {
-      const columns = [
-        { text: 'Importo', value: 'requestAmount' },
-        { text: 'Tipo', value: 'requestType' },
-        { text: 'Data richiesta', value: 'requestDate' },
-        { text: 'Data lavorazione', value: 'data_update' },
-      ]
-
-      if (includeCrud && this.canEdit) {
-        columns.push(
-          { text: 'Utente', value: 'user_id' },
-          {
-            text: '',
-            value: 'actions',
-            sortable: false,
-            align: 'center',
-            width: '1%',
-          })
-      }
-
-      return columns
+      return requestsSchema(this).headers
     },
     onRowClick (row) {
       const userId = row.user_id
@@ -175,8 +177,10 @@ export default {
         data: row
       })
     },
-    getTipoRichiesta (id) {
-      return this.$enums.RequestTypes.get(id).text
+    getTipoRichiesta (_id) {
+      const id = this.$enums.RequestTypes.get(_id).id
+
+      return this.$t('enums.RequestTypes.' + id)
     },
     onNewRequest () {
       this.$store.dispatch('dialog/updateStatus', {
