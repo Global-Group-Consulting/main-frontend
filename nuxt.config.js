@@ -89,4 +89,8 @@ export default {
   router: {
     middleware: 'storeFetch'
   },
+
+  serverMiddleware: [
+    { path: '/api', handler: '~/server/index.js' }
+  ]
 }

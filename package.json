@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "nuxt",
-    "staging": "concurrently 'node ./express.server.js' 'nuxt'",
+    "staging": "nuxt",
     "build": "nuxt build",
-    "start": "concurrently 'node ./express.server.js' 'nuxt start'",
+    "start": "nuxt start",
     "generate": "nuxt generate"
   },
   "dependencies": {
