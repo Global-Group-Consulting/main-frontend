@@ -4,10 +4,16 @@ export default {
     local: {
       // autoFetchUser: false,
       endpoints: {
-        login: { url: '/api/auth/login', method: 'post', propertyName: 'data' },
+        login: { url: '/api/auth/login', method: 'post', propertyName: 'token' },
         logout: { url: '/api/auth/logout', method: 'delete' },
         user: { url: '/api/auth/user', method: 'get' }
       }
     }
   },
+  redirect: {
+    login: '/login',
+    logout: '/login',
+    callback: '/login',
+    home: '/'
+  }
 }

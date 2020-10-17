@@ -1,5 +1,5 @@
 import Swal from 'sweetalert2/dist/sweetalert2.js'
-import Vue  from 'vue'
+import Vue from 'vue'
 
 class Alerts {
   constructor (i18n) {
@@ -14,9 +14,9 @@ class Alerts {
     }
 
     const defaultSettings = {
-      title:             'Operazione eseguita correttamente!',
-      text:              '',
-      icon:              'success',
+      title: 'Operazione eseguita correttamente!',
+      text: '',
+      icon: 'success',
       confirmButtonText: 'Chiudi'
     }
 
@@ -36,16 +36,16 @@ class Alerts {
 
     let text = this.i18n.t('errors.default')
 
-    if (errData && errData.message) {
+    if (errData && errData.message && this.i18n.te('errors.' + errData.message)) {
       text = this.i18n.t('errors.' + errData.message)
     } else if (errData && errData.error) {
       text += '<br>' + JSON.stringify(errData.error)
     }
 
     const defaultSettings = {
-      title:             this.i18n.t('errors.title'),
-      html:              text,
-      icon:              'error',
+      title: this.i18n.t('errors.title'),
+      html: text,
+      icon: 'error',
       confirmButtonText: this.i18n.t('errors.closeBtn')
     }
 
@@ -56,12 +56,12 @@ class Alerts {
 
   async ask (settings = {}) {
     const defaultSettings = {
-      title:             '',
-      text:              '',
-      icon:              'question',
+      title: '',
+      text: '',
+      icon: 'question',
       confirmButtonText: 'Si',
-      cancelButtonText:  'No',
-      showCancelButton:  true,
+      cancelButtonText: 'No',
+      showCancelButton: true,
       allowOutsideClick: false
     }
 
@@ -82,14 +82,14 @@ class Alerts {
    * @return {Promise<void>}
    */
   async askBeforeAction (options) {
-    const title             = this.i18n.t(`alerts.${key}-title`, options.data)
-    const html              = this.i18n.t(`alerts.${key}-text`, options.data)
+    const title = this.i18n.t(`alerts.${key}-title`, options.data)
+    const html = this.i18n.t(`alerts.${key}-text`, options.data)
     const confirmButtonText = this.i18n.t(`alerts.${key}-confirmBtnText`)
-    const cancelButtonText  = this.i18n.t(`alerts.${key}-cancelBtnText`)
+    const cancelButtonText = this.i18n.t(`alerts.${key}-cancelBtnText`)
 
     const askSettings = {
       title: title,
-      text:  html
+      text: html
     }
 
     confirmButtonText && (askSettings['confirmButtonText'] = confirmButtonText)

@@ -59,11 +59,12 @@ export default {
   name: 'login',
   components: { DynamicFieldset, DefaultPanel },
   layout: 'public',
+  middleware: ['auth'],
   data () {
     return {
       formData: {
         email: 'mario.rossi@gmail.com',
-        password: 'mario.rossi',
+        password: 'password',
         role: 4
       },
       formValid: true,

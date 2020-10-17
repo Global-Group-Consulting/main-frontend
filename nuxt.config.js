@@ -1,5 +1,3 @@
-import colors from 'vuetify/es5/util/colors'
-
 import nuxtAxios from './config/nuxtAxios'
 import nuxtAuth from './config/nuxtAuth'
 import nuxtI18n from './config/nuxtI18n'
@@ -37,7 +35,9 @@ export default {
   /*
   ** Global CSS
   */
-  css: [],
+  css: [
+    '~/assets/main.scss'
+  ],
   /*
   ** Plugins to load before mounting the App
   ** https://nuxtjs.org/guide/plugins
@@ -91,6 +91,6 @@ export default {
   },
 
   serverMiddleware: [
-    { path: '/api', handler: '~/server/index.js' }
+    // { path: '/api', handler: '~/server/index.js' }
   ]
 }

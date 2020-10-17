@@ -55,7 +55,7 @@ export default {
       this.drawerModel = !this.drawerModel
     },
     async logout () {
-      await this.$auth.logout()
+      await this.$auth.logout("local")
     }
   }
 }
