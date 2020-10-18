@@ -13,8 +13,6 @@
 
 <script>
 
-import pageMeta from '@/mixins/pageMeta'
-
 import Admin from '@/components/hompage/Admin'
 import Cliente from '@/components/hompage/Cliente'
 import Agente from '@/components/hompage/Agente'
@@ -25,11 +23,8 @@ import PageHeader from '@/components/blocks/PageHeader'
 export default {
   components: { PageHeader, Admin, Cliente, Agente, ServClienti },
   middleware: 'auth',
-  mixins: [pageMeta],
   data () {
-    return {
-
-    }
+    return {}
   },
   computed: {
     userPage () {

@@ -1,11 +1,35 @@
-export function basicData (context) {
+import DocumentTypes from '@/enums/DocumentTypes'
+import PersonTypes from '@/enums/PersonTypes'
+import UserRoles from '@/enums/UserRoles'
+import Genders from '@/enums/Genders'
+
+import moment from 'moment'
+
+/**
+ * @typedef FormContext
+ * @type {{}}
+ *
+ * @property {Boolean} userIsNew
+ * @property {Number} userRole
+ * @property {Boolean} userIsPersonaGiuridica
+ * @property {Boolean} userBirthItaly
+ * @property {Boolean} userBusinessItaly
+ * @property {Boolean} userLegalReprItaly
+ * @property {Boolean} showReferenceAgent
+ */
+
+/**
+ *
+ * @param {FormContext} formContext
+ */
+export function basicData (formContext) {
   return [
     {
       cols: {
         'personType': {
           component: 'v-select',
-          disabled: context.userCheckingData,
-          items: context.$enums.PersonTypes,
+          disabled: formContext.userCheckingData,
+          items: PersonTypes,
           validations: {
             required: {}
           }
@@ -13,14 +37,14 @@ export function basicData (context) {
       }
     },
     {
-      if: context.personaGiuridica,
+      if: formContext.userIsPersonaGiuridica,
       cols: {
         'businessName': {},
         'vatNumber': {}
       }
     },
     {
-      legend: context.personaGiuridica ? 'legal-representative' : '',
+      legend: formContext.userIsPersonaGiuridica ? 'legal-representative' : '',
       cols: {
         'firstName': {
           validations: {
@@ -39,12 +63,12 @@ export function basicData (context) {
         },
         'gender': {
           component: 'v-select',
-          items: context.$enums.Genders
+          items: Genders
         }
       }
     },
     {
-      legend: (context.personaGiuridica ? 'legal-representative-' : '') + 'birth-date',
+      legend: (formContext.userIsPersonaGiuridica ? 'legal-representative-' : '') + 'birth-date',
       cols: {
         'birthCountry': {
           component: 'v-select',
@@ -53,12 +77,12 @@ export function basicData (context) {
         'birthProvince': {
           component: 'v-select',
           items: 'enums.provincesList',
-          if: context.formData.birthCountry === 'IT'
+          if: formContext.userBirthItaly
         },
         'birthCity': {},
         'birthDate': {
           'component': 'date-picker',
-          'initial-date': context.$moment().subtract(18, 'years').format('YYYY-MM-DD')
+          'initial-date': moment().subtract(18, 'years').format('YYYY-MM-DD')
         }
       }
     },
@@ -67,12 +91,12 @@ export function basicData (context) {
       cols: {
         'docType': {
           component: 'v-select',
-          items: context.$enums.DocumentTypes
+          items: DocumentTypes
         },
         'docNumber': {},
         'docExpiration': {
           'component': 'date-picker',
-          'min': context.$moment().format('YYYY-MM-DD')
+          'min': moment().format('YYYY-MM-DD')
         }
 
       }
@@ -80,10 +104,13 @@ export function basicData (context) {
   ]
 }
 
-export function addressData (context) {
+/**
+ * @param {FormContext} formContext
+ */
+export function addressData (formContext) {
   return [
     {
-      if: context.personaGiuridica,
+      if: formContext.userIsPersonaGiuridica,
       cols: {
         'businessCountry': {
           component: 'v-select',
@@ -92,12 +119,12 @@ export function addressData (context) {
         'businessRegion': {
           component: 'v-select',
           items: 'enums.regionsList',
-          if: context.formData.businessCountry === 'IT'
+          if: formContext.userBusinessItaly
         },
         'businessProvince': {
           component: 'v-select',
           items: 'enums.provincesList',
-          if: context.formData.businessCountry === 'IT'
+          if: formContext.userBusinessItaly
         },
         'businessCity': {},
         'businessZip': {},
@@ -105,7 +132,7 @@ export function addressData (context) {
       }
     },
     {
-      legend: (context.personaGiuridica ? `${context.personaGiuridica ? 'legal-representative-' : ''}` : '') + 'residence',
+      legend: (formContext.userIsPersonaGiuridica ? `${formContext.userIsPersonaGiuridica ? 'legal-representative-' : ''}` : '') + 'residence',
       cols: {
         'legalRepresentativeCountry': {
           component: 'v-select',
@@ -114,12 +141,12 @@ export function addressData (context) {
         'legalRepresentativeRegion': {
           component: 'v-select',
           items: 'enums.regionsList',
-          if: context.formData.legalRepresentativeCountry === 'IT'
+          if: formContext.userLegalReprItaly
         },
         'legalRepresentativeProvince': {
           component: 'v-select',
           items: 'enums.provincesList',
-          if: context.formData.legalRepresentativeCountry === 'IT'
+          if: formContext.userLegalReprItaly
         },
         'legalRepresentativeCity': {},
         'legalRepresentativeZip': {},
@@ -127,16 +154,18 @@ export function addressData (context) {
       }
     }
   ]
-
 }
 
-export function contactsData (context) {
+/**
+ * @param {FormContext} formContext
+ */
+export function contactsData (formContext) {
   return [
     {
       legend: 'contacts',
       cols: {
         'email': {
-          disabled: !!context.formData.contractNumber,
+          disabled: !formContext.userIsNew,
           validations: {
             required: {},
             email: {}
@@ -150,7 +179,10 @@ export function contactsData (context) {
 
 }
 
-export function contractData (context) {
+/**
+ * @param {FormContext} formContext
+ */
+export function contractData (formContext) {
   return [
     {
       cols: {
@@ -166,21 +198,24 @@ export function contractData (context) {
   ]
 }
 
-export function extraData (context) {
+/**
+ * @param {FormContext} formContext
+ */
+export function extraData (formContext) {
   return [
     {
       cols: {
         'role': {
           component: 'v-select',
-          items: context.$enums.UserRoles
+          items: UserRoles
         },
         'referenceAgent': {
-          if: context.showReferenceAgent
+          if: formContext.showReferenceAgent
         }
       }
     },
     {
-      if: !context.isNewUser,
+      if: !formContext.userIsNew,
       cols: {
         'accountCreatedAt': {
           readonly: true,
@@ -203,12 +238,15 @@ export function extraData (context) {
   ]
 }
 
-export default function (context) {
+/**
+ * @param {FormContext} formContext
+ */
+export default function (formContext) {
   return [
-    ...basicData(context),
-    ...addressData(context),
-    ...contactsData(context),
-    ...contractData(context),
-    ...extraData(context)
+    ...basicData(formContext),
+    ...addressData(formContext),
+    ...contactsData(formContext),
+    ...contractData(formContext),
+    ...extraData(formContext)
   ]
 }

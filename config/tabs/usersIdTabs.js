@@ -1,31 +1,31 @@
 import { basicData, addressData, contactsData, contractData, extraData } from '@/config/forms/usersDataSchema'
 
-export default function (context) {
+export default function (formContext) {
   return [
     {
       title: 'user-data',
       cardTitle: 'user-data',
-      schema: basicData(context)
+      schema: basicData(formContext)
     },
     {
-      title: `user-${context.personaGiuridica ? 'legal-' : ''}residence`,
-      cardTitle: `user-${context.personaGiuridica ? 'legal-' : ''}residence`,
-      schema: addressData(context)
+      title: `user-${formContext.userIsPersonaGiuridica ? 'legal-' : ''}residence`,
+      cardTitle: `user-${formContext.userIsPersonaGiuridica ? 'legal-' : ''}residence`,
+      schema: addressData(formContext)
     },
     {
       title: 'contacts',
       cardTitle: 'contacts',
-      schema: contactsData(context)
+      schema: contactsData(formContext)
     },
     {
       title: 'contract',
       cardTitle: 'contract',
-      schema: contractData(context)
+      schema: contractData(formContext)
     },
     {
       title: 'other',
       cardTitle: 'other',
-      schema: extraData(context)
+      schema: extraData(formContext)
     }
   ]
 }

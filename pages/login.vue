@@ -59,7 +59,6 @@ export default {
   name: 'login',
   components: { DynamicFieldset, DefaultPanel },
   layout: 'public',
-  middleware: ['auth'],
   data () {
     return {
       formData: {
@@ -84,7 +83,7 @@ export default {
       try {
         this.$auth.reset()
 
-        await this.$auth.loginWith('local', { data: this.formData })
+        await this.$auth.loginWith('refreshScheme', { data: this.formData })
       } catch (e) {
         this.$alerts.error(e)
       }

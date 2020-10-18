@@ -43,9 +43,11 @@ export default {
   ** https://nuxtjs.org/guide/plugins
   */
   plugins: [
-    './plugins/filters.js',
     './plugins/alerts.js',
+    './plugins/apiCalls.js',
+    './plugins/filters.js',
     './plugins/enums.js',
+    './plugins/mixins.js',
     './plugins/global-components.js',
     './plugins/vue-composition-api.js',
     './plugins/vue-portal.js',
@@ -84,10 +86,12 @@ export default {
   ** Build configuration
   ** See https://nuxtjs.org/api/configuration-build/
   */
-  build: {},
+  build: {
+    transpile: ['@nuxtjs/auth']
+  },
 
   router: {
-    middleware: 'storeFetch'
+    middleware: ['storeFetch', 'auth', 'authJWT']
   },
 
   serverMiddleware: [

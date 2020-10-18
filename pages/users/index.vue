@@ -9,13 +9,13 @@
 
       <v-row>
         <v-col cols="12"
-               v-for="(group, key) in usersGroups" :key="key">
+               v-for="{_id: key, data:group} in usersGroups" :key="key">
           <v-card dark
-                  :color="$enums.UserRoles.get(key).color">
-            <v-card-title>{{ $enums.UserRoles.get(key).text }}</v-card-title>
+                  :color="getUerRoleData(key).color">
+            <v-card-title>{{ getUerRoleData(key).text }}</v-card-title>
             <v-data-table
               light
-              :headers="usersTable.headers"
+              :headers="getTableHeaders(key)"
               :items="group"
               :items-per-page="10"
               @click:row="onRowClick($event._id)"
@@ -93,25 +93,24 @@
 
 <script>
 import PageHeader from '@/components/blocks/PageHeader'
-import usersTable from '@/config/tables/usersSchema'
-import fakeUsers from '@/assets/fakeUsers'
 import UsersCrudActions from '@/components/table/UsersCrudActions'
-
+import usersPage from '@/functions/usersPage'
 import pageBasic from '@/functions/pageBasic'
+import { onMounted } from '@vue/composition-api'
 
 export default {
   name: 'index',
   components: { UsersCrudActions, PageHeader },
   setup (props, { root }) {
-    const pageData = pageBasic(root, 'users')
+    const usersPageData = usersPage(root)
 
-    function goToUser (userId) {
-      root.$router.push('/users/' + userId)
-    }
+    onMounted(async () => {
+      usersPageData.usersGroups.value = await usersPageData.fetchAllUsers()
+    })
 
     return {
-      ...pageData,
-      onRowClick: goToUser
+      ...usersPageData,
+      ...pageBasic(root, 'users')
     }
   },
   data () {
@@ -120,43 +119,6 @@ export default {
       floatingBtn: false
     }
   },
-  computed: {
-    usersTable,
-    usersGroups () {
-      const data = {
-        admin: [],
-        servClienti: [],
-        agente: [],
-        cliente: []
-      }
-
-      // if the user is agent, can see only his clients
-      if (this.$auth.user.role === this.$enums.UserRoles.AGENTE) {
-        return {
-          cliente: this.rawUsersGroups.reduce((acc, el) => {
-            acc.push(...el.data)
-
-            return acc
-          }, [])
-        }
-      }
-
-      for (let group of this.rawUsersGroups) {
-        const groupId = this.$enums.UserRoles.get(group._id.role).id
-
-        data[groupId] = group.data
-      }
-
-      return data
-    },
-  },
-  methods: {},
-  created () {
-    // const {data} = await context.$axios.get('/api/users/getAll')
-
-    // this.rawUsersGroups = data
-    this.rawUsersGroups = fakeUsers
-  }
 }
 </script>
 

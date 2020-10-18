@@ -7,7 +7,7 @@
         :icon="icon"
       ></page-header>
 
-      <v-toolbar v-if="formData.contractNumber" class="mb-5">
+      <v-toolbar v-if="!userIsNew" class="mb-5">
         <v-toolbar-items class="flex-fill">
           <tooltip-btn :tooltip="$t('pages.usersId.btn-go-back-tooltip')"
                        icon
@@ -46,12 +46,12 @@
       <v-form>
         <v-card>
           <v-tabs v-model="currentTab"
-                  :background-color="(this.$enums.UserRoles.get(formData.role) || {}).color"
+                  :background-color="(this.$enums.UserRoles.get(userRole)).color"
                   center-active
                   dark
                   show-arrows
           >
-            <v-tab v-for="(section, index) in usersIdTabs"
+            <v-tab v-for="(section, index) in formTabs"
                    :key="index"
                    :title="'pages.usersId.tabs.' + section.title">
               {{ $t('pages.usersId.tabs.' + section.title) }}
@@ -60,13 +60,13 @@
 
           <div>
             <v-tabs-items v-model="currentTab">
-              <v-tab-item v-for="(tab, index) in usersIdTabs"
+              <v-tab-item v-for="(tab, index) in formTabs"
                           :key="index">
                 <v-card elevation="0">
                   <v-card-title>{{ $t('pages.usersId.tabs.' + tab.cardTitle) }}</v-card-title>
                   <v-card-text>
                     <dynamic-fieldset
-                      :schema="getSchema(tab)"
+                      :schema="getFormSchema(tab)"
                       v-model="formData"
                       :ref="'dynamicForm_' + index"
                       @status="saveStatus(tab.schema, $event)"
@@ -83,9 +83,9 @@
                 {{ $t('pages.usersId.btn-previous') }}
               </v-btn>
               <v-spacer></v-spacer>
-              <v-btn :color="currentTab < usersIdTabs.length - 1 ? 'primary' : 'success'"
-                     @click="currentTab < usersIdTabs.length - 1 ? goNext() : onSaveClick()">
-                {{ $t(`pages.usersId.btn-${currentTab < usersIdTabs.length - 1 ? 'next' : 'save'}`) }}
+              <v-btn :color="currentTab < formTabs.length - 1 ? 'primary' : 'success'"
+                     @click="currentTab < formTabs.length - 1 ? goNext() : onSaveClick()">
+                {{ $t(`pages.usersId.btn-${currentTab < formTabs.length - 1 ? 'next' : 'save'}`) }}
               </v-btn>
             </v-card-actions>
           </div>
@@ -123,26 +123,54 @@
 </template>
 
 <script>
-import fakeUsers from '@/assets/fakeUsers'
-
 import PageHeader from '@/components/blocks/PageHeader'
-import usersIdTabs from '@/config/usersIdTabs'
 import DynamicFieldset from '@/components/DynamicFieldset'
 import UserMessage from '@/components/dialogs/UserMessage'
+
+import { onMounted, reactive, ref, computed } from '@vue/composition-api'
+
+import userDetails from '@/functions/userDetails'
+import pageBasic from '@/functions/pageBasic'
+import usersForm from '@/functions/usersForm'
 
 export default {
   name: '_id',
   components: { UserMessage, DynamicFieldset, PageHeader },
-  data () {
+  setup (props, { root }) {
+    const { $apiCalls, $alerts, $route } = root
+    const currentTab = ref(0)
+    const editMode = ref(true)
+    const userForm = usersForm(root)
+
+    onMounted(async () => {
+      try {
+        userForm.formData.value = await $apiCalls.fetchUserDetails($route.params.id)
+      } catch (er) {
+        $alerts.error(er)
+      }
+    })
+
+    const getFormSchema = function (tab) {
+      const schema = userForm.formTabs[tab.schema]
+
+      if (!schema) {
+        return tab.schema
+      }
+
+      return schema
+    }
+
     return {
-      formData: {},
-      currentTab: 0,
-      editMode: true
+      currentTab,
+      editMode,
+      getFormSchema,
+      ...userForm,
+      ...userDetails(root),
+      ...pageBasic(root, 'users')
     }
   },
   computed: {
-    usersIdTabs,
-    icon () {
+    /*icon () {
       if (this.formData.contractNumber) {
         return 'mdi-account'
       }
@@ -178,7 +206,7 @@ export default {
       return this.$t('pages.usersId.subtitle-new-user-with-role', {
         role: this.$enums.UserRoles.get(this.formData.role).text
       })
-    },
+    },*/
     personaGiuridica () {
       return this.formData.personType === this.$enums.PersonTypes.GIURIDICA
     },
@@ -190,15 +218,6 @@ export default {
     }
   },
   methods: {
-    getSchema (tab) {
-      const schema = this[tab.schema]
-
-      if (!schema) {
-        return tab.schema
-      }
-
-      return schema
-    },
     saveStatus () {},
     goNext () {
       this.currentTab += 1
@@ -206,28 +225,12 @@ export default {
     goBack () {
       this.currentTab -= 1
     },
-    onSaveClick () {},
     onSendEmail () {
       this.$store.dispatch('dialog/updateStatus', {
         title: this.$t('dialogs.userMessage.title')
       })
     }
   },
-  created () {
-    const userId = this.$route.params.id
-
-    if (userId === 'new') {
-      return
-    }
-
-    const usersList = fakeUsers.reduce((acc, group) => {
-      acc.push(...group.data)
-
-      return acc
-    }, [])
-
-    this.formData = usersList.find(user => user._id === userId)
-  }
 }
 </script>
 
