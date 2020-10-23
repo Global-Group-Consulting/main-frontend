@@ -185,6 +185,7 @@ export default {
     onNewRequest () {
       this.$store.dispatch('dialog/updateStatus', {
         title: '',
+        readonly: false,
         data: {}
       })
     }

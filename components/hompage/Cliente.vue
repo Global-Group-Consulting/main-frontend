@@ -4,10 +4,12 @@
                        class="mb-5"
     />
 
-    <v-row dense>
+    <dashboard-blocks></dashboard-blocks>
+
+    <div style="width: 100%; gap: 14px" class="d-flex">
       <v-card
-        width="100%"
-        class="text-center mb-5"
+        width="70%"
+        class="text-center my-5"
       >
         <v-card-text>
           <chart-lines
@@ -16,7 +18,21 @@
           />
         </v-card-text>
       </v-card>
-    </v-row>
+
+      <v-card class="my-5" width="30%">
+        <v-card-text class="d-flex">
+          <a href="/GGM_7_dash.pdf" target="_blank"
+             style="width: 100%">
+            <v-img src="/GGM_7_dash.jpg"
+                   width="100%"
+                   contain
+                   class=""
+            ></v-img>
+          </a>
+        </v-card-text>
+
+      </v-card>
+    </div>
   </div>
 </template>
 
@@ -26,10 +42,11 @@ import { mapGetters } from 'vuex'
 import Grafico from '@/components/charts/Grafico'
 import ActivationWizard from '@/components/hompage/activationWizard/ActivationWizard'
 import clientDashboardChart from '@/config/charts/clientDashboard'
+import DashboardBlocks from '~/components/DashboardBlocks'
 
 export default {
   name: 'Cliente',
-  components: { Grafico, ActivationWizard },
+  components: { DashboardBlocks, Grafico, ActivationWizard },
   data () {
     return { clientDashboardChart }
   },

@@ -2,7 +2,6 @@
   <div>
     <page-header
       :title="pageTitle"
-      :subtitle="pageSubtitle"
       :icon="pageIcon"
       show-user-role
     ></page-header>

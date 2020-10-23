@@ -15,7 +15,8 @@
                      class="italic">({{ $t('enums.UserRoles.' + userRole) }})</small>
             </h1>
           </div>
-          <h3 v-html="subtitle" v-if="subtitle" class="display-1 font-weight-light white--text"
+          <h3 v-html="subtitle" v-if="subtitle"
+              class="display-1 font-weight-light white--text"
               style="opacity: .5;"></h3>
         </v-row>
       </v-col>
