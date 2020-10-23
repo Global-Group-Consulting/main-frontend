@@ -71,9 +71,17 @@ export default {
   name: 'Admin',
   components: { ChartLines, Chart },
   setup (props, { root }) {
+    const usersTableHeaders = computed(() => {
+      return usersTableSchema.headers.filter(col => {
+        if (col.value !== 'actions') {
+          return true
+        }
+      })
+    })
 
     return {
-      goToUser: users(root).goToUser
+      goToUser: users(root).goToUser,
+      usersTableHeaders
     }
   },
   data () {
@@ -83,13 +91,7 @@ export default {
     }
   },
   computed: {
-    usersTableHeaders () {
-      return usersTableSchema(this).headers.filter(col => {
-        if (col.value !== 'actions') {
-          return true
-        }
-      })
-    },
+
     requestsTableHeaders () {
       return requestsTableSchema(this).headers.filter(col => {
         if (col.value !== 'actions') {

@@ -1,9 +1,9 @@
 <template>
   <div>
     <page-header
-      :title="pageTitle"
-      :subtitle="pageSubtitle"
-      :icon="pageIcon"
+      :title="title"
+      :subtitle="subtitle"
+      :icon="icon"
       show-user-role
     ></page-header>
 
@@ -19,10 +19,18 @@ import Agente from '@/components/hompage/Agente'
 import ServClienti from '@/components/hompage/ServClienti'
 
 import PageHeader from '@/components/blocks/PageHeader'
+import pageBasic from '~/functions/pageBasic'
 
 export default {
   components: { PageHeader, Admin, Cliente, Agente, ServClienti },
   middleware: 'auth',
+
+  setup (props, { root }) {
+
+    return {
+      ...pageBasic(root, 'index')
+    }
+  },
   data () {
     return {}
   },
