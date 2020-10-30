@@ -22,7 +22,7 @@ import moment from 'moment'
  *
  * @param {FormContext} formContext
  */
-export function basicData (formContext) {
+export function basicData(formContext) {
   return [
     {
       cols: {
@@ -107,7 +107,7 @@ export function basicData (formContext) {
 /**
  * @param {FormContext} formContext
  */
-export function addressData (formContext) {
+export function addressData(formContext) {
   return [
     {
       if: formContext.userIsPersonaGiuridica,
@@ -159,7 +159,7 @@ export function addressData (formContext) {
 /**
  * @param {FormContext} formContext
  */
-export function contactsData (formContext) {
+export function contactsData(formContext) {
   return [
     {
       legend: 'contacts',
@@ -176,13 +176,12 @@ export function contactsData (formContext) {
       }
     }
   ]
-
 }
 
 /**
  * @param {FormContext} formContext
  */
-export function contractData (formContext) {
+export function contractData(formContext) {
   return [
     {
       cols: {
@@ -201,7 +200,7 @@ export function contractData (formContext) {
 /**
  * @param {FormContext} formContext
  */
-export function extraData (formContext) {
+export function extraData(formContext) {
   return [
     {
       cols: {
@@ -241,12 +240,10 @@ export function extraData (formContext) {
 /**
  * @param {FormContext} formContext
  */
-export default function (formContext) {
-  return [
-    ...basicData(formContext),
-    ...addressData(formContext),
-    ...contactsData(formContext),
-    ...contractData(formContext),
-    ...extraData(formContext)
-  ]
+export default {
+  basicData,
+  addressData,
+  contactsData,
+  contractData,
+  extraData
 }

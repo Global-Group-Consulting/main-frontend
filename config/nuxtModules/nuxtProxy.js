@@ -11,5 +11,7 @@ export default {
     target: process.env.PROVINCES_API_URL,
     pathRewrite: { '^/enum.*': '' }
   },
-  '/api': process.env.API_URL
+  '/api': {
+    target: process.env.API_URL
+  }
 }

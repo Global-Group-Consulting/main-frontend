@@ -1,9 +1,9 @@
-import nuxtAxios from './config/nuxtAxios'
-import nuxtAuth from './config/nuxtAuth'
-import nuxtI18n from './config/nuxtI18n'
-import nuxtMoment from './config/nuxtMoment'
-import nuxtProxy from './config/nuxtProxy'
-import nuxtVuetify from './config/nuxtVuetify'
+import nuxtAxios from './config/nuxtModules/nuxtAxios'
+import nuxtAuth from './config/nuxtModules/nuxtAuth'
+import nuxtI18n from './config/nuxtModules/nuxtI18n'
+import nuxtMoment from './config/nuxtModules/nuxtMoment'
+import nuxtProxy from './config/nuxtModules/nuxtProxy'
+import nuxtVuetify from './config/nuxtModules/nuxtVuetify'
 
 export default {
   /*

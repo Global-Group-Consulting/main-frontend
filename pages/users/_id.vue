@@ -142,6 +142,7 @@ export default {
     const editMode = ref(true)
     const userForm = usersForm(root)
 
+    // fetches user details
     onMounted(async () => {
       try {
         userForm.formData.value = await $apiCalls.fetchUserDetails($route.params.id)
@@ -150,8 +151,9 @@ export default {
       }
     })
 
+
     const getFormSchema = function (tab) {
-      const schema = userForm.formTabs[tab.schema]
+      const schema = userForm.formSchemas[tab.schema]
 
       if (!schema) {
         return tab.schema
@@ -207,15 +209,15 @@ export default {
         role: this.$enums.UserRoles.get(this.formData.role).text
       })
     },*/
-    personaGiuridica () {
+    /* personaGiuridica () {
       return this.formData.personType === this.$enums.PersonTypes.GIURIDICA
-    },
-    showReferenceAgent () {
+    }, */
+    /* showReferenceAgent () {
       return [this.$enums.UserRoles.CLIENTE, this.$enums.UserRoles.AGENTE].includes(this.formData.role)
-    },
-    isNewUser () {
+    }, */
+    /* isNewUser () {
       return !this.formData.contractNumber
-    }
+    } */
   },
   methods: {
     saveStatus () {},

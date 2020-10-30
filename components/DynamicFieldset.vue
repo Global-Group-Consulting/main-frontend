@@ -1,6 +1,6 @@
 <template>
   <div class="dynamic-fieldset">
-    <div v-for="(row, index) in schema"
+    <div v-for="(row, index) in schema.value"
          :key="index"
          v-if="row.hasOwnProperty('if') ? row.if : true">
 
@@ -57,7 +57,7 @@ export default {
   mixins: [validationMixin],
   validations () {
     return {
-      form: validationRules(this.schema)
+      form: validationRules(this.schema.value)
     }
   },
   props: {
@@ -155,7 +155,7 @@ export default {
     }
   },
   created () {
-    for (let { cols } of this.schema) {
+    for (let { cols } of this.schema.value) {
       for (let name in cols) {
         this.$set(this.form, name, this.value[name])
       }
