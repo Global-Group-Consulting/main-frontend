@@ -41,6 +41,12 @@ class ApiCalls extends BasicApiCall {
     })
     )
   }
+
+  async dashboardData() {
+    return await this.get({
+      endPoint: "/api/dashboards"
+    })
+  }
 }
 
 export default (context, inject) => {

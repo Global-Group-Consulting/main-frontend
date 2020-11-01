@@ -5,6 +5,7 @@ export default {
   'email': { text: 'tables.email', value: 'email' },
   'accountStatus': { text: 'tables.account-status', value: 'account_status' },
   'referenceAgent': { text: 'tables.reference-agent', value: 'referenceAgent' },
+  'validatedAt': { text: 'tables.validated-at', value: 'validated_at' },
   'actions': {
     value: 'actions',
     sortable: false,

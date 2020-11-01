@@ -45,6 +45,8 @@ export default {
     'btn-next': 'Avanti',
     'btn-save': 'Salva modifiche',
     'btn-previous': 'Indietro',
+    'btn-approve': 'Approva',
+    'btn-approve-tooltip': 'Approva l\'attivazione dell\'account',
 
     tabs: {
       'user-data': 'Dati Utente',

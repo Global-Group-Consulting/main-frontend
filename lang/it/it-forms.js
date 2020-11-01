@@ -2,7 +2,7 @@ export default {
   'activated-at': 'Account attivato il',
   'created-at': 'Account registrato il',
   'updated-at': 'Account aggiornato il',
-  'verified-at': 'Account verificato il',
+  'validated-at': 'Account verificato il',
   'birth-city': 'Città di nascita',
   'birth-date': 'Data di nascita',
   'birth-country': 'Nazione di nascita',

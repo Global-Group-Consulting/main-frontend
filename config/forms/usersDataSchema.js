@@ -252,7 +252,7 @@ export function extraData(formContext) {
           disabled: true,
           formatter: 'dateHourFormatter'
         },
-        'verified_at': {
+        'validated_at': {
           disabled: true,
           formatter: 'dateHourFormatter'
         },

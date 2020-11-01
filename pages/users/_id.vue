@@ -19,6 +19,16 @@
 
           <v-spacer></v-spacer>
 
+          <tooltip-btn
+            :tooltip="$t('pages.usersId.btn-approve-tooltip')"
+            icon-name="mdi-check"
+            color="green"
+            text
+            v-if="formData.account_status === $enums.AccountStatuses.VALIDATED"
+          >
+            {{ $t("pages.usersId.btn-approve") }}
+          </tooltip-btn>
+
           <!-- <tooltip-btn
             :tooltip="$t('pages.usersId.btn-send-activation-email-tooltip')"
             icon-name="mdi-at"
@@ -235,51 +245,51 @@
     },
     computed: {
       /*icon () {
-                                            if (this.formData.contractNumber) {
-                                              return 'mdi-account'
-                                            }
+                                                  if (this.formData.contractNumber) {
+                                                    return 'mdi-account'
+                                                  }
 
-                                            return 'mdi-account-plus'
-                                          },
-                                          title () {
-                                            if (this.formData.contractNumber) {
-                                              return this.$t('pages.usersId.title')
-                                            }
+                                                  return 'mdi-account-plus'
+                                                },
+                                                title () {
+                                                  if (this.formData.contractNumber) {
+                                                    return this.$t('pages.usersId.title')
+                                                  }
 
-                                            const userRole = this.formData.role
+                                                  const userRole = this.formData.role
 
-                                            if (!userRole) {
-                                              return this.$t('pages.usersId.title-new-user')
-                                            }
+                                                  if (!userRole) {
+                                                    return this.$t('pages.usersId.title-new-user')
+                                                  }
 
-                                            return this.$t('pages.usersId.title-new-with-role', {
-                                              role: this.$enums.UserRoles.get(this.formData.role || '').text
-                                            })
-                                          },
-                                          subtitle () {
-                                            if (this.formData.contractNumber) {
-                                              return ''
-                                            }
+                                                  return this.$t('pages.usersId.title-new-with-role', {
+                                                    role: this.$enums.UserRoles.get(this.formData.role || '').text
+                                                  })
+                                                },
+                                                subtitle () {
+                                                  if (this.formData.contractNumber) {
+                                                    return ''
+                                                  }
 
-                                            const userRole = this.formData.contractNumber
+                                                  const userRole = this.formData.contractNumber
 
-                                            if (!userRole) {
-                                              return this.$t('pages.usersId.subtitle-new-user')
-                                            }
+                                                  if (!userRole) {
+                                                    return this.$t('pages.usersId.subtitle-new-user')
+                                                  }
 
-                                            return this.$t('pages.usersId.subtitle-new-user-with-role', {
-                                              role: this.$enums.UserRoles.get(this.formData.role).text
-                                            })
-                                          },*/
+                                                  return this.$t('pages.usersId.subtitle-new-user-with-role', {
+                                                    role: this.$enums.UserRoles.get(this.formData.role).text
+                                                  })
+                                                },*/
       /* personaGiuridica () {
-                                            return this.formData.personType === this.$enums.PersonTypes.GIURIDICA
-                                          }, */
+                                                  return this.formData.personType === this.$enums.PersonTypes.GIURIDICA
+                                                }, */
       /* showReferenceAgent () {
-                                            return [this.$enums.UserRoles.CLIENTE, this.$enums.UserRoles.AGENTE].includes(this.formData.role)
-                                          }, */
+                                                  return [this.$enums.UserRoles.CLIENTE, this.$enums.UserRoles.AGENTE].includes(this.formData.role)
+                                                }, */
       /* isNewUser () {
-                                            return !this.formData.contractNumber
-                                          } */
+                                                  return !this.formData.contractNumber
+                                                } */
     },
     methods: {
       saveStatus() {},

@@ -10,6 +10,8 @@ export default {
   'request-amount': 'Importo',
   'pending-users-table': 'Utenti in attesa di approvazione',
   'pending-requests-table': 'Richieste da evadere',
-  'data_update': 'Ultimo aggiornamento',
+  'updated-at': 'Ultimo aggiornamento',
+  'created-at': 'Data creazione',
+  'validated-at': 'Data validazione dati',
 
 }
