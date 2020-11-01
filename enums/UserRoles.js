@@ -22,22 +22,22 @@ class UserRoles extends BasicEnum {
       },
       [this.ADMIN]: {
         id: 'admin',
-        color: 'purple',
+        color: 'deep-purple',
         bgSrc: 'mb-bg-fb-02.jpg'
       },
       [this.SERV_CLIENTI]: {
         id: 'servClienti',
-        color: 'teal',
+        color: 'purple',
         bgSrc: 'mb-bg-fb-08.png'
       },
       [this.AGENTE]: {
         id: 'agente',
-        color: 'indigo',
+        color: 'red darken-2',
         bgSrc: 'mb-bg-fb-15.png'
       },
       [this.CLIENTE]: {
         id: 'cliente',
-        color: 'grey',
+        color: 'yellow darken-3',
         bgSrc: 'mb-bg-fb-20.png'
       }
     }

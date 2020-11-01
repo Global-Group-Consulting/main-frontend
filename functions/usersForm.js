@@ -19,7 +19,7 @@ import UserRoles from '../enums/UserRoles'
 import usersTabs from '../config/tabs/usersIdTabs'
 import usersDataSchema from '../config/forms/usersDataSchema'
 
-export default function ({ $route, $apiCalls, $alerts, $router }) {
+export default function ({ $route, $apiCalls, $alerts, $router, $i18n }) {
   /**
    * @type {import('@vue/composition-api').Ref<Partial<import("../@types/UserFormData").UserDataSchema>>}
    */

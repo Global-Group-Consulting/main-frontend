@@ -19,7 +19,7 @@
 
           <v-spacer></v-spacer>
 
-          <tooltip-btn
+          <!-- <tooltip-btn
             :tooltip="$t('pages.usersId.btn-send-activation-email-tooltip')"
             icon-name="mdi-at"
             text
@@ -45,7 +45,7 @@
             v-if="!userIsNew"
           >
             {{ $t("pages.usersId.btn-send-email") }}
-          </tooltip-btn>
+          </tooltip-btn> -->
 
           <v-spacer></v-spacer>
         </v-toolbar-items>
@@ -55,7 +55,7 @@
         <v-card>
           <v-tabs
             v-model="currentTab"
-            :background-color="this.$enums.UserRoles.get(userRole).color"
+            :background-color="accentColor"
             center-active
             dark
             show-arrows
@@ -91,13 +91,15 @@
             </v-tabs-items>
 
             <v-card-actions>
-              <v-btn @click="goBack" v-if="currentTab > 0">
+              <v-btn @click="goBack" v-if="currentTab > 0" text>
+                <v-icon>mdi-chevron-left</v-icon>
                 {{ $t("pages.usersId.btn-previous") }}
               </v-btn>
               <v-spacer></v-spacer>
               <v-btn
+                dark
                 :color="
-                  currentTab < formTabs.length - 1 ? 'primary' : 'success'
+                  currentTab < formTabs.length - 1 ? accentColor : 'success'
                 "
                 @click="
                   currentTab < formTabs.length - 1 ? goNext() : onSaveClick()
@@ -110,6 +112,10 @@
                     }`
                   )
                 }}
+                <v-icon v-if="currentTab < formTabs.length - 1"
+                  >mdi-chevron-right</v-icon
+                >
+                <v-icon v-else class="ml-2">mdi-content-save</v-icon>
               </v-btn>
             </v-card-actions>
           </div>
@@ -121,7 +127,6 @@
             <template v-slot:activator="{ on }">
               <v-btn
                 slot="activator"
-                v-model="fab"
                 v-on="on"
                 color="green"
                 fixed
@@ -170,6 +175,10 @@
       );
 
       const pageData = pageBasic(root, "usersId");
+
+      const accentColor = computed(
+        () => $enums.UserRoles.get(userForm.userRole.value).color
+      );
 
       pageData.title = computed(() => {
         if (userForm.userIsNew.value) {
@@ -221,55 +230,56 @@
         ...userForm,
         ...userDetails(root),
         pageData,
+        accentColor,
       };
     },
     computed: {
       /*icon () {
-                                  if (this.formData.contractNumber) {
-                                    return 'mdi-account'
-                                  }
+                                            if (this.formData.contractNumber) {
+                                              return 'mdi-account'
+                                            }
 
-                                  return 'mdi-account-plus'
-                                },
-                                title () {
-                                  if (this.formData.contractNumber) {
-                                    return this.$t('pages.usersId.title')
-                                  }
+                                            return 'mdi-account-plus'
+                                          },
+                                          title () {
+                                            if (this.formData.contractNumber) {
+                                              return this.$t('pages.usersId.title')
+                                            }
 
-                                  const userRole = this.formData.role
+                                            const userRole = this.formData.role
 
-                                  if (!userRole) {
-                                    return this.$t('pages.usersId.title-new-user')
-                                  }
+                                            if (!userRole) {
+                                              return this.$t('pages.usersId.title-new-user')
+                                            }
 
-                                  return this.$t('pages.usersId.title-new-with-role', {
-                                    role: this.$enums.UserRoles.get(this.formData.role || '').text
-                                  })
-                                },
-                                subtitle () {
-                                  if (this.formData.contractNumber) {
-                                    return ''
-                                  }
+                                            return this.$t('pages.usersId.title-new-with-role', {
+                                              role: this.$enums.UserRoles.get(this.formData.role || '').text
+                                            })
+                                          },
+                                          subtitle () {
+                                            if (this.formData.contractNumber) {
+                                              return ''
+                                            }
 
-                                  const userRole = this.formData.contractNumber
+                                            const userRole = this.formData.contractNumber
 
-                                  if (!userRole) {
-                                    return this.$t('pages.usersId.subtitle-new-user')
-                                  }
+                                            if (!userRole) {
+                                              return this.$t('pages.usersId.subtitle-new-user')
+                                            }
 
-                                  return this.$t('pages.usersId.subtitle-new-user-with-role', {
-                                    role: this.$enums.UserRoles.get(this.formData.role).text
-                                  })
-                                },*/
+                                            return this.$t('pages.usersId.subtitle-new-user-with-role', {
+                                              role: this.$enums.UserRoles.get(this.formData.role).text
+                                            })
+                                          },*/
       /* personaGiuridica () {
-                                  return this.formData.personType === this.$enums.PersonTypes.GIURIDICA
-                                }, */
+                                            return this.formData.personType === this.$enums.PersonTypes.GIURIDICA
+                                          }, */
       /* showReferenceAgent () {
-                                  return [this.$enums.UserRoles.CLIENTE, this.$enums.UserRoles.AGENTE].includes(this.formData.role)
-                                }, */
+                                            return [this.$enums.UserRoles.CLIENTE, this.$enums.UserRoles.AGENTE].includes(this.formData.role)
+                                          }, */
       /* isNewUser () {
-                                  return !this.formData.contractNumber
-                                } */
+                                            return !this.formData.contractNumber
+                                          } */
     },
     methods: {
       saveStatus() {},

@@ -24,25 +24,37 @@
             @change="update(key, $event)"
             :ref="`comp_${key}_${index}_${fieldIndex}`"
             :error-messages="errorMessages[key]"
-            :class="{ 'edit-mode': editMode }"
-            :edit-mode="editMode"
+            :class="{ 'edit-mode': editMode && !row.disableEditMode }"
+            :edit-mode="editMode && !row.disableEditMode"
           >
             <template v-slot:label>
               {{ getLabel(key) }}
 
               <v-tooltip
                 top
-                v-if="field.validations && field.validations.required"
+                v-if="
+                  field.validations &&
+                  field.validations.required &&
+                  !(field.readonly || field.disabled)
+                "
               >
                 <template v-slot:activator="{ on }">
-                  <strong class="red--text" v-on="on" style="pointer-events: all"> * </strong>
+                  <strong
+                    class="red--text"
+                    v-on="on"
+                    style="pointer-events: all"
+                  >
+                    *
+                  </strong>
                 </template>
                 <span>{{ $t("validators.required") }}</span>
               </v-tooltip>
             </template>
 
-            <template v-slot:prepend v-if="editMode">
-              <v-checkbox></v-checkbox>
+            <template v-slot:prepend v-if="editMode && !row.disableEditMode">
+              <v-checkbox
+                :disabled="field.disabled || field.readonly"
+              ></v-checkbox>
             </template>
           </component>
         </v-col>

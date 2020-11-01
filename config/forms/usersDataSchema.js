@@ -8,6 +8,8 @@ import moment from 'moment'
 /**
  * @typedef FormContext
  *
+ * @property {{}} $auth
+ * @property {{}} $i18n
  * @property {Boolean} userIsNew
  * @property {Number} userRole
  * @property {Boolean} userIsPersonaGiuridica
@@ -27,7 +29,7 @@ export function basicData(formContext) {
       cols: {
         'personType': {
           component: 'v-select',
-          disabled: formContext.userCheckingData,
+          // disabled: formContext.userCheckingData,
           items: PersonTypes,
           validations: {
             required: {}
@@ -189,7 +191,8 @@ export function contractData(formContext) {
           if: !formContext.userIsNew
         },
         'contractDate': {
-          if: !formContext.userIsNew
+          disabled: true,
+          if: !formContext.userIsNew,
         },
         'contractPercentage': {},
         'contractIban': {},
@@ -205,10 +208,24 @@ export function contractData(formContext) {
 export function extraData(formContext) {
   return [
     {
+      disableEditMode: true,
       cols: {
         'role': {
           component: 'v-select',
-          items: UserRoles,
+          items: formContext.userIsNew ? UserRoles : UserRoles.list.filter(_role => {
+            const roleId = +UserRoles.get(_role.text).index
+            const adminRoles = [UserRoles.ADMIN, UserRoles.SERV_CLIENTI]
+
+            if (adminRoles.includes(formContext.userRole)) {
+              return adminRoles.includes(roleId)
+            } else {
+              return !adminRoles.includes(roleId)
+            }
+          }).map(entry => {
+            entry.text = formContext.$i18n.t("enums.UserRoles." + entry.text)
+
+            return entry
+          }),
           disabled: formContext.$auth.user.id === this.formData.id,
           validations: {
             required: {}
@@ -221,21 +238,22 @@ export function extraData(formContext) {
     },
     {
       if: !formContext.userIsNew,
+      disableEditMode: true,
       cols: {
-        'accountCreatedAt': {
-          readonly: true,
+        'created_at': {
+          disabled: true,
           formatter: 'dateHourFormatter'
         },
-        'accountUpdatedAt': {
-          readonly: true,
+        'updated_at': {
+          disabled: true,
           formatter: 'dateHourFormatter'
         },
-        'accountActivatedAt': {
-          readonly: true,
+        'activated_at': {
+          disabled: true,
           formatter: 'dateHourFormatter'
         },
-        'accountVerifiedAt': {
-          readonly: true,
+        'verified_at': {
+          disabled: true,
           formatter: 'dateHourFormatter'
         },
       }
