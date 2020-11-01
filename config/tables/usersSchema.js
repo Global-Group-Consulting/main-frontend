@@ -3,6 +3,7 @@ export default {
   'firstName': { text: 'tables.first-name', value: 'firstName' },
   'lastName': { text: 'tables.last-name', value: 'lastName' },
   'email': { text: 'tables.email', value: 'email' },
+  'accountStatus': { text: 'tables.account-status', value: 'account_status' },
   'referenceAgent': { text: 'tables.reference-agent', value: 'referenceAgent' },
   'actions': {
     value: 'actions',

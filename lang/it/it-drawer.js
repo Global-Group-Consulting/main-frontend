@@ -8,5 +8,10 @@ export default {
   'requests': 'Richieste',
   'utilities': 'Utilità',
   'calculator': 'Calcolatrice',
-  'comunications': 'Comunicazioni'
+  'comunications': 'Comunicazioni',
+  'advanced': "Avanzate",
+  'translations': "Traduzioni",
+  'developer': "Sviluppatore",
+  'emailStatuses': "Stato Email",
+  'errors': "Errori & Logs",
 }

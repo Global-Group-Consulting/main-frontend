@@ -5,6 +5,9 @@ export default {
   'users': {
     icon: 'mdi-account-group'
   },
+  'usersId': {
+    icon: 'mdi-account'
+  },
   'comunications': {
     icon: 'mdi-email-multiple'
   }

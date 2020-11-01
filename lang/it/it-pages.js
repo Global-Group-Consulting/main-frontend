@@ -31,7 +31,7 @@ export default {
   usersId: {
     'title': 'Anagrafica',
     'title-new-user': 'Anagrafica',
-    'title-new-with-role': 'Nuovo ${role}',
+    'title-new-with-role': 'Nuovo {role}',
     'subtitle': '',
     'subtitle-new-user': 'Creazione di un nuovo utente',
     'subtitle-new-user-with-role': 'Creazione di un nuovo utente con ruolo <strong>"${role}"</strong>',
@@ -43,7 +43,7 @@ export default {
     'btn-send-email': 'Invia comunicazione',
     'btn-send-email-tooltip': 'Invia comunicazione',
     'btn-next': 'Avanti',
-    'btn-save': 'Salva',
+    'btn-save': 'Salva modifiche',
     'btn-previous': 'Indietro',
 
     tabs: {

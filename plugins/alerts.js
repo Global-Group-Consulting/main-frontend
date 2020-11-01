@@ -1,12 +1,17 @@
 import Swal from 'sweetalert2/dist/sweetalert2.js'
+import Toasted from 'vue-toasted';
 import Vue from 'vue'
 
+import ToastedOptions from "../config/vue-toasted"
+
+Vue.use(Toasted, ToastedOptions)
+
 class Alerts {
-  constructor (i18n) {
+  constructor(i18n) {
     this.i18n = i18n
   }
 
-  success (settings = {}) {
+  success(settings = {}) {
     if (typeof settings === 'string') {
       settings = {
         title: settings
@@ -23,7 +28,7 @@ class Alerts {
     return Swal.fire(Object.assign({}, defaultSettings, settings))
   }
 
-  error (error, settings = {}) {
+  error(error, settings = {}) {
     let errData = {}
 
     if (typeof error === 'string') {
@@ -32,7 +37,7 @@ class Alerts {
 
     try {
       errData = error ? JSON.parse(error.request.response) : {}
-    } catch (e) {}
+    } catch (e) { }
 
     let text = this.i18n.t('errors.default')
 
@@ -54,7 +59,7 @@ class Alerts {
     return Swal.fire(Object.assign({}, defaultSettings, settings))
   }
 
-  async ask (settings = {}) {
+  async ask(settings = {}) {
     const defaultSettings = {
       title: '',
       text: '',
@@ -74,16 +79,13 @@ class Alerts {
 
   /**
    *
-   * @param {{}} options
-   * @param {string} options.key
-   * @param {function} options.preConfirm
-   * @param {{string}} [options.data]
+   * @param {{ key: string, preConfirm: function, data: {}, settings: {}}} options
    *
    * @return {Promise<void>}
    */
-  async askBeforeAction (options) {
-    const title = this.i18n.t(`alerts.${key}-title`, options.data)
-    const html = this.i18n.t(`alerts.${key}-text`, options.data)
+  async askBeforeAction({ key, preConfirm, data, settings }) {
+    const title = this.i18n.t(`alerts.${key}-title`, data)
+    const html = this.i18n.t(`alerts.${key}-text`, data)
     const confirmButtonText = this.i18n.t(`alerts.${key}-confirmBtnText`)
     const cancelButtonText = this.i18n.t(`alerts.${key}-cancelBtnText`)
 
@@ -96,23 +98,23 @@ class Alerts {
 
     cancelButtonText && (askSettings['cancelButtonText'] = cancelButtonText)
 
-    await this.$Alerts.ask({
+    await this.ask({
       ...askSettings,
-
+      ...settings,
       preConfirm: async () => {
         try {
-          await options.preConfirm()
+          await preConfirm()
 
           return this.toastSuccess(`${key}-success`)
         } catch (er) {
-          return this.$Alerts.error(er)
+          return this.error(er)
         }
       }
     })
   }
 
-  toastSuccess (message) {
-    Vue.toasted.success(message)
+  toastSuccess(message) {
+    Vue.toasted.success(this.i18n.t("alerts." + message))
   }
 }
 

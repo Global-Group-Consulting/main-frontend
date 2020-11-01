@@ -2,41 +2,49 @@
   <v-layout>
     <v-flex>
       <page-header
-        :title="title"
-        :subtitle="subtitle"
-        :icon="icon"
+        :title="pageData.title.value"
+        :subtitle="pageData.subtitle.value"
+        :icon="pageData.icon.value"
       ></page-header>
 
-      <v-toolbar v-if="!userIsNew" class="mb-5">
+      <v-toolbar class="mb-5">
         <v-toolbar-items class="flex-fill">
-          <tooltip-btn :tooltip="$t('pages.usersId.btn-go-back-tooltip')"
-                       icon
-                       icon-name="mdi-arrow-left"
-                       @click="$router.back()"
+          <tooltip-btn
+            :tooltip="$t('pages.usersId.btn-go-back-tooltip')"
+            icon
+            icon-name="mdi-arrow-left"
+            @click="$router.back()"
           >
           </tooltip-btn>
 
           <v-spacer></v-spacer>
 
-          <tooltip-btn :tooltip="$t('pages.usersId.btn-send-activation-email-tooltip')"
-                       icon-name="mdi-at"
-                       text
-                       v-if="!formData.accountVerifiedAt">
-            {{ $t('pages.usersId.btn-send-activation-email') }}
+          <tooltip-btn
+            :tooltip="$t('pages.usersId.btn-send-activation-email-tooltip')"
+            icon-name="mdi-at"
+            text
+            v-if="!formData.accountVerifiedAt && !userIsNew"
+          >
+            {{ $t("pages.usersId.btn-send-activation-email") }}
           </tooltip-btn>
 
-          <tooltip-btn :tooltip="$t('pages.usersId.btn-reset-password-tooltip')"
-                       icon-name="mdi-lock-reset"
-                       v-if="formData.accountVerifiedAt"
-                       text>
-            {{ $t('pages.usersId.btn-reset-password') }}
+          <tooltip-btn
+            :tooltip="$t('pages.usersId.btn-reset-password-tooltip')"
+            icon-name="mdi-lock-reset"
+            v-if="formData.accountVerifiedAt && !userIsNew"
+            text
+          >
+            {{ $t("pages.usersId.btn-reset-password") }}
           </tooltip-btn>
 
-          <tooltip-btn :tooltip="$t('pages.usersId.btn-send-email-tooltip')"
-                       icon-name="mdi-email-plus"
-                       text
-                       @click="onSendEmail">
-            {{ $t('pages.usersId.btn-send-email') }}
+          <tooltip-btn
+            :tooltip="$t('pages.usersId.btn-send-email-tooltip')"
+            icon-name="mdi-email-plus"
+            text
+            @click="onSendEmail"
+            v-if="!userIsNew"
+          >
+            {{ $t("pages.usersId.btn-send-email") }}
           </tooltip-btn>
 
           <v-spacer></v-spacer>
@@ -45,25 +53,30 @@
 
       <v-form>
         <v-card>
-          <v-tabs v-model="currentTab"
-                  :background-color="(this.$enums.UserRoles.get(userRole)).color"
-                  center-active
-                  dark
-                  show-arrows
+          <v-tabs
+            v-model="currentTab"
+            :background-color="this.$enums.UserRoles.get(userRole).color"
+            center-active
+            dark
+            show-arrows
           >
-            <v-tab v-for="(section, index) in formTabs"
-                   :key="index"
-                   :title="'pages.usersId.tabs.' + section.title">
-              {{ $t('pages.usersId.tabs.' + section.title) }}
+            <v-tab
+              v-for="(section, index) in formTabs"
+              :key="index"
+              :title="'pages.usersId.tabs.' + section.title"
+            >
+              {{ $t("pages.usersId.tabs." + section.title) }}
             </v-tab>
           </v-tabs>
 
           <div>
             <v-tabs-items v-model="currentTab">
-              <v-tab-item v-for="(tab, index) in formTabs"
-                          :key="index">
+              <v-tab-item v-for="(tab, index) in formTabs" :key="index">
                 <v-card elevation="0">
-                  <v-card-title>{{ $t('pages.usersId.tabs.' + tab.cardTitle) }}</v-card-title>
+                  <!-- <v-card-title>{{
+                    $t("pages.usersId.tabs." + tab.cardTitle)
+                  }}</v-card-title> -->
+
                   <v-card-text>
                     <dynamic-fieldset
                       :schema="getFormSchema(tab)"
@@ -78,43 +91,53 @@
             </v-tabs-items>
 
             <v-card-actions>
-              <v-btn @click="goBack"
-                     v-if="currentTab > 0">
-                {{ $t('pages.usersId.btn-previous') }}
+              <v-btn @click="goBack" v-if="currentTab > 0">
+                {{ $t("pages.usersId.btn-previous") }}
               </v-btn>
               <v-spacer></v-spacer>
-              <v-btn :color="currentTab < formTabs.length - 1 ? 'primary' : 'success'"
-                     @click="currentTab < formTabs.length - 1 ? goNext() : onSaveClick()">
-                {{ $t(`pages.usersId.btn-${currentTab < formTabs.length - 1 ? 'next' : 'save'}`) }}
+              <v-btn
+                :color="
+                  currentTab < formTabs.length - 1 ? 'primary' : 'success'
+                "
+                @click="
+                  currentTab < formTabs.length - 1 ? goNext() : onSaveClick()
+                "
+              >
+                {{
+                  $t(
+                    `pages.usersId.btn-${
+                      currentTab < formTabs.length - 1 ? "next" : "save"
+                    }`
+                  )
+                }}
               </v-btn>
             </v-card-actions>
           </div>
-
-
         </v-card>
+
         <!-- Floating action button -->
-        <!--<v-fab-transition v-if="!userIsNew">
+        <v-fab-transition v-if="!userIsNew && currentTab < formTabs.length - 1">
           <v-tooltip left>
             <template v-slot:activator="{ on }">
-              <v-btn slot="activator"
-                     v-model="fab"
-                     v-on="on"
-                     color="accent"
-                     fixed
-                     bottom
-                     right
-                     fab
-                     type="button"
-                     :loading="saving"
-                     :hidden="fetchingData"
-                     @click="onSaveClick"
+              <v-btn
+                slot="activator"
+                v-model="fab"
+                v-on="on"
+                color="green"
+                fixed
+                dark
+                bottom
+                right
+                fab
+                type="button"
+                @click="onSaveClick"
               >
                 <v-icon>mdi-content-save</v-icon>
               </v-btn>
             </template>
-            <span>Salva modifiche</span>
+            <span>{{ $t("pages.usersId.btn-save") }}</span>
           </v-tooltip>
-        </v-fab-transition>-->
+        </v-fab-transition>
       </v-form>
     </v-flex>
 
@@ -123,117 +146,155 @@
 </template>
 
 <script>
-import PageHeader from '@/components/blocks/PageHeader'
-import DynamicFieldset from '@/components/DynamicFieldset'
-import UserMessage from '@/components/dialogs/UserMessage'
+  import PageHeader from "@/components/blocks/PageHeader";
+  import DynamicFieldset from "@/components/DynamicFieldset";
+  import UserMessage from "@/components/dialogs/UserMessage";
 
-import { onMounted, reactive, ref, computed } from '@vue/composition-api'
+  import { onMounted, reactive, ref, computed } from "@vue/composition-api";
 
-import userDetails from '@/functions/userDetails'
-import pageBasic from '@/functions/pageBasic'
-import usersForm from '@/functions/usersForm'
+  import userDetails from "@/functions/userDetails";
+  import pageBasic from "@/functions/pageBasic";
+  import usersForm from "@/functions/usersForm";
 
-export default {
-  name: '_id',
-  components: { UserMessage, DynamicFieldset, PageHeader },
-  setup (props, { root }) {
-    const { $apiCalls, $alerts, $route } = root
-    const currentTab = ref(0)
-    const editMode = ref(true)
-    const userForm = usersForm(root)
+  export default {
+    name: "_id",
+    components: { UserMessage, DynamicFieldset, PageHeader },
+    setup(props, { root }) {
+      const { $apiCalls, $alerts, $route, $i18n, $enums } = root;
+      const currentTab = ref(0);
+      const userForm = usersForm(root);
+      const editMode = computed(
+        () =>
+          !userForm.userIsNew.value &&
+          userForm.userRole.value === $enums.UserRoles.CLIENTE
+      );
 
-    // fetches user details
-    onMounted(async () => {
-      try {
-        userForm.formData.value = await $apiCalls.fetchUserDetails($route.params.id)
-      } catch (er) {
-        $alerts.error(er)
-      }
-    })
+      const pageData = pageBasic(root, "usersId");
 
+      pageData.title = computed(() => {
+        if (userForm.userIsNew.value) {
+          return $i18n.t(`pages.usersId.title-new-with-role`, {
+            role: $i18n.t(
+              "enums.UserRoles." +
+                $enums.UserRoles.getIdName(userForm.userRole.value)
+            ),
+          });
+        }
 
-    const getFormSchema = function (tab) {
-      const schema = userForm.formSchemas[tab.schema]
+        return $i18n.t(`pages.usersId.title`);
+      });
 
-      if (!schema) {
-        return tab.schema
-      }
+      // fetches user details
+      onMounted(async () => {
+        const userId = $route.params.id;
 
-      return schema
-    }
+        if (userId === "new") {
+          userForm.formData.value.role =
+            +$route.query.type || $enums.UserRoles.CLIENTE;
 
-    return {
-      currentTab,
-      editMode,
-      getFormSchema,
-      ...userForm,
-      ...userDetails(root),
-      ...pageBasic(root, 'users')
-    }
-  },
-  computed: {
-    /*icon () {
-      if (this.formData.contractNumber) {
-        return 'mdi-account'
-      }
+          return;
+        }
 
-      return 'mdi-account-plus'
+        try {
+          userForm.formData.value = await $apiCalls.fetchUserDetails(
+            $route.params.id
+          );
+        } catch (er) {
+          $alerts.error(er);
+        }
+      });
+
+      const getFormSchema = function (tab) {
+        const schema = userForm.formSchemas[tab.schema];
+
+        if (!schema) {
+          return tab.schema;
+        }
+
+        return schema;
+      };
+
+      return {
+        currentTab,
+        editMode,
+        getFormSchema,
+        ...userForm,
+        ...userDetails(root),
+        pageData,
+      };
     },
-    title () {
-      if (this.formData.contractNumber) {
-        return this.$t('pages.usersId.title')
-      }
+    computed: {
+      /*icon () {
+                                  if (this.formData.contractNumber) {
+                                    return 'mdi-account'
+                                  }
 
-      const userRole = this.formData.role
+                                  return 'mdi-account-plus'
+                                },
+                                title () {
+                                  if (this.formData.contractNumber) {
+                                    return this.$t('pages.usersId.title')
+                                  }
 
-      if (!userRole) {
-        return this.$t('pages.usersId.title-new-user')
-      }
+                                  const userRole = this.formData.role
 
-      return this.$t('pages.usersId.title-new-with-role', {
-        role: this.$enums.UserRoles.get(this.formData.role || '').text
-      })
+                                  if (!userRole) {
+                                    return this.$t('pages.usersId.title-new-user')
+                                  }
+
+                                  return this.$t('pages.usersId.title-new-with-role', {
+                                    role: this.$enums.UserRoles.get(this.formData.role || '').text
+                                  })
+                                },
+                                subtitle () {
+                                  if (this.formData.contractNumber) {
+                                    return ''
+                                  }
+
+                                  const userRole = this.formData.contractNumber
+
+                                  if (!userRole) {
+                                    return this.$t('pages.usersId.subtitle-new-user')
+                                  }
+
+                                  return this.$t('pages.usersId.subtitle-new-user-with-role', {
+                                    role: this.$enums.UserRoles.get(this.formData.role).text
+                                  })
+                                },*/
+      /* personaGiuridica () {
+                                  return this.formData.personType === this.$enums.PersonTypes.GIURIDICA
+                                }, */
+      /* showReferenceAgent () {
+                                  return [this.$enums.UserRoles.CLIENTE, this.$enums.UserRoles.AGENTE].includes(this.formData.role)
+                                }, */
+      /* isNewUser () {
+                                  return !this.formData.contractNumber
+                                } */
     },
-    subtitle () {
-      if (this.formData.contractNumber) {
-        return ''
-      }
+    methods: {
+      saveStatus() {},
+      async goNext() {
+        const formValid = await this.$refs[
+          `dynamicForm_${this.currentTab}`
+        ][0].validate();
 
-      const userRole = this.formData.contractNumber
+        // If there form is invalid, don't proceed
+        if (!formValid) {
+          return;
+        }
 
-      if (!userRole) {
-        return this.$t('pages.usersId.subtitle-new-user')
-      }
-
-      return this.$t('pages.usersId.subtitle-new-user-with-role', {
-        role: this.$enums.UserRoles.get(this.formData.role).text
-      })
-    },*/
-    /* personaGiuridica () {
-      return this.formData.personType === this.$enums.PersonTypes.GIURIDICA
-    }, */
-    /* showReferenceAgent () {
-      return [this.$enums.UserRoles.CLIENTE, this.$enums.UserRoles.AGENTE].includes(this.formData.role)
-    }, */
-    /* isNewUser () {
-      return !this.formData.contractNumber
-    } */
-  },
-  methods: {
-    saveStatus () {},
-    goNext () {
-      this.currentTab += 1
+        this.currentTab += 1;
+      },
+      goBack() {
+        this.currentTab -= 1;
+      },
+      onSendEmail() {
+        this.$store.dispatch("dialog/updateStatus", {
+          title: this.$t("dialogs.userMessage.title"),
+        });
+      },
     },
-    goBack () {
-      this.currentTab -= 1
-    },
-    onSendEmail () {
-      this.$store.dispatch('dialog/updateStatus', {
-        title: this.$t('dialogs.userMessage.title')
-      })
-    }
-  },
-}
+  };
 </script>
 
 <style scoped>

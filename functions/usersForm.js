@@ -13,18 +13,21 @@
 
 import { computed, ref } from '@vue/composition-api'
 
-import usersTabs from '@/config/tabs/usersIdTabs'
-import PersonTypes from '@/enums/PersonTypes'
-import UserRoles from '@/enums/UserRoles'
-import basicData from "../config/forms/usersDataSchema"
+import PersonTypes from '../enums/PersonTypes'
+import UserRoles from '../enums/UserRoles'
+
+import usersTabs from '../config/tabs/usersIdTabs'
 import usersDataSchema from '../config/forms/usersDataSchema'
 
-export default function ({ $route }) {
+export default function ({ $route, $apiCalls, $alerts, $router }) {
   /**
    * @type {import('@vue/composition-api').Ref<Partial<import("../@types/UserFormData").UserDataSchema>>}
    */
-  const formData = ref({})
-  const userIsNew = computed(() => !$route.params.id)
+  const formData = ref({
+    role: UserRoles.CLIENTE,
+    personType: PersonTypes.FISICA
+  })
+  const userIsNew = computed(() => $route.params.id === "new" || !formData.value.id)
   const userRole = computed(() => formData.value.role)
   const userBirthItaly = computed(() => (formData.value.birthCountry || '').toLowerCase() === 'it')
   const userBusinessItaly = computed(() => (formData.value.businessCountry || '').toLowerCase() === 'it')
@@ -59,6 +62,23 @@ export default function ({ $route }) {
     return acc
   }, {})
 
+  const onSaveClick = async () => {
+    try {
+      let result
+
+      if (userIsNew.value) {
+        result = await $apiCalls.userCreate(formData.value)
+      } else {
+        result = await $apiCalls.userUpdate(formData.value)
+      }
+
+      $router.replace("/users/" + result.id)
+
+      $alerts.toastSuccess("user-update-success")
+    } catch (error) {
+      $alerts.error(error)
+    }
+  }
 
   return {
     formData,
@@ -70,6 +90,7 @@ export default function ({ $route }) {
     userBirthItaly,
     userBusinessItaly,
     userLegalReprItaly,
-    showReferenceAgent
+    showReferenceAgent,
+    onSaveClick
   }
 }

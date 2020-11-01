@@ -7,7 +7,6 @@ import moment from 'moment'
 
 /**
  * @typedef FormContext
- * @type {{}}
  *
  * @property {Boolean} userIsNew
  * @property {Number} userRole
@@ -114,7 +113,7 @@ export function addressData(formContext) {
       cols: {
         'businessCountry': {
           component: 'v-select',
-          items: 'enums.countries'
+          items: 'enums.countriesList'
         },
         'businessRegion': {
           component: 'v-select',
@@ -186,9 +185,12 @@ export function contractData(formContext) {
     {
       cols: {
         'contractNumber': {
-          disabled: true
+          disabled: true,
+          if: !formContext.userIsNew
         },
-        'contractDate': {},
+        'contractDate': {
+          if: !formContext.userIsNew
+        },
         'contractPercentage': {},
         'contractIban': {},
         'contractBic': {}
@@ -206,7 +208,11 @@ export function extraData(formContext) {
       cols: {
         'role': {
           component: 'v-select',
-          items: UserRoles
+          items: UserRoles,
+          disabled: formContext.$auth.user.id === this.formData.id,
+          validations: {
+            required: {}
+          }
         },
         'referenceAgent': {
           if: formContext.showReferenceAgent

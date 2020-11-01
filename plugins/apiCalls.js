@@ -1,25 +1,44 @@
 import { BasicApiCall } from '~/classes/BasicApiCall'
 
 class ApiCalls extends BasicApiCall {
-  constructor (context) {
+  constructor(context) {
     super(context)
   }
 
-  userUpdate () {
-
+  async userCreate(data) {
+    return await this._call({
+      method: "POST",
+      endPoint: `/api/users`,
+      body: data
+    })
   }
 
-  async fetchAllUsers () {
+  async userUpdate(data) {
+    return await this._call({
+      method: "PATCH",
+      endPoint: `/api/users/${data.id}`,
+      body: data
+    })
+  }
+
+  async userDelete(userId) {
+    return await this._call({
+      method: "DELETE",
+      endPoint: `/api/users/${userId}`
+    })
+  }
+
+  async fetchAllUsers() {
     return (await this.get({
-        endPoint: `/api/users`
-      })
+      endPoint: `/api/users`
+    })
     )
   }
 
-  async fetchUserDetails (_id) {
+  async fetchUserDetails(_id) {
     return (await this.get({
-        endPoint: `/api/users/` + _id
-      })
+      endPoint: `/api/users/` + _id
+    })
     )
   }
 }

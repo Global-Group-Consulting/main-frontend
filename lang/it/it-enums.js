@@ -1,7 +1,18 @@
 export default {
+  "AccountStatuses": {
+    "draft": "Bozza",
+    "pending_signature": "Attesa firms",
+    "pending_confirm": "Attesa conferma",
+    "created": "Creato",
+    "validated": "Validato",
+    "incomplete": "Dati incompleti",
+    "must_revalidate": "Validazione richiesta",
+    "approved": "Approvato",
+    "active": "Attivo",
+  },
   'UserRoles': {
     'superAdmin ': 'Super Admin',
-    'admin': 'Admin',
+    'admin': 'Amministrazione',
     'servClienti': 'Servizio clienti',
     'agente': 'Agente',
     'cliente': 'Cliente',

@@ -4,6 +4,7 @@ import nuxtI18n from './config/nuxtModules/nuxtI18n'
 import nuxtMoment from './config/nuxtModules/nuxtMoment'
 import nuxtProxy from './config/nuxtModules/nuxtProxy'
 import nuxtVuetify from './config/nuxtModules/nuxtVuetify'
+import nuxtVueScrollTo from './config/nuxtModules/vueScrollTo'
 
 export default {
   /*
@@ -62,7 +63,7 @@ export default {
   ** Nuxt.js dev-modules
   */
   buildModules: [
-    '@nuxtjs/vuetify',
+    ['@nuxtjs/vuetify', nuxtVuetify],
     ['@nuxtjs/moment', nuxtMoment]
   ],
   /*
@@ -72,16 +73,16 @@ export default {
     ['@nuxtjs/axios', nuxtAxios],
     ['@nuxtjs/auth', nuxtAuth],
     ['nuxt-i18n', nuxtI18n],
-    ['@nuxtjs/proxy']
+    ['@nuxtjs/proxy'],
+    ['vue-scrollto/nuxt', nuxtVueScrollTo],
   ],
 
+  /*
+  Proxy settings must be specified here, otherwise won't be read
+  if used as module settings.
+  */
   proxy: nuxtProxy,
 
-  /*
-  ** vuetify module configuration
-  ** https://github.com/nuxt-community/vuetify-module
-  */
-  vuetify: nuxtVuetify,
   /*
   ** Build configuration
   ** See https://nuxtjs.org/api/configuration-build/

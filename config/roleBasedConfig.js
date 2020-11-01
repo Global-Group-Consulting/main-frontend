@@ -3,6 +3,18 @@ const defaults = {
     users: {
       tabs: []
     }
+  },
+  tables: {
+    users: {
+      columns: [
+        'contractNumber',
+        'firstName',
+        'lastName',
+        'email',
+        'accountStatus',
+        'actions'
+      ]
+    }
   }
 }
 
@@ -14,14 +26,63 @@ const admin = {
         'firstName',
         'lastName',
         'email',
+        'accountStatus',
         'actions'
       ]
     }
   }
 }
 
-export { admin }
+const cliente = {
+  tables: {
+    users: {
+      columns: [
+        'contractNumber',
+        'firstName',
+        'lastName',
+        'email',
+        'accountStatus',
+        'actions'
+      ]
+    }
+  }
+}
+
+const agente = {
+  tables: {
+    users: {
+      columns: [
+        'contractNumber',
+        'firstName',
+        'lastName',
+        'email',
+        'accountStatus',
+        'actions'
+      ]
+    }
+  }
+}
+
+const servClienti = {
+  tables: {
+    users: {
+      columns: [
+        'contractNumber',
+        'firstName',
+        'lastName',
+        'email',
+        'accountStatus',
+        'actions'
+      ]
+    }
+  }
+}
+
+export { admin, servClienti, agente, cliente }
 
 export default {
-  admin
+  admin,
+  servClienti,
+  agente,
+  cliente,
 }
