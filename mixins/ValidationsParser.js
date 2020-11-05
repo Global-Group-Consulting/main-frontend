@@ -30,11 +30,11 @@ export const validationRules = schema => {
   return toReturn
 }
 
-export function errorMessages () {
+export function errorMessages() {
   const validations = this.$v.form
 
   return Object.keys(validations.$params).reduce((messages, key) => {
-    const rules     = validations[key].$params
+    const rules = validations[key].$params
     const rulesKeys = Object.keys(rules)
     const validator = validations[key]
 
@@ -43,7 +43,7 @@ export function errorMessages () {
     for (let rule of rulesKeys) {
       if (validator[rule] !== false || !validator.$dirty) continue
 
-      messages[key] = this.$t('validators.' + rule)
+      messages[key] = this.$t('validators.' + rule, validator.$params[rule])
       return messages
     }
 

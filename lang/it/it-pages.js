@@ -3,11 +3,26 @@ export default {
     title: 'La mia dashboard'
   },
   login: {
-    'access-private-area': 'Accedi all\'area personale',
+    'title': 'Accedi all\'area personale',
     'log-in': 'Accedi',
+    'forgot-password': 'Password dimenticata?',
+  },
+  forgot: {
+    'title': 'Recupera la tua password',
     'back-to-login': 'Torna alla login',
     'recover-password': 'Recupera password',
-    'forgot-password': 'Password dimenticata?',
+    'recover-sent': 'Gentile utente, abbiamo provveduto ad inviare una email con le istruzioni per il recupero della password all\'indirizzo indicato.'
+  },
+  recover: {
+    'title': 'Imposta la nuova password',
+    'back-to-login': 'Torna alla login',
+    'recover-password': 'Imposta password',
+    'recover-success': 'Gentile utente, abbiamo provveduto ad aggiornare la sua password. Ora verrà reindirizzato automaticamente alla sua dashboard.'
+  },
+  activate: {
+    'title': 'Attiva il tuo account',
+    'recover-password': 'Imposta password',
+    'recover-success': 'Gentile utente, abbiamo provveduto ad attivare il suo account ed aggiornare la sua password. Ora verrà reindirizzato automaticamente alla sua dashboard.'
   },
   activationWizard: {
     'user-info': `Gentile utente,

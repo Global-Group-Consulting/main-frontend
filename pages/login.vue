@@ -1,6 +1,6 @@
 <template>
-  <default-panel :title="$t('pages.login.access-private-area')">
-    <v-form>
+  <default-panel :title="$t('pages.login.title')">
+    <v-form @submit.prevent="">
       <dynamic-fieldset
         :schema="formSchema"
         v-model="formData"
@@ -12,7 +12,7 @@
     <div class="text-center mt-4">
       <v-btn
         :disabled="!formValid"
-        color="accent"
+        color="primary"
         type="submit"
         @click="onFormSubmit"
         v-if="!recover"
@@ -34,7 +34,7 @@
     </div>
 
     <template v-slot:actions>
-      <v-btn text to="/accountRecover" small>
+      <v-btn text to="/auth/forgot" small>
         {{ $t("pages.login.forgot-password") }}
       </v-btn>
     </template>
@@ -50,9 +50,9 @@
   import { computed, ref } from "@vue/composition-api";
 
   export default {
-    name: "login",
-    components: { DynamicFieldset, DefaultPanel },
     layout: "public",
+    auth: "guest",
+    components: { DynamicFieldset, DefaultPanel },
 
     setup(props, { root }) {
       const { $enums } = root;

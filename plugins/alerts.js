@@ -39,10 +39,22 @@ class Alerts {
       errData = error ? JSON.parse(error.request.response) : {}
     } catch (e) { }
 
+    if (errData instanceof Array) {
+      errData = errData[0]
+    }
+
+    if (errData.error) {
+      errData = errData.error
+    }
+
     let text = this.i18n.t('errors.default')
 
-    if (errData && errData.message && this.i18n.te('errors.' + errData.message)) {
-      text = this.i18n.t('errors.' + errData.message)
+    if (errData && errData.message) {
+      if (this.i18n.te('errors.' + errData.message)) {
+        text = this.i18n.t('errors.' + errData.message)
+      } else {
+        text += '<br>' + errData.message
+      }
     } else if (errData && errData.error) {
       text += '<br>' + JSON.stringify(errData.error)
     }

@@ -47,6 +47,7 @@ export default {
   'otp-code': 'Codice di verifica',
   'otp-code-hint': 'Inserire il codice di verifica ricevuto per email.',
   'password': 'Password',
+  'password-confirmation': 'Conferma Password',
   'person-type': 'Tipologia soggetto',
   'phone': 'Telefono',
   'residence': 'Residenza',

@@ -89,7 +89,7 @@
     mixins: [validationMixin],
     validations() {
       return {
-        form: validationRules(this.schema.value),
+        form: validationRules(this.schema.value || this.schema),
       };
     },
     props: {
@@ -112,10 +112,10 @@
         () => props.value,
         (value) => {
           if (!props.schema.value) {
-            throw new Error("The schema provided is not a reactive element");
+            // throw new Error("The schema provided is not a reactive element");
           }
 
-          for (let { cols } of props.schema.value) {
+          for (let { cols } of props.schema.value || props.schema) {
             for (let name in cols) {
               $set(form, name, value[name]);
             }

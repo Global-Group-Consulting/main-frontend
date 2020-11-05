@@ -22,7 +22,6 @@
 
   export default {
     components: { PageHeader, Admin, Cliente, Agente, ServClienti },
-    middleware: "auth",
 
     setup(props, { root }) {
       return {

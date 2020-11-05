@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 import moment from 'moment'
 
 export default class RefreshScheme extends LocalScheme {
-  async mounted () {
+  async mounted() {
     this.$auth.checkToken = () => this.checkToken()
 
     if (this.options.tokenRequired) {
@@ -18,7 +18,7 @@ export default class RefreshScheme extends LocalScheme {
     return this.$auth.fetchUserOnce()
   }
 
-  _setNewTokens (token, refreshToken) {
+  _setNewTokens(token, refreshToken) {
     token = this.options.tokenType
       ? this.options.tokenType + ' ' + token
       : token
@@ -33,7 +33,7 @@ export default class RefreshScheme extends LocalScheme {
     this._setToken(token)
   }
 
-  async login (endpoint) {
+  async login(endpoint) {
     if (!this.options.endpoints.login) {
       return
     }
@@ -58,7 +58,7 @@ export default class RefreshScheme extends LocalScheme {
     return response
   }
 
-  async checkToken () {
+  async checkToken() {
     const token = this.$auth.syncToken(this.name)
     const refreshToken = this.$auth.syncRefreshToken(this.name)
 
@@ -86,7 +86,7 @@ export default class RefreshScheme extends LocalScheme {
     }
   }
 
-  async refreshToken (refreshToken) {
+  async refreshToken(refreshToken) {
     // Token is required but not available
     if (this.options.tokenRequired && !this.$auth.getToken(this.name)) {
       return
@@ -109,5 +109,11 @@ export default class RefreshScheme extends LocalScheme {
     )
 
     this._setNewTokens(result.token, result.refreshToken)
+  }
+
+  async setUserToken({ token, refreshToken }) {
+    this._setNewTokens(token, refreshToken)
+
+    return this.fetchUser()
   }
 }

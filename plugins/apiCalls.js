@@ -28,6 +28,13 @@ class ApiCalls extends BasicApiCall {
     })
   }
 
+  async userApprove(userId) {
+    return await this._call({
+      method: "PUT",
+      endPoint: `/api/users/approve/${userId}`
+    })
+  }
+
   async fetchAllUsers() {
     return (await this.get({
       endPoint: `/api/users`
@@ -45,6 +52,27 @@ class ApiCalls extends BasicApiCall {
   async dashboardData() {
     return await this.get({
       endPoint: "/api/dashboards"
+    })
+  }
+
+  async authForgot(data) {
+    return await this.post({
+      endPoint: "/api/auth/forgot",
+      body: data
+    })
+  }
+
+  async authRecover(data) {
+    return await this.post({
+      endPoint: "/api/auth/resetPassword",
+      body: data
+    })
+  }
+
+  async authActivate(data) {
+    return await this.post({
+      endPoint: "/api/auth/activate",
+      body: data
     })
   }
 }
