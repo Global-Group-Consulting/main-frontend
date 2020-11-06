@@ -5,7 +5,7 @@ import Cleave from 'cleave.js'
 import CurrencyType from '@/enums/CurrencyType'
 
 class BriteConverter {
-  static toBrite (value) {
+  static toBrite(value) {
     if (!value) {
       return value
     }
@@ -18,12 +18,12 @@ class BriteConverter {
     return +numericValue * 2
   }
 
-  static toEuro (value) {
+  static toEuro(value) {
     return +value / 2
   }
 }
 
-export function contractNumberFormatter (value) {
+export function contractNumberFormatter(value) {
   if (!value) {
     return ''
   }
@@ -37,7 +37,15 @@ export function contractNumberFormatter (value) {
   return finalValue
 }
 
-export function dateFormatter (value, includeHours) {
+export function numberCasting(value) {
+  if (!Number.isNaN(+value)) {
+    return +value
+  }
+
+  return value
+}
+
+export function dateFormatter(value, includeHours) {
   if (!value) {
     return ''
   }
@@ -49,11 +57,11 @@ export function dateFormatter (value, includeHours) {
   return moment(value).format('L' + (includeHours ? ' LT' : ''))
 }
 
-export function dateHourFormatter (value) {
+export function dateHourFormatter(value) {
   return dateFormatter(value, true)
 }
 
-export function datePickerFormatter (value) {
+export function datePickerFormatter(value) {
   if (!value) {
     return ''
   }
@@ -65,7 +73,7 @@ export function datePickerFormatter (value) {
   return moment(value).format('YYYY-MM-DD')
 }
 
-export function moneyFormatter (value, formatBrite = false) {
+export function moneyFormatter(value, formatBrite = false) {
   if (!value) {
     return ''
   }
@@ -88,7 +96,7 @@ export function moneyFormatter (value, formatBrite = false) {
   return formatted.split(',')[0] + (decimals ? ',' + decimals : '')
 }
 
-export function regionFormatter (value, list) {
+export function regionFormatter(value, list) {
   const region = list.find(_region => _region.value === value)
 
   return region?.text || value
@@ -100,3 +108,4 @@ Vue.filter('datePickerFormatter', datePickerFormatter)
 Vue.filter('moneyFormatter', moneyFormatter)
 Vue.filter('contractNumberFormatter', contractNumberFormatter)
 Vue.filter('regionFormatter', regionFormatter)
+Vue.filter('numberCasting', numberCasting)

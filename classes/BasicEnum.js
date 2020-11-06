@@ -21,7 +21,7 @@ class BasicEnum {
       }
     }
 
-    let foundedEnum
+    let foundedEnum = {}
 
     Object.entries(this.data).forEach(function (entry) {
       if (entry[1].id === id) {
@@ -33,6 +33,10 @@ class BasicEnum {
     })
 
     return foundedEnum
+  }
+
+  getIdName (id) {
+    return this.get(id).id
   }
 
   get iterable () {

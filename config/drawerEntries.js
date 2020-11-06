@@ -21,8 +21,8 @@ const menuItems = [
   {
     type: 'group',
     text: ruolo => [UserRoles.SUPER_ADMIN,
-      UserRoles.ADMIN,
-      UserRoles.SERV_CLIENTI]
+    UserRoles.ADMIN,
+    UserRoles.SERV_CLIENTI]
       .includes(ruolo) ? 'users-management' : 'my-account',
     childs: [
       {
@@ -93,32 +93,32 @@ const menuItems = [
   },
   {
     type: 'group',
-    text: 'Avanzate',
+    text: 'advanced',
     ruoli: [UserRoles.SUPER_ADMIN],
     childs: [
       {
-        id: 'traduzioni',
-        text: 'Traduzioni',
+        id: 'translations',
+        text: 'translations',
         icon: 'mdi-translate',
         link: '/traduzioni',
         ruoli: [UserRoles.ADMIN, UserRoles.SERV_CLIENTI]
       },
       {
-        id: 'sviluppatore',
-        text: 'Sviluppatore',
+        id: 'developer',
+        text: 'developer',
         icon: 'mdi-bug',
         link: '/sviluppatore',
         ruoli: [UserRoles.SUPER_ADMIN],
         childs: [
           {
-            id: 'richieste.tutte',
-            text: 'Stato Email',
+            id: 'emailStatuses',
+            text: 'emailStatuses',
             icon: 'mdi-email-search',
             link: '/sviluppatore/email'
           },
           {
-            id: 'richieste.nuove',
-            text: 'Errori',
+            id: 'errors',
+            text: 'errors',
             icon: 'mdi-bug',
             link: '/sviluppatore/errori'
           }
@@ -134,7 +134,7 @@ const menuItems = [
  * @return {{}|null}
  * @private
  */
-function _analyzeEntry (entry, ruolo, i18n) {
+function _analyzeEntry(entry, ruolo, i18n) {
   const newEntry = { ...entry }
 
   // Se il parametro è una function la esegue, passando il ruolo e l'entry come parametri
@@ -162,7 +162,7 @@ function _analyzeEntry (entry, ruolo, i18n) {
  * @return {[]}
  * @private
  */
-function _loopEntries (childs, ruolo, i18n) {
+function _loopEntries(childs, ruolo, i18n) {
   return childs.reduce((acc, curr) => {
     const newCurr = _analyzeEntry(curr, ruolo, i18n)
 

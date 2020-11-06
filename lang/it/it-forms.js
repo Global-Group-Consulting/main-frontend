@@ -1,8 +1,8 @@
 export default {
-  'account-activated-at': 'Account attivato il',
-  'account-created-at': 'Account registrato il',
-  'account-updated-at': 'Account aggiornato il',
-  'account-verified-at': 'Account verificato il',
+  'activated-at': 'Account attivato il',
+  'created-at': 'Account registrato il',
+  'updated-at': 'Account aggiornato il',
+  'validated-at': 'Account verificato il',
   'birth-city': 'Città di nascita',
   'birth-date': 'Data di nascita',
   'birth-country': 'Nazione di nascita',
@@ -24,6 +24,7 @@ export default {
   'doc-expiration': 'Data scadenza documento',
   'doc-number': 'Numero documento',
   'doc-type': 'Tipologia documento',
+  'doc-attachment': 'Allegato documento',
   'doc-front': 'Documento Fronte',
   'doc-back': 'Documento Retro',
   'doc-payment': 'Contabile di pagamento',
@@ -47,6 +48,7 @@ export default {
   'otp-code': 'Codice di verifica',
   'otp-code-hint': 'Inserire il codice di verifica ricevuto per email.',
   'password': 'Password',
+  'password-confirmation': 'Conferma Password',
   'person-type': 'Tipologia soggetto',
   'phone': 'Telefono',
   'residence': 'Residenza',
@@ -59,5 +61,7 @@ export default {
   'request-date': 'Data richiesta',
   'request-attachment': 'Contabile',
   'request-notes': 'Note',
-  'wallet-type': 'Wallet'
+  'wallet-type': 'Wallet',
+  'tooltip-download-file': "Scarica file",
+  'tooltip-remove-file': "Cancella file"
 }

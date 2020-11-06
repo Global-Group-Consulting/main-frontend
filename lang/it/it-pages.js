@@ -3,11 +3,26 @@ export default {
     title: 'La mia dashboard'
   },
   login: {
-    'access-private-area': 'Accedi all\'area personale',
+    'title': 'Accedi all\'area personale',
     'log-in': 'Accedi',
+    'forgot-password': 'Password dimenticata?',
+  },
+  forgot: {
+    'title': 'Recupera la tua password',
     'back-to-login': 'Torna alla login',
     'recover-password': 'Recupera password',
-    'forgot-password': 'Password dimenticata?',
+    'recover-sent': 'Gentile utente, abbiamo provveduto ad inviare una email con le istruzioni per il recupero della password all\'indirizzo indicato.'
+  },
+  recover: {
+    'title': 'Imposta la nuova password',
+    'back-to-login': 'Torna alla login',
+    'recover-password': 'Imposta password',
+    'recover-success': 'Gentile utente, abbiamo provveduto ad aggiornare la sua password. Ora verrà reindirizzato automaticamente alla sua dashboard.'
+  },
+  activate: {
+    'title': 'Attiva il tuo account',
+    'recover-password': 'Imposta password',
+    'recover-success': 'Gentile utente, abbiamo provveduto ad attivare il suo account ed aggiornare la sua password. Ora verrà reindirizzato automaticamente alla sua dashboard.'
   },
   activationWizard: {
     'user-info': `Gentile utente,
@@ -31,8 +46,8 @@ export default {
   usersId: {
     'title': 'Anagrafica',
     'title-new-user': 'Anagrafica',
-    'title-new-with-role': 'Nuovo ${role}',
-    'subtitle': '',
+    'title-new-with-role': 'Nuovo {role}',
+    'subtitle': 'Stato utente: <strong>{accountState}</strong>',
     'subtitle-new-user': 'Creazione di un nuovo utente',
     'subtitle-new-user-with-role': 'Creazione di un nuovo utente con ruolo <strong>"${role}"</strong>',
     'btn-go-back-tooltip': 'Torna all\'elenco degli utenti',
@@ -43,8 +58,10 @@ export default {
     'btn-send-email': 'Invia comunicazione',
     'btn-send-email-tooltip': 'Invia comunicazione',
     'btn-next': 'Avanti',
-    'btn-save': 'Salva',
+    'btn-save': 'Salva modifiche',
     'btn-previous': 'Indietro',
+    'btn-approve': 'Approva',
+    'btn-approve-tooltip': 'Approva l\'attivazione dell\'account',
 
     tabs: {
       'user-data': 'Dati Utente',

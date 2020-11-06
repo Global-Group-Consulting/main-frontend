@@ -1,11 +1,10 @@
-import colors from 'vuetify/es5/util/colors'
-
-import nuxtAxios from './config/nuxtAxios'
-import nuxtAuth from './config/nuxtAuth'
-import nuxtI18n from './config/nuxtI18n'
-import nuxtMoment from './config/nuxtMoment'
-import nuxtProxy from './config/nuxtProxy'
-import nuxtVuetify from './config/nuxtVuetify'
+import nuxtAxios from './config/nuxtModules/nuxtAxios'
+import nuxtAuth from './config/nuxtModules/nuxtAuth'
+import nuxtI18n from './config/nuxtModules/nuxtI18n'
+import nuxtMoment from './config/nuxtModules/nuxtMoment'
+import nuxtProxy from './config/nuxtModules/nuxtProxy'
+import nuxtVuetify from './config/nuxtModules/nuxtVuetify'
+import nuxtVueScrollTo from './config/nuxtModules/vueScrollTo'
 
 export default {
   /*
@@ -37,15 +36,19 @@ export default {
   /*
   ** Global CSS
   */
-  css: [],
+  css: [
+    '~/assets/main.scss'
+  ],
   /*
   ** Plugins to load before mounting the App
   ** https://nuxtjs.org/guide/plugins
   */
   plugins: [
-    './plugins/filters.js',
     './plugins/alerts.js',
+    './plugins/apiCalls.js',
+    './plugins/filters.js',
     './plugins/enums.js',
+    './plugins/mixins.js',
     './plugins/global-components.js',
     './plugins/vue-composition-api.js',
     './plugins/vue-portal.js',
@@ -60,7 +63,7 @@ export default {
   ** Nuxt.js dev-modules
   */
   buildModules: [
-    '@nuxtjs/vuetify',
+    ['@nuxtjs/vuetify', nuxtVuetify],
     ['@nuxtjs/moment', nuxtMoment]
   ],
   /*
@@ -70,27 +73,29 @@ export default {
     ['@nuxtjs/axios', nuxtAxios],
     ['@nuxtjs/auth', nuxtAuth],
     ['nuxt-i18n', nuxtI18n],
-    ['@nuxtjs/proxy']
+    ['@nuxtjs/proxy'],
+    ['vue-scrollto/nuxt', nuxtVueScrollTo],
   ],
 
+  /*
+  Proxy settings must be specified here, otherwise won't be read
+  if used as module settings.
+  */
   proxy: nuxtProxy,
 
-  /*
-  ** vuetify module configuration
-  ** https://github.com/nuxt-community/vuetify-module
-  */
-  vuetify: nuxtVuetify,
   /*
   ** Build configuration
   ** See https://nuxtjs.org/api/configuration-build/
   */
-  build: {},
+  build: {
+    transpile: ['@nuxtjs/auth']
+  },
 
   router: {
-    middleware: 'storeFetch'
+    middleware: ['storeFetch', 'auth', 'authJWT']
   },
 
   serverMiddleware: [
-    { path: '/api', handler: '~/server/index.js' }
+    // { path: '/api', handler: '~/server/index.js' }
   ]
 }

@@ -1,10 +1,10 @@
-import { BasicEnum } from '@/classes/BasicEnum'
+import { BasicEnum } from '../classes/BasicEnum'
 
 class UserRoles extends BasicEnum {
   /**
    * @enum
    */
-  constructor () {
+  constructor() {
     super('UserRoles')
 
     this.SUPER_ADMIN = 0
@@ -17,32 +17,27 @@ class UserRoles extends BasicEnum {
       [this.SUPER_ADMIN]: {
         id: 'superAdmin',
         hidden: true,
-        text: 'Super Admin',
         color: 'red accent-4',
         bgSrc: 'mb-bg-fb-18.png'
       },
       [this.ADMIN]: {
         id: 'admin',
-        text: 'Amministratore',
-        color: 'purple',
+        color: 'deep-purple',
         bgSrc: 'mb-bg-fb-02.jpg'
       },
       [this.SERV_CLIENTI]: {
         id: 'servClienti',
-        text: 'Servizio Clienti',
-        color: 'teal',
+        color: 'purple',
         bgSrc: 'mb-bg-fb-08.png'
       },
       [this.AGENTE]: {
         id: 'agente',
-        text: 'Agente',
-        color: 'indigo',
+        color: 'red darken-2',
         bgSrc: 'mb-bg-fb-15.png'
       },
       [this.CLIENTE]: {
         id: 'cliente',
-        text: 'Cliente',
-        color: 'grey',
+        color: 'yellow darken-3',
         bgSrc: 'mb-bg-fb-20.png'
       }
     }

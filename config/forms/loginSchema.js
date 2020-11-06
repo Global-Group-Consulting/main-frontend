@@ -13,13 +13,14 @@ export default function (context) {
     {
       cols: {
         'password': {
+          type: "password",
           validations: {
             required: {}
           }
         },
       }
     },
-    {
+    /* {
       cols: {
         'role': {
           component: 'v-select',
@@ -43,7 +44,7 @@ export default function (context) {
           }, [])
         },
       }
-    }
+    } */
   ]
 
 }

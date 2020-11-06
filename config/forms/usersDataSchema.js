@@ -1,11 +1,37 @@
-export function basicData (context) {
+import DocumentTypes from '@/enums/DocumentTypes'
+import PersonTypes from '@/enums/PersonTypes'
+import UserRoles from '@/enums/UserRoles'
+import Genders from '@/enums/Genders'
+
+import moment from 'moment'
+
+/**
+ * @typedef {{}} FormContext
+ *
+ * @property {{}} $auth
+ * @property {{}} $i18n
+ * @property {Boolean} userIsNew
+ * @property {Number} userRole
+ * @property {Boolean} userIsPersonaGiuridica
+ * @property {Boolean} userBirthItaly
+ * @property {Boolean} userBusinessItaly
+ * @property {Boolean} userLegalReprItaly
+ * @property {Boolean} showReferenceAgent
+ */
+
+/**
+ *
+ * @param {FormContext} formContext
+ */
+export function basicData(formContext) {
   return [
     {
       cols: {
         'personType': {
           component: 'v-select',
-          disabled: context.userCheckingData,
-          items: context.$enums.PersonTypes,
+          // disabled: formContext.userCheckingData,
+          items: PersonTypes,
+          formatter: 'numberCasting',
           validations: {
             required: {}
           }
@@ -13,14 +39,14 @@ export function basicData (context) {
       }
     },
     {
-      if: context.personaGiuridica,
+      if: formContext.userIsPersonaGiuridica,
       cols: {
         'businessName': {},
         'vatNumber': {}
       }
     },
     {
-      legend: context.personaGiuridica ? 'legal-representative' : '',
+      legend: formContext.userIsPersonaGiuridica ? 'legal-representative' : '',
       cols: {
         'firstName': {
           validations: {
@@ -39,12 +65,12 @@ export function basicData (context) {
         },
         'gender': {
           component: 'v-select',
-          items: context.$enums.Genders
+          items: Genders
         }
       }
     },
     {
-      legend: (context.personaGiuridica ? 'legal-representative-' : '') + 'birth-date',
+      legend: (formContext.userIsPersonaGiuridica ? 'legal-representative-' : '') + 'birth-date',
       cols: {
         'birthCountry': {
           component: 'v-select',
@@ -53,12 +79,12 @@ export function basicData (context) {
         'birthProvince': {
           component: 'v-select',
           items: 'enums.provincesList',
-          if: context.formData.birthCountry === 'IT'
+          if: formContext.userBirthItaly
         },
         'birthCity': {},
         'birthDate': {
           'component': 'date-picker',
-          'initial-date': context.$moment().subtract(18, 'years').format('YYYY-MM-DD')
+          'initial-date': moment().subtract(18, 'years').format('YYYY-MM-DD')
         }
       }
     },
@@ -67,12 +93,16 @@ export function basicData (context) {
       cols: {
         'docType': {
           component: 'v-select',
-          items: context.$enums.DocumentTypes
+          items: DocumentTypes
         },
         'docNumber': {},
         'docExpiration': {
           'component': 'date-picker',
-          'min': context.$moment().format('YYYY-MM-DD')
+          'min': moment().format('YYYY-MM-DD')
+        },
+        'docAttachment': {
+          component: "file-uploader",
+          files: formContext.formData.files
         }
 
       }
@@ -80,24 +110,27 @@ export function basicData (context) {
   ]
 }
 
-export function addressData (context) {
+/**
+ * @param {FormContext} formContext
+ */
+export function addressData(formContext) {
   return [
     {
-      if: context.personaGiuridica,
+      if: formContext.userIsPersonaGiuridica,
       cols: {
         'businessCountry': {
           component: 'v-select',
-          items: 'enums.countries'
+          items: 'enums.countriesList'
         },
         'businessRegion': {
           component: 'v-select',
           items: 'enums.regionsList',
-          if: context.formData.businessCountry === 'IT'
+          if: formContext.userBusinessItaly
         },
         'businessProvince': {
           component: 'v-select',
           items: 'enums.provincesList',
-          if: context.formData.businessCountry === 'IT'
+          if: formContext.userBusinessItaly
         },
         'businessCity': {},
         'businessZip': {},
@@ -105,7 +138,7 @@ export function addressData (context) {
       }
     },
     {
-      legend: (context.personaGiuridica ? `${context.personaGiuridica ? 'legal-representative-' : ''}` : '') + 'residence',
+      legend: (formContext.userIsPersonaGiuridica ? `${formContext.userIsPersonaGiuridica ? 'legal-representative-' : ''}` : '') + 'residence',
       cols: {
         'legalRepresentativeCountry': {
           component: 'v-select',
@@ -114,12 +147,12 @@ export function addressData (context) {
         'legalRepresentativeRegion': {
           component: 'v-select',
           items: 'enums.regionsList',
-          if: context.formData.legalRepresentativeCountry === 'IT'
+          if: formContext.userLegalReprItaly
         },
         'legalRepresentativeProvince': {
           component: 'v-select',
           items: 'enums.provincesList',
-          if: context.formData.legalRepresentativeCountry === 'IT'
+          if: formContext.userLegalReprItaly
         },
         'legalRepresentativeCity': {},
         'legalRepresentativeZip': {},
@@ -127,16 +160,18 @@ export function addressData (context) {
       }
     }
   ]
-
 }
 
-export function contactsData (context) {
+/**
+ * @param {FormContext} formContext
+ */
+export function contactsData(formContext) {
   return [
     {
       legend: 'contacts',
       cols: {
         'email': {
-          disabled: !!context.formData.contractNumber,
+          disabled: !formContext.userIsNew,
           validations: {
             required: {},
             email: {}
@@ -147,17 +182,23 @@ export function contactsData (context) {
       }
     }
   ]
-
 }
 
-export function contractData (context) {
+/**
+ * @param {FormContext} formContext
+ */
+export function contractData(formContext) {
   return [
     {
       cols: {
         'contractNumber': {
-          disabled: true
+          disabled: true,
+          if: !formContext.userIsNew
         },
-        'contractDate': {},
+        'contractDate': {
+          disabled: true,
+          if: !formContext.userIsNew,
+        },
         'contractPercentage': {},
         'contractIban': {},
         'contractBic': {}
@@ -166,36 +207,59 @@ export function contractData (context) {
   ]
 }
 
-export function extraData (context) {
+/**
+ * @param {FormContext} formContext
+ */
+export function extraData(formContext) {
   return [
     {
+      disableEditMode: true,
       cols: {
         'role': {
           component: 'v-select',
-          items: context.$enums.UserRoles
+          formatter: 'numberCasting',
+          items: formContext.userIsNew ? UserRoles : UserRoles.list.filter(_role => {
+            const roleId = +UserRoles.get(_role.text).index
+            const adminRoles = [UserRoles.ADMIN, UserRoles.SERV_CLIENTI]
+
+            if (adminRoles.includes(formContext.userRole)) {
+              return adminRoles.includes(roleId)
+            } else {
+              return !adminRoles.includes(roleId)
+            }
+          }).map(entry => {
+            entry.text = formContext.$i18n.t("enums.UserRoles." + entry.text)
+
+            return entry
+          }),
+          disabled: formContext.$auth.user.id === this.formData.id,
+          validations: {
+            required: {}
+          }
         },
         'referenceAgent': {
-          if: context.showReferenceAgent
+          if: formContext.showReferenceAgent
         }
       }
     },
     {
-      if: !context.isNewUser,
+      if: !formContext.userIsNew,
+      disableEditMode: true,
       cols: {
-        'accountCreatedAt': {
-          readonly: true,
+        'created_at': {
+          disabled: true,
           formatter: 'dateHourFormatter'
         },
-        'accountUpdatedAt': {
-          readonly: true,
+        'updated_at': {
+          disabled: true,
           formatter: 'dateHourFormatter'
         },
-        'accountActivatedAt': {
-          readonly: true,
+        'activated_at': {
+          disabled: true,
           formatter: 'dateHourFormatter'
         },
-        'accountVerifiedAt': {
-          readonly: true,
+        'validated_at': {
+          disabled: true,
           formatter: 'dateHourFormatter'
         },
       }
@@ -203,12 +267,13 @@ export function extraData (context) {
   ]
 }
 
-export default function (context) {
-  return [
-    ...basicData(context),
-    ...addressData(context),
-    ...contactsData(context),
-    ...contractData(context),
-    ...extraData(context)
-  ]
+/**
+ * @param {FormContext} formContext
+ */
+export default {
+  basicData,
+  addressData,
+  contactsData,
+  contractData,
+  extraData
 }

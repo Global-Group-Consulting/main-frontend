@@ -2,42 +2,61 @@
   <v-layout>
     <v-flex>
       <page-header
-        :title="title"
-        :subtitle="subtitle"
-        :icon="icon"
+        :title="pageData.title.value"
+        :subtitle="pageData.subtitle.value"
+        :icon="pageData.icon.value"
       ></page-header>
 
-      <v-toolbar v-if="formData.contractNumber" class="mb-5">
+      <v-toolbar class="mb-5">
         <v-toolbar-items class="flex-fill">
-          <tooltip-btn :tooltip="$t('pages.usersId.btn-go-back-tooltip')"
-                       icon
-                       icon-name="mdi-arrow-left"
-                       @click="$router.back()"
+          <tooltip-btn
+            :tooltip="$t('pages.usersId.btn-go-back-tooltip')"
+            icon
+            icon-name="mdi-arrow-left"
+            @click="$router.back()"
           >
           </tooltip-btn>
 
           <v-spacer></v-spacer>
 
-          <tooltip-btn :tooltip="$t('pages.usersId.btn-send-activation-email-tooltip')"
-                       icon-name="mdi-at"
-                       text
-                       v-if="!formData.accountVerifiedAt">
-            {{ $t('pages.usersId.btn-send-activation-email') }}
+          <tooltip-btn
+            :tooltip="$t('pages.usersId.btn-approve-tooltip')"
+            icon-name="mdi-check"
+            color="green"
+            text
+            v-if="canApprove"
+            @click="approveUser"
+          >
+            {{ $t("pages.usersId.btn-approve") }}
           </tooltip-btn>
 
-          <tooltip-btn :tooltip="$t('pages.usersId.btn-reset-password-tooltip')"
-                       icon-name="mdi-lock-reset"
-                       v-if="formData.accountVerifiedAt"
-                       text>
-            {{ $t('pages.usersId.btn-reset-password') }}
+          <!-- <tooltip-btn
+            :tooltip="$t('pages.usersId.btn-send-activation-email-tooltip')"
+            icon-name="mdi-at"
+            text
+            v-if="!formData.accountVerifiedAt && !userIsNew"
+          >
+            {{ $t("pages.usersId.btn-send-activation-email") }}
           </tooltip-btn>
 
-          <tooltip-btn :tooltip="$t('pages.usersId.btn-send-email-tooltip')"
-                       icon-name="mdi-email-plus"
-                       text
-                       @click="onSendEmail">
-            {{ $t('pages.usersId.btn-send-email') }}
+          <tooltip-btn
+            :tooltip="$t('pages.usersId.btn-reset-password-tooltip')"
+            icon-name="mdi-lock-reset"
+            v-if="formData.accountVerifiedAt && !userIsNew"
+            text
+          >
+            {{ $t("pages.usersId.btn-reset-password") }}
           </tooltip-btn>
+
+          <tooltip-btn
+            :tooltip="$t('pages.usersId.btn-send-email-tooltip')"
+            icon-name="mdi-email-plus"
+            text
+            @click="onSendEmail"
+            v-if="!userIsNew"
+          >
+            {{ $t("pages.usersId.btn-send-email") }}
+          </tooltip-btn> -->
 
           <v-spacer></v-spacer>
         </v-toolbar-items>
@@ -45,28 +64,33 @@
 
       <v-form>
         <v-card>
-          <v-tabs v-model="currentTab"
-                  :background-color="(this.$enums.UserRoles.get(formData.role) || {}).color"
-                  center-active
-                  dark
-                  show-arrows
+          <v-tabs
+            v-model="currentTab"
+            :background-color="accentColor"
+            center-active
+            dark
+            show-arrows
           >
-            <v-tab v-for="(section, index) in usersIdTabs"
-                   :key="index"
-                   :title="'pages.usersId.tabs.' + section.title">
-              {{ $t('pages.usersId.tabs.' + section.title) }}
+            <v-tab
+              v-for="(section, index) in formTabs"
+              :key="index"
+              :title="'pages.usersId.tabs.' + section.title"
+            >
+              {{ $t("pages.usersId.tabs." + section.title) }}
             </v-tab>
           </v-tabs>
 
           <div>
             <v-tabs-items v-model="currentTab">
-              <v-tab-item v-for="(tab, index) in usersIdTabs"
-                          :key="index">
+              <v-tab-item v-for="(tab, index) in formTabs" :key="index">
                 <v-card elevation="0">
-                  <v-card-title>{{ $t('pages.usersId.tabs.' + tab.cardTitle) }}</v-card-title>
+                  <!-- <v-card-title>{{
+                    $t("pages.usersId.tabs." + tab.cardTitle)
+                  }}</v-card-title> -->
+
                   <v-card-text>
                     <dynamic-fieldset
-                      :schema="getSchema(tab)"
+                      :schema="getFormSchema(tab)"
                       v-model="formData"
                       :ref="'dynamicForm_' + index"
                       @status="saveStatus(tab.schema, $event)"
@@ -78,43 +102,58 @@
             </v-tabs-items>
 
             <v-card-actions>
-              <v-btn @click="goBack"
-                     v-if="currentTab > 0">
-                {{ $t('pages.usersId.btn-previous') }}
+              <v-btn @click="goBack" v-if="currentTab > 0" text>
+                <v-icon>mdi-chevron-left</v-icon>
+                {{ $t("pages.usersId.btn-previous") }}
               </v-btn>
               <v-spacer></v-spacer>
-              <v-btn :color="currentTab < usersIdTabs.length - 1 ? 'primary' : 'success'"
-                     @click="currentTab < usersIdTabs.length - 1 ? goNext() : onSaveClick()">
-                {{ $t(`pages.usersId.btn-${currentTab < usersIdTabs.length - 1 ? 'next' : 'save'}`) }}
+              <v-btn
+                dark
+                :color="
+                  currentTab < formTabs.length - 1 ? accentColor : 'success'
+                "
+                @click="
+                  currentTab < formTabs.length - 1 ? goNext() : onSaveClick()
+                "
+              >
+                {{
+                  $t(
+                    `pages.usersId.btn-${
+                      currentTab < formTabs.length - 1 ? "next" : "save"
+                    }`
+                  )
+                }}
+                <v-icon v-if="currentTab < formTabs.length - 1"
+                  >mdi-chevron-right</v-icon
+                >
+                <v-icon v-else class="ml-2">mdi-content-save</v-icon>
               </v-btn>
             </v-card-actions>
           </div>
-
-
         </v-card>
+
         <!-- Floating action button -->
-        <!--<v-fab-transition v-if="!userIsNew">
+        <v-fab-transition v-if="!userIsNew && currentTab < formTabs.length - 1">
           <v-tooltip left>
             <template v-slot:activator="{ on }">
-              <v-btn slot="activator"
-                     v-model="fab"
-                     v-on="on"
-                     color="accent"
-                     fixed
-                     bottom
-                     right
-                     fab
-                     type="button"
-                     :loading="saving"
-                     :hidden="fetchingData"
-                     @click="onSaveClick"
+              <v-btn
+                slot="activator"
+                v-on="on"
+                color="green"
+                fixed
+                dark
+                bottom
+                right
+                fab
+                type="button"
+                @click="onSaveClick"
               >
                 <v-icon>mdi-content-save</v-icon>
               </v-btn>
             </template>
-            <span>Salva modifiche</span>
+            <span>{{ $t("pages.usersId.btn-save") }}</span>
           </v-tooltip>
-        </v-fab-transition>-->
+        </v-fab-transition>
       </v-form>
     </v-flex>
 
@@ -123,112 +162,197 @@
 </template>
 
 <script>
-import fakeUsers from '@/assets/fakeUsers'
+  import PageHeader from "@/components/blocks/PageHeader";
+  import DynamicFieldset from "@/components/DynamicFieldset";
+  import UserMessage from "@/components/dialogs/UserMessage";
 
-import PageHeader from '@/components/blocks/PageHeader'
-import usersIdTabs from '@/config/usersIdTabs'
-import DynamicFieldset from '@/components/DynamicFieldset'
-import UserMessage from '@/components/dialogs/UserMessage'
+  import { onMounted, reactive, ref, computed } from "@vue/composition-api";
 
-export default {
-  name: '_id',
-  components: { UserMessage, DynamicFieldset, PageHeader },
-  data () {
-    return {
-      formData: {},
-      currentTab: 0,
-      editMode: true
-    }
-  },
-  computed: {
-    usersIdTabs,
-    icon () {
-      if (this.formData.contractNumber) {
-        return 'mdi-account'
-      }
+  import AccountStatuses from "@/enums/AccountStatuses.js";
+  import UserRoles from "@/enums/UserRoles.js";
+  import userDetails from "@/functions/userDetails";
+  import pageBasic from "@/functions/pageBasic";
+  import usersForm from "@/functions/usersForm";
 
-      return 'mdi-account-plus'
-    },
-    title () {
-      if (this.formData.contractNumber) {
-        return this.$t('pages.usersId.title')
-      }
+  export default {
+    name: "_id",
+    components: { UserMessage, DynamicFieldset, PageHeader },
+    setup(props, { root }) {
+      const { $apiCalls, $alerts, $route, $i18n, $enums } = root;
+      const currentTab = ref(0);
+      const userForm = usersForm(root);
 
-      const userRole = this.formData.role
+      const editMode = computed(
+        () =>
+          !userForm.userIsNew.value &&
+          userForm.userRole.value === $enums.UserRoles.CLIENTE
+      );
 
-      if (!userRole) {
-        return this.$t('pages.usersId.title-new-user')
-      }
+      const pageData = pageBasic(root, "usersId");
 
-      return this.$t('pages.usersId.title-new-with-role', {
-        role: this.$enums.UserRoles.get(this.formData.role || '').text
+      const accentColor = computed(
+        () => $enums.UserRoles.get(userForm.userRole.value).color
+      );
+
+      const canApprove = computed(() => {
+        const formData = userForm.formData.value;
+
+        return (
+          formData.account_status === AccountStatuses.VALIDATED ||
+          (formData.account_status === AccountStatuses.DRAFT &&
+            [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(+formData.role))
+        );
+      });
+
+      const getFormSchema = function (tab) {
+        const schema = userForm.formSchemas[tab.schema];
+
+        if (!schema) {
+          return tab.schema;
+        }
+
+        return schema;
+      };
+
+      const approveUser = async function () {
+        try {
+          await $alerts.askBeforeAction({
+            key: "approve-user",
+            preConfirm: async () => {
+              debugger;
+              const result = await $apiCalls.userApprove(userForm.formData.value.id);
+              userForm.formData.value.account_status = result.account_status;
+            },
+            data: userForm.formData.value,
+          });
+        } catch (er) {
+          $alerts.error(er);
+        }
+      };
+
+      pageData.title = computed(() => {
+        if (userForm.userIsNew.value) {
+          return $i18n.t(`pages.usersId.title-new-with-role`, {
+            role: $i18n.t(
+              "enums.UserRoles." +
+                $enums.UserRoles.getIdName(userForm.userRole.value)
+            ),
+          });
+        }
+
+        return $i18n.t(`pages.usersId.title`);
+      });
+
+      pageData.subtitle = computed(() => {
+        return $i18n.t("pages.usersId.subtitle", {
+          accountState: $i18n.t(`enums.AccountStatuses.${AccountStatuses.get(userForm.userAccountStatus.value).id}`)
+        })
       })
+
+      // fetches user details
+      onMounted(async () => {
+        const userId = $route.params.id;
+
+        if (userId === "new") {
+          userForm.formData.value.role =
+            +$route.query.type || $enums.UserRoles.CLIENTE;
+
+          return;
+        }
+
+        try {
+          userForm.formData.value = await $apiCalls.fetchUserDetails(
+            $route.params.id
+          );
+        } catch (er) {
+          $alerts.error(er);
+        }
+      });
+
+      return {
+        currentTab,
+        editMode,
+        getFormSchema,
+        ...userForm,
+        ...userDetails(root),
+        pageData,
+        accentColor,
+        canApprove,
+        approveUser,
+      };
     },
-    subtitle () {
-      if (this.formData.contractNumber) {
-        return ''
-      }
+    computed: {
+      /*icon () {
+                                                                if (this.formData.contractNumber) {
+                                                                  return 'mdi-account'
+                                                                }
 
-      const userRole = this.formData.contractNumber
+                                                                return 'mdi-account-plus'
+                                                              },
+                                                              title () {
+                                                                if (this.formData.contractNumber) {
+                                                                  return this.$t('pages.usersId.title')
+                                                                }
 
-      if (!userRole) {
-        return this.$t('pages.usersId.subtitle-new-user')
-      }
+                                                                const userRole = this.formData.role
 
-      return this.$t('pages.usersId.subtitle-new-user-with-role', {
-        role: this.$enums.UserRoles.get(this.formData.role).text
-      })
+                                                                if (!userRole) {
+                                                                  return this.$t('pages.usersId.title-new-user')
+                                                                }
+
+                                                                return this.$t('pages.usersId.title-new-with-role', {
+                                                                  role: this.$enums.UserRoles.get(this.formData.role || '').text
+                                                                })
+                                                              },
+                                                              subtitle () {
+                                                                if (this.formData.contractNumber) {
+                                                                  return ''
+                                                                }
+
+                                                                const userRole = this.formData.contractNumber
+
+                                                                if (!userRole) {
+                                                                  return this.$t('pages.usersId.subtitle-new-user')
+                                                                }
+
+                                                                return this.$t('pages.usersId.subtitle-new-user-with-role', {
+                                                                  role: this.$enums.UserRoles.get(this.formData.role).text
+                                                                })
+                                                              },*/
+      /* personaGiuridica () {
+                                                                return this.formData.personType === this.$enums.PersonTypes.GIURIDICA
+                                                              }, */
+      /* showReferenceAgent () {
+                                                                return [this.$enums.UserRoles.CLIENTE, this.$enums.UserRoles.AGENTE].includes(this.formData.role)
+                                                              }, */
+      /* isNewUser () {
+                                                                return !this.formData.contractNumber
+                                                              } */
     },
-    personaGiuridica () {
-      return this.formData.personType === this.$enums.PersonTypes.GIURIDICA
+    methods: {
+      saveStatus() {},
+      async goNext() {
+        const formValid = await this.$refs[
+          `dynamicForm_${this.currentTab}`
+        ][0].validate();
+
+        // If there form is invalid, don't proceed
+        if (!formValid) {
+          return;
+        }
+
+        this.currentTab += 1;
+      },
+      goBack() {
+        this.currentTab -= 1;
+      },
+      onSendEmail() {
+        this.$store.dispatch("dialog/updateStatus", {
+          title: this.$t("dialogs.userMessage.title"),
+        });
+      },
     },
-    showReferenceAgent () {
-      return [this.$enums.UserRoles.CLIENTE, this.$enums.UserRoles.AGENTE].includes(this.formData.role)
-    },
-    isNewUser () {
-      return !this.formData.contractNumber
-    }
-  },
-  methods: {
-    getSchema (tab) {
-      const schema = this[tab.schema]
-
-      if (!schema) {
-        return tab.schema
-      }
-
-      return schema
-    },
-    saveStatus () {},
-    goNext () {
-      this.currentTab += 1
-    },
-    goBack () {
-      this.currentTab -= 1
-    },
-    onSaveClick () {},
-    onSendEmail () {
-      this.$store.dispatch('dialog/updateStatus', {
-        title: this.$t('dialogs.userMessage.title')
-      })
-    }
-  },
-  created () {
-    const userId = this.$route.params.id
-
-    if (userId === 'new') {
-      return
-    }
-
-    const usersList = fakeUsers.reduce((acc, group) => {
-      acc.push(...group.data)
-
-      return acc
-    }, [])
-
-    this.formData = usersList.find(user => user._id === userId)
-  }
-}
+  };
 </script>
 
 <style scoped>

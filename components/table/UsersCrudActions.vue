@@ -1,89 +1,107 @@
 <template>
   <v-menu offset-y>
     <template v-slot:activator="{ on }">
-      <v-btn
-        color="primary"
-        icon
-        v-on="on"
-      >
+      <v-btn color="primary" icon v-on="on">
         <v-icon>mdi-dots-vertical</v-icon>
       </v-btn>
     </template>
     <v-list>
-      <v-list-item @click="onModificaClick">
-        <v-list-item-title>Modifica</v-list-item-title>
-      </v-list-item>
-      <v-list-item @click="onEliminaClick">
-        <v-list-item-title>Elimina</v-list-item-title>
-      </v-list-item>
-      <v-list-item @click="onComunicazioneClick">
-        <v-list-item-title>Invia Comunicazione</v-list-item-title>
-      </v-list-item>
-      <v-list-item @click="">
-        <v-list-item-title>Mostra Richieste</v-list-item-title>
-      </v-list-item>
-      <v-list-item @click="entraCome">
-        <v-list-item-title>Entra come...</v-list-item-title>
-      </v-list-item>
+      <template v-for="entry in menuOptions">
+        <v-divider
+          v-if="entry.divider && entry.if.value"
+          :key="'divider_' + entry.value"
+        ></v-divider>
+        <v-list-item
+          :key="entry.value"
+          :entry="entry"
+          v-if="entry.if ? entry.if.value : true"
+          @click="entry.action"
+        >
+          <v-list-item-title>{{
+            $t("menus." + entry.value)
+          }}</v-list-item-title>
+        </v-list-item>
+      </template>
     </v-list>
   </v-menu>
 </template>
 
 <script>
-import fakeUsers from '@/assets/fakeUsers'
-
-export default {
-  name: 'UsersCrudActions',
-  data () {
-    return {
-      item: {}
-    }
-  },
-  methods: {
-    onModificaClick () {
-      this.$router.push('/users/' + row._id)
+  import { computed } from "@vue/composition-api";
+  export default {
+    name: "UsersCrudActions",
+    props: {
+      item: Object,
     },
-    async onEliminaClick () {
-      /*this.$notifier.ask({
-        title: 'Eliminare l\'utente?',
-        html: `Sei sicuro di voler eliminare l'utente <strong>${this.item.nome} ${this.item.cognome}</strong>?`,
-        preConfirm: async () => {
-          try {
-            await this._eliminaUtente()
+    setup(props, { root, emit }) {
+      const { $alerts, $apiCalls, $auth, $router, $enums } = root;
 
-            this.$emit('remove', this.item)
+      const onEditClick = function () {
+        const { id } = props.item;
 
-            return this.$notifier.success()
-          } catch (e) {
-            this.$notifier.error(e)
-            return
-          }
-        }
-      })*/
+        $router.push("/users/" + id);
+      };
+
+      const onDeleteClick = async () => {
+        const { firstName, lastName, id } = props.item;
+
+        $alerts.askBeforeAction({
+          key: "delete-user",
+          data: { firstName, lastName },
+          settings: {
+            confirmButtonColor: "red",
+          },
+          preConfirm: async function () {
+            await $apiCalls.userDelete(id);
+
+            emit("userDeleted", props.item);
+          },
+        });
+      };
+
+      const onSendCommunicationClick = function () {};
+
+      const onShowRequestsClick = function () {};
+
+      const menuOptions = [
+        {
+          value: "edit",
+          action: onEditClick,
+        },
+        {
+          value: "sendCommunication",
+          action: onSendCommunicationClick,
+          if: computed(() => props.item.id !== $auth.user.id),
+        },
+        {
+          value: "showRequests",
+          action: onShowRequestsClick,
+          if: computed(
+            () =>
+              props.item.id !== $auth.user.id &&
+              [$enums.UserRoles.CLIENTE, $enums.UserRoles.AGENTE].includes(
+                props.item.role
+              )
+          ),
+        },
+        {
+          value: "enterAs",
+          if: computed(() => false),
+        },
+        {
+          value: "delete",
+          action: onDeleteClick,
+          if: computed(() => props.item.id !== $auth.user.id),
+          divider: true,
+        },
+      ];
+
+      return {
+        menuOptions,
+      };
     },
-    onComunicazioneClick () {
-
-    },
-    async _eliminaUtente () {
-      /*try {
-        const postCall = await this.$axios.delete(`/api/users/delete`, { data: { userId: this.item.userId } })
-
-        return postCall
-      } catch (e) {
-        return Promise.reject(e)
-      }*/
-    },
-    async entraCome (user) {
-      /*try {
-        const resp = await this.$axios.post('/api/loginAs', { userId: this.item.userId })
-
-        window.open('/?setActiveUser=secondary')
-      } catch (e) {
-        this.$notifier.error(e)
-      }*/
-    }
-  }
-}
+    methods: {},
+  };
 </script>
 
 <style scoped>
