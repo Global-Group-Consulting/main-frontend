@@ -19,7 +19,7 @@ import UserRoles from '../enums/UserRoles'
 import usersTabs from '../config/tabs/usersIdTabs'
 import usersDataSchema from '../config/forms/usersDataSchema'
 
-export default function ({ $route, $apiCalls, $alerts, $router, $i18n }) {
+export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set }) {
   /**
    * @type {import('@vue/composition-api').Ref<Partial<import("../@types/UserFormData").UserDataSchema>>}
    */
@@ -29,6 +29,7 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n }) {
   })
   const userIsNew = computed(() => $route.params.id === "new" || !formData.value.id)
   const userRole = computed(() => formData.value.role)
+  const userAccountStatus = computed(() => formData.value.account_status)
   const userBirthItaly = computed(() => (formData.value.birthCountry || '').toLowerCase() === 'it')
   const userBusinessItaly = computed(() => (formData.value.businessCountry || '').toLowerCase() === 'it')
   const userLegalReprItaly = computed(() => (formData.value.legalRepresentativeCountry || '').toLowerCase() === 'it')
@@ -49,6 +50,7 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n }) {
   const formTabs = computed(() => usersTabs({
     userIsNew,
     userRole,
+    userAccountStatus,
     userIsPersonaGiuridica,
     userBirthItaly,
     userBusinessItaly,
@@ -68,11 +70,12 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n }) {
 
       if (userIsNew.value) {
         result = await $apiCalls.userCreate(formData.value)
+        $router.replace("/users/" + result.id)
       } else {
         result = await $apiCalls.userUpdate(formData.value)
-      }
 
-      $router.replace("/users/" + result.id)
+        $set(formData, "value", result)
+      }
 
       $alerts.toastSuccess("user-update-success")
     } catch (error) {
@@ -86,6 +89,7 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n }) {
     formSchemas,
     userIsNew,
     userRole,
+    userAccountStatus,
     userIsPersonaGiuridica,
     userBirthItaly,
     userBusinessItaly,

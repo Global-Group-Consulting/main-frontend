@@ -1,19 +1,13 @@
 /**
- * @typedef CallParams
- * @type {{}}
- * @property {String} method
- * @property {String} endPoint
- * @property {Boolean} setLoading
- * @property {{}} params
- * @property {{}} body
- * @property {String} [loadingDispatcher]
- * @property {Boolean} [returnRaw]=false
- * @property {Boolean} [downloadMode]=false
- * @property {Boolean} [uploadMode]=false
+ * @typedef {import("../@types/ApiCallsPlugin").ApiCallsParams} ApiCallsParams
  */
+/**
+ * @typedef {import("../@types/ApiCallsPlugin").ApiCallsSettings} ApiCallsSettings
+ */
+import { formDataFromObject } from "../plugins/utilities"
 
 export class BasicApiCall {
-  constructor (context) {
+  constructor(context) {
     this.store = context.store
     this.$axios = context.$axios
     this.$gLoading = null
@@ -22,16 +16,20 @@ export class BasicApiCall {
   }
 
   /**
-   * @param {CallParams} params
+   * @param {ApiCallsParams} params
    *
-   * @returns {Promise<*>}
-   * @private
+   * @returns {Promise<any>}
+   * @protected
    */
-  async _call (params) {
+  async _call(params) {
+
     if (!this.$gLoading) {
       this.$gLoading = this._context.$gLoading
     }
 
+    /**
+     * @type {ApiCallsSettings}
+     */
     const _settings = Object.assign({
       method: 'get',
       endPoint: null,
@@ -69,7 +67,7 @@ export class BasicApiCall {
       }
 
       if (_settings.data) {
-        axiosParams.data = _settings.data
+        axiosParams.data = _settings.uploadMode ? formDataFromObject(_settings.data) : _settings.data
       }
 
       if (_settings.params) {
@@ -81,6 +79,8 @@ export class BasicApiCall {
       }
 
       if (_settings.uploadMode) {
+        if (!axiosParams.headers) axiosParams.headers = {}
+
         axiosParams.headers['Content-Type'] = 'multipart/form-data'
       }
 
@@ -102,13 +102,13 @@ export class BasicApiCall {
 
   /**
    *
-   * @param {CallParams | String | {}} params
+   * @param {ApiCallsParams | String | {}} params
    * @returns {Promise<void>}
    * @protected
    */
-  async get (params) {
+  async get(params) {
     /**
-     * @type {CallParams}
+     * @type {ApiCallsParams}
      */
     const callParams = {}
 
@@ -128,7 +128,7 @@ export class BasicApiCall {
    * @returns {Promise<void>}
    * @protected
    */
-  async post (params) {
+  async post(params) {
     /**
      * @type {CallParams}
      */

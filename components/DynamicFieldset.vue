@@ -21,6 +21,7 @@
             v-bind="field"
             :items="translateItems(field)"
             :value="getValue(field, key)"
+            :field-key="key"
             @change="update(key, $event)"
             :ref="`comp_${key}_${index}_${fieldIndex}`"
             :error-messages="errorMessages[key]"
@@ -67,6 +68,7 @@
   import { VTextField, VTextarea, VSelect, VFileInput } from "vuetify/lib";
   import DatePicker from "@/components/forms/inputs/DatePicker";
   import MoneyInput from "@/components/forms/inputs/MoneyInput";
+  import FileUploader from "@/components/forms/inputs/FileUploader";
   import ContractSign from "@/components/hompage/activationWizard/ContractSign";
 
   import { validationRules, errorMessages } from "@/mixins/ValidationsParser";
@@ -85,6 +87,7 @@
       ContractSign,
       VTextarea,
       MoneyInput,
+      FileUploader,
     },
     mixins: [validationMixin],
     validations() {
@@ -146,7 +149,7 @@
       getValue(field, key) {
         let value = this.value[key];
 
-        if (field.formatter) {
+        if (field.formatter && this.$options.filters[field.formatter]) {
           value = this.$options.filters[field.formatter](
             value,
             field.formatterParams

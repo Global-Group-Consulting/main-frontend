@@ -47,7 +47,7 @@ export default {
     'title': 'Anagrafica',
     'title-new-user': 'Anagrafica',
     'title-new-with-role': 'Nuovo {role}',
-    'subtitle': '',
+    'subtitle': 'Stato utente: <strong>{accountState}</strong>',
     'subtitle-new-user': 'Creazione di un nuovo utente',
     'subtitle-new-user-with-role': 'Creazione di un nuovo utente con ruolo <strong>"${role}"</strong>',
     'btn-go-back-tooltip': 'Torna all\'elenco degli utenti',

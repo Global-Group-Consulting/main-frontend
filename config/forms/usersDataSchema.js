@@ -6,7 +6,7 @@ import Genders from '@/enums/Genders'
 import moment from 'moment'
 
 /**
- * @typedef FormContext
+ * @typedef {{}} FormContext
  *
  * @property {{}} $auth
  * @property {{}} $i18n
@@ -31,6 +31,7 @@ export function basicData(formContext) {
           component: 'v-select',
           // disabled: formContext.userCheckingData,
           items: PersonTypes,
+          formatter: 'numberCasting',
           validations: {
             required: {}
           }
@@ -98,6 +99,10 @@ export function basicData(formContext) {
         'docExpiration': {
           'component': 'date-picker',
           'min': moment().format('YYYY-MM-DD')
+        },
+        'docAttachment': {
+          component: "file-uploader",
+          files: formContext.formData.files
         }
 
       }
@@ -212,6 +217,7 @@ export function extraData(formContext) {
       cols: {
         'role': {
           component: 'v-select',
+          formatter: 'numberCasting',
           items: formContext.userIsNew ? UserRoles : UserRoles.list.filter(_role => {
             const roleId = +UserRoles.get(_role.text).index
             const adminRoles = [UserRoles.ADMIN, UserRoles.SERV_CLIENTI]

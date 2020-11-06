@@ -6,7 +6,7 @@ import ToastedOptions from "../config/vue-toasted"
 
 Vue.use(Toasted, ToastedOptions)
 
-class Alerts {
+export class Alerts {
   constructor(i18n) {
     this.i18n = i18n
   }
@@ -28,6 +28,11 @@ class Alerts {
     return Swal.fire(Object.assign({}, defaultSettings, settings))
   }
 
+  /**
+   *
+   * @param {any} error
+   * @param {{}} [settings]
+   */
   error(error, settings = {}) {
     let errData = {}
 

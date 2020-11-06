@@ -24,6 +24,7 @@ export default {
   'doc-expiration': 'Data scadenza documento',
   'doc-number': 'Numero documento',
   'doc-type': 'Tipologia documento',
+  'doc-attachment': 'Allegato documento',
   'doc-front': 'Documento Fronte',
   'doc-back': 'Documento Retro',
   'doc-payment': 'Contabile di pagamento',
@@ -60,5 +61,7 @@ export default {
   'request-date': 'Data richiesta',
   'request-attachment': 'Contabile',
   'request-notes': 'Note',
-  'wallet-type': 'Wallet'
+  'wallet-type': 'Wallet',
+  'tooltip-download-file': "Scarica file",
+  'tooltip-remove-file': "Cancella file"
 }

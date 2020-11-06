@@ -1,7 +1,7 @@
 export default {
   "AccountStatuses": {
     "draft": "Bozza",
-    "pending_signature": "Attesa firms",
+    "pending_signature": "Attesa firma",
     "pending_confirm": "Attesa conferma",
     "created": "Creato",
     "validated": "Validato",

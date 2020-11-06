@@ -1,6 +1,6 @@
-import { BasicApiCall } from '~/classes/BasicApiCall'
+import { BasicApiCall } from '../classes/BasicApiCall'
 
-class ApiCalls extends BasicApiCall {
+export class ApiCalls extends BasicApiCall {
   constructor(context) {
     super(context)
   }
@@ -9,7 +9,8 @@ class ApiCalls extends BasicApiCall {
     return await this._call({
       method: "POST",
       endPoint: `/api/users`,
-      body: data
+      body: data,
+      uploadMode: true
     })
   }
 
@@ -17,7 +18,8 @@ class ApiCalls extends BasicApiCall {
     return await this._call({
       method: "PATCH",
       endPoint: `/api/users/${data.id}`,
-      body: data
+      body: data,
+      uploadMode: true
     })
   }
 
@@ -31,7 +33,7 @@ class ApiCalls extends BasicApiCall {
   async userApprove(userId) {
     return await this._call({
       method: "PUT",
-      endPoint: `/api/users/approve/${userId}`
+      endPoint: `/api/users/${userId}/approve`
     })
   }
 
@@ -73,6 +75,20 @@ class ApiCalls extends BasicApiCall {
     return await this.post({
       endPoint: "/api/auth/activate",
       body: data
+    })
+  }
+
+  async downloadFile(fileId) {
+    return await this.get({
+      endPoint: `/api/files/${fileId}`,
+      downloadMode: true
+    })
+  }
+
+  async deleteFile(fileId) {
+    return await this._call({
+      method: "DELETE",
+      endPoint: `/api/files/${fileId}`
     })
   }
 }

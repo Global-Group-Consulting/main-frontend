@@ -25,6 +25,7 @@
             color="green"
             text
             v-if="canApprove"
+            @click="approveUser"
           >
             {{ $t("pages.usersId.btn-approve") }}
           </tooltip-btn>
@@ -180,6 +181,7 @@
       const { $apiCalls, $alerts, $route, $i18n, $enums } = root;
       const currentTab = ref(0);
       const userForm = usersForm(root);
+
       const editMode = computed(
         () =>
           !userForm.userIsNew.value &&
@@ -212,6 +214,22 @@
         return schema;
       };
 
+      const approveUser = async function () {
+        try {
+          await $alerts.askBeforeAction({
+            key: "approve-user",
+            preConfirm: async () => {
+              debugger;
+              const result = await $apiCalls.userApprove(userForm.formData.value.id);
+              userForm.formData.value.account_status = result.account_status;
+            },
+            data: userForm.formData.value,
+          });
+        } catch (er) {
+          $alerts.error(er);
+        }
+      };
+
       pageData.title = computed(() => {
         if (userForm.userIsNew.value) {
           return $i18n.t(`pages.usersId.title-new-with-role`, {
@@ -224,6 +242,12 @@
 
         return $i18n.t(`pages.usersId.title`);
       });
+
+      pageData.subtitle = computed(() => {
+        return $i18n.t("pages.usersId.subtitle", {
+          accountState: $i18n.t(`enums.AccountStatuses.${AccountStatuses.get(userForm.userAccountStatus.value).id}`)
+        })
+      })
 
       // fetches user details
       onMounted(async () => {
@@ -254,55 +278,56 @@
         pageData,
         accentColor,
         canApprove,
+        approveUser,
       };
     },
     computed: {
       /*icon () {
-                                                          if (this.formData.contractNumber) {
-                                                            return 'mdi-account'
-                                                          }
+                                                                if (this.formData.contractNumber) {
+                                                                  return 'mdi-account'
+                                                                }
 
-                                                          return 'mdi-account-plus'
-                                                        },
-                                                        title () {
-                                                          if (this.formData.contractNumber) {
-                                                            return this.$t('pages.usersId.title')
-                                                          }
+                                                                return 'mdi-account-plus'
+                                                              },
+                                                              title () {
+                                                                if (this.formData.contractNumber) {
+                                                                  return this.$t('pages.usersId.title')
+                                                                }
 
-                                                          const userRole = this.formData.role
+                                                                const userRole = this.formData.role
 
-                                                          if (!userRole) {
-                                                            return this.$t('pages.usersId.title-new-user')
-                                                          }
+                                                                if (!userRole) {
+                                                                  return this.$t('pages.usersId.title-new-user')
+                                                                }
 
-                                                          return this.$t('pages.usersId.title-new-with-role', {
-                                                            role: this.$enums.UserRoles.get(this.formData.role || '').text
-                                                          })
-                                                        },
-                                                        subtitle () {
-                                                          if (this.formData.contractNumber) {
-                                                            return ''
-                                                          }
+                                                                return this.$t('pages.usersId.title-new-with-role', {
+                                                                  role: this.$enums.UserRoles.get(this.formData.role || '').text
+                                                                })
+                                                              },
+                                                              subtitle () {
+                                                                if (this.formData.contractNumber) {
+                                                                  return ''
+                                                                }
 
-                                                          const userRole = this.formData.contractNumber
+                                                                const userRole = this.formData.contractNumber
 
-                                                          if (!userRole) {
-                                                            return this.$t('pages.usersId.subtitle-new-user')
-                                                          }
+                                                                if (!userRole) {
+                                                                  return this.$t('pages.usersId.subtitle-new-user')
+                                                                }
 
-                                                          return this.$t('pages.usersId.subtitle-new-user-with-role', {
-                                                            role: this.$enums.UserRoles.get(this.formData.role).text
-                                                          })
-                                                        },*/
+                                                                return this.$t('pages.usersId.subtitle-new-user-with-role', {
+                                                                  role: this.$enums.UserRoles.get(this.formData.role).text
+                                                                })
+                                                              },*/
       /* personaGiuridica () {
-                                                          return this.formData.personType === this.$enums.PersonTypes.GIURIDICA
-                                                        }, */
+                                                                return this.formData.personType === this.$enums.PersonTypes.GIURIDICA
+                                                              }, */
       /* showReferenceAgent () {
-                                                          return [this.$enums.UserRoles.CLIENTE, this.$enums.UserRoles.AGENTE].includes(this.formData.role)
-                                                        }, */
+                                                                return [this.$enums.UserRoles.CLIENTE, this.$enums.UserRoles.AGENTE].includes(this.formData.role)
+                                                              }, */
       /* isNewUser () {
-                                                          return !this.formData.contractNumber
-                                                        } */
+                                                                return !this.formData.contractNumber
+                                                              } */
     },
     methods: {
       saveStatus() {},
