@@ -1,1 +1,1 @@
-web: npm run staging
+web: nuxt start
