@@ -17,5 +17,8 @@ export default {
   "remove-file-text": "Sei sicuro di voler cancellare l'allegato {clientName}? L'operazione non sarà reversibile.",
   "remove-file-confirmBtnText": "Si, cancella",
   "remove-file-cancelBtnText": "Annulla",
-  "remove-file-success": "Allegato rimosso correttamente!"
+  "remove-file-success": "Allegato rimosso correttamente!",
+
+  "logout-title": "Eseguire il logout?",
+  "logout-text": "Sei sicuro di voler uscire dall'applicazione^",
 }

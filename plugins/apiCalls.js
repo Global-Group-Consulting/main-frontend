@@ -60,21 +60,24 @@ export class ApiCalls extends BasicApiCall {
   async authForgot(data) {
     return await this.post({
       endPoint: "/api/auth/forgot",
-      body: data
+      body: data,
+      setLoading: true
     })
   }
 
   async authRecover(data) {
     return await this.post({
       endPoint: "/api/auth/resetPassword",
-      body: data
+      body: data,
+      setLoading: true
     })
   }
 
   async authActivate(data) {
     return await this.post({
       endPoint: "/api/auth/activate",
-      body: data
+      body: data,
+      setLoading: true
     })
   }
 

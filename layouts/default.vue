@@ -3,20 +3,31 @@
     <drawer v-model="drawerModel"></drawer>
 
     <v-app-bar clipped-left app>
-      <v-app-bar-nav-icon @click.stop="toggleDrawer"/>
+      <v-app-bar-nav-icon @click.stop="toggleDrawer" />
 
-      <v-toolbar-title v-text="title"/>
+      <v-toolbar-title v-text="title" />
 
       <v-spacer></v-spacer>
 
-      <v-btn @click="logout" text>
-        <v-icon class="mr-2">mdi-account-circle</v-icon>
+      <v-menu offset-y>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn text v-on="on" v-bind="attrs">
+            <v-icon class="mr-2">mdi-account-circle</v-icon>
 
-        <small class="caption" style="text-transform: none">
-          {{ $auth.user.firstName }} {{ $auth.user.lastName }}
-        </small>
-      </v-btn>
+            <small class="caption" style="text-transform: none">
+              {{ $auth.user.firstName }} {{ $auth.user.lastName }}
+            </small>
+          </v-btn>
+        </template>
 
+        <v-list>
+          <v-list-item @click="vieMyProfile">
+            <v-list-item-title>{{ $t("menus.myProfile") }}</v-list-item-title>
+          </v-list-item>
+          <v-divider></v-divider>
+          <v-list-item @click="logout">{{ $t("menus.logout") }}</v-list-item>
+        </v-list>
+      </v-menu>
     </v-app-bar>
 
     <v-main>
@@ -39,26 +50,39 @@
 </template>
 
 <script>
-import Drawer from '@/components/drawer/Drawer'
-import DynamicDialog from '@/components/DynamicDialog'
+  import Drawer from "@/components/drawer/Drawer";
+  import DynamicDialog from "@/components/DynamicDialog";
 
-export default {
-  components: { DynamicDialog, Drawer },
-  data () {
-    return {
-      title: 'Global Group Consulting',
-      drawerModel: false
-    }
-  },
-  methods: {
-    toggleDrawer () {
-      this.drawerModel = !this.drawerModel
+  export default {
+    components: { DynamicDialog, Drawer },
+    data() {
+      return {
+        title: "Global Group Consulting",
+        drawerModel: false,
+      };
     },
-    async logout () {
-      await this.$auth.logout("local")
-    }
-  }
-}
+    methods: {
+      toggleDrawer() {
+        this.drawerModel = !this.drawerModel;
+      },
+      async logout() {
+        try {
+          const result = await this.$alerts.ask({
+            title: this.$t("alerts.logout-title"),
+            text: this.$t("alerts.logout-title"),
+          });
+
+          await this.$auth.logout("local");
+        } catch (er) {
+          console.log(er);
+        }
+      },
+
+      async vieMyProfile() {
+        this.$router.push("/users/" + this.$auth.user.id);
+      },
+    },
+  };
 </script>
 
 <style lang="scss">

@@ -1,8 +1,8 @@
 <template>
   <div>
-    <activation-wizard v-if="userMustActivate"
+    <!-- <activation-wizard v-if="userMustActivate"
                        class="mb-5"
-    />
+    /> -->
 
     <dashboard-blocks></dashboard-blocks>
 

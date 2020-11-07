@@ -62,6 +62,13 @@ export default {
   ** See https://nuxtjs.org/api/configuration-components
   */
   components: true,
+
+  loading: {
+    continuous: true,
+    height: "4px",
+    color: "orange",
+  },
+
   /*
   ** Nuxt.js dev-modules
   */

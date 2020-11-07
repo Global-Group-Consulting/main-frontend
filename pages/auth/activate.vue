@@ -15,6 +15,7 @@
           :disabled="!formValid"
           color="primary"
           type="submit"
+          :loading="gLoading"
           @click="onFormSubmit"
         >
           {{ $t("pages.activate.recover-password") }}

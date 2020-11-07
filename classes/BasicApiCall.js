@@ -124,7 +124,7 @@ export class BasicApiCall {
 
   /**
    *
-   * @param {CallParams | String | {}} params
+   * @param {ApiCallsParams | String | {}} params
    * @returns {Promise<void>}
    * @protected
    */
