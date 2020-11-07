@@ -12,7 +12,7 @@
       <v-menu offset-y>
         <template v-slot:activator="{ on, attrs }">
           <v-btn text v-on="on" v-bind="attrs">
-            <v-icon class="mr-2">mdi-account-circle</v-icon>
+            <v-icon class="mr-3">mdi-account-circle</v-icon>
 
             <small class="caption" style="text-transform: none">
               {{ $auth.user.firstName }} {{ $auth.user.lastName }}
@@ -21,11 +21,30 @@
         </template>
 
         <v-list>
+          <v-list-item>
+            <v-list-item-subtitle>
+              {{ $auth.user.email }}<br />
+              {{
+                $t(
+                  "enums.UserRoles." + $enums.UserRoles.get($auth.user.role).id
+                )
+              }}</v-list-item-subtitle
+            >
+          </v-list-item>
+
+          <v-divider></v-divider>
+
           <v-list-item @click="vieMyProfile">
+            <v-icon class="mr-3">mdi-badge-account-horizontal-outline</v-icon>
             <v-list-item-title>{{ $t("menus.myProfile") }}</v-list-item-title>
           </v-list-item>
           <v-divider></v-divider>
-          <v-list-item @click="logout">{{ $t("menus.logout") }}</v-list-item>
+          <v-list-item @click="logout">
+            <v-icon class="mr-3">mdi-logout</v-icon>
+            <v-list-item-title>
+              {{ $t("menus.logout") }}
+            </v-list-item-title>
+          </v-list-item>
         </v-list>
       </v-menu>
     </v-app-bar>
