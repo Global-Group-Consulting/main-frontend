@@ -54,6 +54,11 @@
     auth: "guest",
     components: { DynamicFieldset, DefaultPanel },
 
+    head() {
+      return {
+        title: "Login",
+      };
+    },
     setup(props, { root }) {
       const { $enums } = root;
       const formData = ref({
