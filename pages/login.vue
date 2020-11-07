@@ -57,9 +57,8 @@
     setup(props, { root }) {
       const { $enums } = root;
       const formData = ref({
-        email: "mario.rossi@gmail.com",
-        password: "password",
-        role: 4,
+        email: "",
+        password: "",
       });
 
       const formSchema = computed((context) => ref(loginSchema(context)));
