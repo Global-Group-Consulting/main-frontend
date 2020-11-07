@@ -21,14 +21,6 @@
           >{{ $t("drawer.version") }}: {{ $store.state.appVersion }}</v-list-item
         >
       </v-list>
-
-      <!-- <div v-if="userMustActivate"
-           class="d-flex flex-grow-1 align-center">
-        <v-alert color="warning" tile>
-          Le voci del menu sono temporaneamente disbilitate fino a completa attivazione
-          dell'account.
-        </v-alert>
-      </div> -->
     </div>
   </v-navigation-drawer>
 </template>
