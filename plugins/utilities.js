@@ -13,10 +13,10 @@ export function formDataFromObject(obj, formDataInstance, prefix) {
   const formData = formDataInstance || new FormData()
 
   for (const entry of Object.entries(obj)) {
-    const key   = entry[0]
+    const key = entry[0]
     const value = entry[1]
 
-    if (typeof value === 'undefined') {
+    if (typeof value === 'undefined' || value === null) {
       console.info('- formDataFromObject undefinedValue', entry)
 
       continue
@@ -25,9 +25,9 @@ export function formDataFromObject(obj, formDataInstance, prefix) {
     if (value.constructor.name === 'Object') {
       formDataFromObject(value, formData, key)
     } else if (value instanceof Array) {
-      value.forEach(entry => formData.append((prefix ? `${ prefix }.` : '') + key + '[]', entry))
+      value.forEach(entry => formData.append((prefix ? `${prefix}.` : '') + key + '[]', entry))
     } else {
-      formData.append((prefix ? `${ prefix }.` : '') + key, value)
+      formData.append((prefix ? `${prefix}.` : '') + key, value)
     }
   }
 
