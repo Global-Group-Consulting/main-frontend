@@ -107,5 +107,9 @@ export default {
 
   serverMiddleware: [
     // { path: '/api', handler: '~/server/index.js' }
-  ]
+  ],
+
+  env: {
+    version: require('./package.json').version
+  }
 }

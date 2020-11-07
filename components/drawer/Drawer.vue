@@ -7,63 +7,66 @@
     dark
     :src="drawerBgSrc"
   >
-    <div class="d-flex flex-column"
-         style="height: 100%">
-      <v-list expand nav>
-        <div v-for="(item) in drawerItems" :key="item.id">
-          <drawer-item v-if="item.type !== 'group'"
-                       :data="item"/>
+    <div class="d-flex flex-column" style="height: 100%">
+      <v-list expand nav class="flex-grow-1">
+        <div v-for="item in drawerItems" :key="item.id">
+          <drawer-item v-if="item.type !== 'group'" :data="item" />
 
-          <drawer-group v-else
-                        :data="item"/>
+          <drawer-group v-else :data="item" />
         </div>
       </v-list>
 
-      <div v-if="userMustActivate"
+      <v-list class="">
+        <v-list-item
+          >{{ $t("drawer.version") }}: {{ 1.0 }}</v-list-item
+        >
+      </v-list>
+
+      <!-- <div v-if="userMustActivate"
            class="d-flex flex-grow-1 align-center">
         <v-alert color="warning" tile>
           Le voci del menu sono temporaneamente disbilitate fino a completa attivazione
           dell'account.
         </v-alert>
-      </div>
+      </div> -->
     </div>
   </v-navigation-drawer>
 </template>
 
 <script>
-import drawerItems from '@/config/drawerEntries'
-import DrawerItem from '@/components/drawer/DrawerItem'
-import DrawerGroup from '~/components/drawer/DrawerGroup'
-import { mapGetters } from 'vuex'
+  import drawerItems from "@/config/drawerEntries";
+  import DrawerItem from "@/components/drawer/DrawerItem";
+  import DrawerGroup from "~/components/drawer/DrawerGroup";
+  import { mapGetters } from "vuex";
 
-export default {
-  name: 'Drawer',
-  components: { DrawerGroup, DrawerItem },
-  data () {
-    return {}
-  },
-  props: {
-    value: {
-      type: Boolean,
-      default: false
-    }
-  },
-  computed: {
-    drawerItems,
-    ...mapGetters({
-      userMustActivate: 'user/mustActivate'
-    }),
-    user () {
-      return this.$auth.user || {}
+  export default {
+    name: "Drawer",
+    components: { DrawerGroup, DrawerItem },
+    data() {
+      return {};
     },
-    drawerBgSrc () {
-      const root = '/drawerBackgrounds/'
-      const ruoloBgSrc = this.$enums.UserRoles.get(this.user.role)?.bgSrc
+    props: {
+      value: {
+        type: Boolean,
+        default: false,
+      },
+    },
+    computed: {
+      drawerItems,
+      ...mapGetters({
+        userMustActivate: "user/mustActivate",
+      }),
+      user() {
+        return this.$auth.user || {};
+      },
+      drawerBgSrc() {
+        const root = "/drawerBackgrounds/";
+        const ruoloBgSrc = this.$enums.UserRoles.get(this.user.role)?.bgSrc;
 
-      return root + ruoloBgSrc
-    }
-  }
-}
+        return root + ruoloBgSrc;
+      },
+    },
+  };
 </script>
 
 <style lang="scss">
