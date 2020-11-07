@@ -16,7 +16,7 @@
       <v-row>
         <v-col cols="12">
           <v-card color="warning" dark>
-            <v-card-title>Nuove</v-card-title>
+            <v-card-title>In attesa di approvazione</v-card-title>
             <v-data-table
               light
               :headers="getTableHeaders(true)"
@@ -185,6 +185,7 @@ export default {
     onNewRequest () {
       this.$store.dispatch('dialog/updateStatus', {
         title: '',
+        readonly: false,
         data: {}
       })
     }

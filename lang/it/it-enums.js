@@ -36,9 +36,9 @@ export default {
   'RequestTypes': {
     'admin': 'Admin',
     'versamento': 'Versamento',
-    'interessi': 'Reinvestimento interessi',
-    'risc_capitale': 'Riscossione capitale',
-    'risc_interessi': 'Riscossione interessi',
+    'interessi': 'Reinvestimento provvigioni',
+    'risc_capitale': 'Prelievo deposito',
+    'risc_interessi': 'Riscossione rendite',
   },
   'WalletTypes': {
     'deposit': 'Deposito',

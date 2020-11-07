@@ -1,7 +1,7 @@
 <template>
   <v-layout>
     <portal to="dialog-content">
-      <v-form :disabled="readonly">
+      <v-form :disabled="!!readonly">
         <dynamic-fieldset :schema="requestSchema"
                           v-model="formData"
                           fill-row/>
@@ -62,18 +62,18 @@ export default {
     }),
     requestTypes () {
       return this.$enums.RequestTypes.list
-        .reduce((acc, item) => {
-          acc.push({
-            value: item.text,
-            text: this.$t(`enums.RequestTypes.${item.text}`)
-          })
+          .reduce((acc, item) => {
+            acc.push({
+              value: item.text,
+              text: this.$t(`enums.RequestTypes.${item.text}`)
+            })
 
-          return acc
-        }, [])
+            return acc
+          }, [])
     },
     availableAmount () {
       if (this.formData.availableAmount
-        && [this.$enums.UserRoles.ADMIN, this.$enums.UserRoles.SERV_CLIENTI].includes(this.$auth.user.role)) {
+          && [this.$enums.UserRoles.ADMIN, this.$enums.UserRoles.SERV_CLIENTI].includes(this.$auth.user.role)) {
         return this.formData.availableAmount
       }
 
@@ -95,7 +95,7 @@ export default {
       const allowedState = [this.$enums.RequestStatus.NUOVA]
 
       return allowedRoles.includes(this.$auth.user.role)
-        && allowedState.includes(this.formData.requestState)
+          && allowedState.includes(this.formData.requestState)
     }
   },
   methods: {
@@ -121,6 +121,12 @@ export default {
       deep: true,
       immediate: true,
       handler (value) {
+        if (!value) {
+          this.$set(this, "formData", {
+            walletType: 1
+          })
+        }
+
         Object.keys(value || {}).forEach(key => {
           if (key.indexOf('_') < 0) {
             this.$set(this.formData, key, value[key])

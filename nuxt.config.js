@@ -22,14 +22,17 @@ export default {
   ** See https://nuxtjs.org/api/configuration-head
   */
   head: {
-    titleTemplate: '%s - ' + process.env.npm_package_name,
-    title: process.env.npm_package_name || '',
+    titleTemplate: '%s — Global Group Consulting',
+    title: 'Web App',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
+      { hid: 'description', name: 'description', content: "Private area for Global Group Consulting" }
     ],
     link: [
+      { rel: 'apple-touch-icon', sizes: "180x180", href: "/apple-icon.png" },
+      { rel: 'icon', type: 'image/png', sizes: "32x32", href: "/favicon-32x32.png" },
+      { rel: 'icon', type: 'image/png', sizes: "16x16", href: "/favicon-16x16.png" },
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
