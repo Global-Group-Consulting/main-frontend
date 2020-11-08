@@ -6,11 +6,12 @@ import { computed, onMounted, reactive, ref } from '@vue/composition-api'
 import roleBasedConfig from '@/config/roleBasedConfig'
 import availableTableColumns from '@/config/tables/usersSchema'
 import UserRoles from "../enums/UserRoles"
+import Permissions from "./permissions"
 
 export default function (root) {
-
-  const { $apiCalls, $alerts, $enums, $set } = root
+  const { $apiCalls, $alerts, $enums, $set, $store } = root
   const { goToUser } = usersFunctions(root)
+  const permissions = Permissions(root)
 
   const usersGroups = reactive({
     [UserRoles.CLIENTE]: [],
@@ -42,6 +43,14 @@ export default function (root) {
 
             break;
         }
+
+        _entry.data = _entry.data.filter(_entry => {
+          if (_entry.superAdmin) {
+            return permissions.seeSuperAdmins
+          }
+
+          return true
+        })
 
         return _entry
       })
@@ -84,6 +93,8 @@ export default function (root) {
     root.$delete(group, index)
   }
 
+
+
   onMounted(async () => {
     const result = await fetchAllUsers()
 
@@ -92,6 +103,8 @@ export default function (root) {
     }
 
   })
+
+
 
   return {
     usersGroups,

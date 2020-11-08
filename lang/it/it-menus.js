@@ -4,4 +4,6 @@ export default {
   "sendCommunication": "Inica comunicazione",
   "showRequests": "Mostra richieste",
   "enterAs": "Entra come...",
+  "myProfile": "Il mio profilo",
+  "logout": "Esegui il logout",
 }

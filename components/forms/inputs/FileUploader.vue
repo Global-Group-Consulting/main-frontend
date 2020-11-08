@@ -10,6 +10,9 @@
       <template v-slot:label>
         <slot name="label"></slot>
       </template>
+      <template v-slot:prepend>
+        <slot name="prepend"></slot>
+      </template>
     </v-file-input>
 
     <v-list dense class="">
@@ -20,9 +23,7 @@
           :id="`fileListItem_${file._id}`"
           :key="file._id"
           dense
-          @click="downloadFile(file)"
-          v-on="on"
-          v-bind="attrs"
+          @click="openFile(file)"
           :title="`${$t('forms.tooltip-download-file')}: ${file.clientName}`"
         >
           <v-icon small class="mr-1">mdi-file</v-icon>
@@ -30,8 +31,19 @@
             {{ file.clientName }}
           </span>
           <v-spacer></v-spacer>
-          <v-btn icon @click.prevent="removeFile(file, $event)"
-            :title="$t('forms.tooltip-remove-file')">
+
+          <v-btn
+            icon
+            @click.prevent="downloadFile(file, $event)"
+            :title="$t('forms.tooltip-download-file')"
+          >
+            <v-icon small>mdi-download</v-icon>
+          </v-btn>
+          <v-btn
+            icon
+            @click.prevent="removeFile(file, $event)"
+            :title="$t('forms.tooltip-remove-file')"
+          >
             <v-icon small>mdi-close</v-icon>
           </v-btn>
         </v-list-item>
@@ -80,7 +92,27 @@
           : [];
       });
 
-      const downloadFile = async function (file) {
+      const openFile = async function (file) {
+        const result = await $apiCalls.downloadFile(file._id);
+
+        root.$store.dispatch("dialog/updateStatus", {
+          title: file.clientName,
+          id: "FilePreviewer",
+          fullscreen: false,
+          data: {
+            mimeType: `${file.type}/${file.subtype}`,
+            fileData: result.data,
+            fileUrl: URL.createObjectURL(
+              new Blob([result.data], { type: `${file.type}/${file.subtype}` })
+            ),
+          },
+        });
+      };
+
+      const downloadFile = async function (file, e) {
+        e.preventDefault();
+        e.stopPropagation();
+
         const result = await $apiCalls.downloadFile(file._id);
 
         jsFileDownload(
@@ -98,22 +130,24 @@
           (_entry) => _entry._id === file._id
         );
 
-        await $alerts.askBeforeAction({
-          key: "remove-file",
-          data: file,
-          settings: {
-            confirmButtonColor: "red",
-          },
-          preConfirm: async () => {
-            try {
-              await $apiCalls.deleteFile(file._id);
+        try {
+          await $alerts.askBeforeAction({
+            key: "remove-file",
+            data: file,
+            settings: {
+              confirmButtonColor: "red",
+            },
+            preConfirm: async () => {
+              try {
+                await $apiCalls.deleteFile(file._id);
 
-              $delete(props.files, index);
-            } catch (er) {
-              $alerts.error(er);
-            }
-          },
-        });
+                $delete(props.files, index);
+              } catch (er) {
+                $alerts.error(er);
+              }
+            },
+          });
+        } catch (er) {}
       };
 
       return {
@@ -121,6 +155,7 @@
         filesList,
         downloadFile,
         removeFile,
+        openFile,
       };
     },
     methods: {

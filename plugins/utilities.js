@@ -7,9 +7,10 @@ import { template as _template } from 'lodash'
  * @param {{}} obj
  * @param {null | FormData} [formDataInstance]
  * @param {null | string} [prefix]
+ * @param {boolean} [removeEmpty] @default true
  * @returns {FormData}
  */
-export function formDataFromObject(obj, formDataInstance, prefix) {
+export function formDataFromObject(obj, formDataInstance, prefix, removeEmpty = true) {
   const formData = formDataInstance || new FormData()
 
   for (const entry of Object.entries(obj)) {
@@ -17,7 +18,11 @@ export function formDataFromObject(obj, formDataInstance, prefix) {
     const value = entry[1]
 
     if (typeof value === 'undefined' || value === null) {
-      console.info('- formDataFromObject undefinedValue', entry)
+      if (removeEmpty) {
+        console.info('- formDataFromObject undefinedValue', entry)
+      } else {
+        formData.append((prefix ? `${prefix}.` : '') + key, "")
+      }
 
       continue
     }

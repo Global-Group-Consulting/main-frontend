@@ -1,37 +1,39 @@
 import DocumentTypes from '@/enums/DocumentTypes'
 import PersonTypes from '@/enums/PersonTypes'
-import UserRoles from '@/enums/UserRoles'
+import UserRoles from '../../enums/UserRoles'
 import Genders from '@/enums/Genders'
 
+import axios from "@nuxtjs/axios"
+
+import { computed } from '@vue/composition-api'
 import moment from 'moment'
 
 /**
- * @typedef {{}} FormContext
- *
- * @property {{}} $auth
- * @property {{}} $i18n
- * @property {Boolean} userIsNew
- * @property {Number} userRole
- * @property {Boolean} userIsPersonaGiuridica
- * @property {Boolean} userBirthItaly
- * @property {Boolean} userBusinessItaly
- * @property {Boolean} userLegalReprItaly
- * @property {Boolean} showReferenceAgent
+ * @typedef {import('../../@types/UserFormSchemaContext').UserFormSchemaContext} FormContext
  */
+
+/**
+ * @typedef {import('../../@types/FormSchema').FormSchema} FormSchema
+ */
+
 
 /**
  *
  * @param {FormContext} formContext
  */
 export function basicData(formContext) {
+  const userIsAdmin = computed(() => [UserRoles.ADMIN || UserRoles.SERV_CLIENTI].includes(+formContext.formData.role))
+
   return [
     {
       cols: {
         'personType': {
-          component: 'v-select',
-          // disabled: formContext.userCheckingData,
+          component: userIsAdmin.value ? '' : 'v-select',
+          formatter: userIsAdmin.value ? (value) => {
+            return formContext.$i18n.t("enums.PersonTypes." + PersonTypes.getIdName(value))
+          } : 'numberCasting',
           items: PersonTypes,
-          formatter: 'numberCasting',
+          disabled: userIsAdmin.value,
           validations: {
             required: {}
           }
@@ -185,7 +187,10 @@ export function contactsData(formContext) {
 }
 
 /**
+ * This section won't be visible to admin users
+ *
  * @param {FormContext} formContext
+ * @returns {FormSchema[]}
  */
 export function contractData(formContext) {
   return [
@@ -199,9 +204,33 @@ export function contractData(formContext) {
           disabled: true,
           if: !formContext.userIsNew,
         },
-        'contractPercentage': {},
+        'contractPercentage': {
+          type: "number",
+          formatter: "percentageFormatter",
+          validations: {
+            maxValue: {
+              params: 50
+            }
+          }
+        },
+      }
+    },
+    {
+      cols: {
         'contractIban': {},
         'contractBic': {}
+      }
+    },
+    {
+      cols: {
+        'contractInitialInvestment': {
+          // formatter: "moneyFormatter"
+          component: "money-input"
+        },
+        'contractInvestmentAttachment': {
+          component: "file-uploader",
+          files: formContext.formData.files
+        },
       }
     }
   ]
@@ -209,16 +238,20 @@ export function contractData(formContext) {
 
 /**
  * @param {FormContext} formContext
+ * @returns {FormSchema[]}
  */
 export function extraData(formContext) {
+  const { changeRole, changeAgenteRif, userRole } = formContext.permissions
+
   return [
     {
       disableEditMode: true,
       cols: {
         'role': {
-          component: 'v-select',
-          formatter: 'numberCasting',
-          items: formContext.userIsNew ? UserRoles : UserRoles.list.filter(_role => {
+          component: changeRole ? 'v-select' : '',
+          formatter: changeRole ? 'numberCasting' :
+            (value) => formContext.$i18n.t("enums.UserRoles." + UserRoles.getIdName(value)),
+          items: changeRole ? formContext.userIsNew ? UserRoles : UserRoles.list.filter(_role => {
             const roleId = +UserRoles.get(_role.text).index
             const adminRoles = [UserRoles.ADMIN, UserRoles.SERV_CLIENTI]
 
@@ -231,14 +264,45 @@ export function extraData(formContext) {
             entry.text = formContext.$i18n.t("enums.UserRoles." + entry.text)
 
             return entry
-          }),
-          disabled: formContext.$auth.user.id === this.formData.id,
+          }) : null,
+          disabled: formContext.$auth.user.id === this.formData.id || !changeRole,
           validations: {
             required: {}
           }
         },
         'referenceAgent': {
-          if: formContext.showReferenceAgent
+          if: formContext.showReferenceAgent,
+          component: changeAgenteRif ? 'v-select' : null,
+          disabled: !changeAgenteRif,
+          clearable: true,
+          formatter: !changeAgenteRif ? (value) => {
+            if (!value) {
+              return
+            }
+
+            const foundedUser = formContext.$store.getters.agentsList.find(_user => _user.id === value)
+
+            if (!foundedUser) {
+              return
+            }
+
+            return `${foundedUser.firstName} ${foundedUser.lastName}`
+
+          } : null,
+          items: !changeAgenteRif ? null : formContext.$store.getters.agentsList
+            .reduce((acc, curr) => {
+              if (+formContext.formData.role === UserRoles.AGENTE
+                && curr.id === formContext.formData.id) {
+                return acc
+              }
+
+              acc.push({
+                text: curr.firstName + " " + curr.lastName,
+                value: curr.id,
+              })
+
+              return acc
+            }, [])
         }
       }
     },

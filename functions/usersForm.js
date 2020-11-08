@@ -18,8 +18,9 @@ import UserRoles from '../enums/UserRoles'
 
 import usersTabs from '../config/tabs/usersIdTabs'
 import usersDataSchema from '../config/forms/usersDataSchema'
+import Permissions from './permissions'
 
-export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set }) {
+export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set, $auth }) {
   /**
    * @type {import('@vue/composition-api').Ref<Partial<import("../@types/UserFormData").UserDataSchema>>}
    */
@@ -27,14 +28,15 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set }) {
     role: UserRoles.CLIENTE,
     personType: PersonTypes.FISICA
   })
+  const permissions = Permissions({ $auth })
   const userIsNew = computed(() => $route.params.id === "new" || !formData.value.id)
   const userRole = computed(() => formData.value.role)
   const userAccountStatus = computed(() => formData.value.account_status)
   const userBirthItaly = computed(() => (formData.value.birthCountry || '').toLowerCase() === 'it')
   const userBusinessItaly = computed(() => (formData.value.businessCountry || '').toLowerCase() === 'it')
   const userLegalReprItaly = computed(() => (formData.value.legalRepresentativeCountry || '').toLowerCase() === 'it')
-  const showReferenceAgent = computed(() => [UserRoles.CLIENTE, UserRoles.AGENTE].includes(userRole))
-  const userIsPersonaGiuridica = computed(() => formData.value.personType === PersonTypes.GIURIDICA)
+  const showReferenceAgent = computed(() => [UserRoles.CLIENTE, UserRoles.AGENTE].includes(userRole.value))
+  const userIsPersonaGiuridica = computed(() => +formData.value.personType === PersonTypes.GIURIDICA)
 
   /**
    * @type {import('@vue/composition-api').ComputedRef<{
@@ -56,6 +58,7 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set }) {
     userBusinessItaly,
     userLegalReprItaly,
     showReferenceAgent,
+    permissions
   }))
 
   const formSchemas = Object.keys(usersDataSchema).reduce((acc, _key) => {
@@ -67,6 +70,8 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set }) {
   const onSaveClick = async () => {
     try {
       let result
+
+      delete formData.value.files
 
       if (userIsNew.value) {
         result = await $apiCalls.userCreate(formData.value)
@@ -95,6 +100,7 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set }) {
     userBusinessItaly,
     userLegalReprItaly,
     showReferenceAgent,
-    onSaveClick
+    onSaveClick,
+    permissions
   }
 }

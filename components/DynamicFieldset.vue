@@ -22,11 +22,11 @@
             :items="translateItems(field)"
             :value="getValue(field, key)"
             :field-key="key"
-            @change="update(key, $event)"
             :ref="`comp_${key}_${index}_${fieldIndex}`"
             :error-messages="errorMessages[key]"
             :class="{ 'edit-mode': editMode && !row.disableEditMode }"
             :edit-mode="editMode && !row.disableEditMode"
+            @change="update(key, $event)"
           >
             <template v-slot:label>
               {{ getLabel(key) }}
@@ -149,11 +149,15 @@
       getValue(field, key) {
         let value = this.value[key];
 
-        if (field.formatter && this.$options.filters[field.formatter]) {
-          value = this.$options.filters[field.formatter](
-            value,
-            field.formatterParams
-          );
+        if (field.formatter) {
+          if (typeof field.formatter === "function") {
+            value = field.formatter(value);
+          } else if (this.$options.filters[field.formatter]) {
+            value = this.$options.filters[field.formatter](
+              value,
+              field.formatterParams
+            );
+          }
         }
 
         return value;
@@ -203,6 +207,7 @@
         // announce validation statu only if must be validated
         mustValidate && this.announceStatus();
       },
+
       announceStatus() {
         this.$emit("status", {
           invalid: this.$v.$invalid,

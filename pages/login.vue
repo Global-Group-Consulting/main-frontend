@@ -5,6 +5,7 @@
         :schema="formSchema"
         v-model="formData"
         fill-row
+        ref="loginForm"
         @status="saveStatus($event)"
       />
     </v-form>
@@ -14,23 +15,11 @@
         :disabled="!formValid"
         color="primary"
         type="submit"
+        :loading="gLoading"
         @click="onFormSubmit"
-        v-if="!recover"
       >
         {{ $t("pages.login.log-in") }}
       </v-btn>
-
-      <div v-else class="d-flex">
-        <v-btn to="/accountLogin" text>
-          {{ $t("pages.login.back-to-login") }}
-        </v-btn>
-
-        <v-spacer></v-spacer>
-
-        <v-btn :disabled="!formValid" color="primary" type="submit">
-          {{ $t("pages.login.recover-password") }}
-        </v-btn>
-      </div>
     </div>
 
     <template v-slot:actions>
@@ -59,7 +48,7 @@
         title: "Login",
       };
     },
-    setup(props, { root }) {
+    setup(props, { root, refs: $refs }) {
       const { $enums } = root;
       const formData = ref({
         email: "",
@@ -68,23 +57,12 @@
 
       const formSchema = computed((context) => ref(loginSchema(context)));
 
-      return {
-        formData,
-        formSchema,
-      };
-    },
-    data() {
-      return {
-        formValid: true,
-        recover: false,
-      };
-    },
-    methods: {
-      saveStatus(state) {
-        this.formValid = !state.invalid;
-      },
-      async onFormSubmit() {
-        // first must be validate
+      const onFormSubmit = async function () {
+        if (!(await $refs["loginForm"].validate())) {
+          return;
+        }
+
+        this.gLoadingUpdate();
 
         try {
           this.$auth.reset();
@@ -93,6 +71,25 @@
         } catch (e) {
           this.$alerts.error(e);
         }
+
+        this.gLoadingUpdate(false);
+      };
+
+      return {
+        formData,
+        formSchema,
+        onFormSubmit,
+      };
+    },
+    data() {
+      return {
+        formValid: false,
+        recover: false,
+      };
+    },
+    methods: {
+      saveStatus(state) {
+        this.formValid = !state.invalid;
       },
     },
   };

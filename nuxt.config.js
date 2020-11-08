@@ -62,6 +62,13 @@ export default {
   ** See https://nuxtjs.org/api/configuration-components
   */
   components: true,
+
+  loading: {
+    continuous: true,
+    height: "4px",
+    color: "orange",
+  },
+
   /*
   ** Nuxt.js dev-modules
   */
@@ -77,7 +84,7 @@ export default {
     ['@nuxtjs/auth', nuxtAuth],
     ['nuxt-i18n', nuxtI18n],
     ['@nuxtjs/proxy'],
-    ['vue-scrollto/nuxt', nuxtVueScrollTo],
+    ['vue-scrollto/nuxt', nuxtVueScrollTo]
   ],
 
   /*
@@ -100,5 +107,9 @@ export default {
 
   serverMiddleware: [
     // { path: '/api', handler: '~/server/index.js' }
-  ]
+  ],
+
+  env: {
+    version: require('./package.json').version
+  }
 }

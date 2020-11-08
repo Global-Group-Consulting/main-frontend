@@ -14,4 +14,5 @@ export default {
   'developer': "Sviluppatore",
   'emailStatuses': "Stato Email",
   'errors': "Errori & Logs",
+  'version': "Versione"
 }

@@ -1,5 +1,7 @@
 import { BasicApiCall } from '../classes/BasicApiCall'
 
+import UserRoles from "../enums/UserRoles"
+
 export class ApiCalls extends BasicApiCall {
   constructor(context) {
     super(context)
@@ -38,10 +40,15 @@ export class ApiCalls extends BasicApiCall {
   }
 
   async fetchAllUsers() {
-    return (await this.get({
+    return await this.get({
       endPoint: `/api/users`
     })
-    )
+  }
+
+  async fetchAgents() {
+    return await this.get({
+      endPoint: `/api/users?f=` + UserRoles.AGENTE
+    })
   }
 
   async fetchUserDetails(_id) {
@@ -60,21 +67,24 @@ export class ApiCalls extends BasicApiCall {
   async authForgot(data) {
     return await this.post({
       endPoint: "/api/auth/forgot",
-      body: data
+      body: data,
+      setLoading: true
     })
   }
 
   async authRecover(data) {
     return await this.post({
       endPoint: "/api/auth/resetPassword",
-      body: data
+      body: data,
+      setLoading: true
     })
   }
 
   async authActivate(data) {
     return await this.post({
       endPoint: "/api/auth/activate",
-      body: data
+      body: data,
+      setLoading: true
     })
   }
 

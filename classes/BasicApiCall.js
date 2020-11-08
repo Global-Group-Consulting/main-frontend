@@ -67,7 +67,7 @@ export class BasicApiCall {
       }
 
       if (_settings.data) {
-        axiosParams.data = _settings.uploadMode ? formDataFromObject(_settings.data) : _settings.data
+        axiosParams.data = _settings.uploadMode ? formDataFromObject(_settings.data, null, null, false) : _settings.data
       }
 
       if (_settings.params) {
@@ -124,7 +124,7 @@ export class BasicApiCall {
 
   /**
    *
-   * @param {CallParams | String | {}} params
+   * @param {ApiCallsParams | String | {}} params
    * @returns {Promise<void>}
    * @protected
    */

@@ -91,7 +91,17 @@ export class Alerts {
       settings.showLoaderOnConfirm = true
     }
 
-    return Swal.fire(Object.assign({}, defaultSettings, settings))
+    return new Promise((resolve, reject) => {
+      Swal.fire(Object.assign({}, defaultSettings, settings))
+        .then((res) => {
+          if (res.isConfirmed) {
+            resolve(res)
+          } else {
+            reject(res)
+          }
+        })
+        .catch((er) => reject(er))
+    })
   }
 
   /**

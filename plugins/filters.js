@@ -2,8 +2,6 @@ import Vue from 'vue'
 import moment from 'moment'
 import Cleave from 'cleave.js'
 
-import CurrencyType from '@/enums/CurrencyType'
-
 class BriteConverter {
   static toBrite(value) {
     if (!value) {
@@ -45,6 +43,10 @@ export function numberCasting(value) {
   return value
 }
 
+export function percentageFormatter(value) {
+  return value
+}
+
 export function dateFormatter(value, includeHours) {
   if (!value) {
     return ''
@@ -74,12 +76,24 @@ export function datePickerFormatter(value) {
 }
 
 export function moneyFormatter(value, formatBrite = false) {
-  if (!value) {
+  if (!["string", "number"].includes(typeof value)) {
     return ''
   }
 
-  value = value.toString().replace(/\./g, ',')
+  if (value.toString().indexOf(",") > -1) {
+    value = value.toString().replace(/\./g, '')
+  } else {
+    value = value.toString().replace(/\./g, ',')
+  }
 
+  // remove all non numeric values
+  value = value.replace(/[^.,0-9]/g, "")
+
+  if (!value) {
+    return ""
+  }
+
+  // debugger
   const numeralFormatter = new Cleave.NumeralFormatter()
   numeralFormatter.delimiter = '.'
   numeralFormatter.numeralDecimalScale = !formatBrite ? 2 : 0
@@ -106,6 +120,7 @@ Vue.filter('dateFormatter', dateFormatter)
 Vue.filter('dateHourFormatter', dateHourFormatter)
 Vue.filter('datePickerFormatter', datePickerFormatter)
 Vue.filter('moneyFormatter', moneyFormatter)
+Vue.filter('percentageFormatter', percentageFormatter)
 Vue.filter('contractNumberFormatter', contractNumberFormatter)
 Vue.filter('regionFormatter', regionFormatter)
 Vue.filter('numberCasting', numberCasting)

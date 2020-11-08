@@ -1,4 +1,9 @@
+import { computed } from "@vue/composition-api";
+import UserRoles from "../../enums/UserRoles";
+
 export default function (formContext) {
+  const userType = computed(() => [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(+formContext.userRole.value) ? 'admin' : 'user')
+
   return [
     {
       title: 'user-data',
@@ -6,8 +11,8 @@ export default function (formContext) {
       schema: "basicData"
     },
     {
-      title: `user-${formContext.userIsPersonaGiuridica ? 'legal-' : ''}residence`,
-      cardTitle: `user-${formContext.userIsPersonaGiuridica ? 'legal-' : ''}residence`,
+      title: `user-${formContext.userIsPersonaGiuridica.value ? 'legal-' : ''}residence`,
+      cardTitle: `user-${formContext.userIsPersonaGiuridica.value ? 'legal-' : ''}residence`,
       schema: "addressData"
     },
     {
@@ -18,12 +23,13 @@ export default function (formContext) {
     {
       title: 'contract',
       cardTitle: 'contract',
-      schema: "contractData"
+      schema: "contractData",
+      if: userType.value === "user"
     },
     {
       title: 'other',
       cardTitle: 'other',
       schema: "extraData"
     }
-  ]
+  ].filter(_entry => typeof _entry.if === 'boolean' ? _entry.if : true)
 }
