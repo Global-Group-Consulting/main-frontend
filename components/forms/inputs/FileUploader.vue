@@ -10,6 +10,9 @@
       <template v-slot:label>
         <slot name="label"></slot>
       </template>
+      <template v-slot:prepend>
+        <slot name="prepend"></slot>
+      </template>
     </v-file-input>
 
     <v-list dense class="">

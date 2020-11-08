@@ -188,7 +188,7 @@
     components: { UserMessage, DynamicFieldset, PageHeader, FilePreviewer },
     middleware: ["pagesAuth"],
     setup(props, { root }) {
-      const { $apiCalls, $alerts, $route, $i18n, $enums } = root;
+      const { $apiCalls, $alerts, $route, $i18n, $enums, $store } = root;
       const currentTab = ref(0);
       const permissions = Permissions(root);
       const userForm = usersForm(root);
@@ -270,6 +270,8 @@
       // fetches user details
       onMounted(async () => {
         const userId = $route.params.id;
+
+        $store.dispatch("fetchAgentsList", { $apiCalls });
 
         if (userId === "new") {
           userForm.formData.value.role =

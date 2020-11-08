@@ -1,5 +1,7 @@
 import { BasicApiCall } from '../classes/BasicApiCall'
 
+import UserRoles from "../enums/UserRoles"
+
 export class ApiCalls extends BasicApiCall {
   constructor(context) {
     super(context)
@@ -38,10 +40,15 @@ export class ApiCalls extends BasicApiCall {
   }
 
   async fetchAllUsers() {
-    return (await this.get({
+    return await this.get({
       endPoint: `/api/users`
     })
-    )
+  }
+
+  async fetchAgents() {
+    return await this.get({
+      endPoint: `/api/users?f=` + UserRoles.AGENTE
+    })
   }
 
   async fetchUserDetails(_id) {

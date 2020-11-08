@@ -1,21 +1,34 @@
 <template>
-  <v-text-field v-bind="$attrs"
-                :value="formattedValue"
-                :prefix="prefix"
-                @input="onInput"
-                @change="onChange"
-                @focus="onFocus"
-                @blur="onBlur"
+  <v-text-field
+    v-bind="$attrs"
+    :value="formattedValue"
+    :prefix="prefix"
+    @input="onInput"
+    @change="onChange"
+    @focus="onFocus"
+    @blur="onBlur"
+    ref="textInput"
   >
-    <template v-slot:append-outer>
-      <em v-html="suffix"
-          class="v-text-field__suffix mt-1"></em>
+    <template v-slot:label>
+      <slot name="label"></slot>
+    </template>
+    <template v-slot:prepend>
+      <slot name="prepend"></slot>
+    </template>
+
+    <template v-slot:append-outer v-if="suffix">
+      <em v-html="suffix" class="v-text-field__suffix mt-1"></em>
 
       <span class="mx-1" v-if="suffix && showMax"></span>
 
-      <v-btn text v-if="showMax" small outlined
-             color="primary"
-             @click="onMaxClick">
+      <v-btn
+        text
+        v-if="showMax"
+        small
+        outlined
+        color="primary"
+        @click="onMaxClick"
+      >
         MAX
       </v-btn>
     </template>
@@ -23,86 +36,102 @@
 </template>
 
 <script>
-export default {
-  name: 'MoneyInput',
-  data () {
-    return {
-      numericValue: 0,
-      hasFocus: false,
-    }
-  },
-  props: {
-    value: Number | String,
-    currency: Number,
-    showMax: Boolean,
-    maxValue: Number
-  },
-  computed: {
-    prefix () {
-      return this.$enums.CurrencyType.get(this.activeCurrency)?.symbol
+  export default {
+    name: "MoneyInput",
+    data() {
+      return {
+        numericValue: 0,
+        hasFocus: false,
+      };
     },
-    suffix () {
-      const value = this.activeCurrency === 1 ? this.briteValue : this.numericValue
-      const prefixCurrency = this.activeCurrency === 1 ? 2 : 1
-      const currency = this.$enums.CurrencyType.get(prefixCurrency)?.symbol
-      const formatted = this.$options.filters.moneyFormatter(value, prefixCurrency === 2)
+    props: {
+      value: Number | String,
+      currency: {
+        type: Number,
+        default: 1,
+      },
+      showMax: Boolean,
+      maxValue: Number,
+    },
+    computed: {
+      prefix() {
+        return this.$enums.CurrencyType.get(this.activeCurrency)?.symbol;
+      },
+      suffix() {
+        const value =
+          this.activeCurrency === 1 ? this.briteValue : this.numericValue;
+        const prefixCurrency = this.activeCurrency === 1 ? 2 : 1;
+        const currency = this.$enums.CurrencyType.get(prefixCurrency)?.symbol;
+        const formatted = this.$options.filters.moneyFormatter(
+          value,
+          prefixCurrency === 2
+        );
 
-      if (!formatted) {
-        return ''
-      }
+        if (!formatted) {
+          return "";
+        }
 
-      return `(${currency} ${formatted})`
-    },
-    activeCurrency () {
-      return this.hasFocus ? 1 : this.currency
-    },
-    briteValue () {
-      return this.numericValue * 2
-    },
-    formattedValue () {
-      const value = this.activeCurrency === 1 ? this.numericValue : this.briteValue
+        return `(${currency} ${formatted})`;
+      },
+      activeCurrency() {
+        return this.hasFocus ? 1 : this.currency;
+      },
+      briteValue() {
+        return this.numericValue * 2;
+      },
+      formattedValue() {
+        const value =
+          this.activeCurrency === 1 ? this.numericValue : this.briteValue;
 
-      return this.$options.filters.moneyFormatter(value, this.activeCurrency === 2)
-    }
-  },
-  methods: {
-    formatForEmit (value) {
-      let toEmit = value.toString()
+        const newValue = this.$options.filters.moneyFormatter(
+          value,
+          this.activeCurrency === 2
+        );
 
-      if (toEmit) {
-        toEmit = toEmit.replace(/\./g, '').replace(',', '.')
-      }
+        this.$refs.textInput && (this.$refs.textInput.$data.lazyValue = newValue);
 
-      return +toEmit
+        return newValue;
+      },
     },
-    onChange (value) {
-      this.$emit('change', this.formatForEmit(value))
-    },
-    onInput (value) {
-      this.$emit('input', this.formatForEmit(value))
-    },
-    onFocus () {
-      this.hasFocus = true
-    },
-    onBlur () {
-      this.hasFocus = false
-    },
-    onMaxClick () {
-      const value = this.maxValue
+    methods: {
+      formatForEmit(value) {
+        let toEmit = value.toString();
 
-      this.$emit('input', this.formatForEmit(value))
-      this.$emit('change', this.formatForEmit(value))
-    }
-  },
-  watch: {
-    value: {
-      immediate: true,
-      handler (val) {
-        this.numericValue = +val
-      }
+        if (toEmit) {
+          toEmit = toEmit.replace(/[^.,0-9]/g, "");
+          toEmit = toEmit.replace(/\./g, "").replace(",", ".");
+        }
+
+        return Number.isNaN(+toEmit) ? null : +toEmit;
+      },
+      onChange(value) {
+        this.$emit("change", this.formatForEmit(value));
+      },
+      onInput(value) {
+        this.$emit("input", this.formatForEmit(value));
+      },
+      onFocus() {
+        this.hasFocus = true;
+      },
+      onBlur() {
+        this.hasFocus = false;
+      },
+      onMaxClick() {
+        const value = this.maxValue;
+
+        this.$emit("input", this.formatForEmit(value));
+        this.$emit("change", this.formatForEmit(value));
+      },
     },
-  }
-}
+    watch: {
+      value: {
+        immediate: true,
+        handler(val) {
+          this.numericValue = +val;
+        },
+      },
+    },
+  };
 </script>
 
 <style scoped>

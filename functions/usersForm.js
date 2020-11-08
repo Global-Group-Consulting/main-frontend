@@ -35,8 +35,8 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set, $au
   const userBirthItaly = computed(() => (formData.value.birthCountry || '').toLowerCase() === 'it')
   const userBusinessItaly = computed(() => (formData.value.businessCountry || '').toLowerCase() === 'it')
   const userLegalReprItaly = computed(() => (formData.value.legalRepresentativeCountry || '').toLowerCase() === 'it')
-  const showReferenceAgent = computed(() => [UserRoles.CLIENTE, UserRoles.AGENTE].includes(userRole))
-  const userIsPersonaGiuridica = computed(() => formData.value.personType === PersonTypes.GIURIDICA)
+  const showReferenceAgent = computed(() => [UserRoles.CLIENTE, UserRoles.AGENTE].includes(userRole.value))
+  const userIsPersonaGiuridica = computed(() => +formData.value.personType === PersonTypes.GIURIDICA)
 
   /**
    * @type {import('@vue/composition-api').ComputedRef<{
@@ -70,6 +70,8 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set, $au
   const onSaveClick = async () => {
     try {
       let result
+
+      delete formData.value.files
 
       if (userIsNew.value) {
         result = await $apiCalls.userCreate(formData.value)

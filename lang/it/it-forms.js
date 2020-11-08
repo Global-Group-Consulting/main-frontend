@@ -20,6 +20,8 @@ export default {
   'contract-iban': 'Iban cliente',
   'contract-number': 'Numero contratto',
   'contract-percentage': 'Percentuale assegnata',
+  'contract-initial-investment': 'Investimento iniziale',
+  'contract-investment-attachment': 'Contabile versamento iniziale',
   'currency-type': 'Valuta di scambio',
   'doc-expiration': 'Data scadenza documento',
   'doc-number': 'Numero documento',

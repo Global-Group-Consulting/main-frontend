@@ -9,7 +9,7 @@ import UserRoles from "../enums/UserRoles"
 import Permissions from "./permissions"
 
 export default function (root) {
-  const { $apiCalls, $alerts, $enums, $set } = root
+  const { $apiCalls, $alerts, $enums, $set, $store } = root
   const { goToUser } = usersFunctions(root)
   const permissions = Permissions(root)
 
@@ -93,6 +93,8 @@ export default function (root) {
     root.$delete(group, index)
   }
 
+
+
   onMounted(async () => {
     const result = await fetchAllUsers()
 
@@ -101,6 +103,8 @@ export default function (root) {
     }
 
   })
+
+
 
   return {
     usersGroups,

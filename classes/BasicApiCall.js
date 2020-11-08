@@ -67,7 +67,7 @@ export class BasicApiCall {
       }
 
       if (_settings.data) {
-        axiosParams.data = _settings.uploadMode ? formDataFromObject(_settings.data) : _settings.data
+        axiosParams.data = _settings.uploadMode ? formDataFromObject(_settings.data, null, null, false) : _settings.data
       }
 
       if (_settings.params) {

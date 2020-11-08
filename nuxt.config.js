@@ -84,7 +84,7 @@ export default {
     ['@nuxtjs/auth', nuxtAuth],
     ['nuxt-i18n', nuxtI18n],
     ['@nuxtjs/proxy'],
-    ['vue-scrollto/nuxt', nuxtVueScrollTo],
+    ['vue-scrollto/nuxt', nuxtVueScrollTo]
   ],
 
   /*

@@ -3,25 +3,19 @@ import PersonTypes from '@/enums/PersonTypes'
 import UserRoles from '../../enums/UserRoles'
 import Genders from '@/enums/Genders'
 
+import axios from "@nuxtjs/axios"
+
 import { computed } from '@vue/composition-api'
 import moment from 'moment'
 
 /**
- * @typedef {{}} FormContext
- *
- * @property {{}} $auth
- * @property {{}} $i18n
- * @property {Boolean} userIsNew
- * @property {Number} userRole
- * @property {Boolean} userIsPersonaGiuridica
- * @property {Boolean} userBirthItaly
- * @property {Boolean} userBusinessItaly
- * @property {Boolean} userLegalReprItaly
- * @property {Boolean} showReferenceAgent
- * @property {Permissions} permissions
- * @property {{}} $auth
- * @property {{}} $i18n
+ * @typedef {import('../../@types/UserFormSchemaContext').UserFormSchemaContext} FormContext
  */
+
+/**
+ * @typedef {import('../../@types/FormSchema').FormSchema} FormSchema
+ */
+
 
 /**
  *
@@ -193,7 +187,10 @@ export function contactsData(formContext) {
 }
 
 /**
+ * This section won't be visible to admin users
+ *
  * @param {FormContext} formContext
+ * @returns {FormSchema[]}
  */
 export function contractData(formContext) {
   return [
@@ -207,9 +204,33 @@ export function contractData(formContext) {
           disabled: true,
           if: !formContext.userIsNew,
         },
-        'contractPercentage': {},
+        'contractPercentage': {
+          type: "number",
+          formatter: "percentageFormatter",
+          validations: {
+            maxValue: {
+              params: 50
+            }
+          }
+        },
+      }
+    },
+    {
+      cols: {
         'contractIban': {},
         'contractBic': {}
+      }
+    },
+    {
+      cols: {
+        'contractInitialInvestment': {
+          // formatter: "moneyFormatter"
+          component: "money-input"
+        },
+        'contractInvestmentAttachment': {
+          component: "file-uploader",
+          files: formContext.formData.files
+        },
       }
     }
   ]
@@ -217,9 +238,10 @@ export function contractData(formContext) {
 
 /**
  * @param {FormContext} formContext
+ * @returns {FormSchema[]}
  */
 export function extraData(formContext) {
-  const { changeRole } = formContext.permissions
+  const { changeRole, changeAgenteRif, userRole } = formContext.permissions
 
   return [
     {
@@ -249,7 +271,38 @@ export function extraData(formContext) {
           }
         },
         'referenceAgent': {
-          if: formContext.showReferenceAgent
+          if: formContext.showReferenceAgent,
+          component: changeAgenteRif ? 'v-select' : null,
+          disabled: !changeAgenteRif,
+          clearable: true,
+          formatter: !changeAgenteRif ? (value) => {
+            if (!value) {
+              return
+            }
+
+            const foundedUser = formContext.$store.getters.agentsList.find(_user => _user.id === value)
+
+            if (!foundedUser) {
+              return
+            }
+
+            return `${foundedUser.firstName} ${foundedUser.lastName}`
+
+          } : null,
+          items: !changeAgenteRif ? null : formContext.$store.getters.agentsList
+            .reduce((acc, curr) => {
+              if (+formContext.formData.role === UserRoles.AGENTE
+                && curr.id === formContext.formData.id) {
+                return acc
+              }
+
+              acc.push({
+                text: curr.firstName + " " + curr.lastName,
+                value: curr.id,
+              })
+
+              return acc
+            }, [])
         }
       }
     },
