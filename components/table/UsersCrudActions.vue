@@ -28,6 +28,8 @@
 
 <script>
   import { computed } from "@vue/composition-api";
+  import Permissions from "../../functions/permissions";
+
   export default {
     name: "UsersCrudActions",
     props: {
@@ -35,6 +37,7 @@
     },
     setup(props, { root, emit }) {
       const { $alerts, $apiCalls, $auth, $router, $enums } = root;
+      const permissions = Permissions(root);
 
       const onEditClick = function () {
         const { id } = props.item;
@@ -91,7 +94,9 @@
         {
           value: "delete",
           action: onDeleteClick,
-          if: computed(() => props.item.id !== $auth.user.id),
+          if: computed(
+            () => props.item.id !== $auth.user.id && permissions.deleteUser
+          ),
           divider: true,
         },
       ];

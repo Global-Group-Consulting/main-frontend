@@ -14,5 +14,10 @@ export default {
   comunicationDialog: {
     'timeline-opposite': 'Inviato da <strong>{firstName} {lastName}</strong> il {timestamp}.',
     'timeline-opposite-dense': 'Inviato il {timestamp}.'
+  },
+  filePreviewer: {
+    'title': '',
+    'btn-cancel': 'Chiudi',
+    'btn-download': 'Scarica',
   }
 }

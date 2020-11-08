@@ -18,8 +18,9 @@ import UserRoles from '../enums/UserRoles'
 
 import usersTabs from '../config/tabs/usersIdTabs'
 import usersDataSchema from '../config/forms/usersDataSchema'
+import Permissions from './permissions'
 
-export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set }) {
+export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set, $auth }) {
   /**
    * @type {import('@vue/composition-api').Ref<Partial<import("../@types/UserFormData").UserDataSchema>>}
    */
@@ -27,6 +28,7 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set }) {
     role: UserRoles.CLIENTE,
     personType: PersonTypes.FISICA
   })
+  const permissions = Permissions({ $auth })
   const userIsNew = computed(() => $route.params.id === "new" || !formData.value.id)
   const userRole = computed(() => formData.value.role)
   const userAccountStatus = computed(() => formData.value.account_status)
@@ -56,6 +58,7 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set }) {
     userBusinessItaly,
     userLegalReprItaly,
     showReferenceAgent,
+    permissions
   }))
 
   const formSchemas = Object.keys(usersDataSchema).reduce((acc, _key) => {
@@ -95,6 +98,7 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set }) {
     userBusinessItaly,
     userLegalReprItaly,
     showReferenceAgent,
-    onSaveClick
+    onSaveClick,
+    permissions
   }
 }

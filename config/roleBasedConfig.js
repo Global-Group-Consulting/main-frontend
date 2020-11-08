@@ -22,7 +22,7 @@ const admin = {
   tables: {
     users: {
       columns: [
-        'contractNumber',
+        'superAdmin',
         'firstName',
         'lastName',
         'email',
@@ -67,7 +67,6 @@ const servClienti = {
   tables: {
     users: {
       columns: [
-        'contractNumber',
         'firstName',
         'lastName',
         'email',

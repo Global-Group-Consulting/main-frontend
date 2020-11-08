@@ -6,6 +6,12 @@ export default {
   'accountStatus': { text: 'tables.account-status', value: 'account_status' },
   'referenceAgent': { text: 'tables.reference-agent', value: 'referenceAgent' },
   'validatedAt': { text: 'tables.validated-at', value: 'validated_at' },
+  'superAdmin': {
+    value: 'superAdmin',
+    sortable: false,
+    align: 'center',
+    width: '1%'
+  },
   'actions': {
     value: 'actions',
     sortable: false,

@@ -149,11 +149,15 @@
       getValue(field, key) {
         let value = this.value[key];
 
-        if (field.formatter && this.$options.filters[field.formatter]) {
-          value = this.$options.filters[field.formatter](
-            value,
-            field.formatterParams
-          );
+        if (field.formatter) {
+          if (typeof field.formatter === "function") {
+            value = field.formatter(value);
+          } else if (this.$options.filters[field.formatter]) {
+            value = this.$options.filters[field.formatter](
+              value,
+              field.formatterParams
+            );
+          }
         }
 
         return value;

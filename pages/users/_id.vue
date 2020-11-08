@@ -10,10 +10,11 @@
       <v-toolbar class="mb-5">
         <v-toolbar-items class="flex-fill">
           <tooltip-btn
+            v-if="permissions.seeOtherUsers"
             :tooltip="$t('pages.usersId.btn-go-back-tooltip')"
             icon
             icon-name="mdi-arrow-left"
-            @click="$router.back()"
+            @click="$router.push('/users')"
           >
           </tooltip-btn>
 
@@ -157,14 +158,21 @@
       </v-form>
     </v-flex>
 
-    <user-message></user-message>
+    <user-message
+      v-if="$store.getters['dialog/dialogId'] === 'UserMessage'"
+    ></user-message>
+
+    <file-previewer
+      v-if="$store.getters['dialog/dialogId'] === 'FilePreviewer'"
+    ></file-previewer>
   </v-layout>
 </template>
 
 <script>
   import PageHeader from "@/components/blocks/PageHeader";
   import DynamicFieldset from "@/components/DynamicFieldset";
-  import UserMessage from "@/components/dialogs/UserMessage";
+  import UserMessage from "../../components/dialogs/UserMessage";
+  import FilePreviewer from "../..//components/dialogs/FilePreviewer";
 
   import { onMounted, reactive, ref, computed } from "@vue/composition-api";
 
@@ -173,19 +181,23 @@
   import userDetails from "@/functions/userDetails";
   import pageBasic from "@/functions/pageBasic";
   import usersForm from "@/functions/usersForm";
+  import Permissions from "@/functions/permissions";
 
   export default {
     name: "_id",
-    components: { UserMessage, DynamicFieldset, PageHeader },
+    components: { UserMessage, DynamicFieldset, PageHeader, FilePreviewer },
+    middleware: ["pagesAuth"],
     setup(props, { root }) {
       const { $apiCalls, $alerts, $route, $i18n, $enums } = root;
       const currentTab = ref(0);
+      const permissions = Permissions(root);
       const userForm = usersForm(root);
 
       const editMode = computed(
         () =>
           !userForm.userIsNew.value &&
-          userForm.userRole.value === $enums.UserRoles.CLIENTE
+          userForm.userRole.value === $enums.UserRoles.CLIENTE &&
+          permissions.userType === "admin"
       );
 
       const pageData = pageBasic(root, "usersId");
@@ -220,7 +232,9 @@
             key: "approve-user",
             preConfirm: async () => {
               debugger;
-              const result = await $apiCalls.userApprove(userForm.formData.value.id);
+              const result = await $apiCalls.userApprove(
+                userForm.formData.value.id
+              );
               userForm.formData.value.account_status = result.account_status;
             },
             data: userForm.formData.value,
@@ -243,11 +257,15 @@
         return $i18n.t(`pages.usersId.title`);
       });
 
-      pageData.subtitle = computed(() => {
+      pageData.subtitle = computed(() => {
         return $i18n.t("pages.usersId.subtitle", {
-          accountState: $i18n.t(`enums.AccountStatuses.${AccountStatuses.get(userForm.userAccountStatus.value).id}`)
-        })
-      })
+          accountState: $i18n.t(
+            `enums.AccountStatuses.${
+              AccountStatuses.get(userForm.userAccountStatus.value).id
+            }`
+          ),
+        });
+      });
 
       // fetches user details
       onMounted(async () => {
@@ -279,56 +297,10 @@
         accentColor,
         canApprove,
         approveUser,
+        permissions,
       };
     },
-    computed: {
-      /*icon () {
-                                                                if (this.formData.contractNumber) {
-                                                                  return 'mdi-account'
-                                                                }
-
-                                                                return 'mdi-account-plus'
-                                                              },
-                                                              title () {
-                                                                if (this.formData.contractNumber) {
-                                                                  return this.$t('pages.usersId.title')
-                                                                }
-
-                                                                const userRole = this.formData.role
-
-                                                                if (!userRole) {
-                                                                  return this.$t('pages.usersId.title-new-user')
-                                                                }
-
-                                                                return this.$t('pages.usersId.title-new-with-role', {
-                                                                  role: this.$enums.UserRoles.get(this.formData.role || '').text
-                                                                })
-                                                              },
-                                                              subtitle () {
-                                                                if (this.formData.contractNumber) {
-                                                                  return ''
-                                                                }
-
-                                                                const userRole = this.formData.contractNumber
-
-                                                                if (!userRole) {
-                                                                  return this.$t('pages.usersId.subtitle-new-user')
-                                                                }
-
-                                                                return this.$t('pages.usersId.subtitle-new-user-with-role', {
-                                                                  role: this.$enums.UserRoles.get(this.formData.role).text
-                                                                })
-                                                              },*/
-      /* personaGiuridica () {
-                                                                return this.formData.personType === this.$enums.PersonTypes.GIURIDICA
-                                                              }, */
-      /* showReferenceAgent () {
-                                                                return [this.$enums.UserRoles.CLIENTE, this.$enums.UserRoles.AGENTE].includes(this.formData.role)
-                                                              }, */
-      /* isNewUser () {
-                                                                return !this.formData.contractNumber
-                                                              } */
-    },
+    computed: {},
     methods: {
       saveStatus() {},
       async goNext() {

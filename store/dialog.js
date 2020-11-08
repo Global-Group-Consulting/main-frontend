@@ -2,6 +2,7 @@ export const state = () => ({
   show: false,
   data: {
     title: '',
+    id: '',
     readonly: false,
     fullscreen: false,
     noActions: false,
@@ -10,13 +11,13 @@ export const state = () => ({
 })
 
 export const mutations = {
-  SHOW (state) {
+  SHOW(state) {
     state.show = true
   },
-  HIDE (state) {
+  HIDE(state) {
     state.show = false
   },
-  SET_DATA (state, payload) {
+  SET_DATA(state, payload) {
     state.data = payload
   }
 }
@@ -28,7 +29,7 @@ export const actions = {
    * @param {{}} payload
    * @return {*}
    */
-  updateStatus ({ commit }, payload) {
+  updateStatus({ commit }, payload) {
     if (!payload || payload === false) {
       commit('HIDE')
       commit('SET_DATA', {})
@@ -42,10 +43,13 @@ export const actions = {
 }
 
 export const getters = {
-  dialogData (state) {
+  dialogData(state) {
     return state.data || {}
   },
-  dialogState (state) {
+  dialogState(state) {
     return state.show || false
+  },
+  dialogId(state) {
+    return state.data?.id
   }
 }

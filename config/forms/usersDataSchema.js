@@ -1,8 +1,9 @@
 import DocumentTypes from '@/enums/DocumentTypes'
 import PersonTypes from '@/enums/PersonTypes'
-import UserRoles from '@/enums/UserRoles'
+import UserRoles from '../../enums/UserRoles'
 import Genders from '@/enums/Genders'
 
+import { computed } from '@vue/composition-api'
 import moment from 'moment'
 
 /**
@@ -17,6 +18,9 @@ import moment from 'moment'
  * @property {Boolean} userBusinessItaly
  * @property {Boolean} userLegalReprItaly
  * @property {Boolean} showReferenceAgent
+ * @property {Permissions} permissions
+ * @property {{}} $auth
+ * @property {{}} $i18n
  */
 
 /**
@@ -24,14 +28,18 @@ import moment from 'moment'
  * @param {FormContext} formContext
  */
 export function basicData(formContext) {
+  const userIsAdmin = computed(() => [UserRoles.ADMIN || UserRoles.SERV_CLIENTI].includes(+formContext.formData.role))
+
   return [
     {
       cols: {
         'personType': {
-          component: 'v-select',
-          // disabled: formContext.userCheckingData,
+          component: userIsAdmin.value ? '' : 'v-select',
+          formatter: userIsAdmin.value ? (value) => {
+            return formContext.$i18n.t("enums.PersonTypes." + PersonTypes.getIdName(value))
+          } : 'numberCasting',
           items: PersonTypes,
-          formatter: 'numberCasting',
+          disabled: userIsAdmin.value,
           validations: {
             required: {}
           }
@@ -211,14 +219,17 @@ export function contractData(formContext) {
  * @param {FormContext} formContext
  */
 export function extraData(formContext) {
+  const { changeRole } = formContext.permissions
+
   return [
     {
       disableEditMode: true,
       cols: {
         'role': {
-          component: 'v-select',
-          formatter: 'numberCasting',
-          items: formContext.userIsNew ? UserRoles : UserRoles.list.filter(_role => {
+          component: changeRole ? 'v-select' : '',
+          formatter: changeRole ? 'numberCasting' :
+            (value) => formContext.$i18n.t("enums.UserRoles." + UserRoles.getIdName(value)),
+          items: changeRole ? formContext.userIsNew ? UserRoles : UserRoles.list.filter(_role => {
             const roleId = +UserRoles.get(_role.text).index
             const adminRoles = [UserRoles.ADMIN, UserRoles.SERV_CLIENTI]
 
@@ -231,8 +242,8 @@ export function extraData(formContext) {
             entry.text = formContext.$i18n.t("enums.UserRoles." + entry.text)
 
             return entry
-          }),
-          disabled: formContext.$auth.user.id === this.formData.id,
+          }) : null,
+          disabled: formContext.$auth.user.id === this.formData.id || !changeRole,
           validations: {
             required: {}
           }

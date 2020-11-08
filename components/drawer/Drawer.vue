@@ -18,7 +18,7 @@
 
       <v-list class="">
         <v-list-item
-          >{{ $t("drawer.version") }}: {{ $store.state.appVersion }}</v-list-item
+          >{{ $t("drawer.version") }} beta {{ $store.state.appVersion }}</v-list-item
         >
       </v-list>
     </div>

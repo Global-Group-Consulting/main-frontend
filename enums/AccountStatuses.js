@@ -47,7 +47,7 @@ class AccountStatuses extends BasicEnum {
 
     this.data = {
       [this.DRAFT]: {
-        id: "draft"
+        id: "draft",
       },
       [this.PENDING_SIGNATURE]: {
         id: "pending_signature"
@@ -59,19 +59,24 @@ class AccountStatuses extends BasicEnum {
         id: "created"
       },
       [this.VALIDATED]: {
-        id: "validated"
+        id: "validated",
+        color: "#FFEE58"
       },
       [this.INCOMPLETE]: {
-        id: "incomplete"
+        id: "incomplete",
+        color: "#FFA726"
       },
       [this.MUST_REVALIDATE]: {
-        id: "must_revalidate"
+        id: "must_revalidate",
+        color: "#CE93D8"
       },
       [this.APPROVED]: {
-        id: "approved"
+        id: "approved",
+        color: "#cddc39"
       },
       [this.ACTIVE]: {
-        id: "active"
+        id: "active",
+        color: "#8bc34a"
       },
     }
   }
