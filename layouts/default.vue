@@ -69,41 +69,39 @@
 </template>
 
 <script>
-  import Drawer from "@/components/drawer/Drawer";
-  import DynamicDialog from "@/components/DynamicDialog";
+import Drawer from "@/components/drawer/Drawer";
+import DynamicDialog from "@/components/DynamicDialog";
 
-  export default {
-    components: { DynamicDialog, Drawer },
-    data() {
-      return {
-        title: "Global Group Consulting",
-        drawerModel: false,
-      };
+export default {
+  components: { DynamicDialog, Drawer },
+  data() {
+    return {
+      title: "Global Group Consulting",
+      drawerModel: false
+    };
+  },
+  methods: {
+    toggleDrawer() {
+      this.drawerModel = !this.drawerModel;
     },
-    methods: {
-      toggleDrawer() {
-        this.drawerModel = !this.drawerModel;
-      },
-      async logout() {
-        try {
-          const result = await this.$alerts.ask({
-            title: this.$t("alerts.logout-title"),
-            text: this.$t("alerts.logout-title"),
-          });
+    async logout() {
+      try {
+        const result = await this.$alerts.ask({
+          title: this.$t("alerts.logout-title"),
+          text: this.$t("alerts.logout-text")
+        });
 
-          await this.$auth.logout("local");
-        } catch (er) {
-          console.log(er);
-        }
-      },
-
-      async vieMyProfile() {
-        this.$router.push("/users/" + this.$auth.user.id);
-      },
+        await this.$auth.logout("local");
+      } catch (er) {
+        console.log(er);
+      }
     },
-  };
+
+    async vieMyProfile() {
+      this.$router.push("/users/" + this.$auth.user.id);
+    }
+  }
+};
 </script>
 
-<style lang="scss">
-
-</style>
+<style lang="scss"></style>

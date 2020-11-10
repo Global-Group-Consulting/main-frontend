@@ -5,7 +5,21 @@
         :title="pageData.title.value"
         :subtitle="pageData.subtitle.value"
         :icon="pageData.icon.value"
-      ></page-header>
+      >
+        <template v-slot:subtitle v-if="permissions.changeState">
+          <div v-html="pageData.subtitle.value" class="d-inline-block"></div>
+
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn icon dark @click="openChangeRoleDialog" v-on="on">
+                <v-icon>mdi-pencil</v-icon>
+              </v-btn>
+            </template>
+
+            <span>Modifica stato</span>
+          </v-tooltip>
+        </template>
+      </page-header>
 
       <v-toolbar class="mb-5">
         <v-toolbar-items class="flex-fill">
@@ -165,170 +179,201 @@
     <file-previewer
       v-if="$store.getters['dialog/dialogId'] === 'FilePreviewer'"
     ></file-previewer>
+
+    <status-change-dialog
+      v-if="$store.getters['dialog/dialogId'] === 'StatusChangeDialog'"
+      @accountStatusChanged="onAccountStatusChanged"
+    ></status-change-dialog>
   </v-layout>
 </template>
 
 <script>
-  import PageHeader from "@/components/blocks/PageHeader";
-  import DynamicFieldset from "@/components/DynamicFieldset";
-  import UserMessage from "../../components/dialogs/UserMessage";
-  import FilePreviewer from "../..//components/dialogs/FilePreviewer";
+import PageHeader from "@/components/blocks/PageHeader";
+import DynamicFieldset from "@/components/DynamicFieldset";
+import UserMessage from "../../components/dialogs/UserMessage";
+import FilePreviewer from "../..//components/dialogs/FilePreviewer";
+import StatusChangeDialog from "../..//components/dialogs/StatusChangeDialog";
 
-  import { onMounted, reactive, ref, computed } from "@vue/composition-api";
+import { onMounted, reactive, ref, computed } from "@vue/composition-api";
 
-  import AccountStatuses from "@/enums/AccountStatuses.js";
-  import UserRoles from "@/enums/UserRoles.js";
-  import userDetails from "@/functions/userDetails";
-  import pageBasic from "@/functions/pageBasic";
-  import usersForm from "@/functions/usersForm";
-  import Permissions from "@/functions/permissions";
+import AccountStatuses from "@/enums/AccountStatuses.js";
+import UserRoles from "@/enums/UserRoles.js";
+import userDetails from "@/functions/userDetails";
+import pageBasic from "@/functions/pageBasic";
+import usersForm from "../../functions/usersForm";
+import Permissions from "@/functions/permissions";
 
-  export default {
-    name: "_id",
-    components: { UserMessage, DynamicFieldset, PageHeader, FilePreviewer },
-    middleware: ["pagesAuth"],
-    setup(props, { root }) {
-      const { $apiCalls, $alerts, $route, $i18n, $enums, $store } = root;
-      const currentTab = ref(0);
-      const permissions = Permissions(root);
-      const userForm = usersForm(root);
+export default {
+  name: "_id",
+  components: {
+    UserMessage,
+    DynamicFieldset,
+    PageHeader,
+    FilePreviewer,
+    StatusChangeDialog
+  },
+  middleware: ["pagesAuth"],
+  setup(props, { root }) {
+    const { $apiCalls, $alerts, $route, $i18n, $enums, $store, $set } = root;
+    const currentTab = ref(0);
+    const permissions = Permissions(root);
+    const userForm = usersForm(root);
 
-      const editMode = computed(
-        () =>
-          !userForm.userIsNew.value &&
-          userForm.userRole.value === $enums.UserRoles.CLIENTE &&
-          permissions.userType === "admin"
+    const editMode = computed(
+      () =>
+        !userForm.userIsNew.value &&
+        userForm.userRole.value === $enums.UserRoles.CLIENTE &&
+        permissions.userType === "admin"
+    );
+
+    const pageData = pageBasic(root, "usersId");
+
+    const accentColor = computed(
+      () => $enums.UserRoles.get(userForm.userRole.value).color
+    );
+
+    const canApprove = computed(() => {
+      const formData = userForm.formData.value;
+
+      return (
+        formData.account_status === AccountStatuses.VALIDATED ||
+        (formData.account_status === AccountStatuses.DRAFT &&
+          [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(+formData.role))
       );
+    });
 
-      const pageData = pageBasic(root, "usersId");
+    const getFormSchema = function(tab) {
+      const schema = userForm.formSchemas[tab.schema];
 
-      const accentColor = computed(
-        () => $enums.UserRoles.get(userForm.userRole.value).color
-      );
+      if (!schema) {
+        return tab.schema;
+      }
 
-      const canApprove = computed(() => {
-        const formData = userForm.formData.value;
+      return schema;
+    };
 
-        return (
-          formData.account_status === AccountStatuses.VALIDATED ||
-          (formData.account_status === AccountStatuses.DRAFT &&
-            [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(+formData.role))
+    const approveUser = async function() {
+      try {
+        await $alerts.askBeforeAction({
+          key: "approve-user",
+          preConfirm: async () => {
+            debugger;
+            const result = await $apiCalls.userApprove(
+              userForm.formData.value.id
+            );
+            userForm.formData.value.account_status = result.account_status;
+          },
+          data: userForm.formData.value
+        });
+      } catch (er) {
+        $alerts.error(er);
+      }
+    };
+
+    const openChangeRoleDialog = function() {
+      root.$store.dispatch("dialog/updateStatus", {
+        title: $i18n.t("dialogs.statusChange.title", {
+          status: $i18n.t(
+            "enums.AccountStatuses." + userForm.formData.value.account_status
+          )
+        }),
+        id: "StatusChangeDialog",
+        fullscreen: false,
+        data: {
+          status: userForm.formData.value.account_status
+        }
+      });
+    };
+
+    const onAccountStatusChanged = function(userData) {
+      $set(userForm.formData.value, "account_status", userData.account_status);
+    };
+
+    pageData.title = computed(() => {
+      if (userForm.userIsNew.value) {
+        return $i18n.t(`pages.usersId.title-new-with-role`, {
+          role: $i18n.t(
+            "enums.UserRoles." +
+              $enums.UserRoles.getIdName(userForm.userRole.value)
+          )
+        });
+      }
+
+      return $i18n.t(`pages.usersId.title`);
+    });
+
+    pageData.subtitle = computed(() => {
+      return $i18n.t("pages.usersId.subtitle", {
+        accountState: $i18n.t(
+          `enums.AccountStatuses.${
+            AccountStatuses.get(userForm.userAccountStatus.value).id
+          }`
+        )
+      });
+    });
+
+    // fetches user details
+    onMounted(async () => {
+      const userId = $route.params.id;
+
+      $store.dispatch("fetchAgentsList", { $apiCalls });
+
+      if (userId === "new") {
+        userForm.formData.value.role =
+          +$route.query.type || $enums.UserRoles.CLIENTE;
+
+        return;
+      }
+
+      try {
+        userForm.formData.value = await $apiCalls.fetchUserDetails(
+          $route.params.id
         );
-      });
+      } catch (er) {
+        $alerts.error(er);
+      }
+    });
 
-      const getFormSchema = function (tab) {
-        const schema = userForm.formSchemas[tab.schema];
+    return {
+      currentTab,
+      editMode,
+      getFormSchema,
+      ...userForm,
+      ...userDetails(root),
+      pageData,
+      accentColor,
+      canApprove,
+      approveUser,
+      permissions,
+      openChangeRoleDialog,
+      onAccountStatusChanged
+    };
+  },
+  computed: {},
+  methods: {
+    saveStatus() {},
+    async goNext() {
+      const formValid = await this.$refs[
+        `dynamicForm_${this.currentTab}`
+      ][0].validate();
 
-        if (!schema) {
-          return tab.schema;
-        }
+      // If there form is invalid, don't proceed
+      if (!formValid) {
+        return;
+      }
 
-        return schema;
-      };
-
-      const approveUser = async function () {
-        try {
-          await $alerts.askBeforeAction({
-            key: "approve-user",
-            preConfirm: async () => {
-              debugger;
-              const result = await $apiCalls.userApprove(
-                userForm.formData.value.id
-              );
-              userForm.formData.value.account_status = result.account_status;
-            },
-            data: userForm.formData.value,
-          });
-        } catch (er) {
-          $alerts.error(er);
-        }
-      };
-
-      pageData.title = computed(() => {
-        if (userForm.userIsNew.value) {
-          return $i18n.t(`pages.usersId.title-new-with-role`, {
-            role: $i18n.t(
-              "enums.UserRoles." +
-                $enums.UserRoles.getIdName(userForm.userRole.value)
-            ),
-          });
-        }
-
-        return $i18n.t(`pages.usersId.title`);
-      });
-
-      pageData.subtitle = computed(() => {
-        return $i18n.t("pages.usersId.subtitle", {
-          accountState: $i18n.t(
-            `enums.AccountStatuses.${
-              AccountStatuses.get(userForm.userAccountStatus.value).id
-            }`
-          ),
-        });
-      });
-
-      // fetches user details
-      onMounted(async () => {
-        const userId = $route.params.id;
-
-        $store.dispatch("fetchAgentsList", { $apiCalls });
-
-        if (userId === "new") {
-          userForm.formData.value.role =
-            +$route.query.type || $enums.UserRoles.CLIENTE;
-
-          return;
-        }
-
-        try {
-          userForm.formData.value = await $apiCalls.fetchUserDetails(
-            $route.params.id
-          );
-        } catch (er) {
-          $alerts.error(er);
-        }
-      });
-
-      return {
-        currentTab,
-        editMode,
-        getFormSchema,
-        ...userForm,
-        ...userDetails(root),
-        pageData,
-        accentColor,
-        canApprove,
-        approveUser,
-        permissions,
-      };
+      this.currentTab += 1;
     },
-    computed: {},
-    methods: {
-      saveStatus() {},
-      async goNext() {
-        const formValid = await this.$refs[
-          `dynamicForm_${this.currentTab}`
-        ][0].validate();
-
-        // If there form is invalid, don't proceed
-        if (!formValid) {
-          return;
-        }
-
-        this.currentTab += 1;
-      },
-      goBack() {
-        this.currentTab -= 1;
-      },
-      onSendEmail() {
-        this.$store.dispatch("dialog/updateStatus", {
-          title: this.$t("dialogs.userMessage.title"),
-        });
-      },
+    goBack() {
+      this.currentTab -= 1;
     },
-  };
+    onSendEmail() {
+      this.$store.dispatch("dialog/updateStatus", {
+        title: this.$t("dialogs.userMessage.title")
+      });
+    }
+  }
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

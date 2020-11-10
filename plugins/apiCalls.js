@@ -39,6 +39,18 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
+  /**
+   * @param {{id: string, status: string}} data
+   */
+  async userChangeStatus(data) {
+    return await this.post({
+      endPoint: `/api/users/${data.id}/status`,
+      body: {
+        status: data.status
+      }
+    })
+  }
+
   async fetchAllUsers() {
     return await this.get({
       endPoint: `/api/users`

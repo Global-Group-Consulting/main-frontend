@@ -20,5 +20,14 @@ export default {
   "remove-file-success": "Allegato rimosso correttamente!",
 
   "logout-title": "Eseguire il logout?",
-  "logout-text": "Sei sicuro di voler uscire dall'applicazione^",
+  "logout-text": "Sei sicuro di voler uscire dall'applicazione?",
+
+  "change-status-title": "Cambiare lo stato?",
+  "change-status-text": "Sei sicuro di voler cambiare lo stato dell'utente da <strong>{oldStatus}</strong> a <strong>{newStatus}</strong>? L'operazione potrebbe causare malfunzionamenti all'account dell'utente.",
+  "change-status-confirmBtnText": "Si, cambia",
+  "change-status-cancelBtnText": "Annulla",
+  "change-status-success": "Allegato rimosso correttamente!",
+
+  "change-status-same-title": "Nulla da cambiare!",
+  "change-status-same-text": "Il nuovo stato coincide con l'attuale, pertanto non è possibile apportare alcuna modifica. Scegliere uno stato diverso o annullare l'operazione.",
 }
