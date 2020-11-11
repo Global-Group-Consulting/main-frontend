@@ -19,5 +19,11 @@ export default {
     'title': '',
     'btn-cancel': 'Chiudi',
     'btn-download': 'Scarica',
+  },
+  statusChange: {
+    'title': 'Modifica stato account ({status})',
+    'alert': "Attenzione!\nCambiare lo stato manualmente è molto pericoloso e può causare malfunzionamenti e corruzione dei dati. Procedete con molta cautela e solo se estremamente necessario!",
+    'btn-cancel': 'Annulla',
+    'btn-confirm': 'Applica',
   }
 }

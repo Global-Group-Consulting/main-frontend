@@ -47,6 +47,7 @@ export default {
   ** https://nuxtjs.org/guide/plugins
   */
   plugins: [
+    './plugins/axios.js',
     './plugins/alerts.js',
     './plugins/apiCalls.js',
     './plugins/filters.js',

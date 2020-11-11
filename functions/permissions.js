@@ -29,6 +29,7 @@ export default function ({ $auth }) {
     addUsers_agente: computed(() => userType.value === "admin" && !!superAdmin.value),
     addUsers_cliente: computed(() => userRole.value !== UserRoles.CLIENTE),
     changeRole: computed(() => !!superAdmin.value),
+    changeState: computed(() => !!superAdmin.value),
     changeAgenteRif: computed(() => !!superAdmin.value),
     deleteUser: computed(() => !!superAdmin.value),
     seeSuperAdmins: computed(() => !!superAdmin.value),

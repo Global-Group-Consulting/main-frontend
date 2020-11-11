@@ -33,10 +33,13 @@
           </div>
           <h3
             v-if="subtitle"
-            v-html="subtitle"
             class="display-1 font-weight-light white--text"
             style="opacity: 0.5"
-          ></h3>
+          >
+            <slot name="subtitle">
+              <div v-html="subtitle"></div>
+            </slot>
+          </h3>
         </v-row>
       </v-col>
     </v-row>
@@ -44,21 +47,20 @@
 </template>
 
 <script>
-  export default {
-    name: "PageHeader",
-    props: {
-      title: "",
-      subtitle: "",
-      icon: "",
-      showUserRole: Boolean,
-    },
-    computed: {
-      userRole() {
-        return this.$enums.UserRoles.get(this.$auth.user.role)?.id;
-      },
-    },
-  };
+export default {
+  name: "PageHeader",
+  props: {
+    title: "",
+    subtitle: "",
+    icon: "",
+    showUserRole: Boolean
+  },
+  computed: {
+    userRole() {
+      return this.$enums.UserRoles.get(this.$auth.user.role)?.id;
+    }
+  }
+};
 </script>
 
-<style>
-</style>
+<style></style>

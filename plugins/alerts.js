@@ -28,6 +28,23 @@ export class Alerts {
     return Swal.fire(Object.assign({}, defaultSettings, settings))
   }
 
+  info(settings = {}) {
+    if (typeof settings === 'string') {
+      settings = {
+        title: settings
+      }
+    }
+
+    const defaultSettings = {
+      title: 'Operazione eseguita correttamente!',
+      text: '',
+      icon: 'info',
+      confirmButtonText: 'Chiudi'
+    }
+
+    return Swal.fire(Object.assign({}, defaultSettings, settings))
+  }
+
   /**
    *
    * @param {any} error
@@ -35,6 +52,10 @@ export class Alerts {
    */
   error(error, settings = {}) {
     let errData = {}
+
+    if (error && error.dismiss === "cancel") {
+      return
+    }
 
     if (typeof error === 'string') {
       errData.message = error
@@ -118,7 +139,7 @@ export class Alerts {
 
     const askSettings = {
       title: title,
-      text: html
+      html: html
     }
 
     confirmButtonText && (askSettings['confirmButtonText'] = confirmButtonText)

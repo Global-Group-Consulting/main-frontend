@@ -97,18 +97,22 @@ export default class RefreshScheme extends LocalScheme {
       return
     }
 
-    // Try to fetch user and then set
-    const {
-      response,
-      /** @type {{token: string, refreshToken: string}} */
-      result
-    } = await this.$auth.request(
-      { data: { refresh_token: refreshToken } },
-      this.options.endpoints.refresh,
-      true
-    )
+    try {
+      // Try to fetch user and then set
+      const { response, result } = await this.$auth.request(
+        { data: { refresh_token: refreshToken } },
+        this.options.endpoints.refresh,
+        true
+      )
 
-    this._setNewTokens(result.token, result.refreshToken)
+      this._setNewTokens(result.token, result.refreshToken)
+    } catch (er) {
+      const resp = er.response
+
+      if (resp.data && resp.data.error && resp.data.error.name === "InvalidRefreshToken") {
+        await this.$auth.logout()
+      }
+    }
   }
 
   async setUserToken({ token, refreshToken }) {
