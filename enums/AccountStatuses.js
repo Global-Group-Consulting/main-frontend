@@ -1,4 +1,5 @@
 import { BasicEnum } from '../classes/BasicEnum'
+import UserRoles from "./UserRoles"
 
 /*
 
@@ -50,25 +51,31 @@ class AccountStatuses extends BasicEnum {
         id: "draft",
       },
       [this.PENDING_SIGNATURE]: {
-        id: "pending_signature"
+        id: "pending_signature",
+        roles: [UserRoles.CLIENTE]
       },
       [this.PENDING_CONFIRM]: {
-        id: "pending_confirm"
+        id: "pending_confirm",
+        roles: [UserRoles.CLIENTE]
       },
       [this.CREATED]: {
-        id: "created"
+        id: "created",
+        roles: [UserRoles.CLIENTE]
       },
       [this.VALIDATED]: {
         id: "validated",
-        color: "#FFEE58"
+        color: "#FFEE58",
+        roles: [UserRoles.CLIENTE]
       },
       [this.INCOMPLETE]: {
         id: "incomplete",
-        color: "#FFA726"
+        color: "#FFA726",
+        roles: [UserRoles.CLIENTE]
       },
       [this.MUST_REVALIDATE]: {
         id: "must_revalidate",
-        color: "#CE93D8"
+        color: "#CE93D8",
+        roles: [UserRoles.CLIENTE]
       },
       [this.APPROVED]: {
         id: "approved",

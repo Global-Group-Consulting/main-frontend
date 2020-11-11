@@ -6,12 +6,12 @@
         :subtitle="pageData.subtitle.value"
         :icon="pageData.icon.value"
       >
-        <template v-slot:subtitle v-if="permissions.changeState">
+        <template v-slot:subtitle v-if="canChangeStatus">
           <div v-html="pageData.subtitle.value" class="d-inline-block"></div>
 
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
-              <v-btn icon dark @click="openChangeRoleDialog" v-on="on">
+              <v-btn icon dark @click="openChangeStatusDialog" v-on="on">
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
             </template>
@@ -214,7 +214,16 @@ export default {
   },
   middleware: ["pagesAuth"],
   setup(props, { root }) {
-    const { $apiCalls, $alerts, $route, $i18n, $enums, $store, $set } = root;
+    const {
+      $apiCalls,
+      $alerts,
+      $auth,
+      $route,
+      $i18n,
+      $enums,
+      $store,
+      $set
+    } = root;
     const currentTab = ref(0);
     const permissions = Permissions(root);
     const userForm = usersForm(root);
@@ -239,6 +248,14 @@ export default {
         formData.account_status === AccountStatuses.VALIDATED ||
         (formData.account_status === AccountStatuses.DRAFT &&
           [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(+formData.role))
+      );
+    });
+
+    const canChangeStatus = computed(() => {
+      return (
+        permissions.changeState &&
+        $auth.user.id !== userForm.formData.id &&
+        userForm.formData.account_status !== $enums.AccountStatuses.ACTIVE
       );
     });
 
@@ -270,7 +287,7 @@ export default {
       }
     };
 
-    const openChangeRoleDialog = function() {
+    const openChangeStatusDialog = function() {
       root.$store.dispatch("dialog/updateStatus", {
         title: $i18n.t("dialogs.statusChange.title", {
           status: $i18n.t(
@@ -280,7 +297,8 @@ export default {
         id: "StatusChangeDialog",
         fullscreen: false,
         data: {
-          status: userForm.formData.value.account_status
+          status: userForm.formData.value.account_status,
+          userRole: userForm.formData.value.role
         }
       });
     };
@@ -343,9 +361,10 @@ export default {
       pageData,
       accentColor,
       canApprove,
+      canChangeStatus,
       approveUser,
       permissions,
-      openChangeRoleDialog,
+      openChangeStatusDialog,
       onAccountStatusChanged
     };
   },

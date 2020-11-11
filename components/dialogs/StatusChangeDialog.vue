@@ -49,7 +49,13 @@ export default {
   computed: {
     ...mapGetters({ dialogData: "dialog/dialogData" }),
     statusesList() {
-      return AccountStatuses.list.filter(_status => true);
+      const userRole = this.dialogData.data.userRole;
+
+      return AccountStatuses.iterable.filter(_status => {
+        return (
+          !_status.roles || (_status.roles && _status.roles.includes(+userRole))
+        );
+      });
     }
   },
   methods: {
