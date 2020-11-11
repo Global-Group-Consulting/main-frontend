@@ -5,7 +5,8 @@ export default ({ store }) => {
     reducer: (state) => ({
       auth: state.auth,
       enums: state.enums,
-      i18n: state.i18n
+      i18n: state.i18n,
+      agentsList: state.agentsList
     }),
   }).plugin(store)
 }
