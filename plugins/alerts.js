@@ -53,6 +53,10 @@ export class Alerts {
   error(error, settings = {}) {
     let errData = {}
 
+    if (error && error.dismiss === "cancel") {
+      return
+    }
+
     if (typeof error === 'string') {
       errData.message = error
     }

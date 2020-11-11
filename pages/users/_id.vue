@@ -74,6 +74,26 @@
           </tooltip-btn> -->
 
           <v-spacer></v-spacer>
+
+          <v-menu offset-y v-if="communicationsList.length > 0">
+            <template v-slot:activator="{ on: on, attrs }">
+              <v-btn color="primary" dark v-bind="attrs" v-on="on" small text>
+                <v-icon>mdi-email-multiple-outline</v-icon>
+                <v-icon class="ml-2">mdi-chevron-down</v-icon>
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item
+                v-for="(item, index) in communicationsList"
+                :key="index"
+                @click="item.click"
+              >
+                <v-list-item-title>{{
+                  $t("menus." + item.value)
+                }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </v-toolbar-items>
       </v-toolbar>
 
@@ -196,7 +216,7 @@ import StatusChangeDialog from "../..//components/dialogs/StatusChangeDialog";
 
 import { onMounted, reactive, ref, computed } from "@vue/composition-api";
 
-import AccountStatuses from "@/enums/AccountStatuses.js";
+import AccountStatuses from "../../enums/AccountStatuses.js";
 import UserRoles from "@/enums/UserRoles.js";
 import userDetails from "@/functions/userDetails";
 import pageBasic from "@/functions/pageBasic";
@@ -274,7 +294,6 @@ export default {
         await $alerts.askBeforeAction({
           key: "approve-user",
           preConfirm: async () => {
-            debugger;
             const result = await $apiCalls.userApprove(
               userForm.formData.value.id
             );
@@ -306,6 +325,39 @@ export default {
     const onAccountStatusChanged = function(userData) {
       $set(userForm.formData.value, "account_status", userData.account_status);
     };
+
+    const sendEmailActivation = async function() {
+      try {
+        await $alerts.askBeforeAction({
+          key: "send-email-activation",
+          preConfirm: async () => {
+            const result = await $apiCalls.userSendEmailActivation(
+              userForm.formData.value.id
+            );
+          }
+        });
+      } catch (er) {
+        $alerts.error(er);
+      }
+    };
+
+    const communicationsList = computed(() => {
+      return [
+        {
+          value: "sendEmailActivation",
+          click: sendEmailActivation,
+          if: computed(
+            () =>
+              userForm.formData.value.account_status ===
+              AccountStatuses.APPROVED
+          )
+        },
+        {
+          value: "sendEmailForgot",
+          if: false
+        }
+      ].filter(_item => (_item.if === undefined ? true : _item.if.value));
+    });
 
     pageData.title = computed(() => {
       if (userForm.userIsNew.value) {
@@ -359,6 +411,7 @@ export default {
       ...userForm,
       ...userDetails(root),
       pageData,
+      communicationsList,
       accentColor,
       canApprove,
       canChangeStatus,

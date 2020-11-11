@@ -39,6 +39,12 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
+  async userSendEmailActivation(userId) {
+    return await this.post({
+      endPoint: `/api/users/${userId}/sendEmailActivation`
+    })
+  }
+
   /**
    * @param {{id: string, status: string}} data
    */

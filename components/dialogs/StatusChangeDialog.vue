@@ -10,6 +10,10 @@
           v-for="(status, i) of statusesList"
           :key="i"
           :value="status.value"
+          :disabled="
+            status.value === $enums.AccountStatuses.ACTIVE &&
+              dialogData.data.status !== $enums.AccountStatuses.APPROVED
+          "
         >
           <template v-slot:label>
             <div>
