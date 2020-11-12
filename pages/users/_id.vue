@@ -274,8 +274,8 @@ export default {
     const canChangeStatus = computed(() => {
       return (
         permissions.changeState &&
-        $auth.user.id !== userForm.formData.id &&
-        userForm.formData.account_status !== $enums.AccountStatuses.ACTIVE
+        $auth.user.id !== userForm.formData.value.id &&
+        userForm.formData.value.account_status !== $enums.AccountStatuses.ACTIVE
       );
     });
 
