@@ -76,5 +76,16 @@ export default {
   comunications: {
     title: 'Comunicazioni con gli utenti',
     subtitle: ''
+  },
+  requests: {
+    title: "Elenco delle richieste",
+    subtitle: '',
+    "btnWithdrawal": "Riscossione",
+    "btnWithdrawal-tooltip": "Crea una richiesta di riscossione",
+    "btnDeposit": "Versamento",
+    "btnDeposit-tooltip": "Versa nuova liquidità",
+    'tableNuova-title': "Richieste in attesa di approvazione",
+    'tableAccettata-title': "Richieste accettate",
+    'tableRifiutata-title': "Richieste rifiutate",
   }
 }

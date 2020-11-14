@@ -4,6 +4,7 @@
       v-bind="$attrs"
       :value="formattedValue"
       :label="label"
+      accept="image/*,.pdf"
       @input="onInput"
       @change="onChange"
     >
@@ -15,7 +16,7 @@
       </template>
     </v-file-input>
 
-    <v-list dense class="">
+    <v-list dense class="" v-if="filesList.length > 0">
       <template v-for="(file, index) in filesList">
         <v-divider :key="index" v-if="index > 0"></v-divider>
 
@@ -42,6 +43,7 @@
           <v-btn
             icon
             @click.prevent="removeFile(file, $event)"
+            v-if="!readonly && !$attrs.disabled"
             :title="$t('forms.tooltip-remove-file')"
           >
             <v-icon small>mdi-close</v-icon>
@@ -53,47 +55,58 @@
 </template>
 
 <script>
-  import { computed } from "@vue/composition-api";
-  import jsFileDownload from "js-file-download";
+import { computed } from "@vue/composition-api";
+import jsFileDownload from "js-file-download";
 
-  export default {
-    props: {
-      value: "",
-      label: "",
-      initialDate: "",
-      min: "",
-      fieldKey: "",
-      files: Array,
-      toDelete: {
-        type: Array,
-        default() {
-          return [];
-        },
-      },
-      readonly: Boolean,
-      editMode: Boolean,
+export default {
+  props: {
+    value: "",
+    label: "",
+    initialDate: "",
+    min: "",
+    fieldKey: "",
+    files: Array,
+    toDelete: {
+      type: Array,
+      default() {
+        return [];
+      }
     },
-    setup(props, { root }) {
-      /**
-       * @type {{
-       * $alerts: import("../../../@types/AlertsPlugin").AlertsPlugin
-       * $apiCalls: import("../../../@types/ApiCallsPlugin").ApiCallsPlugin
-       * }}
-       */
-      const { $apiCalls, $delete, $alerts } = root;
+    readonly: Boolean,
+    editMode: Boolean
+  },
+  setup(props, { root }) {
+    /**
+     * @type {{
+     * $alerts: import("../../../@types/AlertsPlugin").AlertsPlugin
+     * $apiCalls: import("../../../@types/ApiCallsPlugin").ApiCallsPlugin
+     * }}
+     */
+    const { $apiCalls, $delete, $alerts } = root;
 
-      const formattedValue = computed(() => props.value);
-      /**
-       * @type {[]}
-       */
-      const filesList = computed(() => {
-        return props.files
-          ? props.files.filter((_file) => _file.fieldName === props.fieldKey)
-          : [];
-      });
+    const formattedValue = computed(() => props.value);
+    /**
+     * @type {[]}
+     */
+    const filesList = computed(() => {
+      return props.files
+        ? props.files.filter(_file => _file.fieldName === props.fieldKey)
+        : [];
+    });
 
-      const openFile = async function (file) {
+    const openFile = async function(file) {
+      try {
         const result = await $apiCalls.downloadFile(file._id);
+
+        // if there is already a dialog opened, open the file in a new tab instead of the preview dialog
+        if (root.$store.getters["dialog/dialogState"]) {
+          return window.open(
+            URL.createObjectURL(
+              new Blob([result.data], { type: `${file.type}/${file.subtype}` })
+            ),
+            "__blank"
+          );
+        }
 
         root.$store.dispatch("dialog/updateStatus", {
           title: file.clientName,
@@ -104,15 +117,19 @@
             fileData: result.data,
             fileUrl: URL.createObjectURL(
               new Blob([result.data], { type: `${file.type}/${file.subtype}` })
-            ),
-          },
+            )
+          }
         });
-      };
+      } catch (er) {
+        $alerts.error(er);
+      }
+    };
 
-      const downloadFile = async function (file, e) {
-        e.preventDefault();
-        e.stopPropagation();
+    const downloadFile = async function(file, e) {
+      e.preventDefault();
+      e.stopPropagation();
 
+      try {
         const result = await $apiCalls.downloadFile(file._id);
 
         jsFileDownload(
@@ -120,51 +137,56 @@
           file.clientName
           // file.type + "/" + file.subtype
         );
-      };
+      } catch (er) {
+        $alerts.error(er);
+      }
+    };
 
-      const removeFile = async function (file, e) {
-        e.preventDefault();
-        e.stopPropagation();
+    const removeFile = async function(file, e) {
+      e.preventDefault();
+      e.stopPropagation();
 
-        const index = filesList.value.findIndex(
-          (_entry) => _entry._id === file._id
-        );
+      const index = filesList.value.findIndex(
+        _entry => _entry._id === file._id
+      );
 
-        try {
-          await $alerts.askBeforeAction({
-            key: "remove-file",
-            data: file,
-            settings: {
-              confirmButtonColor: "red",
-            },
-            preConfirm: async () => {
-              try {
-                await $apiCalls.deleteFile(file._id);
+      try {
+        await $alerts.askBeforeAction({
+          key: "remove-file",
+          data: file,
+          settings: {
+            confirmButtonColor: "red"
+          },
+          preConfirm: async () => {
+            try {
+              await $apiCalls.deleteFile(file._id);
 
-                $delete(props.files, index);
-              } catch (er) {
-                $alerts.error(er);
-              }
-            },
-          });
-        } catch (er) {}
-      };
+              $delete(props.files, index);
+            } catch (er) {
+              $alerts.error(er);
+            }
+          }
+        });
+      } catch (er) {
+        $alerts.error(er);
+      }
+    };
 
-      return {
-        formattedValue,
-        filesList,
-        downloadFile,
-        removeFile,
-        openFile,
-      };
+    return {
+      formattedValue,
+      filesList,
+      downloadFile,
+      removeFile,
+      openFile
+    };
+  },
+  methods: {
+    onChange(value) {
+      this.$emit("change", value);
     },
-    methods: {
-      onChange(value) {
-        this.$emit("change", value);
-      },
-      onInput(value) {
-        this.$emit("input", value);
-      },
-    },
-  };
+    onInput(value) {
+      this.$emit("input", value);
+    }
+  }
+};
 </script>

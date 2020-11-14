@@ -34,6 +34,18 @@ export default {
   "send-email-activation-cancelBtnText": "Annulla",
   "send-email-activation-success": "Email inviata correttamente!",
 
+  "send-request-title": "",
+  "send-request-text": "Sei sicuro di voler inviare la nuova richiesta di <strong>{type}</strong> del valore di <strong>{amount}</strong>?",
+  "send-request-confirmBtnText": "Si, invia",
+  "send-request-cancelBtnText": "Annulla",
+  "send-request-success": "Richiesta inviata correttamente!",
+
+  "delete-request-title": "",
+  "delete-request-text": "Sei sicuro di voler eliminare la richiesta di <strong>{type}</strong> del valore di <strong>{amount}</strong>?",
+  "delete-request-confirmBtnText": "Si, elimina",
+  "delete-request-cancelBtnText": "Annulla",
+  "delete-request-success": "Richiesta eliminata correttamente!",
+
   "change-status-same-title": "Nulla da cambiare!",
   "change-status-same-text": "Il nuovo stato coincide con l'attuale, pertanto non è possibile apportare alcuna modifica. Scegliere uno stato diverso o annullare l'operazione.",
 }

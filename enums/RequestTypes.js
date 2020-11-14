@@ -1,13 +1,15 @@
-import { BasicEnum } from '@/classes/BasicEnum'
+import { BasicEnum } from '../classes/BasicEnum'
 
 class RequestTypes extends BasicEnum {
-  constructor () {
+  constructor() {
     super('RequestTypes')
 
     // this.ADMIN = 1
     this.VERSAMENTO = 2
     this.RISC_CAPITALE = 3
     this.RISC_INTERESSI = 4
+
+    // Reinvestimento Interessi maturati da un agente
     this.INTERESSI = 5
 
     this.data = {

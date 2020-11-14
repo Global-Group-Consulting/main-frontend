@@ -4,12 +4,16 @@ export default {
     'btn-cancel': 'Annulla',
     'btn-send': 'Invia',
   },
-  requestDialog: {
-    'title': 'Dettagli richiesta',
+  requests: {
+    'title-withdrawal': 'Nuova richiesta di riscossione',
+    'title-deposit': 'Versamento di nuova liquidità',
+    'title-details': 'Dettagli richiesta',
     'btn-cancel': 'Annulla',
-    'btn-send': 'Invia',
+    'btn-close': 'Chiudi',
+    'btn-send': 'Invia richiesta',
     'btn-accept': 'Accetta',
     'btn-reject': 'Rifiuta',
+    'btn-delete': 'Elimina',
   },
   comunicationDialog: {
     'timeline-opposite': 'Inviato da <strong>{firstName} {lastName}</strong> il {timestamp}.',

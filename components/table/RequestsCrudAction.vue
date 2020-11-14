@@ -1,31 +1,72 @@
 <template>
   <v-menu offset-y>
     <template v-slot:activator="{ on }">
-      <v-btn
-        color="primary"
-        icon
-        v-on="on"
-      >
+      <v-btn color="primary" icon v-on="on">
         <v-icon>mdi-dots-vertical</v-icon>
       </v-btn>
     </template>
     <v-list>
-      <v-list-item @click="">
-        <v-list-item-title>Accetta</v-list-item-title>
-      </v-list-item>
-      <v-list-item @click="">
-        <v-list-item-title>Rifiuta</v-list-item-title>
-      </v-list-item>
+      <template v-for="entry in menuOptions">
+        <v-divider
+          v-if="entry.divider"
+          :key="'divider_' + entry.value"
+        ></v-divider>
+        <v-list-item :key="entry.value" :entry="entry" @click="entry.action">
+          <v-list-item-title>{{
+            $t("menus." + entry.value)
+          }}</v-list-item-title>
+        </v-list-item>
+      </template>
     </v-list>
   </v-menu>
 </template>
 
 <script>
-  export default {
-    name: 'CrudActions',
-    props: {
-      item: {}
-    }
-  }
-</script>
+import { computed } from "@vue/composition-api";
+import Permissions from "../../functions/permissions";
+import requestsCrudActionsFn from "../../functions/requestsCrudActions";
 
+export default {
+  name: "RequestsCrudActions",
+  props: {
+    item: {}
+  },
+  setup(props, { root, emit }) {
+    const { $alerts, $apiCalls, $auth, $router, $enums } = root;
+    const permissions = Permissions(root);
+    const actions = requestsCrudActionsFn(props.item, root);
+
+    const menuOptions = computed(() => {
+      return [
+        {
+          value: "delete",
+          action: async (...atrs) => {
+            await actions.delete(...atrs);
+
+            emit("rowDeleted");
+          },
+          if:
+            props.item.userId === $auth.user.id &&
+            props.item.status === $enums.RequestStatus.NUOVA
+        },
+        {
+          value: "approve",
+          action: actions.approve,
+          if: permissions.userType === "admin"
+        },
+        {
+          value: "reject",
+          action: actions.reject,
+          if: permissions.userType === "admin"
+        }
+      ].filter(_entry => {
+        return _entry.if;
+      });
+    });
+
+    return {
+      menuOptions
+    };
+  }
+};
+</script>

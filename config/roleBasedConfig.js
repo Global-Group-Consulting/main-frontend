@@ -1,3 +1,5 @@
+import UserRoles from "../enums/UserRoles"
+
 const defaults = {
   forms: {
     users: {
@@ -29,6 +31,40 @@ const admin = {
         'accountStatus',
         'actions'
       ]
+    },
+    requests: {
+      columns: [
+        'amount',
+        'currency',
+        'type',
+        'created_at',
+        ['updated_at', ["accettata", "rifiutata"]],
+        ['actions', ["nuova"]]
+      ]
+    }
+  }
+}
+
+const servClienti = {
+  tables: {
+    users: {
+      columns: [
+        'firstName',
+        'lastName',
+        'email',
+        'accountStatus',
+        'actions'
+      ]
+    },
+    requests: {
+      columns: [
+        'amount',
+        'currency',
+        'type',
+        'created_at',
+        ['updated_at', ["accettata", "rifiutata"]],
+        ['actions', ["nuova"]]
+      ]
     }
   }
 }
@@ -43,6 +79,16 @@ const cliente = {
         'email',
         'accountStatus',
         'actions'
+      ]
+    },
+    requests: {
+      columns: [
+        'amount',
+        'currency',
+        'type',
+        'created_at',
+        ['updated_at', ["accettata", "rifiutata"]],
+        ['actions', ["nuova"]]
       ]
     }
   }
@@ -59,23 +105,21 @@ const agente = {
         'accountStatus',
         'actions'
       ]
-    }
-  }
-}
-
-const servClienti = {
-  tables: {
-    users: {
+    },
+    requests: {
       columns: [
-        'firstName',
-        'lastName',
-        'email',
-        'accountStatus',
-        'actions'
+        'amount',
+        'currency',
+        'type',
+        'created_at',
+        ['updated_at', ["accettata", "rifiutata"]],
+        ['actions', ["nuova"]]
       ]
     }
   }
 }
+
+
 
 export { admin, servClienti, agente, cliente }
 
