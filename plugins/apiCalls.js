@@ -119,6 +119,28 @@ export class ApiCalls extends BasicApiCall {
       endPoint: `/api/files/${fileId}`
     })
   }
+
+
+  async fetchRequests() {
+    return await this.get({
+      endPoint: `/api/requests`
+    })
+  }
+
+  async createRequest(data) {
+    return await this.post({
+      endPoint: `/api/requests`,
+      body: data,
+      uploadMode: true
+    })
+  }
+
+  async deleteRequest(data) {
+    return await this._call({
+      method: "DELETE",
+      endPoint: `/api/requests/${data.id}`,
+    })
+  }
 }
 
 export default (context, inject) => {

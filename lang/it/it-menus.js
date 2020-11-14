@@ -7,5 +7,7 @@ export default {
   "myProfile": "Il mio profilo",
   "logout": "Esegui il logout",
   "sendEmailActivation": "Invia email attivazione",
-  "sendEmailForgot": "Invia email recupero password"
+  "sendEmailForgot": "Invia email recupero password",
+  "approve": "Approva",
+  "reject": "Rifiuta"
 }

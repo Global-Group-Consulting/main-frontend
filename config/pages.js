@@ -10,5 +10,8 @@ export default {
   },
   'comunications': {
     icon: 'mdi-email-multiple'
+  },
+  'requests': {
+    icon: 'mdi-fire'
   }
 }

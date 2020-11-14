@@ -12,11 +12,17 @@
       <v-text-field
         :value="dateValue | dateFormatter"
         :label="label"
-        prepend-icon="mdi-calendar"
+        :prepend-icon="
+          typeof $attrs['prepend-icon'] === 'string'
+            ? $attrs['prepend-icon']
+            : 'mdi-calendar'
+        "
         readonly
         v-on="on"
+        v-bind="$attrs"
         @change="onInput"
-        :clearable="!readonly"
+        :clearable="!readonly && !disabled"
+        :disabled="disabled"
         :class="{ 'edit-mode': editMode }"
       >
         <template v-slot:prepend>
@@ -32,6 +38,7 @@
       v-model="dateValue"
       @input="onInput"
       :readonly="readonly"
+      :disabled="disabled"
       v-bind:picker-date="(dateValue ? '' : initialDate) | datePickerFormatter"
       v-bind:min="min | datePickerFormatter"
       locale="it"
@@ -41,42 +48,41 @@
 </template>
 
 <script>
-  import { datePickerFormatter } from "~/plugins/filters";
+import { datePickerFormatter } from "~/plugins/filters";
 
-  export default {
-    name: "DatePicker",
-    data() {
-      return {
-        opened: false,
-        dateValue: datePickerFormatter(this.value),
-      };
-    },
-    props: {
-      value: "",
-      label: "",
-      initialDate: "",
-      min: "",
-      readonly: Boolean,
-      editMode: Boolean,
-    },
-    computed: {},
-    methods: {
-      onInput(value) {
-        if (this.opened) {
-          this.opened = false;
-        }
+export default {
+  name: "DatePicker",
+  data() {
+    return {
+      opened: false,
+      dateValue: datePickerFormatter(this.value)
+    };
+  },
+  props: {
+    value: "",
+    label: "",
+    initialDate: "",
+    min: "",
+    readonly: Boolean,
+    disabled: Boolean,
+    editMode: Boolean
+  },
+  computed: {},
+  methods: {
+    onInput(value) {
+      if (this.opened) {
+        this.opened = false;
+      }
 
-        this.$emit("input", value);
-      },
-    },
-    watch: {
-      value: function (value) {
-        this.dateValue = datePickerFormatter(this.value);
-      },
-    },
-  };
+      this.$emit("input", value);
+    }
+  },
+  watch: {
+    value: function(value) {
+      this.dateValue = datePickerFormatter(this.value);
+    }
+  }
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

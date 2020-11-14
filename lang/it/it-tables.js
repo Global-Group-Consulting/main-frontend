@@ -8,6 +8,7 @@ export default {
   'actions': ' ',
   'request-type': 'Tipologia richiesta',
   'request-amount': 'Importo',
+  'request-currency': 'Valuta della richiesta',
   'pending-users-table': 'Utenti in attesa di approvazione',
   'pending-requests-table': 'Richieste da evadere',
   'updated-at': 'Ultimo aggiornamento',

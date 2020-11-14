@@ -1,8 +1,9 @@
 <template>
-  <v-list-item nuxt
-               :to="data.link"
-               :disabled="userMustActivate"
-               :color="!userMustActivate ? 'yellow' : 'grey lighten-3'">
+  <v-list-item
+    nuxt
+    :to="data.link"
+    :color="!userMustActivate ? 'yellow' : 'grey lighten-3'"
+  >
     <v-list-item-action>
       <v-icon>{{ data.icon }}</v-icon>
     </v-list-item-action>
@@ -14,21 +15,19 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 
-  export default {
-    name:  'drawer-item',
-    props: {
-      data: {}
-    },
-    computed: {
-      ...mapGetters({
-        userMustActivate: "user/mustActivate"
-      })
-    }
+export default {
+  name: "drawer-item",
+  props: {
+    data: {}
+  },
+  computed: {
+    ...mapGetters({
+      userMustActivate: "user/mustActivate"
+    })
   }
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

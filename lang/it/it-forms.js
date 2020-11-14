@@ -63,6 +63,7 @@ export default {
   'request-date': 'Data richiesta',
   'request-attachment': 'Contabile',
   'request-notes': 'Note',
+  'request-created-at': 'Data richiesta',
   'wallet-type': 'Wallet',
   'tooltip-download-file': "Scarica file",
   'tooltip-remove-file': "Cancella file"
