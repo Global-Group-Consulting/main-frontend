@@ -2,6 +2,8 @@ import Vue from 'vue'
 import moment from 'moment'
 import Cleave from 'cleave.js'
 
+import { capitalize } from "lodash"
+
 class BriteConverter {
   static toBrite(value) {
     if (!value) {
@@ -116,6 +118,10 @@ export function regionFormatter(value, list) {
   return region?.text || value
 }
 
+export function userFormatter(user) {
+  return `${capitalize(user.lastName)} ${capitalize(user.firstName)}`
+}
+
 Vue.filter('dateFormatter', dateFormatter)
 Vue.filter('dateHourFormatter', dateHourFormatter)
 Vue.filter('datePickerFormatter', datePickerFormatter)
@@ -124,3 +130,4 @@ Vue.filter('percentageFormatter', percentageFormatter)
 Vue.filter('contractNumberFormatter', contractNumberFormatter)
 Vue.filter('regionFormatter', regionFormatter)
 Vue.filter('numberCasting', numberCasting)
+Vue.filter('userFormatter', userFormatter)

@@ -141,6 +141,21 @@ export class ApiCalls extends BasicApiCall {
       endPoint: `/api/requests/${data.id}`,
     })
   }
+
+  async acceptRequest(data) {
+    return await this._call({
+      method: "PUT",
+      endPoint: `/api/requests/${data.id}/approve`,
+    })
+  }
+
+  async rejectRequest(data) {
+    return await this._call({
+      method: "PUT",
+      endPoint: `/api/requests/${data.id}/reject`,
+      body: { reason: data.reason }
+    })
+  }
 }
 
 export default (context, inject) => {

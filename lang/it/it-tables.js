@@ -2,6 +2,7 @@ export default {
   'contract-number': 'Id Contratto',
   'first-name': 'Nome',
   'last-name': 'Cognome',
+  'user': 'Utente',
   'email': 'Email',
   'account-status': 'Stato Account',
   'reference-agent': 'Agente di riferimento',
@@ -12,6 +13,7 @@ export default {
   'pending-users-table': 'Utenti in attesa di approvazione',
   'pending-requests-table': 'Richieste da evadere',
   'updated-at': 'Ultimo aggiornamento',
+  'completed-at': 'Data completamento',
   'created-at': 'Data creazione',
   'validated-at': 'Data validazione dati',
 

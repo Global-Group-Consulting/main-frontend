@@ -6,6 +6,7 @@ export const state = () => ({
     readonly: false,
     fullscreen: false,
     noActions: false,
+    retainFocus: true,
     data: {}
   }
 })
@@ -19,6 +20,9 @@ export const mutations = {
   },
   SET_DATA(state, payload) {
     state.data = payload
+  },
+  SET_RETAIN_FOCUS(state, payload) {
+    state.data.retainFocus = payload
   }
 }
 
@@ -37,8 +41,16 @@ export const actions = {
       return
     }
 
+    if (payload && typeof payload.retainFocus !== "boolean") {
+      payload.retainFocus = true
+    }
+
     commit('SHOW')
     commit('SET_DATA', payload || {})
+  },
+
+  updateRetainFocus({ commit }, payload) {
+    commit("SET_RETAIN_FOCUS", payload ?? true)
   }
 }
 

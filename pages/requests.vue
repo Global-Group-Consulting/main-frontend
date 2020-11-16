@@ -54,15 +54,31 @@
               :hide-default-footer="requestsGroups[table.id].length <= 10"
               @click:row="openRequestDetails"
             >
+              <template v-slot:item.user.contractNumber="{ item }">
+                {{
+                  $options.filters.contractNumberFormatter(
+                    item.user.contractNumber
+                  )
+                }}
+              </template>
+
+              <template v-slot:item.user="{ item }">
+                {{ $options.filters.userFormatter(item.user) }}
+              </template>
+
               <template v-slot:item.actions="{ item }">
                 <requests-crud-actions
                   :item="item"
                   @rowDeleted="onRequestDeleted"
+                  @rowStatusChanged="onRequestStatusChanged"
                 ></requests-crud-actions>
               </template>
 
               <template v-slot:item.amount="{ item }">
-                <span :class="getAmountClass(getAmountSign(item.type))">
+                <span
+                  :class="getAmountClass(getAmountSign(item.type))"
+                  class="text-no-wrap"
+                >
                   {{ getAmountSign(item.type) }}
                   € {{ $options.filters.moneyFormatter(item.amount) }}
                 </span>
@@ -80,6 +96,10 @@
                 {{ $options.filters.dateFormatter(item.updated_at, true) }}
               </template>
 
+              <template v-slot:item.completed_at="{ item }">
+                {{ $options.filters.dateFormatter(item.completed_at, true) }}
+              </template>
+
               <template v-slot:item.type="{ item }">
                 {{ getTipoRichiesta(item.type) }}
               </template>
@@ -92,6 +112,7 @@
     <request-dialog
       @newRequestAdded="onNewRequestAdded"
       @requestDeleted="onRequestDeleted"
+      @requestStatusChanged="onRequestStatusChanged"
       v-if="$store.getters['dialog/dialogId'] === 'RequestDialog'"
     ></request-dialog>
   </v-layout>
@@ -120,7 +141,7 @@ export default {
     RequestsCrudActions
   },
   setup(props, { root }) {
-    const { $apiCalls, $set, $enums, $store, $i18n } = root;
+    const { $apiCalls, $set, $enums, $store, $i18n, $options } = root;
     const permissions = permissionsFn(root);
     const requestsList = ref([]);
     const requestsGroups = computed(() => {
@@ -176,6 +197,10 @@ export default {
       await fetchAll();
     }
 
+    async function onRequestStatusChanged() {
+      await fetchAll();
+    }
+
     function newDepositRequest() {
       $store.dispatch("dialog/updateStatus", {
         title: $i18n.t("dialogs.requests.title-deposit"),
@@ -198,12 +223,27 @@ export default {
 
     function openRequestDetails(row) {
       const userId = row.user_id;
+      let title = $i18n.t("dialogs.requests.title-details");
+
+      if (permissions.userType === "admin") {
+        title += ` <small><em>(${$options.filters.userFormatter(
+          row.user
+        )} - ${$options.filters.contractNumberFormatter(
+          row.user.contractNumber
+        )})</em></small>`;
+      }
 
       $store.dispatch("dialog/updateStatus", {
-        title: $i18n.t("dialogs.requests.title-details"),
+        title,
         id: "RequestDialog",
         readonly: true,
-        data: row
+        data: {
+          ...row,
+          currency: +row.currency,
+          status: +row.status,
+          type: +row.type,
+          wallet: +row.wallet
+        }
       });
     }
 
@@ -214,19 +254,6 @@ export default {
         `enums.CurrencyType.${currencyData.id}`
       )})`;
     }
-
-    /* function showCrudActions(table) {
-      let canShow = true;
-
-      if (
-        permissions.userRole === $enums.UserRoles.CLIENTE &&
-        table.id !== "nuova"
-      ) {
-        canShow = false;
-      }
-
-      return canShow;
-    } */
 
     onBeforeMount(fetchAll);
 
@@ -242,6 +269,7 @@ export default {
       openRequestDetails,
       onNewRequestAdded,
       onRequestDeleted,
+      onRequestStatusChanged,
       formatRequestCurrency
       // showCrudActions
     };

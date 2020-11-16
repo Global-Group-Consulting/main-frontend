@@ -2,9 +2,10 @@
   <v-row justify="center">
     <v-dialog
       :value="dialogState"
-      :persistent="!dialogData.readonly"
+      :persistent="true"
       :fullscreen="dialogData.fullscreen"
       :transition="dialogData.fullscreen ? 'dialog-bottom-transition' : ''"
+      :retain-focus="false"
       scrollable
       max-width="600px"
     >
@@ -58,27 +59,25 @@
 </template>
 
 <script>
-  import { mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 
-  export default {
-    name: "DynamicDialog",
-    data() {
-      return {};
-    },
-    computed: {
-      ...mapGetters({
-        dialogData: "dialog/dialogData",
-        dialogState: "dialog/dialogState",
-      }),
-    },
-    methods: {
-      close() {
-        this.$store.dispatch("dialog/updateStatus", false);
-      },
-    },
-  };
+export default {
+  name: "DynamicDialog",
+  data() {
+    return {};
+  },
+  computed: {
+    ...mapGetters({
+      dialogData: "dialog/dialogData",
+      dialogState: "dialog/dialogState"
+    })
+  },
+  methods: {
+    close() {
+      this.$store.dispatch("dialog/updateStatus", false);
+    }
+  }
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -34,11 +34,13 @@ const admin = {
     },
     requests: {
       columns: [
+        'contractNumber',
+        'user',
         'amount',
         'currency',
         'type',
         'created_at',
-        ['updated_at', ["accettata", "rifiutata"]],
+        ['completed_at', ["accettata", "rifiutata"]],
         ['actions', ["nuova"]]
       ]
     }
@@ -62,7 +64,7 @@ const servClienti = {
         'currency',
         'type',
         'created_at',
-        ['updated_at', ["accettata", "rifiutata"]],
+        ['completed_at', ["accettata", "rifiutata"]],
         ['actions', ["nuova"]]
       ]
     }
@@ -87,7 +89,7 @@ const cliente = {
         'currency',
         'type',
         'created_at',
-        ['updated_at', ["accettata", "rifiutata"]],
+        ['completed_at', ["accettata", "rifiutata"]],
         ['actions', ["nuova"]]
       ]
     }
@@ -112,7 +114,7 @@ const agente = {
         'currency',
         'type',
         'created_at',
-        ['updated_at', ["accettata", "rifiutata"]],
+        ['completed_at', ["accettata", "rifiutata"]],
         ['actions', ["nuova"]]
       ]
     }

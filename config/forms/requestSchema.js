@@ -134,6 +134,18 @@ export default function (context) {
           rows: 1
         }
       }
-    }
+    },
+    /* {
+      cols: {
+        notes: {
+          label: "requestRejectReason",
+          component: 'v-textarea',
+          autoGrow: true,
+          disabled: true,
+          rows: 1,
+          if: context.formData.status === context.$enums.RequestStatus.RIFIUTATA
+        }
+      }
+    } */
   ]
 }

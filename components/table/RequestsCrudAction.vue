@@ -51,12 +51,20 @@ export default {
         },
         {
           value: "approve",
-          action: actions.approve,
+          action: async (...atrs) => {
+            await actions.approve(...atrs);
+
+            emit("rowStatusChanged");
+          },
           if: permissions.userType === "admin"
         },
         {
           value: "reject",
-          action: actions.reject,
+          action: async (...atrs) => {
+            await actions.reject(...atrs);
+
+            emit("rowStatusChanged");
+          },
           if: permissions.userType === "admin"
         }
       ].filter(_entry => {

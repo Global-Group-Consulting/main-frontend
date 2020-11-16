@@ -1,6 +1,38 @@
 <template>
   <div>
     <portal to="dialog-content">
+      <v-alert
+        type="warning"
+        class="mt-3"
+        v-if="formData.status === $enums.RequestStatus.RIFIUTATA"
+      >
+        <div v-html="$t('dialogs.requests.alert-reject-reason')"></div>
+        <div>{{ formData.rejectReason }}</div>
+      </v-alert>
+
+      <v-toolbar
+        dense
+        elevation="2"
+        color="blue-grey lighten-5"
+        v-if="
+          formData.status === $enums.RequestStatus.NUOVA &&
+            permissions.userType === 'admin'
+        "
+      >
+        <v-spacer></v-spacer>
+        <v-toolbar-items>
+          <v-btn text color="red" @click="onReject">
+            <v-icon>mdi-close</v-icon>
+            {{ $t("dialogs.requests.btn-reject") }}
+          </v-btn>
+          <v-btn text color="success" @click="onApprove">
+            <v-icon>mdi-check</v-icon>
+            {{ $t("dialogs.requests.btn-accept") }}</v-btn
+          >
+        </v-toolbar-items>
+        <v-spacer></v-spacer>
+      </v-toolbar>
+
       <v-form :disabled="!!readonly">
         <dynamic-fieldset
           :ref="'request-form'"
@@ -15,8 +47,6 @@
       <v-btn color="red" text v-if="canDelete" @click="onDelete">{{
         $t("dialogs.requests.btn-delete")
       }}</v-btn>
-      <!-- <v-btn color="red">{{ $t("dialogs.requests.btn-reject") }}</v-btn>
-      <v-btn color="success">{{ $t("dialogs.requests.btn-accept") }}</v-btn> -->
     </portal>
 
     <portal to="dialog-actions-right">
@@ -38,6 +68,7 @@ import { mapGetters, mapState } from "vuex";
 import { ref } from "@vue/composition-api";
 
 import requestsCrudActionsFn from "../../functions/requestsCrudActions";
+import permissionsFn from "../../functions/permissions";
 
 export default {
   name: "RequestDialog",
@@ -50,6 +81,7 @@ export default {
     }
   },
   setup(props, { root, emit }) {
+    const permissions = permissionsFn(root);
     const formData = ref({
       wallet: 1
     });
@@ -65,7 +97,26 @@ export default {
       }
     }
 
-    return { formData, onDelete };
+    async function onApprove() {
+      const result = await actions.approve(this.formData);
+
+      if (result) {
+        this.close();
+
+        emit("requestStatusChanged");
+      }
+    }
+    async function onReject() {
+      const result = await actions.reject(this.formData);
+
+      if (result) {
+        this.close();
+
+        emit("requestStatusChanged");
+      }
+    }
+
+    return { formData, onDelete, onApprove, onReject, permissions };
   },
   data() {
     return {
