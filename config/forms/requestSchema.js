@@ -54,13 +54,12 @@ export default function (context) {
           items: context.$enums.WalletTypes,
           disabled: context.formData.type === context.$enums.RequestTypes.VERSAMENTO || readonly,
           formatter: readonly ? (value) => context.$i18n.t(`enums.WalletTypes.${context.$enums.WalletTypes.getIdName(value)}`) : null,
-          if: [context.$enums.UserRoles.ADMIN,
-          context.$enums.UserRoles.SERV_CLIENTI,
-          context.$enums.UserRoles.AGENTE].includes(context.$auth.user.role)
+          if: context.$enums.UserRoles.CLIENTE !== context.$auth.user.role
+            && context.formData.type !== context.$enums.RequestTypes.VERSAMENTO
         },
       }
     },
-    {
+    /* {
       cols: {
         currency: {
           label: "currencyType",
@@ -71,7 +70,7 @@ export default function (context) {
           disabled: context.formData.type === context.$enums.RequestTypes.VERSAMENTO || readonly,
         },
       }
-    },
+    }, */
     {
       cols: {
         availableAmount: {

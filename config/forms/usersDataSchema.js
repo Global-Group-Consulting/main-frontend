@@ -271,7 +271,7 @@ export function extraData(formContext) {
           }
         },
         'referenceAgent': {
-          if: formContext.showReferenceAgent,
+          if: formContext.showReferenceAgent && changeAgenteRif,
           component: changeAgenteRif ? 'v-select' : null,
           disabled: !changeAgenteRif,
           clearable: true,
@@ -280,7 +280,7 @@ export function extraData(formContext) {
               return
             }
 
-            const foundedUser = formContext.$store.getters.agentsList.find(_user => _user.id === value)
+            const foundedUser = formContext.$store.getters.agentsList.find(_user => _user.id.toString() === value.toString())
 
             if (!foundedUser) {
               return
@@ -303,6 +303,18 @@ export function extraData(formContext) {
 
               return acc
             }, [])
+        },
+        'referenceAgentData': {
+          if: formContext.showReferenceAgent && !changeAgenteRif,
+          disabled: true,
+          formatter: (value) => {
+            if (!value) {
+              return
+            }
+
+            return `${value.firstName} ${value.lastName}`
+
+          }
         }
       }
     },

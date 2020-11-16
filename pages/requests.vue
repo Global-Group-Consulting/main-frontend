@@ -7,7 +7,7 @@
         :icon="icon"
       ></page-header>
 
-      <v-toolbar class="mb-5">
+      <v-toolbar class="mb-5" v-if="permissions.userType === 'user'">
         <v-toolbar-items class="flex-fill">
           <v-spacer></v-spacer>
 

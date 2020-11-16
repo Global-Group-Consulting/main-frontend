@@ -386,7 +386,7 @@ export default {
     onMounted(async () => {
       const userId = $route.params.id;
 
-      $store.dispatch("fetchAgentsList", { $apiCalls });
+      $store.dispatch("fetchAgentsList", { $apiCalls, $auth });
 
       if (userId === "new") {
         userForm.formData.value.role =

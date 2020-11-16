@@ -234,8 +234,11 @@ export default {
   watch: {
     "formData.type": {
       immediate: true,
-      handler() {
-        this.formData.wallet = this.$enums.WalletTypes.DEPOSIT;
+      handler(type) {
+        if (type !== this.$enums.RequestTypes.INTERESSI) {
+          this.formData.wallet = this.$enums.WalletTypes.DEPOSIT;
+        }
+
         this.formData.currency = this.$enums.CurrencyType.EURO;
       }
     },

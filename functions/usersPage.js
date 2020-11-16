@@ -1,7 +1,7 @@
 import { get as _get, sortBy as _sortBy } from 'lodash'
 
 import usersFunctions from '@/functions/users'
-import { computed, onMounted, reactive, ref } from '@vue/composition-api'
+import { computed, onBeforeMount, reactive, ref } from '@vue/composition-api'
 
 import roleBasedConfig from '@/config/roleBasedConfig'
 import availableTableColumns from '@/config/tables/usersSchema'
@@ -18,6 +18,22 @@ export default function (root) {
     [UserRoles.AGENTE]: [],
     [UserRoles.ADMIN]: [],
     [UserRoles.SERV_CLIENTI]: [],
+  })
+
+  const usersToExpose = computed(() => {
+    if (permissions.userRole === UserRoles.AGENTE) {
+      const obj = {
+        [UserRoles.CLIENTE]: usersGroups[UserRoles.CLIENTE],
+      }
+
+      if (usersGroups[UserRoles.AGENTE].length > 0) {
+        obj[UserRoles.AGENTE] = usersGroups[UserRoles.AGENTE]
+      }
+
+      return obj
+    }
+
+    return usersGroups
   })
 
   const fetchAllUsers = async function () {
@@ -94,20 +110,18 @@ export default function (root) {
   }
 
 
-
-  onMounted(async () => {
+  onBeforeMount(async () => {
     const result = await fetchAllUsers()
 
     for (const entry of result) {
       $set(usersGroups, entry.id, entry.data)
     }
-
   })
 
 
 
   return {
-    usersGroups,
+    usersGroups: usersToExpose,
     onRowClick: goToUser,
     fetchAllUsers,
     getUerRoleData,
