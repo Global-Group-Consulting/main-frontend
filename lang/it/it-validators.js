@@ -3,5 +3,7 @@ export default {
   email: 'L\'email inserita non è valida.',
   minLength: 'Questo campo deve contenere almeno {min} caratteri.',
   sameAs: 'Questo campo non coincide con il campo {eq}.',
-  requiredMotivation: "E' necessario indicare una motivazione per cui si sta rifiutando la richiesta."
+  requiredMotivation: "E' necessario indicare una motivazione per cui si sta rifiutando la richiesta.",
+  maxValue: "L'importo inserito supera l'importo disponibile.",
+  minValue: "L'importo inserito deve essere superiore a {min} €"
 }

@@ -135,6 +135,15 @@ const agente = {
         ['completed_at', ["accettata", "rifiutata"]],
         ['actions', ["nuova"]]
       ]
+    },
+    movements: {
+      columns: [
+        "amountChange",
+        "movementType",
+        "createdAt",
+        "deposit",
+        "interestAmount"
+      ]
     }
   }
 }

@@ -163,6 +163,19 @@ export class ApiCalls extends BasicApiCall {
       body: { reason: data.reason }
     })
   }
+
+  /**
+   * @returns {{
+   *  deposit: number
+   *  interestAmount: number
+   *  interestPercentage: number
+   * }}
+   */
+  async fetchWalletStatus(data) {
+    return await this.get({
+      endPoint: "/api/movements/status" + (data && data.userId ? `/${data.userId}` : ''),
+    })
+  }
 }
 
 export default (context, inject) => {

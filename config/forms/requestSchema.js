@@ -6,6 +6,8 @@
  * @property { {data : {type: number}, readonly: boolean} } dialogData
  */
 
+import RequestTypes from "../../enums/RequestTypes"
+
 /**
  * 
  * @param {ComputedContext} context 
@@ -77,7 +79,7 @@ export default function (context) {
           disabled: true,
           component: 'money-input',
           currency: context.formData.currency,
-          if: (!readonly && !isVersamento) || readonly
+          if: (!readonly && !isVersamento) || readonly,
         }
       }
     },
@@ -91,7 +93,13 @@ export default function (context) {
           showMax: context.formData.wallet === 2,
           maxValue: context.formData.availableAmount,
           validations: {
-            required: {}
+            required: {},
+            minValue: {
+              params: 1
+            },
+            maxValue: {
+              params: context.formData.type === RequestTypes.VERSAMENTO ? null : context.formData.availableAmount || 0.5
+            }
           }
         },
       }
