@@ -9,69 +9,34 @@
 
       <v-row>
         <v-col cols="12">
-          <v-card color="success" dark>
-            <v-card-title>Entrate</v-card-title>
-
-            <v-data-table
-              light
-              :headers="movementsSchema.headers"
-              :items="requestsList.in"
-              :items-per-page="10"
+          <v-card>
+            <data-table
+              :items="movementsList"
+              table-key="movements"
+              schema="movementsSchema"
+              :items-per-page="25"
+              :item-class="getItemClass"
             >
-              <template v-slot:item.requestAmount="{ item }">
-                <span :class="getAmountClass(getAmountSign(item.type))">
-                  {{ getAmountSign(item.type) }}
-                  € {{ $options.filters.moneyFormatter(item.requestAmount) }}
+              <template v-slot:item.amountChange="{ item }">
+                <div v-html="formatAmountChange(item)"></div>
+              </template>
+
+              <template v-slot:item.movementType="{ item }">
+                <div v-html="formatMovementType(item)"></div>
+              </template>
+
+              <template v-slot:item.deposit="{ item }">
+                <span class="text-no-wrap">
+                  € {{ $options.filters.moneyFormatter(item.deposit) }}
                 </span>
               </template>
 
-              <template v-slot:item.requestDate="{ item }">
-                {{ $options.filters.dateFormatter(item.requestDate, true) }}
-              </template>
-
-              <template v-slot:item.data_update="{ item }">
-                {{ $options.filters.dateFormatter(item.data_update, true) }}
-              </template>
-
-              <template v-slot:item.type="{ item }">
-                {{ getTipoRichiesta(item.type) }}
-              </template>
-            </v-data-table>
-          </v-card>
-
-        </v-col>
-      </v-row>
-
-      <v-row>
-        <v-col cols="12">
-          <v-card color="error" dark>
-            <v-card-title>Uscite</v-card-title>
-
-            <v-data-table
-              light
-              :headers="movementsSchema.headers"
-              :items="requestsList.out"
-              :items-per-page="10"
-            >
-              <template v-slot:item.requestAmount="{ item }">
-                <span :class="getAmountClass(getAmountSign(item.type))">
-                  {{ getAmountSign(item.type) }}
-                  € {{ $options.filters.moneyFormatter(item.requestAmount) }}
+              <template v-slot:item.interestAmount="{ item }">
+                <span class="text-no-wrap">
+                  € {{ $options.filters.moneyFormatter(item.interestAmount) }}
                 </span>
               </template>
-
-              <template v-slot:item.requestDate="{ item }">
-                {{ $options.filters.dateFormatter(item.requestDate, true) }}
-              </template>
-
-              <template v-slot:item.data_update="{ item }">
-                {{ $options.filters.dateFormatter(item.data_update, true) }}
-              </template>
-
-              <template v-slot:item.type="{ item }">
-                {{ getTipoRichiesta(item.type) }}
-              </template>
-            </v-data-table>
+            </data-table>
           </v-card>
         </v-col>
       </v-row>
@@ -80,67 +45,92 @@
 </template>
 
 <script>
-import fakeMovements from '~/assets/fakeMovements'
-import PageHeader from '@/components/blocks/PageHeader'
+/** @typedef {import("../@types/Movement").IMovement} IMovement */
 
-import movementsSchema from '@/config/tables/movementsSchema'
+import { ref, onBeforeMount } from "@vue/composition-api";
+
+import PageHeader from "../components/blocks/PageHeader";
+import DataTable from "../components/table/DataTable";
+import MovementTypes from "../enums/MovementTypes";
+
+import pageBasicFn from "../functions/pageBasic";
 
 export default {
   component: {
-    PageHeader
+    PageHeader,
+    DataTable
   },
-  data () {
+  setup(props, { root }) {
+    /**
+     * @type {{
+     *  $apiCalls: import("../plugins/apiCalls").ApiCalls
+     * }}
+     */
+    const { $apiCalls, $set, $options, $i18n } = root;
+
+    /**
+     *@type {{value:IMovement[]}}
+     */
+    const movementsList = ref([]);
+
+    /**
+     *@param {IMovement} item
+     */
+    function formatAmountChange(item) {
+      const sign = [
+        MovementTypes.INTEREST_COLLECTED,
+        MovementTypes.DEPOSIT_COLLECTED,
+        MovementTypes.COMMISSION_COLLECTED
+      ].includes(item.movementType)
+        ? "-"
+        : "+";
+      const color = sign === "-" ? "red--text" : "green--text";
+
+      return `<span class="text-no-wrap ${color}">€ ${sign}${$options.filters.moneyFormatter(
+        item.amountChange.toFixed(2)
+      )}</span>`;
+    }
+
+    /**
+     *@param {IMovement} item
+     */
+    function formatMovementType(item) {
+      const movementId = MovementTypes.get(item.movementType).id;
+      const text = $i18n.t(`enums.MovementTypes.${movementId}`);
+
+      if (item.movementType === MovementTypes.INTEREST_RECAPITALIZED) {
+        return `<strong>${text}</strong>`;
+      }
+
+      return text;
+    }
+
+    /**
+     *@param {IMovement} item
+     */
+    function getItemClass(item) {
+      if (item.movementType === MovementTypes.INTEREST_RECAPITALIZED) {
+        return "yellow lighten-5";
+      }
+    }
+
+    async function fetchMovementsList() {
+      const data = await $apiCalls.fetchMovementsList();
+
+      $set(movementsList, "value", data);
+    }
+
+    onBeforeMount(fetchMovementsList);
+
     return {
-      title: 'Lista movimenti',
-      subtitle: '',
-      icon: 'mdi-fire',
-      requestsList: {
-        in: [],
-        out: []
-      }
-    }
-  },
-  computed: {
-    movementsSchema
-  },
-  methods: {
-    getTipoRichiesta (_id) {
-      const id = this.$enums.RequestTypes.get(_id).id
-
-      return this.$t('enums.RequestTypes.' + id)
-    },
-    getAmountSign (type) {
-      return [this.$enums.RequestTypes['VERSAMENTO'],
-        this.$enums.RequestTypes['INTERESSI']].includes(type) ? '+' : '-'
-    },
-    getAmountClass (sign) {
-      const minus = 'red--text'
-      const plus = 'green--text'
-
-      return sign === '-' ? minus : plus
-    }
-  },
-  created () {
-    const positiveTypes = [this.$enums.RequestTypes['VERSAMENTO'],
-      this.$enums.RequestTypes['INTERESSI']]
-
-    for (const movement of fakeMovements) {
-      if (this.$auth.user.role === this.$enums.UserRoles['CLIENTE']
-        && movement.type === this.$enums.RequestTypes['INTERESSI']) {
-        continue
-      }
-
-      if (positiveTypes.includes(movement.type)) {
-        this.requestsList.in.push(movement)
-      } else {
-        this.requestsList.out.push(movement)
-      }
-    }
-
+      ...pageBasicFn(root, "movements"),
+      movementsList,
+      formatAmountChange,
+      formatMovementType,
+      getItemClass
+    };
   }
-}
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

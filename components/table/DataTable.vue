@@ -3,15 +3,43 @@
     :headers="headers"
     :items="items"
     :items-per-page="itemsPerPage"
+    :item-class="itemClass"
+    :footer-props="{
+      itemsPerPageOptions
+    }"
+    :hide-default-footer="items.length <= itemsPerPage"
     :no-data-text="$t(noDataText)"
-    @click:row="goToUser($event.id)"
+    :dense="dense"
+    @click:row="$emit('click:row', $event)"
+    :locale="$i18n.locale"
   >
+    <!-- Dynamic item templates -->
+    <template v-for="col in headers" v-slot:[`item.${col.value}`]="{ item }">
+      <slot :name="'item.' + col.value" v-bind:item="item">
+        {{ item[col.value] }}
+      </slot>
+    </template>
+
     <template v-slot:item.contractNumber="{ item }">
       {{ $options.filters.contractNumberFormatter(item.contractNumber) }}
     </template>
 
     <template v-slot:item.validated_at="{ item }">
-      {{ $options.filters.dateFormatter(item.validated_at, true) }}
+      <span class="text-no-wrap">
+        {{ $options.filters.dateFormatter(item.validated_at, true) }}
+      </span>
+    </template>
+
+    <template v-slot:item.created_at="{ item }">
+      <span class="text-no-wrap">
+        {{ $options.filters.dateFormatter(item.created_at, true) }}
+      </span>
+    </template>
+
+    <template v-slot:item.updated_at="{ item }">
+      <span class="text-no-wrap">
+        {{ $options.filters.dateFormatter(item.updated_at, true) }}
+      </span>
     </template>
   </v-data-table>
 </template>
@@ -37,8 +65,19 @@ export default {
       type: String,
       required: true
     },
-    itemsPerPage: 10,
-    noDataText: "tables.no-data"
+    itemsPerPage: {
+      type: Number,
+      default: 10
+    },
+    itemsPerPageOptions: {
+      typr: Array,
+      default: () => {
+        return [10, 25, 50, -1];
+      }
+    },
+    itemClass: String | Function,
+    noDataText: "tables.no-data",
+    dense: Boolean
   },
   setup(props, { root }) {
     const { $auth } = root;
@@ -59,7 +98,7 @@ export default {
       }
 
       return columns.reduce((acc, column) => {
-        const col = availableTableColumns[column];
+        const col = availableTableColumns.value[column];
 
         if (!col) {
           console.warn(`No column found for ${column} in ${props.schema}`);

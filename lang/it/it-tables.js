@@ -16,5 +16,9 @@ export default {
   'completed-at': 'Data completamento',
   'created-at': 'Data creazione',
   'validated-at': 'Data validazione dati',
-  'no-data': "Nessun dato disponibile."
+  'no-data': "Nessun dato disponibile.",
+  'amount-change': "Importo",
+  'movement-type': "Tipologia movimento",
+  'deposit': "Capitale totale",
+  'interest-amount': "Interessi maturati"
 }

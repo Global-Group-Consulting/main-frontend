@@ -19,6 +19,9 @@ export default {
     'recover-password': 'Imposta password',
     'recover-success': 'Gentile utente, abbiamo provveduto ad aggiornare la sua password. Ora verrà reindirizzato automaticamente alla sua dashboard.'
   },
+  movements: {
+    'title': "Lista movimenti"
+  },
   activate: {
     'title': 'Attiva il tuo account',
     'recover-password': 'Imposta password',

@@ -13,5 +13,8 @@ export default {
   },
   'requests': {
     icon: 'mdi-fire'
+  },
+  'movements': {
+    icon: 'mdi-swap-horizontal'
   }
 }

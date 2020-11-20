@@ -56,5 +56,16 @@ export default {
   'CurrencyType': {
     'euro': 'Euro',
     'brite': 'Brite'
+  },
+  'MovementTypes': {
+    "initialDeposit": "Versamento iniziale",
+    "depositAdded": "Nuovo Versamento",
+    "interestRecapitalized": "Ricapitalizzazione mensile",
+    "interestCollected": "Riscossione interessi",
+    "depositCollected": "Riscossione capitale",
+    "commissionCollected": "Riscossione provvigioni",
+    "cancelInterestCollected": "Annullamento riscossione interessi",
+    "cancelDepositCollected": "Annullamento riscossione capitale",
+    "cancelCommissionCollected": "Annullamento riscossione provvigioni",
   }
 }
