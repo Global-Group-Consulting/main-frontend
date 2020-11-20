@@ -16,5 +16,5 @@ export default {
   'completed-at': 'Data completamento',
   'created-at': 'Data creazione',
   'validated-at': 'Data validazione dati',
-
+  'no-data': "Nessun dato disponibile."
 }

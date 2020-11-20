@@ -50,10 +50,10 @@ export default function (context) {
       cols: {
         wallet: {
           label: "walletType",
-          component: !readonly ? 'v-select' : null,
+          component: null,
           items: context.$enums.WalletTypes,
-          disabled: context.formData.type === context.$enums.RequestTypes.VERSAMENTO || readonly,
-          formatter: readonly ? (value) => context.$i18n.t(`enums.WalletTypes.${context.$enums.WalletTypes.getIdName(value)}`) : null,
+          disabled: true,
+          formatter: (value) => context.$i18n.t(`enums.WalletTypes.${context.$enums.WalletTypes.getIdName(value)}`),
           if: context.$enums.UserRoles.CLIENTE !== context.$auth.user.role
             && context.formData.type !== context.$enums.RequestTypes.VERSAMENTO
         },
@@ -108,7 +108,7 @@ export default function (context) {
         },
       }
     },
-    {
+    /* {
       cols: {
         requestAttachment: {
           component: 'file-uploader',
@@ -122,7 +122,7 @@ export default function (context) {
           } : null
         },
       }
-    },
+    }, */
     {
       cols: {
         notes: {

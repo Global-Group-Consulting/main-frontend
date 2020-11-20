@@ -43,6 +43,15 @@ const admin = {
         ['completed_at', ["accettata", "rifiutata"]],
         ['actions', ["nuova"]]
       ]
+    },
+    pendingUsers: {
+      columns: [
+        "contractNumber",
+        "firstName",
+        "lastName",
+        "email",
+        "validatedAt"
+      ]
     }
   }
 }

@@ -235,9 +235,10 @@ export default {
     "formData.type": {
       immediate: true,
       handler(type) {
-        if (type !== this.$enums.RequestTypes.INTERESSI) {
-          this.formData.wallet = this.$enums.WalletTypes.DEPOSIT;
-        }
+        this.formData.wallet =
+          type !== this.$enums.RequestTypes.INTERESSI
+            ? this.$enums.WalletTypes.DEPOSIT
+            : this.$enums.WalletTypes.COMMISION;
 
         this.formData.currency = this.$enums.CurrencyType.EURO;
       }
