@@ -14,7 +14,8 @@ export default {
     'btn-accept': 'Approva',
     'btn-reject': 'Rifiuta',
     'btn-delete': 'Elimina',
-    'alert-reject-reason': "La richiesta è stata rifiutata per il seguente motivo:<br>"
+    'alert-reject-reason': "La richiesta è stata rifiutata per il seguente motivo:<br>",
+    'alert-cancel-reason': "La richiesta è stata annullata in data {date} con il seguente motivo:<br>"
   },
   comunicationDialog: {
     'timeline-opposite': 'Inviato da <strong>{firstName} {lastName}</strong> il {timestamp}.',

@@ -164,6 +164,14 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
+  async cancelRequest(data) {
+    return await this._call({
+      method: "PUT",
+      endPoint: `/api/requests/${data.id}/cancel`,
+      body: { reason: data.reason }
+    })
+  }
+
   /**
    * @returns {{
    *  deposit: number

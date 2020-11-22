@@ -20,5 +20,6 @@ export default {
   'amount-change': "Importo",
   'movement-type': "Tipologia movimento",
   'deposit': "Capitale totale",
-  'interest-amount': "Interessi maturati"
+  'interest-amount': "Interessi maturati",
+  'request-cancelled': "Richiesta annullata"
 }

@@ -99,7 +99,7 @@ const cliente = {
         'type',
         'created_at',
         ['completed_at', ["accettata", "rifiutata"]],
-        ['actions', ["nuova"]]
+        ['actions', ["nuova", "accettata"]]
       ]
     },
     movements: {
@@ -133,7 +133,7 @@ const agente = {
         'type',
         'created_at',
         ['completed_at', ["accettata", "rifiutata"]],
-        ['actions', ["nuova"]]
+        ['actions', ["nuova", "accettata"]]
       ]
     },
     movements: {

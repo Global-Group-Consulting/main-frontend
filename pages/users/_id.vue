@@ -214,7 +214,7 @@ import UserMessage from "../../components/dialogs/UserMessage";
 import FilePreviewer from "../..//components/dialogs/FilePreviewer";
 import StatusChangeDialog from "../..//components/dialogs/StatusChangeDialog";
 
-import { onMounted, reactive, ref, computed } from "@vue/composition-api";
+import { onBeforeMount, reactive, ref, computed } from "@vue/composition-api";
 
 import AccountStatuses from "../../enums/AccountStatuses.js";
 import UserRoles from "@/enums/UserRoles.js";
@@ -233,7 +233,7 @@ export default {
     StatusChangeDialog
   },
   middleware: ["pagesAuth"],
-  setup(props, { root }) {
+  setup(props, { root, refs }) {
     const {
       $apiCalls,
       $alerts,
@@ -246,13 +246,17 @@ export default {
     } = root;
     const currentTab = ref(0);
     const permissions = Permissions(root);
-    const userForm = usersForm(root);
+
+    const userForm = usersForm(root, refs);
 
     const editMode = computed(
       () =>
         !userForm.userIsNew.value &&
         userForm.userRole.value === $enums.UserRoles.CLIENTE &&
-        permissions.userType === "admin"
+        permissions.userType === "admin" &&
+        [AccountStatuses.CREATED, AccountStatuses.MUST_REVALIDATE].includes(
+          userForm.userAccountStatus.value
+        )
     );
 
     const pageData = pageBasic(root, "usersId");
@@ -383,7 +387,7 @@ export default {
     });
 
     // fetches user details
-    onMounted(async () => {
+    onBeforeMount(async () => {
       const userId = $route.params.id;
 
       $store.dispatch("fetchAgentsList", { $apiCalls, $auth });

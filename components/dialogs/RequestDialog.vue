@@ -10,6 +10,21 @@
         <div>{{ formData.rejectReason }}</div>
       </v-alert>
 
+      <v-alert
+        type="warning"
+        class="mt-3"
+        v-else-if="formData.status === $enums.RequestStatus.ANNULLATA"
+      >
+        <div
+          v-html="
+            $t('dialogs.requests.alert-cancel-reason', {
+              date: $options.filters.dateHourFormatter(formData.completed_at)
+            })
+          "
+        ></div>
+        <div>{{ formData.cancelReason }}</div>
+      </v-alert>
+
       <v-toolbar
         dense
         elevation="2"

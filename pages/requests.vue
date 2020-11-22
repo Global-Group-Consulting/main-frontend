@@ -51,6 +51,7 @@
               :headers="getTableHeaders($auth.user.role, table.id)"
               :items="requestsGroups[table.id]"
               :items-per-page="10"
+              :item-class="getItemClass"
               :hide-default-footer="requestsGroups[table.id].length <= 10"
               @click:row="openRequestDetails"
             >
@@ -71,6 +72,7 @@
                   :item="item"
                   @rowDeleted="onRequestDeleted"
                   @rowStatusChanged="onRequestStatusChanged"
+                  @rowCanceled="onRequestCanceled"
                 ></requests-crud-actions>
               </template>
 
@@ -153,7 +155,11 @@ export default {
 
       requestsList.value.forEach(richiesta => {
         const stato = $enums.RequestStatus.get(richiesta.status);
-        const groupName = stato.id;
+        let groupName = stato.id;
+
+        if (groupName === "annullata") {
+          groupName = "accettata";
+        }
 
         toReturn[groupName].push(richiesta);
       });
@@ -198,6 +204,10 @@ export default {
     }
 
     async function onRequestStatusChanged() {
+      await fetchAll();
+    }
+
+    async function onRequestCanceled() {
       await fetchAll();
     }
 
@@ -255,6 +265,12 @@ export default {
       )})`;
     }
 
+    function getItemClass(item) {
+      if (+item.status == $enums.RequestStatus.ANNULLATA) {
+        return "grey lighten-2 text-decoration-line-through";
+      }
+    }
+
     onBeforeMount(fetchAll);
 
     return {
@@ -270,7 +286,9 @@ export default {
       onNewRequestAdded,
       onRequestDeleted,
       onRequestStatusChanged,
-      formatRequestCurrency
+      onRequestCanceled,
+      formatRequestCurrency,
+      getItemClass
       // showCrudActions
     };
   },
