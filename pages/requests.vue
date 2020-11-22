@@ -52,6 +52,9 @@
               :items="requestsGroups[table.id]"
               :items-per-page="10"
               :item-class="getItemClass"
+              :sort-by="table.sortBy"
+              :sort-desc="table.sortDesc"
+              :multi-sort="table.multiSort"
               :hide-default-footer="requestsGroups[table.id].length <= 10"
               @click:row="openRequestDetails"
             >
@@ -121,7 +124,7 @@
 </template>
 
 <script>
-import { ref, computed, onBeforeMount } from "@vue/composition-api";
+import { ref, computed, onBeforeMount, onMounted } from "@vue/composition-api";
 
 // configs
 import tableHeadersSchema from "../config/tables/requestsSchema";
@@ -135,6 +138,7 @@ import RequestDialog from "../components/dialogs/RequestDialog";
 import pageBasicFn from "../functions/pageBasic";
 import tableHeadersFn from "../functions/tablesHeaders";
 import permissionsFn from "../functions/permissions";
+import RequestTypes from "../enums/RequestTypes";
 
 export default {
   components: {
@@ -143,7 +147,7 @@ export default {
     RequestsCrudActions
   },
   setup(props, { root }) {
-    const { $apiCalls, $set, $enums, $store, $i18n, $options } = root;
+    const { $apiCalls, $set, $enums, $store, $i18n, $options, $route } = root;
     const permissions = permissionsFn(root);
     const requestsList = ref([]);
     const requestsGroups = computed(() => {
@@ -172,19 +176,27 @@ export default {
           id: "nuova",
           title: $i18n.t(`pages.requests.tableNuova-title`),
           color: "warning",
-          icon: "mdi-timer-sand"
+          icon: "mdi-timer-sand",
+          sortBy: "created_at",
+          sortDesc: true
         },
         {
           id: "accettata",
           title: $i18n.t(`pages.requests.tableAccettata-title`),
           color: "green",
-          icon: "mdi-check-all"
+          icon: "mdi-check-all",
+          sortBy: ["completed_at", "created_at"],
+          sortDesc: [true, false],
+          multiSort: true
         },
         {
           id: "rifiutata",
           title: $i18n.t(`pages.requests.tableRifiutata-title`),
           color: "red",
-          icon: "mdi-close-box-multiple-outline"
+          icon: "mdi-close-box-multiple-outline",
+          sortBy: ["completed_at", "created_at"],
+          sortDesc: [true, false],
+          multiSort: true
         }
       ];
     });
@@ -221,12 +233,12 @@ export default {
       });
     }
 
-    function newWithdrawlRequest() {
+    function newWithdrawlRequest(type) {
       $store.dispatch("dialog/updateStatus", {
         title: $i18n.t("dialogs.requests.title-withdrawal"),
         id: "RequestDialog",
         data: {
-          type: $enums.RequestTypes.RISC_INTERESSI
+          type: type || $enums.RequestTypes.RISC_INTERESSI
         }
       });
     }
@@ -272,6 +284,31 @@ export default {
     }
 
     onBeforeMount(fetchAll);
+
+    onMounted(() => {
+      const query = $route.query;
+
+      // if in the query we found "new" then open the corresponding dialog if any
+      if (query.new) {
+        switch (query.new) {
+          case "add_deposit":
+            newDepositRequest();
+            break;
+          case "collect_deposit":
+          case "collect_interests":
+            let type;
+
+            if (query.new === "collect_deposit") {
+              type = RequestTypes.RISC_CAPITALE;
+            } else if (query.new === "collect_interests") {
+              type = RequestTypes.RISC_INTERESSI;
+            }
+
+            newWithdrawlRequest(type);
+            break;
+        }
+      }
+    });
 
     return {
       ...pageBasicFn(root, "requests"),

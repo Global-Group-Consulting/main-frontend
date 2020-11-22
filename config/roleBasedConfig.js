@@ -111,6 +111,16 @@ const cliente = {
         "interestAmount"
       ]
     }
+  },
+  blocks: {
+    dashboard: {
+      blocks: [
+        "deposit",
+        "interestAmount",
+        "depositCollected",
+        "interestsCollected",
+      ]
+    }
   }
 }
 
@@ -143,6 +153,16 @@ const agente = {
         "createdAt",
         "deposit",
         "interestAmount"
+      ]
+    }
+  },
+  blocks: {
+    dashboard: {
+      blocks: [
+        "deposit",
+        "interestAmount",
+        "depositCollected",
+        "interestsCollected",
       ]
     }
   }

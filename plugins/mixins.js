@@ -14,3 +14,11 @@ Vue.mixin({
   }
 })
 
+Vue.mixin({
+  beforeRouteLeave(to, from, next) {
+    this.$store.dispatch("dialog/updateStatus")
+
+    next()
+  }
+})
+

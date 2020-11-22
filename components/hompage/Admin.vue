@@ -106,14 +106,14 @@ export default {
     });
 
     onMounted(async () => {
-      const result = await $apiCalls.dashboardData();
+      /* const result = await $apiCalls.dashboardData();
 
       root.$set(dashboardData, "validatedUsers", result.validatedUsers || []);
       root.$set(
         dashboardData,
         "pendingRequeusts",
         result.pendingRequeusts || []
-      );
+      ); */
     });
 
     return {

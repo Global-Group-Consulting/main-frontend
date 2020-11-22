@@ -33,10 +33,12 @@ export const actions = {
    * @param {{}} payload
    * @return {*}
    */
-  updateStatus({ commit }, payload) {
+  updateStatus({ commit, state }, payload) {
     if (!payload || payload === false) {
-      commit('HIDE')
-      commit('SET_DATA', {})
+      if (state.show) {
+        commit('HIDE')
+        commit('SET_DATA', {})
+      }
 
       return
     }

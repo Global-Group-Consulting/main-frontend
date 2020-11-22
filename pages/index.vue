@@ -12,51 +12,51 @@
 </template>
 
 <script>
-  import Admin from "@/components/hompage/Admin";
-  import Cliente from "@/components/hompage/Cliente";
-  import Agente from "@/components/hompage/Agente";
-  import ServClienti from "@/components/hompage/ServClienti";
+import Admin from "@/components/hompage/Admin";
+import Cliente from "@/components/hompage/Cliente";
+import Agente from "@/components/hompage/Agente";
+import ServClienti from "@/components/hompage/ServClienti";
 
-  import PageHeader from "@/components/blocks/PageHeader";
-  import pageBasic from "@/functions/pageBasic";
+import PageHeader from "@/components/blocks/PageHeader";
+import pageBasic from "@/functions/pageBasic";
 
-  export default {
-    components: { PageHeader, Admin, Cliente, Agente, ServClienti },
+export default {
+  components: { PageHeader, Admin, Cliente, Agente, ServClienti },
 
-    setup(props, { root }) {
-      return {
-        ...pageBasic(root, "home"),
-      };
-    },
-    data() {
-      return {};
-    },
-    computed: {
-      userPage() {
-        const userRole = this.$auth.user.role;
-        let pageToReturn = "";
+  setup(props, { root }) {
+    return {
+      ...pageBasic(root, "dashboard")
+    };
+  },
+  data() {
+    return {};
+  },
+  computed: {
+    userPage() {
+      const userRole = this.$auth.user.role;
+      let pageToReturn = "";
 
-        switch (+userRole) {
-          case this.$enums.UserRoles.ADMIN:
-            pageToReturn = "Admin";
+      switch (+userRole) {
+        case this.$enums.UserRoles.ADMIN:
+          pageToReturn = "Admin";
 
-            break;
-          case this.$enums.UserRoles.CLIENTE:
-            pageToReturn = "Cliente";
+          break;
+        case this.$enums.UserRoles.CLIENTE:
+          pageToReturn = "Cliente";
 
-            break;
-          case this.$enums.UserRoles.AGENTE:
-            pageToReturn = "Agente";
+          break;
+        case this.$enums.UserRoles.AGENTE:
+          pageToReturn = "Agente";
 
-            break;
-          case this.$enums.UserRoles.SERV_CLIENTI:
-            pageToReturn = "ServClienti";
+          break;
+        case this.$enums.UserRoles.SERV_CLIENTI:
+          pageToReturn = "ServClienti";
 
-            break;
-        }
+          break;
+      }
 
-        return pageToReturn;
-      },
-    },
-  };
+      return pageToReturn;
+    }
+  }
+};
 </script>

@@ -1,33 +1,40 @@
 import moment from 'moment'
+import { upperFirst } from "lodash"
 
-function getMonths () {
+function getMonths(data) {
   const iterations = 6
   const toReturn = []
 
-  for (let i = 0; i < iterations; i++) {
-    const month = moment().subtract(i, 'months').format('MMMM')
+  for (let i = 0; i < data.length && i < iterations; i++) {
+    if (i > iterations) {
+      break;
+    }
 
-    toReturn.unshift(month)
+    const month = moment(data[i].created_at).format('MMMM-YY')
+
+    toReturn.unshift(upperFirst(month))
   }
 
   return toReturn
 }
 
 export default {
-  labels: getMonths(),
+  labels: getMonths,
   datasets: [
     {
-      label: 'charts.current-deposit',
+      display: true,
+      id: 'deposit',
       borderColor: '#91c839',
-      backgroundColor: 'rgba(140, 195, 43, .9)',
+      // backgroundColor: 'rgba(140, 195, 43, .9)',
       data: [2000, 2100, 2200, 1800, 1900, 1500]
     },
     {
-      label: 'charts.current-interests',
+      id: 'interestAmount',
       borderColor: '#39c8c8',
-      backgroundColor: 'rgba(46, 193, 194, .9)',
+      // backgroundColor: 'rgba(46, 193, 194, .9)',
       data: [200, 210, 220, 180, 190, 150]
     },
+    /* 
     {
       label: 'charts.picket-deposit',
       borderColor: '#c83939',
@@ -39,6 +46,6 @@ export default {
       borderColor: '#d29539',
       backgroundColor: 'rgba(204,146,46, .9)',
       data: [0, 0, 0, 40, 0, 30]
-    },
+    }, */
   ]
 }

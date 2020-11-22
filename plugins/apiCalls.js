@@ -184,6 +184,12 @@ export class ApiCalls extends BasicApiCall {
       endPoint: "/api/movements/status" + (data && data.userId ? `/${data.userId}` : ''),
     })
   }
+
+  async dashboardFetch() {
+    return await this.get({
+      endPoint: "/api/dashboards"
+    })
+  }
 }
 
 export default (context, inject) => {

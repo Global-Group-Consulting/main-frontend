@@ -1,6 +1,14 @@
 export default {
-  home: {
-    title: 'La mia dashboard'
+  dashboard: {
+    title: 'La mia dashboard',
+    deposit: "Deposito",
+    interests: "Rendite",
+    depositAdd: "Versa",
+    depositCollect: "Preleva",
+    depositCollected: "Deposito Prelevato",
+    movementsList: "Lista movimenti",
+    interestsCollect: "Riscuoti",
+    interestsCollected: "Rendite Riscosse"
   },
   login: {
     'title': 'Accedi all\'area personale',
