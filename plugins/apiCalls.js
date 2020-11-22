@@ -76,6 +76,13 @@ export class ApiCalls extends BasicApiCall {
     )
   }
 
+  async fetchMovementsList(_id) {
+    return (await this.get({
+      endPoint: `/api/movements`
+    })
+    )
+  }
+
   async dashboardData() {
     return await this.get({
       endPoint: "/api/dashboards"
@@ -139,6 +146,48 @@ export class ApiCalls extends BasicApiCall {
     return await this._call({
       method: "DELETE",
       endPoint: `/api/requests/${data.id}`,
+    })
+  }
+
+  async acceptRequest(data) {
+    return await this._call({
+      method: "PUT",
+      endPoint: `/api/requests/${data.id}/approve`,
+    })
+  }
+
+  async rejectRequest(data) {
+    return await this._call({
+      method: "PUT",
+      endPoint: `/api/requests/${data.id}/reject`,
+      body: { reason: data.reason }
+    })
+  }
+
+  async cancelRequest(data) {
+    return await this._call({
+      method: "PUT",
+      endPoint: `/api/requests/${data.id}/cancel`,
+      body: { reason: data.reason }
+    })
+  }
+
+  /**
+   * @returns {{
+   *  deposit: number
+   *  interestAmount: number
+   *  interestPercentage: number
+   * }}
+   */
+  async fetchWalletStatus(data) {
+    return await this.get({
+      endPoint: "/api/movements/status" + (data && data.userId ? `/${data.userId}` : ''),
+    })
+  }
+
+  async dashboardFetch() {
+    return await this.get({
+      endPoint: "/api/dashboards"
     })
   }
 }

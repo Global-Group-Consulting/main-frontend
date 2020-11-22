@@ -1,47 +1,76 @@
 <script>
-import { Line } from 'vue-chartjs'
+import { Line } from "vue-chartjs";
 
 export default {
-  name: 'ChartLines',
+  name: "ChartLines",
   extends: Line,
   props: {
     labels: {
       type: Array,
-      default () {
-        return []
+      default() {
+        return [];
       }
     },
     values: {
       type: Array,
-      default () {
-        return []
+      default() {
+        return [];
       }
     },
     datasets: {
       type: Array,
-      default () {
+      default() {
         return [
           {
             data: this.values
           }
-        ]
+        ];
       }
     }
   },
-  mounted () {
-    // Overwriting base render method with actual data.
-    this.renderChart({
-      labels: this.labels,
-      datasets: this.datasets
-    }, {
-      responsive: true,
-      maintainAspectRatio: false,
-      legend: {
-        display: true
-      }
-    })
+  methods: {
+    renderAll() {
+      // Overwriting base render method with actual data.
+      this.renderChart(
+        {
+          labels: this.labels,
+          datasets: this.datasets
+        },
+        {
+          responsive: true,
+          maintainAspectRatio: false,
+          legend: {
+            display: true
+          },
+          tooltips: {
+            callbacks: {
+              label: (tooltipItem, obj) => {
+                const value = this.$options.filters.moneyFormatter(
+                  +tooltipItem.value
+                );
+
+                return (
+                  obj.datasets[tooltipItem.datasetIndex].label + ": € " + value
+                );
+              }
+            }
+          }
+        }
+      );
+    }
+  },
+  mounted() {
+    this.renderAll();
+  },
+  watch: {
+    labels() {
+      this.renderAll();
+    },
+    datasets() {
+      this.renderAll();
+    }
   }
-}
+};
 </script>
 
 <style scoped></style>

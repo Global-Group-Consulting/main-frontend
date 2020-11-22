@@ -17,20 +17,11 @@
           {{ this.$t("tables.pending-users-table") }}
         </p>
 
-        <v-data-table
-          :headers="usersTableHeaders"
-          :items="dashboardData.validatedUsers"
-          :items-per-page="10"
-          @click:row="goToUser($event.id)"
-        >
-          <template v-slot:item.contractNumber="{ item }">
-            {{ $options.filters.contractNumberFormatter(item.contractNumber) }}
-          </template>
-
-          <template v-slot:item.validated_at="{ item }">
-            {{ $options.filters.dateFormatter(item.validated_at, true) }}
-          </template>
-        </v-data-table>
+        <data-table
+          :items="[{ firstName: 'asdasd' }]"
+          table-key="pendingUsers"
+          schema="usersSchema"
+        ></data-table>
       </v-card-text>
     </v-card>
 
@@ -65,101 +56,107 @@
 </template>
 
 <script>
-  import Chart from "@/components/charts/Chart";
-  import ChartLines from "@/components/charts/ChartLines";
+import Chart from "@/components/charts/Chart";
+import ChartLines from "@/components/charts/ChartLines";
 
-  import { requests as pendingRequests } from "@/assets/fakeRichieste";
+import { requests as pendingRequests } from "@/assets/fakeRichieste";
 
-  import adminDashboardChart from "@/config/charts/adminDashboard";
-  import availableTableColumns from "@/config/tables/usersSchema";
-  import requestsTableSchema from "@/config/tables/requestsSchema";
-  import users from "@/functions/users";
-  import { computed, onMounted, reactive, ref } from "@vue/composition-api";
+import adminDashboardChart from "@/config/charts/adminDashboard";
+import availableTableColumns from "@/config/tables/usersSchema";
+import requestsTableSchema from "@/config/tables/requestsSchema";
+import users from "@/functions/users";
+import { computed, onMounted, reactive, ref } from "@vue/composition-api";
+import DataTable from "../table/DataTable.vue";
 
-  export default {
-    name: "Admin",
-    components: { ChartLines, Chart },
-    setup(props, { root }) {
-      const { $apiCalls } = root;
-      const dashboardChart = ref(adminDashboardChart);
-      const dashboardData = reactive({
-        validatedUsers: [],
-        pendingRequeusts: [],
-      });
+export default {
+  name: "Admin",
+  components: { ChartLines },
+  setup(props, { root }) {
+    const { $apiCalls } = root;
+    const dashboardChart = ref(adminDashboardChart);
+    const dashboardData = reactive({
+      validatedUsers: [],
+      pendingRequeusts: []
+    });
 
-      const usersTableHeaders = computed(() => {
-        const columns = [
-          "contractNumber",
-          "firstName",
-          "lastName",
-          "email",
-          "validatedAt",
-        ];
+    const usersTableHeaders = computed(() => {
+      const columns = [
+        "contractNumber",
+        "firstName",
+        "lastName",
+        "email",
+        "validatedAt"
+      ];
 
-        return columns.reduce((acc, column) => {
-          const col = availableTableColumns[column];
+      return columns.reduce((acc, column) => {
+        const col = availableTableColumns[column];
 
-          acc.push({
-            ...col,
-            text: root.$t(col.text),
-          });
-
-          return acc;
-        }, []);
-        /* return usersTableSchema.headers.filter((col) => {
-                                if (col.value !== "actions") {
-                                  return true;
-                                }
-                              }); */
-      });
-
-      onMounted(async () => {
-        const result = await $apiCalls.dashboardData();
-
-        root.$set(dashboardData, "validatedUsers", result.validatedUsers || []);
-        root.$set(
-          dashboardData,
-          "pendingRequeusts",
-          result.pendingRequeusts || []
-        );
-      });
-
-      return {
-        goToUser: users(root).goToUser,
-        usersTableHeaders,
-        dashboardChart,
-        dashboardData,
-      };
-    },
-    data() {
-      return {
-        pendingRequests,
-      };
-    },
-    computed: {
-      requestsTableHeaders() {
-        /* return requestsTableSchema(this).headers.filter((col) => {
-                                if (col.value !== "actions") {
-                                  return true;
-                                }
-                              }); */
-        return [];
-      },
-      pendingUsers() {
-        // return pendingUsers.map((group) => group.data[0]);
-        return [];
-      },
-      chartsAdminDataset() {
-        return this.dashboardChart.datasets.map((set) => {
-          set.label = this.$t(set.label);
-
-          return set;
+        acc.push({
+          ...col,
+          text: root.$t(col.text)
         });
-      },
+
+        return acc;
+      }, []);
+      /* return usersTableSchema.headers.filter((col) => {
+                                if (col.value !== "actions") {
+                                  return true;
+                                }
+                              }); */
+    });
+
+    onMounted(async () => {
+      /* const result = await $apiCalls.dashboardData();
+
+      root.$set(dashboardData, "validatedUsers", result.validatedUsers || []);
+      root.$set(
+        dashboardData,
+        "pendingRequeusts",
+        result.pendingRequeusts || []
+      ); */
+    });
+
+    return {
+      goToUser: users(root).goToUser,
+      usersTableHeaders,
+      dashboardChart,
+      dashboardData
+    };
+  },
+  data() {
+    return {
+      pendingRequests
+    };
+  },
+  computed: {
+    requestsTableHeaders() {
+      /* return requestsTableSchema(this).headers.filter((col) => {
+                                if (col.value !== "actions") {
+                                  return true;
+                                }
+                              }); */
+      return [];
     },
-  };
+    requestsTableHeaders() {
+      /* return requestsTableSchema(this).headers.filter(col => {
+        if (col.value !== "actions") {
+          return true;
+        }
+      }); */
+    },
+    pendingUsers() {
+      // return pendingUsers.map((group) => group.data[0]);
+      return [];
+    },
+    chartsAdminDataset() {
+      return this.dashboardChart.datasets.map(set => {
+        set.label = this.$t(set.label);
+
+        return set;
+      });
+    }
+  }
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

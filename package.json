@@ -1,6 +1,7 @@
 {
   "name": "ggc-frontend",
-  "version": "1.0.8",
+  "version": "1.1.0",
+  "description": "Global Group Consulting frontend app.",
   "private": true,
   "scripts": {
     "dev": "nuxt",

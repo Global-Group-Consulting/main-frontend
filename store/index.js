@@ -22,8 +22,11 @@ export const getters = {
 
 
 export const actions = {
-  async fetchAgentsList({ commit }, { $apiCalls }) {
-    const test = Vue
+  async fetchAgentsList({ commit }, { $apiCalls, $auth }) {
+    if (![UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(+$auth.user.role)) {
+      return
+    }
+
     try {
       const result = await $apiCalls.fetchAgents()
 

@@ -1,6 +1,14 @@
 export default {
-  home: {
-    title: 'La mia dashboard'
+  dashboard: {
+    title: 'La mia dashboard',
+    deposit: "Deposito",
+    interests: "Rendite",
+    depositAdd: "Versa",
+    depositCollect: "Preleva",
+    depositCollected: "Deposito Prelevato",
+    movementsList: "Lista movimenti",
+    interestsCollect: "Riscuoti",
+    interestsCollected: "Rendite Riscosse"
   },
   login: {
     'title': 'Accedi all\'area personale',
@@ -18,6 +26,9 @@ export default {
     'back-to-login': 'Torna alla login',
     'recover-password': 'Imposta password',
     'recover-success': 'Gentile utente, abbiamo provveduto ad aggiornare la sua password. Ora verrà reindirizzato automaticamente alla sua dashboard.'
+  },
+  movements: {
+    'title': "Lista movimenti"
   },
   activate: {
     'title': 'Attiva il tuo account',

@@ -7,8 +7,9 @@ import ToastedOptions from "../config/vue-toasted"
 Vue.use(Toasted, ToastedOptions)
 
 export class Alerts {
-  constructor(i18n) {
+  constructor({ i18n, store }) {
     this.i18n = i18n
+    this.store = store
   }
 
   success(settings = {}) {
@@ -112,16 +113,31 @@ export class Alerts {
       settings.showLoaderOnConfirm = true
     }
 
+    /* if (this.store.getters("dialog/dialogState")) {
+      this.store.dispatch("dialog/updateRetainFocus", false)
+    } */
+
     return new Promise((resolve, reject) => {
       Swal.fire(Object.assign({}, defaultSettings, settings))
         .then((res) => {
+          /*  if (this.store.getters("dialog/dialogState")) {
+             this.store.dispatch("dialog/updateRetainFocus", true)
+           } */
+
           if (res.isConfirmed) {
             resolve(res)
           } else {
             reject(res)
           }
+
         })
-        .catch((er) => reject(er))
+        .catch((er) => {
+          reject(er)
+
+          /*  if (this.store.getters("dialog/dialogState")) {
+             this.store.dispatch("dialog/updateRetainFocus", true)
+           } */
+        })
     })
   }
 
@@ -149,9 +165,9 @@ export class Alerts {
     await this.ask({
       ...askSettings,
       ...settings,
-      preConfirm: async () => {
+      preConfirm: async (value) => {
         try {
-          await preConfirm()
+          await preConfirm(value)
 
           return this.toastSuccess(`${key}-success`)
         } catch (er) {
@@ -167,7 +183,7 @@ export class Alerts {
 }
 
 export default (context, inject) => {
-  const alerts = new Alerts(context.app.i18n)
+  const alerts = new Alerts(context.app)
 
   inject('alerts', alerts)
 

@@ -45,9 +45,9 @@ export default {
   'RequestTypes': {
     'admin': 'Admin',
     'versamento': 'Versamento',
-    'interessi': 'Reinvestimento provvigioni',
+    'interessi': 'Riscossione provvigioni',
     'risc_capitale': 'Prelievo deposito',
-    'risc_interessi': 'Riscossione rendite',
+    'risc_interessi': 'Riscossione rendite (classic)',
   },
   'WalletTypes': {
     'deposit': 'Deposito',
@@ -56,5 +56,16 @@ export default {
   'CurrencyType': {
     'euro': 'Euro',
     'brite': 'Brite'
+  },
+  'MovementTypes': {
+    "initialDeposit": "Versamento iniziale",
+    "depositAdded": "Nuovo Versamento",
+    "interestRecapitalized": "Ricapitalizzazione mensile",
+    "interestCollected": "Riscossione interessi",
+    "depositCollected": "Riscossione capitale",
+    "commissionCollected": "Riscossione provvigioni",
+    "cancelInterestCollected": "Annullamento riscossione interessi",
+    "cancelDepositCollected": "Annullamento riscossione capitale",
+    "cancelCommissionCollected": "Annullamento riscossione provvigioni",
   }
 }

@@ -31,32 +31,6 @@ const menuItems = [
         icon: 'mdi-account-group',
         link: '/users',
         ruoli: [UserRoles.ADMIN, UserRoles.SERV_CLIENTI, UserRoles.AGENTE]
-        /*childs: [
-          {
-            id: 'utenti.tutti',
-            text: 'Tutti',
-            icon: 'mdi-account',
-            link: '/utenti'
-          },
-          {
-            id: 'utenti.admin',
-            text: 'Amministratori',
-            icon: 'mdi-account',
-            link: '/utenti?type=1'
-          },
-          {
-            id: 'utenti.agenti',
-            text: 'Agenti',
-            icon: 'mdi-account',
-            link: '/utenti?type=2'
-          },
-          {
-            id: 'utenti.clienti',
-            text: 'Clienti',
-            icon: 'mdi-account',
-            link: '/utenti?type=3'
-          }
-        ]*/
       },
       {
         id: 'movements',
@@ -69,7 +43,8 @@ const menuItems = [
         id: 'requests',
         text: 'requests',
         icon: 'mdi-fire',
-        link: '/requests'
+        link: '/requests',
+        ruoli: [UserRoles.ADMIN, UserRoles.AGENTE, UserRoles.CLIENTE]
       },
     ]
   },

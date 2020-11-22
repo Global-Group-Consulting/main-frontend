@@ -11,7 +11,7 @@
  * @property {Boolean} showReferenceAgent
  */
 
-import { computed, ref } from '@vue/composition-api'
+import { computed, ref, onMounted } from '@vue/composition-api'
 
 import PersonTypes from '../enums/PersonTypes'
 import UserRoles from '../enums/UserRoles'
@@ -20,7 +20,7 @@ import usersTabs from '../config/tabs/usersIdTabs'
 import usersDataSchema from '../config/forms/usersDataSchema'
 import Permissions from './permissions'
 
-export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set, $auth }) {
+export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set, $auth }, refs) {
   /**
    * @type {import('@vue/composition-api').Ref<Partial<import("../@types/UserFormData").UserDataSchema>>}
    */
@@ -67,8 +67,30 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set, $au
     return acc
   }, {})
 
-  const onSaveClick = async () => {
+  async function validateAll() {
+    let result = true
+
+    for (const key of Object.keys(refs)) {
+      if (key.startsWith("dynamicForm_")) {
+        const valid = await refs[key][0].validate()
+
+        if (!valid) {
+          result = false
+        }
+      }
+    }
+
+    return result
+  }
+
+  async function onSaveClick() {
     try {
+      const formValid = await validateAll();
+
+      if (!formValid) {
+        return
+      }
+
       let result
 
       delete formData.value.files

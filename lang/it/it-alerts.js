@@ -46,6 +46,24 @@ export default {
   "delete-request-cancelBtnText": "Annulla",
   "delete-request-success": "Richiesta eliminata correttamente!",
 
+  "cancel-request-title": "",
+  "cancel-request-text": "Sei sicuro di voler annullare la richiesta di <strong>{type}</strong> del valore di <strong>{amount}</strong> la quale è già stata approvata dall'amministrazione? Continuando verrà effetuato uno storno sui tuoi movimenti ed il tuo saldo verrà ripristinato.<br><br>Se desideri procedere ti invitiamo ad indicare una motivazione per questa operazione.",
+  "cancel-request-confirmBtnText": "Si, annulla richiesta",
+  "cancel-request-cancelBtnText": "Torna indietro",
+  "cancel-request-success": "Richiesta annullata correttamente!",
+
+  "approve-request-title": "Approvare la richiesta?",
+  "approve-request-text": "Sei sicuro di voler approvare la richiesta di <strong>{type}</strong> del valore di <strong>{amount}</strong> di <strong>{user}</strong>? Continuando, la somma verrà contabilizzata.",
+  "approve-request-confirmBtnText": "Si, approva richiesta",
+  "approve-request-cancelBtnText": "Annulla",
+  "approve-request-success": "Richiesta approvata correttamente!",
+
+  "reject-request-title": "Rifiutare la richiesta?",
+  "reject-request-text": "Sei sicuro di voler rifiutare la richiesta di <strong>{type}</strong> del valore di <strong>{amount}</strong> di <strong>{user}</strong>?<br>Se desideri procedere, ti invitiamo ad indicare una motivazione che verrà mostrata all'utente come causale del rifiuto.",
+  "reject-request-confirmBtnText": "Si, rifiuta richiesta",
+  "reject-request-cancelBtnText": "Annulla",
+  "reject-request-success": "Richiesta rifiutata correttamente!",
+
   "change-status-same-title": "Nulla da cambiare!",
   "change-status-same-text": "Il nuovo stato coincide con l'attuale, pertanto non è possibile apportare alcuna modifica. Scegliere uno stato diverso o annullare l'operazione.",
 }

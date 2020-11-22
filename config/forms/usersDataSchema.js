@@ -1,6 +1,7 @@
 import DocumentTypes from '@/enums/DocumentTypes'
 import PersonTypes from '@/enums/PersonTypes'
 import UserRoles from '../../enums/UserRoles'
+import AccountStatuses from '../../enums/AccountStatuses'
 import Genders from '@/enums/Genders'
 
 import axios from "@nuxtjs/axios"
@@ -207,7 +208,12 @@ export function contractData(formContext) {
         'contractPercentage': {
           type: "number",
           formatter: "percentageFormatter",
+          appendIcon: "mdi-percent",
           validations: {
+            required: {},
+            minValue: {
+              params: 0.5
+            },
             maxValue: {
               params: 50
             }
@@ -224,8 +230,15 @@ export function contractData(formContext) {
     {
       cols: {
         'contractInitialInvestment': {
+          disabled: [AccountStatuses.APPROVED, AccountStatuses.ACTIVE, AccountStatuses.VALIDATED].includes(formContext.formData.account_status),
           // formatter: "moneyFormatter"
-          component: "money-input"
+          component: "money-input",
+          validations: {
+            required: {},
+            minValue: {
+              params: 1
+            }
+          }
         },
         'contractInvestmentAttachment': {
           component: "file-uploader",
@@ -271,7 +284,7 @@ export function extraData(formContext) {
           }
         },
         'referenceAgent': {
-          if: formContext.showReferenceAgent,
+          if: formContext.showReferenceAgent && changeAgenteRif,
           component: changeAgenteRif ? 'v-select' : null,
           disabled: !changeAgenteRif,
           clearable: true,
@@ -280,7 +293,7 @@ export function extraData(formContext) {
               return
             }
 
-            const foundedUser = formContext.$store.getters.agentsList.find(_user => _user.id === value)
+            const foundedUser = formContext.$store.getters.agentsList.find(_user => _user.id.toString() === value.toString())
 
             if (!foundedUser) {
               return
@@ -303,6 +316,18 @@ export function extraData(formContext) {
 
               return acc
             }, [])
+        },
+        'referenceAgentData': {
+          if: formContext.showReferenceAgent && !changeAgenteRif,
+          disabled: true,
+          formatter: (value) => {
+            if (!value) {
+              return
+            }
+
+            return `${value.firstName} ${value.lastName}`
+
+          }
         }
       }
     },

@@ -34,12 +34,23 @@ const admin = {
     },
     requests: {
       columns: [
+        'contractNumber',
+        'user',
         'amount',
         'currency',
         'type',
         'created_at',
-        ['updated_at', ["accettata", "rifiutata"]],
+        ['completed_at', ["accettata", "rifiutata"]],
         ['actions', ["nuova"]]
+      ]
+    },
+    pendingUsers: {
+      columns: [
+        "contractNumber",
+        "firstName",
+        "lastName",
+        "email",
+        "validatedAt"
       ]
     }
   }
@@ -62,7 +73,7 @@ const servClienti = {
         'currency',
         'type',
         'created_at',
-        ['updated_at', ["accettata", "rifiutata"]],
+        ['completed_at', ["accettata", "rifiutata"]],
         ['actions', ["nuova"]]
       ]
     }
@@ -87,8 +98,27 @@ const cliente = {
         'currency',
         'type',
         'created_at',
-        ['updated_at', ["accettata", "rifiutata"]],
-        ['actions', ["nuova"]]
+        ['completed_at', ["accettata", "rifiutata"]],
+        ['actions', ["nuova", "accettata"]]
+      ]
+    },
+    movements: {
+      columns: [
+        "amountChange",
+        "movementType",
+        "createdAt",
+        "deposit",
+        "interestAmount"
+      ]
+    }
+  },
+  blocks: {
+    dashboard: {
+      blocks: [
+        "deposit",
+        "interestAmount",
+        "depositCollected",
+        "interestsCollected",
       ]
     }
   }
@@ -112,8 +142,27 @@ const agente = {
         'currency',
         'type',
         'created_at',
-        ['updated_at', ["accettata", "rifiutata"]],
-        ['actions', ["nuova"]]
+        ['completed_at', ["accettata", "rifiutata"]],
+        ['actions', ["nuova", "accettata"]]
+      ]
+    },
+    movements: {
+      columns: [
+        "amountChange",
+        "movementType",
+        "createdAt",
+        "deposit",
+        "interestAmount"
+      ]
+    }
+  },
+  blocks: {
+    dashboard: {
+      blocks: [
+        "deposit",
+        "interestAmount",
+        "depositCollected",
+        "interestsCollected",
       ]
     }
   }

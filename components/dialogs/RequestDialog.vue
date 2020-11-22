@@ -1,7 +1,54 @@
 <template>
   <div>
     <portal to="dialog-content">
-      <v-form :disabled="!!readonly">
+      <v-alert
+        type="warning"
+        class="mt-3"
+        v-if="formData.status === $enums.RequestStatus.RIFIUTATA"
+      >
+        <div v-html="$t('dialogs.requests.alert-reject-reason')"></div>
+        <div>{{ formData.rejectReason }}</div>
+      </v-alert>
+
+      <v-alert
+        type="warning"
+        class="mt-3"
+        v-else-if="formData.status === $enums.RequestStatus.ANNULLATA"
+      >
+        <div
+          v-html="
+            $t('dialogs.requests.alert-cancel-reason', {
+              date: $options.filters.dateHourFormatter(formData.completed_at)
+            })
+          "
+        ></div>
+        <div>{{ formData.cancelReason }}</div>
+      </v-alert>
+
+      <v-toolbar
+        dense
+        elevation="2"
+        color="blue-grey lighten-5"
+        v-if="
+          formData.status === $enums.RequestStatus.NUOVA &&
+            permissions.userType === 'admin'
+        "
+      >
+        <v-spacer></v-spacer>
+        <v-toolbar-items>
+          <v-btn text color="red" @click="onReject">
+            <v-icon>mdi-close</v-icon>
+            {{ $t("dialogs.requests.btn-reject") }}
+          </v-btn>
+          <v-btn text color="success" @click="onApprove">
+            <v-icon>mdi-check</v-icon>
+            {{ $t("dialogs.requests.btn-accept") }}</v-btn
+          >
+        </v-toolbar-items>
+        <v-spacer></v-spacer>
+      </v-toolbar>
+
+      <v-form :disabled="!!readonly" @submit.prevent="">
         <dynamic-fieldset
           :ref="'request-form'"
           :schema="requestSchema"
@@ -15,8 +62,6 @@
       <v-btn color="red" text v-if="canDelete" @click="onDelete">{{
         $t("dialogs.requests.btn-delete")
       }}</v-btn>
-      <!-- <v-btn color="red">{{ $t("dialogs.requests.btn-reject") }}</v-btn>
-      <v-btn color="success">{{ $t("dialogs.requests.btn-accept") }}</v-btn> -->
     </portal>
 
     <portal to="dialog-actions-right">
@@ -31,13 +76,25 @@
 </template>
 
 <script>
+import { mapGetters, mapState } from "vuex";
+import {
+  ref,
+  onBeforeMount,
+  reactive,
+  watch,
+  computed
+} from "@vue/composition-api";
+import { createNamespacedHelpers } from "vuex-composition-helpers";
+
 import DynamicFieldset from "@/components/DynamicFieldset";
 import requestSchema from "@/config/forms/requestSchema";
 
-import { mapGetters, mapState } from "vuex";
-import { ref } from "@vue/composition-api";
+import WalletTypes from "../../enums/WalletTypes";
 
 import requestsCrudActionsFn from "../../functions/requestsCrudActions";
+import permissionsFn from "../../functions/permissions";
+import { admin } from "../../config/roleBasedConfig";
+import RequestStatus from "../../enums/RequestStatus";
 
 export default {
   name: "RequestDialog",
@@ -50,10 +107,60 @@ export default {
     }
   },
   setup(props, { root, emit }) {
+    /**
+     * @type {{$apiCalls: import("../../plugins/apiCalls").ApiCalls}}
+     */
+    const { $auth, $apiCalls, $store, $enums } = root;
+    const { useGetters: dialogUseGetters } = createNamespacedHelpers("dialog");
+    const { useGetters: userUseGetters } = createNamespacedHelpers("user");
+    const { dialogData } = dialogUseGetters(["dialogData"]);
+    const { availableWallets } = userUseGetters(["availableWallets"]);
+    const permissions = permissionsFn(root);
+
     const formData = ref({
-      wallet: 1
+      ...dialogData.value?.data,
+      wallet: dialogData.value?.data.wallet || $enums.WalletTypes["DEPOSIT"],
+      type: dialogData.value?.data.type || $enums.RequestTypes["VERSAMENTO"],
+      availableAmount: dialogData.value?.data.availableAmount || 0,
+      currency: dialogData.value?.data.currency || $enums.CurrencyType["EURO"]
     });
+
     const actions = requestsCrudActionsFn(formData, root);
+
+    const wallet = computed(() => {
+      return availableWallets.value.find(
+        _wallet => _wallet.type === (formData.value.wallet || 1)
+      );
+    });
+
+    const availableAmount = computed(() => {
+      const adminUser = [
+        $enums.UserRoles.ADMIN,
+        $enums.UserRoles.SERV_CLIENTI
+      ].includes($auth.user.role);
+
+      if (
+        formData.value.status !== $enums.RequestStatus.NUOVA &&
+        formData.value.id
+      ) {
+        return formData.value.availableAmount;
+      }
+
+      let toReturn = 0;
+
+      switch (formData.value.type) {
+        case $enums.RequestTypes.RISC_CAPITALE:
+        case $enums.RequestTypes.VERSAMENTO:
+          toReturn = wallet.value?.deposit ?? 0;
+          break;
+        case $enums.RequestTypes.RISC_INTERESSI:
+        case $enums.RequestTypes.INTERESSI:
+          toReturn = wallet.value?.interestAmount ?? 0;
+          break;
+      }
+
+      return toReturn;
+    });
 
     async function onDelete() {
       const result = await actions.delete(this.formData);
@@ -65,7 +172,80 @@ export default {
       }
     }
 
-    return { formData, onDelete };
+    async function onApprove() {
+      const result = await actions.approve(this.formData);
+
+      if (result) {
+        this.close();
+
+        emit("requestStatusChanged");
+      }
+    }
+
+    async function onReject() {
+      const result = await actions.reject(this.formData);
+
+      if (result) {
+        this.close();
+
+        emit("requestStatusChanged");
+      }
+    }
+
+    watch(
+      availableAmount,
+      value => {
+        formData.value.availableAmount = availableAmount.value;
+      },
+      { immediate: true }
+    );
+    watch(
+      () => formData.value.type,
+      type => {
+        formData.value.wallet =
+          type !== $enums.RequestTypes.INTERESSI
+            ? $enums.WalletTypes.DEPOSIT
+            : $enums.WalletTypes.COMMISION;
+
+        formData.value.currency = $enums.CurrencyType.EURO;
+      },
+      { immediate: true }
+    );
+
+    onBeforeMount(async () => {
+      /*
+      If the request has a status different from new, don't try to fetch the user's wallet
+      because it will use the availableAmount stored in the request
+      */
+      if (
+        formData.value.status !== $enums.RequestStatus.NUOVA &&
+        formData.value.id
+      ) {
+        return;
+      }
+
+      const data = {};
+
+      if (permissions.userType === "admin") {
+        data.userId = formData.value.userId;
+      }
+
+      $store.dispatch("user/updateWallets", { apiCalls: $apiCalls, data });
+    });
+
+    // I set the wallet here so that i can force the "availableAmount" computed refresh
+    /* formData.value.wallet =
+      dialogData.value?.data.wallet || $enums.WalletTypes["DEPOSIT"]; */
+
+    return {
+      formData,
+      onDelete,
+      onApprove,
+      onReject,
+      permissions,
+      dialogData,
+      availableWallets
+    };
   },
   data() {
     return {
@@ -74,10 +254,6 @@ export default {
   },
   computed: {
     requestSchema,
-    ...mapGetters({
-      dialogData: "dialog/dialogData",
-      userWallets: "user/availableWallets"
-    }),
     requestTypes() {
       return this.$enums.RequestTypes.list.reduce((acc, item) => {
         acc.push({
@@ -88,25 +264,7 @@ export default {
         return acc;
       }, []);
     },
-    availableAmount() {
-      if (
-        this.formData.availableAmount &&
-        [
-          this.$enums.UserRoles.ADMIN,
-          this.$enums.UserRoles.SERV_CLIENTI
-        ].includes(this.$auth.user.role)
-      ) {
-        return this.formData.availableAmount;
-      }
 
-      const wallet = this.userWallets.find(
-        _wallet => _wallet.type === (this.formData.wallet || 1)
-      );
-
-      console.log(wallet);
-
-      return wallet?.amount ?? 0;
-    },
     isNew() {
       return !this.formData.id;
     },
@@ -177,59 +335,6 @@ export default {
         this.close();
       } catch (er) {
         console.log(er);
-      }
-    }
-  },
-  watch: {
-    "formData.type": {
-      immediate: true,
-      handler() {
-        this.formData.wallet = this.$enums.WalletTypes.DEPOSIT;
-        this.formData.currency = this.$enums.CurrencyType.EURO;
-      }
-    },
-    "formData.wallet": {
-      immediate: true,
-      handler(wallet) {
-        this.formData.availableAmount = this.availableAmount;
-      }
-    },
-    "dialogData.data": {
-      deep: true,
-      immediate: true,
-      handler(value) {
-        if (!value) {
-          this.$set(this, "formData", {
-            wallet: 1
-          });
-        }
-
-        Object.keys(value || {}).forEach(key => {
-          if (key.indexOf("_") != 0) {
-            this.$set(this.formData, key, value[key]);
-          }
-        });
-
-        this.$set(
-          this.formData,
-          "type",
-          value?.type || this.$enums.RequestTypes["VERSAMENTO"]
-        );
-        this.$set(
-          this.formData,
-          "wallet",
-          value?.wallet || this.$enums.WalletTypes["DEPOSIT"]
-        );
-        this.$set(
-          this.formData,
-          "availableAmount",
-          value?.availableAmount || this.availableAmount
-        );
-        this.$set(
-          this.formData,
-          "currency",
-          value?.currency || this.$enums.CurrencyType["EURO"]
-        );
       }
     }
   }

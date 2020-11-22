@@ -6,6 +6,8 @@
  * @property { {data : {type: number}, readonly: boolean} } dialogData
  */
 
+import RequestTypes from "../../enums/RequestTypes"
+
 /**
  * 
  * @param {ComputedContext} context 
@@ -50,17 +52,16 @@ export default function (context) {
       cols: {
         wallet: {
           label: "walletType",
-          component: !readonly ? 'v-select' : null,
+          component: null,
           items: context.$enums.WalletTypes,
-          disabled: context.formData.type === context.$enums.RequestTypes.VERSAMENTO || readonly,
-          formatter: readonly ? (value) => context.$i18n.t(`enums.WalletTypes.${context.$enums.WalletTypes.getIdName(value)}`) : null,
-          if: [context.$enums.UserRoles.ADMIN,
-          context.$enums.UserRoles.SERV_CLIENTI,
-          context.$enums.UserRoles.AGENTE].includes(context.$auth.user.role)
+          disabled: true,
+          formatter: (value) => context.$i18n.t(`enums.WalletTypes.${context.$enums.WalletTypes.getIdName(value)}`),
+          if: context.$enums.UserRoles.CLIENTE !== context.$auth.user.role
+            && context.formData.type !== context.$enums.RequestTypes.VERSAMENTO
         },
       }
     },
-    {
+    /* {
       cols: {
         currency: {
           label: "currencyType",
@@ -71,14 +72,14 @@ export default function (context) {
           disabled: context.formData.type === context.$enums.RequestTypes.VERSAMENTO || readonly,
         },
       }
-    },
+    }, */
     {
       cols: {
         availableAmount: {
           disabled: true,
           component: 'money-input',
           currency: context.formData.currency,
-          if: (!readonly && !isVersamento) || readonly
+          if: (!readonly && !isVersamento) || readonly,
         }
       }
     },
@@ -92,7 +93,13 @@ export default function (context) {
           showMax: context.formData.wallet === 2,
           maxValue: context.formData.availableAmount,
           validations: {
-            required: {}
+            required: {},
+            minValue: {
+              params: 1
+            },
+            maxValue: {
+              params: context.formData.type === RequestTypes.VERSAMENTO ? null : context.formData.availableAmount || 0.5
+            }
           }
         },
       }
@@ -109,7 +116,7 @@ export default function (context) {
         },
       }
     },
-    {
+    /* {
       cols: {
         requestAttachment: {
           component: 'file-uploader',
@@ -123,7 +130,7 @@ export default function (context) {
           } : null
         },
       }
-    },
+    }, */
     {
       cols: {
         notes: {
@@ -134,6 +141,18 @@ export default function (context) {
           rows: 1
         }
       }
-    }
+    },
+    /* {
+      cols: {
+        notes: {
+          label: "requestRejectReason",
+          component: 'v-textarea',
+          autoGrow: true,
+          disabled: true,
+          rows: 1,
+          if: context.formData.status === context.$enums.RequestStatus.RIFIUTATA
+        }
+      }
+    } */
   ]
 }

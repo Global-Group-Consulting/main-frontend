@@ -6,6 +6,8 @@ declare module 'vue/types/vue' {
   interface VueConstructor {
     $myGlobal: string
   }
+
+
 }
 
 // ComponentOptions is declared in types/options.d.ts

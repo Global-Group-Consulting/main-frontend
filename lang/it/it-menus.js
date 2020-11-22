@@ -9,5 +9,7 @@ export default {
   "sendEmailActivation": "Invia email attivazione",
   "sendEmailForgot": "Invia email recupero password",
   "approve": "Approva",
-  "reject": "Rifiuta"
+  "reject": "Rifiuta",
+  "cancel": "Annulla",
+  "cancelRequest": "Annulla richiesta"
 }

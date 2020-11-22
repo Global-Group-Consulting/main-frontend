@@ -4,7 +4,7 @@ export default {
   'remained-interests': 'Interesse rimasto',
   'outgoing-interests': 'Interesse uscito',
   'current-deposit': 'Deposito corrente',
-  'current-interests': 'Interessi maturati',
+  'current-interestAmount': 'Rendite maturate',
   'picket-deposit': 'Capitale prelevato',
   'picked-interests': 'Interessi riscossi',
   'gained-provisions': 'Provvigioni guadagnate',
