@@ -73,6 +73,7 @@ export default {
     'btn-previous': 'Indietro',
     'btn-approve': 'Approva',
     'btn-approve-tooltip': 'Approva l\'attivazione dell\'account',
+    'btn-movements-list': "Lista movimenti",
 
     tabs: {
       'user-data': 'Dati Utente',

@@ -75,6 +75,16 @@
 
           <v-spacer></v-spacer>
 
+          <tooltip-btn
+            :tooltip="$t('pages.usersId.btn-movements-list')"
+            icon-name="mdi-swap-vertical"
+            text
+            @click="openMovementsList"
+            v-if="!userIsNew"
+          >
+            {{ $t("pages.usersId.btn-movements-list") }}
+          </tooltip-btn>
+
           <v-menu offset-y v-if="communicationsList.length > 0">
             <template v-slot:activator="{ on: on, attrs }">
               <v-btn color="primary" dark v-bind="attrs" v-on="on" small text>
@@ -204,6 +214,10 @@
       v-if="$store.getters['dialog/dialogId'] === 'StatusChangeDialog'"
       @accountStatusChanged="onAccountStatusChanged"
     ></status-change-dialog>
+
+    <movements-list-dialog
+      v-if="$store.getters['dialog/dialogId'] === 'MovementsListDialog'"
+    ></movements-list-dialog>
   </v-layout>
 </template>
 
@@ -212,7 +226,8 @@ import PageHeader from "@/components/blocks/PageHeader";
 import DynamicFieldset from "@/components/DynamicFieldset";
 import UserMessage from "../../components/dialogs/UserMessage";
 import FilePreviewer from "../..//components/dialogs/FilePreviewer";
-import StatusChangeDialog from "../..//components/dialogs/StatusChangeDialog";
+import StatusChangeDialog from "../../components/dialogs/StatusChangeDialog";
+import MovementsListDialog from "../../components/dialogs/MovementsListDialog";
 
 import { onBeforeMount, reactive, ref, computed } from "@vue/composition-api";
 
@@ -230,7 +245,8 @@ export default {
     DynamicFieldset,
     PageHeader,
     FilePreviewer,
-    StatusChangeDialog
+    StatusChangeDialog,
+    MovementsListDialog
   },
   middleware: ["pagesAuth"],
   setup(props, { root, refs }) {
@@ -322,6 +338,22 @@ export default {
         data: {
           status: userForm.formData.value.account_status,
           userRole: userForm.formData.value.role
+        }
+      });
+    };
+
+    const openMovementsList = function() {
+      root.$store.dispatch("dialog/updateStatus", {
+        title: $i18n.t("dialogs.movementsList.title"),
+        id: "MovementsListDialog",
+        fullscreen: false,
+        large: true,
+        readonly: true,
+        texts: {
+          cancelBtn: "dialogs.movementsList.btn-cancel"
+        },
+        data: {
+          user: userForm.formData.value
         }
       });
     };
@@ -422,6 +454,7 @@ export default {
       approveUser,
       permissions,
       openChangeStatusDialog,
+      openMovementsList,
       onAccountStatusChanged
     };
   },

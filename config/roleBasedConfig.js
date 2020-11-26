@@ -52,6 +52,15 @@ const admin = {
         "email",
         "validatedAt"
       ]
+    },
+    movements: {
+      columns: [
+        "amountChange",
+        "movementType",
+        "createdAt",
+        "deposit",
+        "interestAmount"
+      ]
     }
   }
 }
@@ -75,6 +84,15 @@ const servClienti = {
         'created_at',
         ['completed_at', ["accettata", "rifiutata"]],
         ['actions', ["nuova"]]
+      ]
+    },
+    movements: {
+      columns: [
+        "amountChange",
+        "movementType",
+        "createdAt",
+        "deposit",
+        "interestAmount"
       ]
     }
   }

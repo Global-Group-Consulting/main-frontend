@@ -1,6 +1,6 @@
 <template>
   <default-panel :title="$t('pages.login.title')">
-    <v-form @submit.prevent="">
+    <v-form>
       <dynamic-fieldset
         :schema="formSchema"
         v-model="formData"
@@ -31,70 +31,68 @@
 </template>
 
 <script>
-  import DefaultPanel from "~/components/public/DefaultPanel";
-  import DynamicFieldset from "~/components/DynamicFieldset";
+import DefaultPanel from "~/components/public/DefaultPanel";
+import DynamicFieldset from "~/components/DynamicFieldset";
 
-  import loginSchema from "~/config/forms/loginSchema";
+import loginSchema from "~/config/forms/loginSchema";
 
-  import { computed, ref } from "@vue/composition-api";
+import { computed, ref } from "@vue/composition-api";
 
-  export default {
-    layout: "public",
-    auth: "guest",
-    components: { DynamicFieldset, DefaultPanel },
+export default {
+  layout: "public",
+  auth: "guest",
+  components: { DynamicFieldset, DefaultPanel },
 
-    head() {
-      return {
-        title: "Login",
-      };
-    },
-    setup(props, { root, refs: $refs }) {
-      const { $enums } = root;
-      const formData = ref({
-        email: "",
-        password: "",
-      });
+  head() {
+    return {
+      title: "Login"
+    };
+  },
+  setup(props, { root, refs: $refs }) {
+    const { $enums } = root;
+    const formData = ref({
+      email: "",
+      password: ""
+    });
 
-      const formSchema = computed((context) => ref(loginSchema(context)));
+    const formSchema = computed(context => ref(loginSchema(context)));
 
-      const onFormSubmit = async function () {
-        if (!(await $refs["loginForm"].validate())) {
-          return;
-        }
+    const onFormSubmit = async function() {
+      if (!(await $refs["loginForm"].validate())) {
+        return;
+      }
 
-        this.gLoadingUpdate();
+      this.gLoadingUpdate();
 
-        try {
-          this.$auth.reset();
+      try {
+        this.$auth.reset();
 
-          await this.$auth.loginWith("refreshScheme", { data: this.formData });
-        } catch (e) {
-          this.$alerts.error(e);
-        }
+        await this.$auth.loginWith("refreshScheme", { data: this.formData });
+      } catch (e) {
+        this.$alerts.error(e);
+      }
 
-        this.gLoadingUpdate(false);
-      };
+      this.gLoadingUpdate(false);
+    };
 
-      return {
-        formData,
-        formSchema,
-        onFormSubmit,
-      };
-    },
-    data() {
-      return {
-        formValid: false,
-        recover: false,
-      };
-    },
-    methods: {
-      saveStatus(state) {
-        this.formValid = !state.invalid;
-      },
-    },
-  };
+    return {
+      formData,
+      formSchema,
+      onFormSubmit
+    };
+  },
+  data() {
+    return {
+      formValid: false,
+      recover: false
+    };
+  },
+  methods: {
+    saveStatus(state) {
+      this.formValid = !state.invalid;
+    }
+  }
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
