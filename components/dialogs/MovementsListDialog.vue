@@ -102,7 +102,9 @@ export default {
     onBeforeMount(async () => {
       await movementsFn.fetchList(dialogData.value.data.user.id);
 
-      loading.value = false;
+      setTimeout(() => {
+        loading.value = false;
+      }, 150);
     });
 
     return {

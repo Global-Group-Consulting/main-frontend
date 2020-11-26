@@ -3,10 +3,10 @@
     <v-flex>
       <page-header
         :title="pageData.title.value"
-        :subtitle="pageData.subtitle.value"
+        :subtitle="!userIsNew ? pageData.subtitle.value : ''"
         :icon="pageData.icon.value"
       >
-        <template v-slot:subtitle v-if="canChangeStatus">
+        <template v-slot:subtitle v-if="canChangeStatus && !userIsNew">
           <div v-html="pageData.subtitle.value" class="d-inline-block"></div>
 
           <v-tooltip bottom>
@@ -80,7 +80,7 @@
             icon-name="mdi-swap-vertical"
             text
             @click="openMovementsList"
-            v-if="!userIsNew"
+            v-if="canSeeMovementsList"
           >
             {{ $t("pages.usersId.btn-movements-list") }}
           </tooltip-btn>
@@ -299,6 +299,16 @@ export default {
       );
     });
 
+    const canSeeMovementsList = computed(() => {
+      return (
+        !userForm.userIsNew.value &&
+        permissions.userType === "admin" &&
+        [$enums.UserRoles.CLIENTE, $enums.UserRoles.AGENTE].includes(
+          userForm.formData.value.role
+        )
+      );
+    });
+
     const getFormSchema = function(tab) {
       const schema = userForm.formSchemas[tab.schema];
 
@@ -451,6 +461,7 @@ export default {
       accentColor,
       canApprove,
       canChangeStatus,
+      canSeeMovementsList,
       approveUser,
       permissions,
       openChangeStatusDialog,
