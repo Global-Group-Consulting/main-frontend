@@ -11,18 +11,18 @@
         <v-col cols="12">
           <v-card>
             <data-table
-              :items="movementsList"
+              :items="movements.list"
               table-key="movements"
               schema="movementsSchema"
               :items-per-page="25"
-              :item-class="getItemClass"
+              :item-class="movements.getItemClass"
             >
               <template v-slot:item.amountChange="{ item }">
-                <div v-html="formatAmountChange(item)"></div>
+                <div v-html="movements.formatAmountChange(item)"></div>
               </template>
 
               <template v-slot:item.movementType="{ item }">
-                <div v-html="formatMovementType(item)"></div>
+                <div v-html="movements.formatMovementType(item)"></div>
               </template>
 
               <template v-slot:item.deposit="{ item }">
@@ -52,6 +52,7 @@ import { ref, onBeforeMount } from "@vue/composition-api";
 import PageHeader from "../components/blocks/PageHeader";
 import DataTable from "../components/table/DataTable";
 import MovementTypes from "../enums/MovementTypes";
+import MovementsFn from "@/functions/movementsFn.js";
 
 import pageBasicFn from "../functions/pageBasic";
 
@@ -61,73 +62,14 @@ export default {
     DataTable
   },
   setup(props, { root }) {
-    /**
-     * @type {{
-     *  $apiCalls: import("../plugins/apiCalls").ApiCalls
-     * }}
-     */
     const { $apiCalls, $set, $options, $i18n } = root;
+    const movementsFn = MovementsFn(root);
 
-    /**
-     *@type {{value:IMovement[]}}
-     */
-    const movementsList = ref([]);
-
-    /**
-     *@param {IMovement} item
-     */
-    function formatAmountChange(item) {
-      const sign = [
-        MovementTypes.INTEREST_COLLECTED,
-        MovementTypes.DEPOSIT_COLLECTED,
-        MovementTypes.COMMISSION_COLLECTED
-      ].includes(item.movementType)
-        ? "-"
-        : "+";
-      const color = sign === "-" ? "red--text" : "green--text";
-
-      return `<span class="text-no-wrap ${color}">€ ${sign}${$options.filters.moneyFormatter(
-        item.amountChange.toFixed(2)
-      )}</span>`;
-    }
-
-    /**
-     *@param {IMovement} item
-     */
-    function formatMovementType(item) {
-      const movementId = MovementTypes.get(item.movementType).id;
-      const text = $i18n.t(`enums.MovementTypes.${movementId}`);
-
-      if (item.movementType === MovementTypes.INTEREST_RECAPITALIZED) {
-        return `<strong>${text}</strong>`;
-      }
-
-      return text;
-    }
-
-    /**
-     *@param {IMovement} item
-     */
-    function getItemClass(item) {
-      if (item.movementType === MovementTypes.INTEREST_RECAPITALIZED) {
-        return "yellow lighten-5";
-      }
-    }
-
-    async function fetchMovementsList() {
-      const data = await $apiCalls.fetchMovementsList();
-
-      $set(movementsList, "value", data);
-    }
-
-    onBeforeMount(fetchMovementsList);
+    onBeforeMount(movementsFn.fetchList);
 
     return {
       ...pageBasicFn(root, "movements"),
-      movementsList,
-      formatAmountChange,
-      formatMovementType,
-      getItemClass
+      movements: movementsFn
     };
   }
 };

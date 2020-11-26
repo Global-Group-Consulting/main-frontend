@@ -66,4 +66,10 @@ export default {
 
   "change-status-same-title": "Nulla da cambiare!",
   "change-status-same-text": "Il nuovo stato coincide con l'attuale, pertanto non è possibile apportare alcuna modifica. Scegliere uno stato diverso o annullare l'operazione.",
+
+  "movements-import-title": "Importare la lista?",
+  "movements-import-text": "Sei sicuro di voler importare il contenuto del file indicato? Questo caricherà tutti i movimenti presenti del file, nell'account del cliente. <strong>L'operazione non potrà essere annullata!</strong>",
+  "movements-import-confirmBtnText": "Si, importa il file",
+  "movements-import-cancelBtnText": "Annulla",
+  "movements-import-success": "Dati importati correttamente!",
 }

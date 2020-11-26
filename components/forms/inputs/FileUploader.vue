@@ -4,7 +4,7 @@
       v-bind="$attrs"
       :value="formattedValue"
       :label="label"
-      accept="image/*,.pdf"
+      :accept="accept || 'image/*,.pdf'"
       @input="onInput"
       @change="onChange"
     >
@@ -64,6 +64,7 @@ export default {
     label: "",
     initialDate: "",
     min: "",
+    accept: "",
     fieldKey: "",
     files: Array,
     toDelete: {

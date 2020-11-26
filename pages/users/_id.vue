@@ -3,10 +3,10 @@
     <v-flex>
       <page-header
         :title="pageData.title.value"
-        :subtitle="pageData.subtitle.value"
+        :subtitle="!userIsNew ? pageData.subtitle.value : ''"
         :icon="pageData.icon.value"
       >
-        <template v-slot:subtitle v-if="canChangeStatus">
+        <template v-slot:subtitle v-if="canChangeStatus && !userIsNew">
           <div v-html="pageData.subtitle.value" class="d-inline-block"></div>
 
           <v-tooltip bottom>
@@ -74,6 +74,16 @@
           </tooltip-btn> -->
 
           <v-spacer></v-spacer>
+
+          <tooltip-btn
+            :tooltip="$t('pages.usersId.btn-movements-list')"
+            icon-name="mdi-swap-vertical"
+            text
+            @click="openMovementsList"
+            v-if="canSeeMovementsList"
+          >
+            {{ $t("pages.usersId.btn-movements-list") }}
+          </tooltip-btn>
 
           <v-menu offset-y v-if="communicationsList.length > 0">
             <template v-slot:activator="{ on: on, attrs }">
@@ -204,6 +214,10 @@
       v-if="$store.getters['dialog/dialogId'] === 'StatusChangeDialog'"
       @accountStatusChanged="onAccountStatusChanged"
     ></status-change-dialog>
+
+    <movements-list-dialog
+      v-if="$store.getters['dialog/dialogId'] === 'MovementsListDialog'"
+    ></movements-list-dialog>
   </v-layout>
 </template>
 
@@ -212,7 +226,8 @@ import PageHeader from "@/components/blocks/PageHeader";
 import DynamicFieldset from "@/components/DynamicFieldset";
 import UserMessage from "../../components/dialogs/UserMessage";
 import FilePreviewer from "../..//components/dialogs/FilePreviewer";
-import StatusChangeDialog from "../..//components/dialogs/StatusChangeDialog";
+import StatusChangeDialog from "../../components/dialogs/StatusChangeDialog";
+import MovementsListDialog from "../../components/dialogs/MovementsListDialog";
 
 import { onBeforeMount, reactive, ref, computed } from "@vue/composition-api";
 
@@ -230,7 +245,8 @@ export default {
     DynamicFieldset,
     PageHeader,
     FilePreviewer,
-    StatusChangeDialog
+    StatusChangeDialog,
+    MovementsListDialog
   },
   middleware: ["pagesAuth"],
   setup(props, { root, refs }) {
@@ -283,6 +299,16 @@ export default {
       );
     });
 
+    const canSeeMovementsList = computed(() => {
+      return (
+        !userForm.userIsNew.value &&
+        permissions.userType === "admin" &&
+        [$enums.UserRoles.CLIENTE, $enums.UserRoles.AGENTE].includes(
+          userForm.formData.value.role
+        )
+      );
+    });
+
     const getFormSchema = function(tab) {
       const schema = userForm.formSchemas[tab.schema];
 
@@ -322,6 +348,22 @@ export default {
         data: {
           status: userForm.formData.value.account_status,
           userRole: userForm.formData.value.role
+        }
+      });
+    };
+
+    const openMovementsList = function() {
+      root.$store.dispatch("dialog/updateStatus", {
+        title: $i18n.t("dialogs.movementsList.title"),
+        id: "MovementsListDialog",
+        fullscreen: false,
+        large: true,
+        readonly: true,
+        texts: {
+          cancelBtn: "dialogs.movementsList.btn-cancel"
+        },
+        data: {
+          user: userForm.formData.value
         }
       });
     };
@@ -419,9 +461,11 @@ export default {
       accentColor,
       canApprove,
       canChangeStatus,
+      canSeeMovementsList,
       approveUser,
       permissions,
       openChangeStatusDialog,
+      openMovementsList,
       onAccountStatusChanged
     };
   },

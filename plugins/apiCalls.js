@@ -78,9 +78,17 @@ export class ApiCalls extends BasicApiCall {
 
   async fetchMovementsList(_id) {
     return (await this.get({
-      endPoint: `/api/movements`
-    })
-    )
+      endPoint: `/api/movements` + (_id ? `/${_id}` : '')
+    }))
+  }
+
+  async importMovementsList(body) {
+    return (await this._call({
+      method: "POST",
+      endPoint: `/api/movements/import`,
+      body,
+      uploadMode: true
+    }))
   }
 
   async dashboardData() {

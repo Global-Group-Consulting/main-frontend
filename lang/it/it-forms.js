@@ -19,6 +19,7 @@ export default {
   'contract-date': 'Data stipula contratto',
   'contract-iban': 'Iban cliente',
   'contract-number': 'Numero contratto',
+  'contract-number-legacy': 'Vecchio numero contratto',
   'contract-percentage': 'Percentuale assegnata',
   'contract-initial-investment': 'Investimento iniziale',
   'contract-investment-attachment': 'Contabile versamento iniziale',

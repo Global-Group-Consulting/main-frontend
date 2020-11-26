@@ -12,6 +12,7 @@
     :dense="dense"
     @click:row="$emit('click:row', $event)"
     :locale="$i18n.locale"
+    :options="options"
   >
     <!-- Dynamic item templates -->
     <template v-for="col in headers" v-slot:[`item.${col.value}`]="{ item }">
@@ -77,7 +78,13 @@ export default {
     },
     itemClass: String | Function,
     noDataText: "tables.no-data",
-    dense: Boolean
+    dense: Boolean,
+    options: {
+      type: Object,
+      default() {
+        return {};
+      }
+    }
   },
   setup(props, { root }) {
     const { $auth } = root;

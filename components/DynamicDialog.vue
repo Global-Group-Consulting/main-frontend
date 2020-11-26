@@ -7,7 +7,7 @@
       :transition="dialogData.fullscreen ? 'dialog-bottom-transition' : ''"
       :retain-focus="false"
       scrollable
-      max-width="600px"
+      :max-width="dialogData.large ? '900px' : '600px'"
     >
       <v-card>
         <div class="d-flex">
@@ -40,15 +40,18 @@
             <portal-target name="dialog-actions-left"></portal-target>
 
             <v-spacer></v-spacer>
+
             <portal-target name="dialog-actions-right">
-              <v-btn color="blue darken-1" text @click="close"> Annulla </v-btn>
+              <v-btn color="blue darken-1" text @click="close">
+                {{ $t(dialogData.texts.cancelBtn) }}
+              </v-btn>
               <v-btn
                 color="blue darken-1"
                 text
                 @click="close"
                 v-if="!dialogData.readonly"
               >
-                Salva
+                {{ $t(dialogData.texts.confirmBtn) }}
               </v-btn>
             </portal-target>
           </portal-target>

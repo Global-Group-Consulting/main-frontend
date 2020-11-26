@@ -25,7 +25,6 @@
               :items="group"
               :items-per-page="10"
               :hide-default-footer="group.length <= 10"
-              @click:row="onRowClick($event.id)"
             >
               <template v-slot:item.superAdmin="{ item }">
                 <v-tooltip right v-if="item.superAdmin">
@@ -137,58 +136,56 @@
 </template>
 
 <script>
-  import PageHeader from "@/components/blocks/PageHeader";
-  import UsersCrudActions from "@/components/table/UsersCrudActions";
-  import usersPage from "@/functions/usersPage";
-  import pageBasic from "@/functions/pageBasic";
-  import { onMounted, computed } from "@vue/composition-api";
+import PageHeader from "@/components/blocks/PageHeader";
+import UsersCrudActions from "@/components/table/UsersCrudActions";
+import usersPage from "@/functions/usersPage";
+import pageBasic from "@/functions/pageBasic";
+import { onMounted, computed } from "@vue/composition-api";
 
-  import Permissions from "../../functions/permissions";
+import Permissions from "../../functions/permissions";
 
-  export default {
-    name: "index",
-    components: { UsersCrudActions, PageHeader },
-    middleware: ["pagesAuth"],
-    setup(props, { root }) {
-      const { $enums, $auth } = root;
-      const permissions = Permissions(root);
-      const usersPageData = usersPage(root);
-      const newUserBtns = computed(() =>
-        [
-          {
-            type: $enums.UserRoles.ADMIN,
-            if: permissions.addUsers_admin,
-          },
-          {
-            type: $enums.UserRoles.SERV_CLIENTI,
-            if: permissions.addUsers_servClienti,
-          },
-          {
-            type: $enums.UserRoles.AGENTE,
-            if: permissions.addUsers_agente,
-          },
-          {
-            type: $enums.UserRoles.CLIENTE,
-            if: permissions.addUsers_cliente,
-          },
-        ].filter((_entry) => _entry.if)
-      );
+export default {
+  name: "index",
+  components: { UsersCrudActions, PageHeader },
+  middleware: ["pagesAuth"],
+  setup(props, { root }) {
+    const { $enums, $auth } = root;
+    const permissions = Permissions(root);
+    const usersPageData = usersPage(root);
+    const newUserBtns = computed(() =>
+      [
+        {
+          type: $enums.UserRoles.ADMIN,
+          if: permissions.addUsers_admin
+        },
+        {
+          type: $enums.UserRoles.SERV_CLIENTI,
+          if: permissions.addUsers_servClienti
+        },
+        {
+          type: $enums.UserRoles.AGENTE,
+          if: permissions.addUsers_agente
+        },
+        {
+          type: $enums.UserRoles.CLIENTE,
+          if: permissions.addUsers_cliente
+        }
+      ].filter(_entry => _entry.if)
+    );
 
-      return {
-        ...usersPageData,
-        ...pageBasic(root, "users"),
-        permissions,
-        newUserBtns,
-      };
-    },
-    data() {
-      return {
-        floatingBtn: false,
-      };
-    },
-  };
+    return {
+      ...usersPageData,
+      ...pageBasic(root, "users"),
+      permissions,
+      newUserBtns
+    };
+  },
+  data() {
+    return {
+      floatingBtn: false
+    };
+  }
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

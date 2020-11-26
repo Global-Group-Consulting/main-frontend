@@ -201,6 +201,9 @@ export function contractData(formContext) {
           disabled: true,
           if: !formContext.userIsNew
         },
+        'contractNumberLegacy': {
+          // disabled: true
+        },
         'contractDate': {
           disabled: true,
           if: !formContext.userIsNew,
