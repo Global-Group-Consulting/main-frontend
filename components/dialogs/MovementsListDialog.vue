@@ -63,6 +63,7 @@ import MovementsListTable from "@/components/table/MovementsListTable.vue";
 import FileUploader from "@/components/forms/inputs/FileUploader";
 
 import MovementsFn from "@/functions/movementsFn.js";
+import UserRoles from "@/enums/UserRoles";
 
 export default {
   components: { MovementsListTable, FileUploader },
@@ -76,7 +77,10 @@ export default {
     const loading = ref(true);
     const user = dialogData.value.data.user;
 
-    const canImportMovements = $auth.user.superAdmin;
+    const canImportMovements = [
+      UserRoles.SERV_CLIENTI,
+      UserRoles.ADMIN
+    ].includes(+$auth.user.role); //$auth.user.superAdmin;
 
     async function onImportClick() {
       try {
