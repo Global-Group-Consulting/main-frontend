@@ -1,117 +1,107 @@
 <template>
-  <v-app dark>
-    <v-navigation-drawer
-      v-model="drawer"
-      :mini-variant="miniVariant"
-      :clipped="clipped"
-      fixed
-      app
-    >
-      <v-list>
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-        >
-          <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-    <v-app-bar
-      :clipped-left="clipped"
-      fixed
-      app
-    >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-btn
-        icon
-        @click.stop="miniVariant = !miniVariant"
-      >
-        <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        @click.stop="clipped = !clipped"
-      >
-        <v-icon>mdi-application</v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        @click.stop="fixed = !fixed"
-      >
-        <v-icon>mdi-minus</v-icon>
-      </v-btn>
+  <v-app>
+    <drawer v-model="drawerModel"></drawer>
+
+    <v-app-bar clipped-left app>
+      <v-app-bar-nav-icon @click.stop="toggleDrawer" />
+
       <v-toolbar-title v-text="title" />
-      <v-spacer />
-      <v-btn
-        icon
-        @click.stop="rightDrawer = !rightDrawer"
-      >
-        <v-icon>mdi-menu</v-icon>
-      </v-btn>
+
+      <v-spacer></v-spacer>
+
+      <v-menu offset-y>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn text v-on="on" v-bind="attrs">
+            <v-icon class="mr-3">mdi-account-circle</v-icon>
+
+            <small class="caption" style="text-transform: none">
+              {{ $auth.user.firstName }} {{ $auth.user.lastName }}
+            </small>
+          </v-btn>
+        </template>
+
+        <v-list>
+          <v-list-item>
+            <v-list-item-subtitle>
+              {{ $auth.user.email }}<br />
+              {{
+                $t(
+                  "enums.UserRoles." + $enums.UserRoles.get($auth.user.role).id
+                )
+              }}</v-list-item-subtitle
+            >
+          </v-list-item>
+
+          <v-divider></v-divider>
+
+          <v-list-item @click="vieMyProfile">
+            <v-icon class="mr-3">mdi-badge-account-horizontal-outline</v-icon>
+            <v-list-item-title>{{ $t("menus.myProfile") }}</v-list-item-title>
+          </v-list-item>
+          <v-divider></v-divider>
+          <v-list-item @click="logout">
+            <v-icon class="mr-3">mdi-logout</v-icon>
+            <v-list-item-title>
+              {{ $t("menus.logout") }}
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </v-app-bar>
+
     <v-main>
-      <v-container>
-        <nuxt />
+      <!--<v-alert v-if="mockingUser"
+               type="error"
+               tile
+               elevation="3"
+               class="mb-0">
+        Attenzione! Si sta visualizzando l'account dell'utente Mario Rossi, pertanto tutte le azioni eseguite si
+        ripercuoteranno sull'utente stesso.
+      </v-alert>-->
+
+      <v-container fluid class="mb-16 pb-8">
+        <nuxt ref="viewEl"></nuxt>
       </v-container>
     </v-main>
-    <v-navigation-drawer
-      v-model="rightDrawer"
-      :right="right"
-      temporary
-      fixed
-    >
-      <v-list>
-        <v-list-item @click.native="right = !right">
-          <v-list-item-action>
-            <v-icon light>
-              mdi-repeat
-            </v-icon>
-          </v-list-item-action>
-          <v-list-item-title>Switch drawer (click me)</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-    <v-footer
-      :absolute="!fixed"
-      app
-    >
-      <span>&copy; {{ new Date().getFullYear() }}</span>
-    </v-footer>
+
+    <dynamic-dialog></dynamic-dialog>
   </v-app>
 </template>
 
 <script>
+import Drawer from "@/components/drawer/Drawer";
+import DynamicDialog from "@/components/DynamicDialog";
+
 export default {
-  data () {
+  components: { DynamicDialog, Drawer },
+  data() {
     return {
-      clipped: false,
-      drawer: false,
-      fixed: false,
-      items: [
-        {
-          icon: 'mdi-apps',
-          title: 'Welcome',
-          to: '/'
-        },
-        {
-          icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire'
-        }
-      ],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: 'Vuetify.js'
+      title: "Global Group Consulting",
+      drawerModel: false
+    };
+  },
+  methods: {
+    toggleDrawer() {
+      this.drawerModel = !this.drawerModel;
+    },
+    async logout() {
+      try {
+        const result = await this.$alerts.ask({
+          title: this.$t("alerts.logout-title"),
+          text: this.$t("alerts.logout-text")
+        });
+
+        await this.$auth.logout("local");
+      } catch (er) {
+        console.log(er);
+      }
+    },
+
+    async vieMyProfile() {
+      this.$router.push("/users/" + this.$auth.user.id);
     }
   }
-}
+};
 </script>
+
+<style lang="scss"></style>

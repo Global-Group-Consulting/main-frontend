@@ -1,97 +1,62 @@
 <template>
-  <v-layout
-    column
-    justify-center
-    align-center
-  >
-    <v-flex
-      xs12
-      sm8
-      md6
-    >
-      <div class="text-center">
-        <logo />
-        <vuetify-logo />
-      </div>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
-          <p>
-            For more information on Vuetify, check out the <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentation
-            </a>.
-          </p>
-          <p>
-            If you have questions, please join the official <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
-            >
-              discord
-            </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board
-            </a>.
-          </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3">
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt Documentation
-          </a>
-          <br>
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            nuxt
-            to="/inspire"
-          >
-            Continue
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-flex>
-  </v-layout>
+  <div>
+    <page-header
+      :title="title"
+      :subtitle="subtitle"
+      :icon="icon"
+      show-user-role
+    ></page-header>
+
+    <component :is="userPage" />
+  </div>
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
-import VuetifyLogo from '~/components/VuetifyLogo.vue'
+import Admin from "@/components/hompage/Admin";
+import Cliente from "@/components/hompage/Cliente";
+import Agente from "@/components/hompage/Agente";
+import ServClienti from "@/components/hompage/ServClienti";
+
+import PageHeader from "@/components/blocks/PageHeader";
+import pageBasic from "@/functions/pageBasic";
 
 export default {
-  components: {
-    Logo,
-    VuetifyLogo
+  components: { PageHeader, Admin, Cliente, Agente, ServClienti },
+
+  setup(props, { root }) {
+    return {
+      ...pageBasic(root, "dashboard")
+    };
+  },
+  data() {
+    return {};
+  },
+  computed: {
+    userPage() {
+      const userRole = this.$auth.user.role;
+      let pageToReturn = "";
+
+      switch (+userRole) {
+        case this.$enums.UserRoles.ADMIN:
+          pageToReturn = "Admin";
+
+          break;
+        case this.$enums.UserRoles.CLIENTE:
+          pageToReturn = "Cliente";
+
+          break;
+        case this.$enums.UserRoles.AGENTE:
+          pageToReturn = "Agente";
+
+          break;
+        case this.$enums.UserRoles.SERV_CLIENTI:
+          pageToReturn = "ServClienti";
+
+          break;
+      }
+
+      return pageToReturn;
+    }
   }
-}
+};
 </script>
