@@ -135,8 +135,8 @@ const cliente = {
       blocks: [
         "deposit",
         "interestAmount",
-        "depositCollected",
         "interestsCollected",
+        "depositCollected",
       ]
     }
   }
@@ -179,8 +179,8 @@ const agente = {
       blocks: [
         "deposit",
         "interestAmount",
-        "depositCollected",
         "interestsCollected",
+        "depositCollected",
       ]
     }
   }
