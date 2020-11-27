@@ -1,6 +1,6 @@
 <template>
   <default-panel :title="$t('pages.login.title')">
-    <v-form>
+    <v-form @submit.prevent="">
       <dynamic-fieldset
         :schema="formSchema"
         v-model="formData"
@@ -8,19 +8,19 @@
         ref="loginForm"
         @status="saveStatus($event)"
       />
-    </v-form>
 
-    <div class="text-center mt-4">
-      <v-btn
-        :disabled="!formValid"
-        color="primary"
-        type="submit"
-        :loading="gLoading"
-        @click="onFormSubmit"
-      >
-        {{ $t("pages.login.log-in") }}
-      </v-btn>
-    </div>
+      <div class="text-center mt-4">
+        <v-btn
+          :disabled="!formValid"
+          color="primary"
+          type="submit"
+          :loading="gLoading"
+          @click="onFormSubmit"
+        >
+          {{ $t("pages.login.log-in") }}
+        </v-btn>
+      </div>
+    </v-form>
 
     <template v-slot:actions>
       <v-btn text to="/auth/forgot" small>
