@@ -10,33 +10,10 @@
       <v-row>
         <v-col cols="12">
           <v-card>
-            <data-table
-              :items="movements.list"
-              table-key="movements"
-              schema="movementsSchema"
-              :items-per-page="25"
-              :item-class="movements.getItemClass"
-            >
-              <template v-slot:item.amountChange="{ item }">
-                <div v-html="movements.formatAmountChange(item)"></div>
-              </template>
-
-              <template v-slot:item.movementType="{ item }">
-                <div v-html="movements.formatMovementType(item)"></div>
-              </template>
-
-              <template v-slot:item.deposit="{ item }">
-                <span class="text-no-wrap">
-                  € {{ $options.filters.moneyFormatter(item.deposit) }}
-                </span>
-              </template>
-
-              <template v-slot:item.interestAmount="{ item }">
-                <span class="text-no-wrap">
-                  € {{ $options.filters.moneyFormatter(item.interestAmount) }}
-                </span>
-              </template>
-            </data-table>
+            <movements-list-table
+              :movements="movements"
+              v-if="movements.list.value.length > 0"
+            ></movements-list-table>
           </v-card>
         </v-col>
       </v-row>
