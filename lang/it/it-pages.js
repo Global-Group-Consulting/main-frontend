@@ -85,9 +85,14 @@ export default {
     }
 
   },
-  comunications: {
-    title: 'Comunicazioni con gli utenti',
-    subtitle: ''
+  communications: {
+    title: 'Comunicazioni e messaggi',
+    subtitle: '',
+    conversations: "Conversazioni",
+    messages: "Messaggi & Notifiche",
+    messagesSent: "Messaggi Inviati",
+    "btn-new-conversation": "Nuova conversazione",
+    "btn-new-message": "Nuovo messaggio singolo"
   },
   requests: {
     title: "Elenco delle richieste",

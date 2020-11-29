@@ -29,6 +29,10 @@ export function formDataFromObject(obj, formDataInstance, prefix, removeEmpty = 
 
     if (value.constructor.name === 'Object') {
       formDataFromObject(value, formData, key)
+    } else if (value.constructor.name === 'FileList') {
+      for (const _file of value) {
+        formData.append((prefix ? `${prefix}.` : '') + key + "[]", _file)
+      }
     } else if (value instanceof Array) {
       value.forEach(entry => formData.append((prefix ? `${prefix}.` : '') + key + '[]', entry))
     } else {

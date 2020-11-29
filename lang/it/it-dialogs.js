@@ -21,9 +21,18 @@ export default {
     'alert-reject-reason': "La richiesta è stata rifiutata per il seguente motivo:<br>",
     'alert-cancel-reason': "La richiesta è stata annullata in data {date} con il seguente motivo:<br>"
   },
-  comunicationDialog: {
-    'timeline-opposite': 'Inviato da <strong>{firstName} {lastName}</strong> il {timestamp}.',
-    'timeline-opposite-dense': 'Inviato il {timestamp}.'
+  communicationDialog: {
+    'you': "Me",
+    'timeline-opposite': 'Inviato da <strong>{sender} </strong> il {timestamp}.',
+    'timeline-opposite-dense': 'Inviato il {timestamp}.',
+    'receivers': "Destinatari",
+    'btn-cancel': "Chiudi"
+  },
+  communicationNewDialog: {
+    "title-conversation": "Nuova conversazione",
+    "title-service": "Nuovo messaggio singolo",
+    'btn-cancel': "Annulla",
+    'btn-send': "Invia"
   },
   filePreviewer: {
     'title': '',

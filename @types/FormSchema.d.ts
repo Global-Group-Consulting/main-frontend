@@ -4,9 +4,12 @@ export interface FormSchema {
   if?: boolean | function,
   legend?: string,
   disableEditMode?: boolean,
+  class?: string,
+  maxCols?: number,
   cols: {
     [key: string]: {
       component?: string,
+      label?: string,
       formatter?: Formatters,
       disabled?: boolean,
       if?: any,

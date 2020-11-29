@@ -7,73 +7,256 @@
         :icon="icon"
       ></page-header>
 
-      <v-card color="blue" dark>
-        <v-data-table
-          light
-          :headers="tableHeader"
-          :items="tableItems"
-          :items-per-page="25"
-          @click:row="openConversation">
+      <v-toolbar class="mb-5" v-if="permissions.seeToolbar.value">
+        <v-toolbar-items class="flex-fill">
+          <tooltip-btn
+            :tooltip="$t('pages.communications.btn-new-conversation')"
+            text
+            icon-name="mdi-forum"
+            @click="openNewCommunication($enums.MessageTypes.CONVERSATION)"
+            v-if="permissions.createConversation.value"
+          >
+            {{ $t("pages.communications.btn-new-conversation") }}
+          </tooltip-btn>
 
-          <template v-slot:item.sender="{item}">
-            {{ item.sender.firstName }} {{ item.sender.lastName }}
-          </template>
+          <tooltip-btn
+            :tooltip="$t('pages.communications.btn-new-message')"
+            text
+            icon-name="mdi-email-plus"
+            @click="openNewCommunication($enums.MessageTypes.SERVICE)"
+            v-if="permissions.createServiceMessage.value"
+          >
+            {{ $t("pages.communications.btn-new-message") }}
+          </tooltip-btn>
+        </v-toolbar-items>
+      </v-toolbar>
 
-          <template v-slot:item.user="{item}">
-            {{ item.user.firstName }} {{ item.user.lastName }}
-          </template>
+      <v-tabs v-model="currentTab">
+        <v-tab v-for="tab of communicationsTabs" :key="tab.key">
+          {{ $t(`pages.communications.${tab.title}`) }}
+        </v-tab>
+      </v-tabs>
 
-          <template v-slot:item.creation_timestamp="{item}">
-            {{ item.creation_timestamp|dateFormatter(true) }}
-          </template>
+      <v-tabs-items v-model="currentTab">
+        <v-tab-item v-for="tab of communicationsTabs" :key="tab.key">
+          <v-card>
+            <data-table
+              :items="communicationsList[tab.key]"
+              :table-key="tab.key"
+              schema="communicationsSchema"
+              @click:row="openCommunication"
+            >
+              <template v-slot:item.subject="{ item }" v-if="currentTab === 1">
+                <v-icon color="red" v-if="!item.read_at" x-small
+                  >mdi-asterisk</v-icon
+                >
+                {{ item.subject }}
+              </template>
 
-          <template v-slot:item.last_message_timestamp="{item}">
-            {{ item.last_message_timestamp|dateFormatter(true) }}
-          </template>
+              <template v-slot:item.type="{ item }">
+                {{
+                  $t(
+                    `enums.MessageTypes.${$enums.MessageTypes.getIdName(
+                      item.type
+                    )}`
+                  )
+                }}
+              </template>
 
-          <template v-slot:item.messages="{item}">
-            {{ item.messages.length }}
-          </template>
-        </v-data-table>
-      </v-card>
+              <template v-slot:item.receiver="{ item }">
+                <span v-for="(receiver, i) of item.receiver" :key="receiver.id">
+                  {{ receiver.firstName }} {{ receiver.lastName }} ({{
+                    $t(
+                      "enums.UserRoles." +
+                        $enums.UserRoles.getIdName(receiver.role)
+                    )
+                  }})
 
+                  <span v-if="i < item.receiver.length - 1">, </span>
+                </span>
+              </template>
+
+              <template v-slot:item.unreadMessages="{ item }">
+                <v-chip small v-if="item.unreadMessages" color="red" dark>
+                  {{ item.unreadMessages }}
+                </v-chip>
+
+                <span v-else></span>
+              </template>
+            </data-table>
+          </v-card>
+        </v-tab-item>
+      </v-tabs-items>
     </v-flex>
 
-    <comunication-details></comunication-details>
+    <comunication-details-dialog
+      v-if="$store.getters['dialog/dialogId'] === 'CommunicationDetailsDialog'"
+      @setAsRead="onSetAsRead"
+    ></comunication-details-dialog>
+
+    <communication-new-dialog
+      v-if="$store.getters['dialog/dialogId'] === 'CommunicationNewDialog'"
+      @communicationAdded="onCommunicationAdded"
+    ></communication-new-dialog>
   </v-layout>
 </template>
 
 <script>
-import fakeComunications from 'assets/fakeComunications'
-import pageBasic from '@/functions/pageBasic'
+import { reactive, onBeforeMount, ref, computed } from "@vue/composition-api";
 
-import comunicationsSchema from '@/config/tables/comunicationsSchema'
+import ComunicationDetailsDialog from "@/components/dialogs/ComunicationDetailsDialog";
+import CommunicationNewDialog from "@/components/dialogs/CommunicationNewDialog";
 
-import { reactive } from '@vue/composition-api'
-import ComunicationDetails from '@/components/dialogs/ComunicationDetails'
+import pageBasic from "@/functions/pageBasic";
+import CommunicationsTabs from "@/config/tabs/communicationsTabs";
 
 export default {
-  name: 'index',
-  components: { ComunicationDetails },
-  setup (props, { root }) {
-    function openConversation (conversation) {
-      root.$store.dispatch('dialog/updateStatus', {
-        title: conversation.subject,
-        fullscreen: true,
-        data: conversation
+  name: "index",
+  components: { ComunicationDetailsDialog, CommunicationNewDialog },
+  setup(props, { root }) {
+    const { $apiCalls, $alerts, $enums, $auth } = root;
+
+    let dataRefreshTimer = null;
+    const currentTab = ref(0);
+    const communicationsList = reactive({
+      messages: [],
+      messagesSent: [],
+      conversations: []
+    });
+    const communicationsTabs = computed(() =>
+      CommunicationsTabs.filter(_tab => {
+        if (
+          _tab.key === "messagesSent" &&
+          $auth.user.role === $enums.UserRoles.CLIENTE
+        ) {
+          return false;
+        }
+
+        return true;
       })
+    );
+    const permissions = {
+      createConversation: computed(
+        () => $auth.user.role !== $enums.UserRoles.CLIENTE
+      ),
+      createServiceMessage: computed(() =>
+        [$enums.UserRoles.ADMIN, $enums.UserRoles.SERV_CLIENTI].includes(
+          $auth.user.role
+        )
+      ),
+      seeToolbar: computed(
+        () =>
+          permissions.createConversation.value &&
+          permissions.createServiceMessage.value
+      )
+    };
+
+    async function _fetchAll() {
+      try {
+        const result = await $apiCalls.communicationsFetch();
+
+        root.$set(communicationsList, "messages", result.messages);
+        root.$set(communicationsList, "messagesSent", result.messagesSent);
+        root.$set(communicationsList, "conversations", result.conversations);
+      } catch (er) {
+        $alerts.error(er);
+      } finally {
+        _startRefreshTimer();
+      }
     }
+
+    function _startRefreshTimer() {
+      dataRefreshTimer = setTimeout(() => {
+        _fetchAll();
+      }, 120000 /* 2 minutes */);
+    }
+
+    function openCommunication(communication) {
+      const isConversation =
+        +communication.type === $enums.MessageTypes.CONVERSATION ||
+        !communication.type;
+
+      root.$store.dispatch("dialog/updateStatus", {
+        id: "CommunicationDetailsDialog",
+        title: communication.subject,
+        fullscreen: isConversation,
+        readonly: !isConversation || communication.readonly,
+        texts: { cancelBtn: root.$t("dialogs.communicationDialog.btn-cancel") },
+        data: {
+          ...communication,
+          isConversation
+        }
+      });
+    }
+
+    function openNewCommunication(type) {
+      root.$store.dispatch("dialog/updateStatus", {
+        id: "CommunicationNewDialog",
+        title: root.$t(
+          `dialogs.communicationNewDialog.title-${
+            type === $enums.MessageTypes.CONVERSATION
+              ? "conversation"
+              : "service"
+          }`
+        ),
+        fullscreen: false,
+        readonly: false,
+        data: {
+          type
+        }
+      });
+    }
+
+    async function onCommunicationAdded(communication) {
+      const updatedSection = await $apiCalls.communicationsFetch(
+        communication.type +
+          (communication.senderId === $auth.user.id ? "&out" : "")
+      );
+
+      if (communication.type === $enums.MessageTypes.CONVERSATION) {
+        root.$set(communicationsList, "conversations", updatedSection);
+      } else {
+        root.$set(communicationsList, "messagesSent", updatedSection);
+      }
+    }
+
+    /**
+     * @param {string[]} unreadMessagesIds
+     */
+    async function onSetAsRead(unreadMessagesId) {
+      // conversation
+      if (currentTab.value === 0) {
+        communicationsList.conversations.forEach(_com => {
+          if (_com.id === unreadMessagesId) {
+            _com.unreadMessages = 0;
+          }
+        });
+      } else if (currentTab.value === 1) {
+        communicationsList.messages.forEach(_com => {
+          if (_com.id === unreadMessagesId) {
+            _com.read_at = new Date().toISOString();
+          }
+        });
+      }
+    }
+
+    onBeforeMount(async () => {
+      await _fetchAll();
+    });
 
     return {
-      ...pageBasic(root, 'comunications'),
-      tableItems: fakeComunications,
-      tableHeader: comunicationsSchema(),
-      openConversation
-    }
+      ...pageBasic(root, "communications"),
+      currentTab,
+      communicationsList,
+      communicationsTabs,
+      openCommunication,
+      openNewCommunication,
+      onCommunicationAdded,
+      onSetAsRead,
+      permissions
+    };
   }
-}
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

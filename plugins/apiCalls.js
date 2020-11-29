@@ -198,6 +198,41 @@ export class ApiCalls extends BasicApiCall {
       endPoint: "/api/dashboards"
     })
   }
+
+  async communicationsFetch(type) {
+    return await this.get({
+      endPoint: "/api/communications" + (type ? `?t=${type}` : "")
+    })
+  }
+
+  async communicationsFetchReceivers() {
+    return await this.get({
+      endPoint: "/api/communications/receivers"
+    })
+  }
+
+  async conversationFetch(id) {
+    return await this.get({
+      endPoint: `/api/communications/conversations/${id}`
+    })
+  }
+
+  async communicationSend(body) {
+    return await this._call({
+      method: "POST",
+      endPoint: `/api/communications`,
+      body,
+      uploadMode: true
+    })
+  }
+
+  async messagesSetAsRead(body) {
+    return await this._call({
+      method: "PATCH",
+      endPoint: `/api/communications/messages`,
+      body,
+    })
+  }
 }
 
 export default (context, inject) => {

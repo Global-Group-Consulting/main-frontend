@@ -24,7 +24,7 @@
 
         <v-divider></v-divider>
 
-        <v-card-text>
+        <v-card-text ref="dialogContent">
           <portal-target
             name="dialog-content"
             :slot-props="dialogData"
