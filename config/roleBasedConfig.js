@@ -16,6 +16,38 @@ const defaults = {
         'accountStatus',
         'actions'
       ]
+    },
+    movements: {
+      columns: [
+        "amountChange",
+        "movementType",
+        "createdAt",
+        "deposit",
+        "interestAmount"
+      ]
+    },
+    messages: {
+      columns: [
+        "subject",
+        "type",
+        "createdAt",
+      ]
+    },
+    messagesSent: {
+      columns: [
+        "subject",
+        "type",
+        "receiver",
+        "createdAt",
+      ]
+    },
+    conversations: {
+      columns: [
+        "subject",
+        "createdAt",
+        "updatedAt",
+        "unreadMessages",
+      ]
     }
   }
 }
@@ -128,6 +160,21 @@ const cliente = {
         "deposit",
         "interestAmount"
       ]
+    },
+    messages: {
+      columns: [
+        "subject",
+        "type",
+        "createdAt",
+      ]
+    },
+    conversations: {
+      columns: [
+        "subject",
+        "createdAt",
+        "updatedAt",
+        "unreadMessages",
+      ]
     }
   },
   blocks: {
@@ -172,6 +219,21 @@ const agente = {
         "deposit",
         "interestAmount"
       ]
+    },
+    messages: {
+      columns: [
+        "subject",
+        "type",
+        "createdAt",
+      ]
+    },
+    conversations: {
+      columns: [
+        "subject",
+        "createdAt",
+        "updatedAt",
+        "messagesCount",
+      ]
     }
   },
   blocks: {
@@ -191,6 +253,7 @@ const agente = {
 export { admin, servClienti, agente, cliente }
 
 export default {
+  defaults,
   admin,
   servClienti,
   agente,

@@ -91,12 +91,15 @@ export default {
     const availableTableColumns = ref([]);
 
     const headers = computed(() => {
-      const columns = _get(
-        roleBasedConfig,
-        `${UserRoles.getIdName($auth.user.role)}.tables.${
-          props.tableKey
-        }.columns`
-      );
+      const roleName = UserRoles.getIdName($auth.user.role);
+      const colPath = `${roleName}.tables.${props.tableKey}.columns`;
+      const colDefaultPath = `defaults.tables.${props.tableKey}.columns`;
+      let columns = _get(roleBasedConfig, colPath);
+
+      // Fallback to the defaults
+      if (!columns) {
+        columns = _get(roleBasedConfig, colDefaultPath);
+      }
 
       if (!columns) {
         console.warn("No columns found for", props.tableKey, props.schema);

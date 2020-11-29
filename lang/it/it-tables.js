@@ -21,5 +21,13 @@ export default {
   'movement-type': "Tipologia movimento",
   'deposit': "Capitale totale",
   'interest-amount': "Interessi maturati",
-  'request-cancelled': "Richiesta annullata"
+  'request-cancelled': "Richiesta annullata",
+  'com-subject': "Oggetto",
+  'com-sender': "Mittente",
+  'com-receiver': "Destinatari",
+  'com-type': "Tipologia",
+  'com-created-at': "Data invio",
+  'com-updated-at': "Data ultimo messaggio",
+  'com-messages-count': "Messaggi totali",
+  'com-messages-unread-count': "Messaggi non letti",
 }
