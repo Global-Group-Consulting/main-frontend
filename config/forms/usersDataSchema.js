@@ -87,7 +87,7 @@ export function basicData(formContext) {
         'birthCity': {},
         'birthDate': {
           'component': 'date-picker',
-          'initial-date': moment().subtract(18, 'years').format('YYYY-MM-DD')
+          max: moment().subtract(18, 'years').format('YYYY-MM-DD')
         }
       }
     },
