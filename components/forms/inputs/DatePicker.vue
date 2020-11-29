@@ -1,5 +1,6 @@
 <template>
   <v-menu
+    :ref="menu"
     v-model="opened"
     :close-on-content-click="false"
     :nudge-right="40"
@@ -35,12 +36,14 @@
       </v-text-field>
     </template>
     <v-date-picker
+      ref="picker"
       v-model="dateValue"
       @input="onInput"
       :readonly="readonly"
       :disabled="disabled"
-      v-bind:picker-date="(dateValue ? '' : initialDate) | datePickerFormatter"
-      v-bind:min="min | datePickerFormatter"
+      :picker-date="dateValue ? '' : initialDate || datePickerFormatter"
+      :min="min || datePickerFormatter"
+      :max="max"
       locale="it"
     >
     </v-date-picker>
@@ -63,6 +66,11 @@ export default {
     label: "",
     initialDate: "",
     min: "",
+    max: "",
+    startByYear: {
+      type: Boolean,
+      default: true
+    },
     readonly: Boolean,
     disabled: Boolean,
     editMode: Boolean
@@ -80,6 +88,11 @@ export default {
   watch: {
     value: function(value) {
       this.dateValue = datePickerFormatter(this.value);
+    },
+    opened(val) {
+      if (this.startByYear) {
+        val && setTimeout(() => (this.$refs.picker.activePicker = "YEAR"));
+      }
     }
   }
 };
