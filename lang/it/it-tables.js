@@ -17,6 +17,7 @@ export default {
   'created-at': 'Data creazione',
   'validated-at': 'Data validazione dati',
   'no-data': "Nessun dato disponibile.",
+  'no-pending-requests': "Complimenti, al momento non ci sono richieste in attesa!",
   'amount-change': "Importo",
   'movement-type': "Tipologia movimento",
   'deposit': "Capitale totale",

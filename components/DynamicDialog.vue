@@ -24,7 +24,12 @@
 
         <v-divider></v-divider>
 
-        <v-card-text ref="dialogContent">
+        <portal-target
+          name="dialog-pre-content"
+          :slot-props="dialogData"
+        ></portal-target>
+
+        <v-card-text ref="dialogContent" :class="dialogData.contentClass">
           <portal-target
             name="dialog-content"
             :slot-props="dialogData"
@@ -64,8 +69,15 @@
 <script>
 import { mapGetters } from "vuex";
 
+import { onUnmounted } from "@vue/composition-api";
+
 export default {
   name: "DynamicDialog",
+  setup() {
+    onUnmounted(() => {
+      console.log("asdsadasdas");
+    });
+  },
   data() {
     return {};
   },
@@ -77,7 +89,9 @@ export default {
   },
   methods: {
     close() {
-      this.$store.dispatch("dialog/updateStatus", false);
+      try {
+        this.$store.dispatch("dialog/updateStatus", false);
+      } catch (er) {}
     }
   }
 };

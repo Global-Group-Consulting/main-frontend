@@ -161,21 +161,6 @@ const cliente = {
         "interestAmount"
       ]
     },
-    messages: {
-      columns: [
-        "subject",
-        "type",
-        "createdAt",
-      ]
-    },
-    conversations: {
-      columns: [
-        "subject",
-        "createdAt",
-        "updatedAt",
-        "unreadMessages",
-      ]
-    }
   },
   blocks: {
     dashboard: {
@@ -218,21 +203,6 @@ const agente = {
         "createdAt",
         "deposit",
         "interestAmount"
-      ]
-    },
-    messages: {
-      columns: [
-        "subject",
-        "type",
-        "createdAt",
-      ]
-    },
-    conversations: {
-      columns: [
-        "subject",
-        "createdAt",
-        "updatedAt",
-        "messagesCount",
       ]
     }
   },

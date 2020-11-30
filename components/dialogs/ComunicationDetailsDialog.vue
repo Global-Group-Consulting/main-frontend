@@ -1,5 +1,45 @@
 <template>
   <div>
+    <portal to="dialog-pre-content" v-if="requestId">
+      <v-alert type="info" class="mb-0" tile dense>
+        <div
+          v-html="
+            $t(
+              'dialogs.communicationDialog.alert-connected-request-new-deposit'
+            )
+          "
+        ></div>
+
+        <v-layout style="gap: 8px" class="my-2 mb-2">
+          <v-btn
+            link
+            target="__blank"
+            outlined
+            x-small
+            :href="'/requests?open=' + requestId"
+          >
+            <v-icon x-small class="mr-2">mdi-open-in-new</v-icon>
+            {{ $t("dialogs.communicationDialog.btn-go-to-request") }}
+          </v-btn>
+
+          <v-btn
+            color="red"
+            v-if="canApproveRequest"
+            x-small
+            @click="requestReject"
+            >{{ $t("dialogs.communicationDialog.btn-reject-request") }}</v-btn
+          >
+          <v-btn
+            color="green"
+            v-if="canApproveRequest"
+            x-small
+            @click="requestApprove"
+            >{{ $t("dialogs.communicationDialog.btn-approve-request") }}</v-btn
+          >
+        </v-layout>
+      </v-alert>
+    </portal>
+
     <portal to="dialog-content" ref="test">
       <div v-if="dialogData.isConversation && dataFetching">
         <v-layout column>
@@ -23,7 +63,7 @@
         </v-layout>
       </div>
 
-      <div class="bg-light-gray comunication-details" v-else>
+      <div v-else class=" comunication-details">
         <!-- Conversation chat -->
         <v-timeline
           v-if="dialogData.isConversation"
@@ -84,7 +124,6 @@
                   }}
                 </p>
 
-                {{ item.id }}
                 <div v-html="getMessageContent(item)" class="text-body-1"></div>
 
                 <!-- message attachmetns -->
@@ -264,6 +303,8 @@ import jsFileDownload from "js-file-download";
 
 import TextEditor from "@/components/forms/inputs/TextEditor";
 
+import requestsCrudActions from "../../functions/requestsCrudActions";
+
 import {
   watch,
   computed,
@@ -279,6 +320,9 @@ export default {
     const { $enums, $store, $alerts, $apiCalls, $auth, $vuetify } = root;
 
     let timerSetAsRead = null;
+    let timerReloadData = null;
+
+    let requestActions = ref({ reject: () => {}, approve: () => {} });
 
     const showQuoteMenu = ref(false);
     const showQuoteMenuX = ref(0);
@@ -322,6 +366,16 @@ export default {
     );
     const showReceivers = computed(
       () => dialogData.value.senderId === $auth.user.id
+    );
+    const requestId = computed(() => {
+      return dialogData.value.requestId || "";
+    });
+    let requestStatus = ref(dialogData.value?.request?.status || null);
+    const canApproveRequest = computed(
+      () =>
+        requestId.value &&
+        +$auth.user.role === $enums.UserRoles.ADMIN &&
+        requestStatus.value === $enums.RequestStatus.LAVORAZIONE
     );
 
     function _getUserType(role) {
@@ -382,6 +436,40 @@ export default {
       });
 
       return toReturn;
+    }
+
+    function _startDataReloadTimer() {
+      clearTimeout(timerReloadData);
+
+      timerReloadData = setTimeout(() => {
+        _fetchMessages();
+      }, 30000 /* 30 sec */);
+    }
+
+    async function _fetchMessages() {
+      try {
+        const result = await $apiCalls.conversationFetch(dialogData.value.id);
+
+        root.$set(messagesList, "value", result.conversation.messages);
+
+        if (result.quotableUsers) {
+          root.$set(quotableUsersList, "value", result.quotableUsers);
+        }
+
+        _scrollToBottom();
+        _scheduleSetAsRead();
+        _startDataReloadTimer();
+      } catch (er) {
+        $alerts.error(er);
+      }
+    }
+
+    async function _initRequestActions() {
+      requestActions.value = requestsCrudActions(
+        dialogData.value.request,
+        root,
+        emit
+      );
     }
 
     function getSender(message) {
@@ -502,6 +590,30 @@ export default {
       const key = event.key;
     }
 
+    async function requestApprove() {
+      if (await requestActions.value.approve(dialogData.value.request)) {
+        dialogData.value.request.status = $enums.RequestStatus.ACCETTATA;
+        requestStatus.value = dialogData.value.request.status;
+
+        emit("requestStatusChanged", {
+          ...dialogData.value,
+          request: dialogData.value.request
+        });
+      }
+    }
+
+    async function requestReject() {
+      if (await requestActions.value.reject(dialogData.value.request)) {
+        dialogData.value.request.status = $enums.RequestStatus.ACCETTATA;
+        requestStatus.value = dialogData.value.request.status;
+
+        emit("requestStatusChanged", {
+          ...dialogData.value,
+          request: dialogData.value.request
+        });
+      }
+    }
+
     onBeforeMount(async () => {
       if (!dialogData.value.isConversation) {
         _scheduleSetAsRead();
@@ -509,27 +621,19 @@ export default {
         return;
       }
 
-      try {
-        const result = await $apiCalls.conversationFetch(dialogData.value.id);
-
-        root.$set(messagesList, "value", result.conversation.messages);
-
-        if (result.quotableUsers) {
-          root.$set(quotableUsersList, "value", result.quotableUsers);
-        }
-
-        _scrollToBottom();
-
-        _scheduleSetAsRead();
-      } catch (er) {
-        $alerts.error(er);
-      } finally {
-        dataFetching.value = false;
+      if (dialogData.value.requestId) {
+        _initRequestActions();
+        requestStatus.value = dialogData.value.request.status;
       }
+
+      await _fetchMessages();
+
+      dataFetching.value = false;
     });
 
     onBeforeUnmount(() => {
       clearTimeout(timerSetAsRead);
+      clearTimeout(timerReloadData);
     });
 
     return {
@@ -556,7 +660,11 @@ export default {
       quotableUsers: filteredQuotableUsers,
       onMessageInput,
       dataFetching,
-      showReceivers
+      showReceivers,
+      requestId,
+      canApproveRequest,
+      requestApprove,
+      requestReject
     };
   },
   data() {

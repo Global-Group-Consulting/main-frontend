@@ -244,7 +244,9 @@ export default {
   },
 
   beforeDestroy() {
-    this.destroyPopup();
+    try {
+      this.destroyPopup();
+    } catch (er) {}
   },
 
   watch: {
@@ -280,6 +282,7 @@ $color-grey: #dddddd;
   .ProseMirror {
     background: white;
     padding: 8px 10px;
+    border: solid 1px $color-grey;
   }
 }
 

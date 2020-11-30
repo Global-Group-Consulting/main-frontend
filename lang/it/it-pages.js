@@ -102,6 +102,7 @@ export default {
     "btnDeposit": "Versamento",
     "btnDeposit-tooltip": "Versa nuova liquidità",
     'tableNuova-title': "Richieste in attesa di approvazione",
+    'tableLavorazione-title': "Richieste in lavorazione",
     'tableAccettata-title': "Richieste accettate",
     'tableRifiutata-title': "Richieste rifiutate",
   }

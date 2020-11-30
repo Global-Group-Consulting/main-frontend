@@ -10,10 +10,10 @@
     </portal>
 
     <portal to="dialog-actions-right">
-      <v-btn color="" text @click="close">
+      <v-btn color="" text @click="close" :disabled="gLoading">
         {{ $t("dialogs.communicationNewDialog.btn-cancel") }}
       </v-btn>
-      <v-btn color="success" @click="onSubmit">
+      <v-btn color="success" @click="onSubmit" :loading="gLoading">
         {{ $t("dialogs.communicationNewDialog.btn-send") }}
         <v-icon class="ml-2">mdi-send</v-icon>
       </v-btn>
@@ -26,7 +26,7 @@ import CommunicationNewSchema from "@/config/forms/communicationNewSchema";
 
 import DynamicFieldset from "@/components/DynamicFieldset";
 
-import { ref, onBeforeMount, computed } from "@vue/composition-api";
+import { ref, onBeforeMount, computed, onMounted } from "@vue/composition-api";
 
 export default {
   name: "CommunicationNewDialog",
@@ -113,13 +113,19 @@ export default {
           ...(formData.value.watchers || [])
         ];
 
-        const result = await $apiCalls.communicationSend({
+        const communicationData = {
           content: formData.value.message,
           communicationAttachments: formData.value.attachments,
           subject: formData.value.subject,
           receiver,
           type: dialogData.value.type
-        });
+        };
+
+        if (dialogData.value.request) {
+          communicationData.requestId = dialogData.value.request.id;
+        }
+
+        const result = await $apiCalls.communicationSend(communicationData);
 
         emit("communicationAdded", result);
 
@@ -132,11 +138,31 @@ export default {
       }
     }
 
+    function _fillFormData() {
+      root.$set(formData, "value", {
+        subject: dialogData.value.subject,
+        receiver: [dialogData.value.request.user.id],
+        message: dialogData.value.message
+      });
+    }
+
+    onMounted(() => {
+      if (
+        dialogData.value.request &&
+        dialogData.value.request.type === $enums.RequestTypes.VERSAMENTO
+      ) {
+      }
+    });
+
     onBeforeMount(async () => {
       try {
         const result = await $apiCalls.communicationsFetchReceivers();
 
         root.$set(usersList, "value", _formatUsersList(result));
+
+        if (dialogData.value.request) {
+          _fillFormData();
+        }
       } catch (er) {
         $alerts.error(er);
       }

@@ -92,6 +92,7 @@
     <comunication-details-dialog
       v-if="$store.getters['dialog/dialogId'] === 'CommunicationDetailsDialog'"
       @setAsRead="onSetAsRead"
+      @requestStatusChanged="onRequestStatusChanged"
     ></comunication-details-dialog>
 
     <communication-new-dialog
@@ -108,13 +109,15 @@ import ComunicationDetailsDialog from "@/components/dialogs/ComunicationDetailsD
 import CommunicationNewDialog from "@/components/dialogs/CommunicationNewDialog";
 
 import pageBasic from "@/functions/pageBasic";
+import requestsCrudActions from "@/functions/requestsCrudActions.js";
+
 import CommunicationsTabs from "@/config/tabs/communicationsTabs";
 
 export default {
   name: "index",
   components: { ComunicationDetailsDialog, CommunicationNewDialog },
   setup(props, { root }) {
-    const { $apiCalls, $alerts, $enums, $auth } = root;
+    const { $apiCalls, $alerts, $enums, $auth, $route } = root;
 
     let dataRefreshTimer = null;
     const currentTab = ref(0);
@@ -123,6 +126,7 @@ export default {
       messagesSent: [],
       conversations: []
     });
+    const rawList = [];
     const communicationsTabs = computed(() =>
       CommunicationsTabs.filter(_tab => {
         if (
@@ -155,6 +159,8 @@ export default {
       try {
         const result = await $apiCalls.communicationsFetch();
 
+        rawList.push(...Object.values(result).flat());
+
         root.$set(communicationsList, "messages", result.messages);
         root.$set(communicationsList, "messagesSent", result.messagesSent);
         root.$set(communicationsList, "conversations", result.conversations);
@@ -182,6 +188,7 @@ export default {
         fullscreen: isConversation,
         readonly: !isConversation || communication.readonly,
         texts: { cancelBtn: root.$t("dialogs.communicationDialog.btn-cancel") },
+        contentClass: "blue-grey lighten-5",
         data: {
           ...communication,
           isConversation
@@ -240,8 +247,30 @@ export default {
       }
     }
 
+    function onRequestStatusChanged(changedCommunication) {
+      const communication = communicationsList.conversations.find(
+        _com => (_com.id = changedCommunication.id)
+      );
+
+      communication.request.status = changedCommunication.request.status;
+    }
+
     onBeforeMount(async () => {
+      const query = $route.query;
+
       await _fetchAll();
+
+      if (query.open) {
+        const idToOpen = query.open;
+
+        const communication = rawList.find(_req => _req.id === idToOpen);
+
+        if (communication) {
+          openCommunication(communication);
+        }
+
+        root.$router.replace({ query: {} });
+      }
     });
 
     return {
@@ -253,7 +282,8 @@ export default {
       openNewCommunication,
       onCommunicationAdded,
       onSetAsRead,
-      permissions
+      permissions,
+      onRequestStatusChanged
     };
   }
 };
