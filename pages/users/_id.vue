@@ -191,6 +191,7 @@
                 right
                 fab
                 type="button"
+                :loading="gLoading"
                 @click="onSaveClick"
               >
                 <v-icon>mdi-content-save</v-icon>
