@@ -41,74 +41,26 @@
 
       <v-row v-for="table of requestsTables" :key="table.id">
         <v-col cols="12">
-          <v-card :color="table.color" dark>
-            <v-card-title>
+          <v-card>
+            <v-card-title class="p-relative">
               <v-icon class="mr-2">{{ table.icon }}</v-icon>
-              {{ table.title }}</v-card-title
-            >
-            <v-data-table
-              light
-              :headers="getTableHeaders($auth.user.role, table.id)"
+              {{ table.title }}
+              <div
+                class="v-alert__border v-alert__border--bottom"
+                :class="table.color"
+              ></div>
+            </v-card-title>
+
+            <requests-list-table
+              :condition="table.id"
               :items="requestsGroups[table.id]"
-              :items-per-page="10"
-              :item-class="getItemClass"
               :sort-by="table.sortBy"
               :sort-desc="table.sortDesc"
               :multi-sort="table.multiSort"
-              :hide-default-footer="requestsGroups[table.id].length <= 10"
               @click:row="openRequestDetails"
-            >
-              <template v-slot:item.user.contractNumber="{ item }">
-                {{
-                  $options.filters.contractNumberFormatter(
-                    item.user.contractNumber
-                  )
-                }}
-              </template>
-
-              <template v-slot:item.user="{ item }">
-                {{ $options.filters.userFormatter(item.user) }}
-              </template>
-
-              <template v-slot:item.actions="{ item }">
-                <requests-crud-actions
-                  :item="item"
-                  @rowDeleted="onRequestDeleted"
-                  @rowStatusChanged="onRequestStatusChanged"
-                  @rowCanceled="onRequestCanceled"
-                ></requests-crud-actions>
-              </template>
-
-              <template v-slot:item.amount="{ item }">
-                <span
-                  :class="getAmountClass(getAmountSign(item.type))"
-                  class="text-no-wrap"
-                >
-                  {{ getAmountSign(item.type) }}
-                  € {{ $options.filters.moneyFormatter(item.amount) }}
-                </span>
-              </template>
-
-              <template v-slot:item.currency="{ item }">
-                {{ formatRequestCurrency(item.currency) }}
-              </template>
-
-              <template v-slot:item.created_at="{ item }">
-                {{ $options.filters.dateFormatter(item.created_at, true) }}
-              </template>
-
-              <template v-slot:item.updated_at="{ item }">
-                {{ $options.filters.dateFormatter(item.updated_at, true) }}
-              </template>
-
-              <template v-slot:item.completed_at="{ item }">
-                {{ $options.filters.dateFormatter(item.completed_at, true) }}
-              </template>
-
-              <template v-slot:item.type="{ item }">
-                {{ getTipoRichiesta(item.type) }}
-              </template>
-            </v-data-table>
+              @refetchData="onRefetchData"
+              @requestStartWorking="onRequestStartWorking"
+            ></requests-list-table>
           </v-card>
         </v-col>
       </v-row>
@@ -118,8 +70,14 @@
       @newRequestAdded="onNewRequestAdded"
       @requestDeleted="onRequestDeleted"
       @requestStatusChanged="onRequestStatusChanged"
+      @requestStartWorking="onRequestStartWorking"
       v-if="$store.getters['dialog/dialogId'] === 'RequestDialog'"
     ></request-dialog>
+
+    <communication-new-dialog
+      v-if="$store.getters['dialog/dialogId'] === 'CommunicationNewDialog'"
+      @communicationAdded="onCommunicationAdded"
+    ></communication-new-dialog>
   </v-layout>
 </template>
 
@@ -133,6 +91,8 @@ import tableHeadersSchema from "../config/tables/requestsSchema";
 import PageHeader from "../components/blocks/PageHeader";
 import RequestsCrudActions from "../components/table/RequestsCrudAction";
 import RequestDialog from "../components/dialogs/RequestDialog";
+import CommunicationNewDialog from "../components/dialogs/CommunicationNewDialog";
+import RequestsListTable from "../components/table/RequestsListTable";
 
 // functions
 import pageBasicFn from "../functions/pageBasic";
@@ -144,15 +104,27 @@ export default {
   components: {
     RequestDialog,
     PageHeader,
-    RequestsCrudActions
+    RequestsCrudActions,
+    RequestsListTable,
+    CommunicationNewDialog
   },
   setup(props, { root }) {
-    const { $apiCalls, $set, $enums, $store, $i18n, $options, $route } = root;
+    const {
+      $apiCalls,
+      $set,
+      $enums,
+      $store,
+      $i18n,
+      $options,
+      $route,
+      $alerts
+    } = root;
     const permissions = permissionsFn(root);
     const requestsList = ref([]);
     const requestsGroups = computed(() => {
       const toReturn = {
         nuova: [],
+        lavorazione: [],
         accettata: [],
         rifiutata: []
       };
@@ -181,6 +153,14 @@ export default {
           sortDesc: true
         },
         {
+          id: "lavorazione",
+          title: $i18n.t(`pages.requests.tableLavorazione-title`),
+          color: "blue",
+          icon: "mdi-sitemap",
+          sortBy: "created_at",
+          sortDesc: true
+        },
+        {
           id: "accettata",
           title: $i18n.t(`pages.requests.tableAccettata-title`),
           color: "green",
@@ -201,26 +181,30 @@ export default {
       ];
     });
 
-    async function fetchAll() {
-      const result = await $apiCalls.fetchRequests();
+    async function _fetchAll() {
+      try {
+        const result = await $apiCalls.fetchRequests();
 
-      $set(requestsList, "value", result);
+        $set(requestsList, "value", result);
+      } catch (er) {
+        $alerts.error(er);
+      }
     }
 
-    async function onNewRequestAdded() {
-      await fetchAll();
+    function onRefetchData() {
+      _fetchAll();
     }
 
-    async function onRequestDeleted() {
-      await fetchAll();
+    function onNewRequestAdded() {
+      _fetchAll();
     }
 
-    async function onRequestStatusChanged() {
-      await fetchAll();
+    function onRequestDeleted() {
+      _fetchAll();
     }
 
-    async function onRequestCanceled() {
-      await fetchAll();
+    function onRequestStatusChanged() {
+      _fetchAll();
     }
 
     function newDepositRequest() {
@@ -269,21 +253,53 @@ export default {
       });
     }
 
-    function formatRequestCurrency(value) {
-      const currencyData = $enums.CurrencyType.get(value);
-
-      return `${currencyData.symbol} (${$i18n.t(
-        `enums.CurrencyType.${currencyData.id}`
-      )})`;
+    function onRequestStartWorking(request) {
+      root.$store.dispatch("dialog/updateStatus", {
+        id: "CommunicationNewDialog",
+        title: root.$t(`dialogs.communicationNewDialog.title-conversation`),
+        fullscreen: false,
+        readonly: false,
+        data: {
+          type: $enums.MessageTypes.CONVERSATION,
+          subject: root.$t(
+            "dialogs.communicationNewDialog.subject-new-deposit",
+            { date: $options.filters.dateFormatter(request.created_at) }
+          ),
+          receiver: request.user.id,
+          message: root.$t(
+            "dialogs.communicationNewDialog.message-new-deposit",
+            {
+              firstName: request.user.firstName,
+              lastName: request.user.lastName,
+              amount: $options.filters.moneyFormatter(request.amount)
+            }
+          ),
+          request
+        }
+      });
     }
 
-    function getItemClass(item) {
-      if (+item.status == $enums.RequestStatus.ANNULLATA) {
-        return "grey lighten-2 text-decoration-line-through";
+    function onCommunicationAdded(communication) {
+      _fetchAll();
+    }
+
+    onBeforeMount(async () => {
+      const query = $route.query;
+
+      await _fetchAll();
+
+      if (query.open) {
+        const idToOpen = query.open;
+
+        const request = requestsList.value.find(_req => _req.id === idToOpen);
+
+        if (request) {
+          openRequestDetails(request);
+        }
+
+        root.$router.replace({ query: {} });
       }
-    }
-
-    onBeforeMount(fetchAll);
+    });
 
     onMounted(() => {
       const query = $route.query;
@@ -320,47 +336,13 @@ export default {
       newDepositRequest,
       newWithdrawlRequest,
       openRequestDetails,
+      onRefetchData,
       onNewRequestAdded,
       onRequestDeleted,
       onRequestStatusChanged,
-      onRequestCanceled,
-      formatRequestCurrency,
-      getItemClass
-      // showCrudActions
+      onRequestStartWorking,
+      onCommunicationAdded
     };
-  },
-  data() {
-    return {
-      requestDialogData: {}
-    };
-  },
-  methods: {
-    getAmountSign(requestType) {
-      return [
-        this.$enums.RequestTypes["VERSAMENTO"],
-        this.$enums.RequestTypes["INTERESSI"]
-      ].includes(requestType)
-        ? "+"
-        : "-";
-    },
-    getAmountClass(sign) {
-      const minus = "red--text";
-      const plus = "green--text";
-
-      return sign === "-" ? minus : plus;
-    },
-    getTipoRichiesta(_id) {
-      const id = this.$enums.RequestTypes.get(_id).id;
-
-      return this.$t("enums.RequestTypes." + id);
-    },
-    onNewRequest() {
-      this.$store.dispatch("dialog/updateStatus", {
-        title: "",
-        readonly: false,
-        data: {}
-      });
-    }
   }
 };
 </script>

@@ -70,5 +70,12 @@ export default {
   'request-created-at': 'Data richiesta',
   'wallet-type': 'Wallet',
   'tooltip-download-file': "Scarica file",
-  'tooltip-remove-file': "Cancella file"
+  'tooltip-remove-file': "Cancella file",
+  'communication-subject': "Oggetto",
+  'communication-receiver': "Destinatari",
+  'communication-cc': "CC",
+  'communication-attachments': "Allegati",
+  'communication-message': "Messaggio",
+  'communication-attachments': "Allegati",
+
 }

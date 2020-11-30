@@ -1,28 +1,50 @@
 <template>
   <div>
-    <portal to="dialog-content">
+    <portal to="dialog-pre-content">
       <v-alert
-        type="warning"
-        class="mt-3"
-        v-if="formData.status === $enums.RequestStatus.RIFIUTATA"
+        v-if="![$enums.RequestStatus.NUOVA, $enums.RequestStatus.ACCETTATA].includes(formData.status)"
+        :type="
+          formData.status === $enums.RequestStatus.LAVORAZIONE
+            ? 'info'
+            : 'warning'
+        "
+        class="mb-0"
+        tile
+        dense
       >
-        <div v-html="$t('dialogs.requests.alert-reject-reason')"></div>
-        <div>{{ formData.rejectReason }}</div>
-      </v-alert>
+        <template v-if="formData.status === $enums.RequestStatus.RIFIUTATA">
+          <div v-html="$t('dialogs.requests.alert-reject-reason')"></div>
+          <strong>{{ formData.rejectReason }}</strong>
+        </template>
 
-      <v-alert
-        type="warning"
-        class="mt-3"
-        v-else-if="formData.status === $enums.RequestStatus.ANNULLATA"
-      >
-        <div
-          v-html="
-            $t('dialogs.requests.alert-cancel-reason', {
-              date: $options.filters.dateHourFormatter(formData.completed_at)
-            })
-          "
-        ></div>
-        <div>{{ formData.cancelReason }}</div>
+        <template
+          v-else-if="formData.status === $enums.RequestStatus.ANNULLATA"
+        >
+          <div
+            v-html="
+              $t('dialogs.requests.alert-cancel-reason', {
+                date: $options.filters.dateHourFormatter(formData.completed_at)
+              })
+            "
+          ></div>
+          <strong>{{ formData.cancelReason }}</strong>
+        </template>
+
+        <template
+          v-else-if="formData.status === $enums.RequestStatus.LAVORAZIONE"
+        >
+          {{ $t("dialogs.requests.alert-connected-communication") }}
+          <v-btn
+            link
+            outlined
+            x-small
+            :href="'/communications?open=' + conversationId"
+            target="__blank"
+          >
+            <v-icon x-small>mdi-open-in-new</v-icon>
+            {{ $t("dialogs.requests.btn-go-to-conversation") }}
+          </v-btn>
+        </template>
       </v-alert>
 
       <v-toolbar
@@ -30,8 +52,10 @@
         elevation="2"
         color="blue-grey lighten-5"
         v-if="
-          formData.status === $enums.RequestStatus.NUOVA &&
-            permissions.userType === 'admin'
+          [
+            $enums.RequestStatus.NUOVA,
+            $enums.RequestStatus.LAVORAZIONE
+          ].includes(formData.status) && permissions.userType === 'admin'
         "
       >
         <v-spacer></v-spacer>
@@ -47,7 +71,9 @@
         </v-toolbar-items>
         <v-spacer></v-spacer>
       </v-toolbar>
+    </portal>
 
+    <portal to="dialog-content">
       <v-form :disabled="!!readonly" @submit.prevent="">
         <dynamic-fieldset
           :ref="'request-form'"
@@ -89,12 +115,12 @@ import { createNamespacedHelpers } from "vuex-composition-helpers";
 import DynamicFieldset from "@/components/DynamicFieldset";
 import requestSchema from "@/config/forms/requestSchema";
 
-import WalletTypes from "../../enums/WalletTypes";
-
 import requestsCrudActionsFn from "../../functions/requestsCrudActions";
 import permissionsFn from "../../functions/permissions";
 import { admin } from "../../config/roleBasedConfig";
+import WalletTypes from "../../enums/WalletTypes";
 import RequestStatus from "../../enums/RequestStatus";
+import RequestTypes from "../../enums/RequestTypes";
 
 export default {
   name: "RequestDialog",
@@ -125,7 +151,7 @@ export default {
       currency: dialogData.value?.data.currency || $enums.CurrencyType["EURO"]
     });
 
-    const actions = requestsCrudActionsFn(formData, root);
+    const actions = requestsCrudActionsFn(formData, root, emit);
 
     const wallet = computed(() => {
       return availableWallets.value.find(
@@ -162,6 +188,10 @@ export default {
       return toReturn;
     });
 
+    const conversationId = computed(
+      () => dialogData.value?.data.conversation?.id
+    );
+
     async function onDelete() {
       const result = await actions.delete(this.formData);
 
@@ -173,7 +203,7 @@ export default {
     }
 
     async function onApprove() {
-      const result = await actions.approve(this.formData);
+      const result = await actions.approve(formData.value);
 
       if (result) {
         this.close();
@@ -183,7 +213,7 @@ export default {
     }
 
     async function onReject() {
-      const result = await actions.reject(this.formData);
+      const result = await actions.reject(formData);
 
       if (result) {
         this.close();
@@ -244,7 +274,8 @@ export default {
       onReject,
       permissions,
       dialogData,
-      availableWallets
+      availableWallets,
+      conversationId
     };
   },
   data() {

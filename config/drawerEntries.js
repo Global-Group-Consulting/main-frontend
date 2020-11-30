@@ -62,7 +62,7 @@ const menuItems = [
         id: 'comunications',
         text: 'comunications',
         icon: 'mdi-email-multiple',
-        link: '/comunications'
+        link: '/communications'
       }
     ]
   },

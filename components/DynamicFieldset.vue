@@ -14,6 +14,7 @@
           v-bind="getColumns(row)"
           v-for="(field, key, fieldIndex) in row.cols"
           v-if="field.hasOwnProperty('if') ? field.if : true"
+          :class="row.class || 'pb-0'"
           :key="key"
         >
           <component
@@ -69,6 +70,7 @@ import { VTextField, VTextarea, VSelect, VFileInput } from "vuetify/lib";
 import DatePicker from "@/components/forms/inputs/DatePicker";
 import MoneyInput from "@/components/forms/inputs/MoneyInput";
 import FileUploader from "@/components/forms/inputs/FileUploader";
+import ReceiversCombobox from "@/components/forms/inputs/ReceiversCombobox";
 import ContractSign from "@/components/hompage/activationWizard/ContractSign";
 
 import { validationRules, errorMessages } from "@/mixins/ValidationsParser";
@@ -87,7 +89,8 @@ export default {
     ContractSign,
     VTextarea,
     MoneyInput,
-    FileUploader
+    FileUploader,
+    ReceiversCombobox
   },
   mixins: [validationMixin],
   validations() {
@@ -140,11 +143,17 @@ export default {
         return;
       }
 
-      return {
+      const toReturn = {
         cols: "12",
         sm: "6",
         lg: "4"
       };
+
+      if (row.maxCols) {
+        toReturn.lg = 12 / row.maxCols;
+      }
+
+      return toReturn;
     },
     getValue(field, key) {
       let value = this.value[key];

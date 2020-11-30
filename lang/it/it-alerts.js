@@ -72,4 +72,6 @@ export default {
   "movements-import-confirmBtnText": "Si, importa il file",
   "movements-import-cancelBtnText": "Annulla",
   "movements-import-success": "Dati importati correttamente!",
+
+  "communication-new-success": "Messaggio inviato correttamente!",
 }

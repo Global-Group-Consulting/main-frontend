@@ -8,6 +8,7 @@ const defaultData = {
   large: false,
   noActions: false,
   retainFocus: true,
+  contentClass: "",
   texts: {
     cancelBtn: "dialogs.default.cancelBtn",
     confirmBtn: "dialogs.default.confirmBtn",
@@ -17,7 +18,7 @@ const defaultData = {
 
 export const state = () => ({
   show: false,
-  data: defaultData
+  data: { ...defaultData }
 })
 
 export const mutations = {
@@ -31,7 +32,12 @@ export const mutations = {
     // state.data = payload
     for (const key of Object.keys(defaultData)) {
       if (payload[key] && payload[key].constructor.name === "Object") {
-        _merge(state.data[key], payload[key])
+        if (state.show) {
+          _merge(state.data[key], payload[key])
+        } else {
+          state.data[key] = { ...defaultData[key] }
+        }
+
       } else {
         state.data[key] = payload[key] || defaultData[key]
       }
