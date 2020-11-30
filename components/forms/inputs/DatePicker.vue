@@ -1,6 +1,6 @@
 <template>
   <v-menu
-    :ref="menu"
+    ref="menu"
     v-model="opened"
     :close-on-content-click="false"
     :nudge-right="40"
@@ -41,8 +41,8 @@
       @input="onInput"
       :readonly="readonly"
       :disabled="disabled"
-      :picker-date="dateValue ? '' : initialDate || datePickerFormatter"
-      :min="min || datePickerFormatter"
+      :picker-date="dateValue ? '' : initialDate | datePickerFormatter"
+      :min="min | datePickerFormatter"
       :max="max"
       locale="it"
     >
@@ -82,12 +82,16 @@ export default {
         this.opened = false;
       }
 
-      this.$emit("input", value);
+      this.$emit("change", value);
     }
   },
   watch: {
     value: function(value) {
-      this.dateValue = datePickerFormatter(this.value);
+      const newValue = datePickerFormatter(this.value);
+
+      if (this.dateValue !== newValue) {
+        this.dateValue = newValue;
+      }
     },
     opened(val) {
       if (this.startByYear) {

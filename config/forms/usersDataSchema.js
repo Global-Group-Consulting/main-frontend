@@ -73,7 +73,7 @@ export function basicData(formContext) {
       }
     },
     {
-      legend: (formContext.userIsPersonaGiuridica ? 'legal-representative-' : '') + 'birth-date',
+      legend: (formContext.userIsPersonaGiuridica ? 'legal-representative-' : '') + 'birth-data-legend',
       cols: {
         'birthCountry': {
           component: 'v-select',
