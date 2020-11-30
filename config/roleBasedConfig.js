@@ -16,6 +16,38 @@ const defaults = {
         'accountStatus',
         'actions'
       ]
+    },
+    movements: {
+      columns: [
+        "amountChange",
+        "movementType",
+        "createdAt",
+        "deposit",
+        "interestAmount"
+      ]
+    },
+    messages: {
+      columns: [
+        "subject",
+        "type",
+        "createdAt",
+      ]
+    },
+    messagesSent: {
+      columns: [
+        "subject",
+        "type",
+        "receiver",
+        "createdAt",
+      ]
+    },
+    conversations: {
+      columns: [
+        "subject",
+        "createdAt",
+        "updatedAt",
+        "unreadMessages",
+      ]
     }
   }
 }
@@ -128,7 +160,7 @@ const cliente = {
         "deposit",
         "interestAmount"
       ]
-    }
+    },
   },
   blocks: {
     dashboard: {
@@ -191,6 +223,7 @@ const agente = {
 export { admin, servClienti, agente, cliente }
 
 export default {
+  defaults,
   admin,
   servClienti,
   agente,

@@ -37,6 +37,12 @@
       </span>
     </template>
 
+    <template v-slot:item.completed_at="{ item }">
+      <span class="text-no-wrap">
+        {{ $options.filters.dateFormatter(item.completed_at, true) }}
+      </span>
+    </template>
+
     <template v-slot:item.updated_at="{ item }">
       <span class="text-no-wrap">
         {{ $options.filters.dateFormatter(item.updated_at, true) }}
@@ -77,26 +83,38 @@ export default {
       }
     },
     itemClass: String | Function,
-    noDataText: "tables.no-data",
+    noDataText: {
+      type: String,
+      default: "tables.no-data"
+    },
     dense: Boolean,
     options: {
       type: Object,
       default() {
         return {};
       }
-    }
+    },
+    condition: String
   },
   setup(props, { root }) {
     const { $auth } = root;
     const availableTableColumns = ref([]);
 
     const headers = computed(() => {
-      const columns = _get(
-        roleBasedConfig,
-        `${UserRoles.getIdName($auth.user.role)}.tables.${
-          props.tableKey
-        }.columns`
-      );
+      const roleName = UserRoles.getIdName($auth.user.role);
+      const colPath = `${roleName}.tables.${props.tableKey}.columns`;
+      const colDefaultPath = `defaults.tables.${props.tableKey}.columns`;
+
+      let columns = _get(roleBasedConfig, colPath);
+
+      if (availableTableColumns.value.length === 0) {
+        return [];
+      }
+
+      // Fallback to the defaults
+      if (!columns) {
+        columns = _get(roleBasedConfig, colDefaultPath);
+      }
 
       if (!columns) {
         console.warn("No columns found for", props.tableKey, props.schema);
@@ -105,7 +123,22 @@ export default {
       }
 
       return columns.reduce((acc, column) => {
-        const col = availableTableColumns.value[column];
+        let colName = column;
+        let colCondition = null;
+
+        if (column instanceof Array) {
+          colName = column[0];
+          colCondition =
+            column[1] instanceof Array
+              ? column[1].includes(props.condition)
+              : condition === column[1];
+        }
+
+        const col = availableTableColumns.value[colName];
+
+        if (typeof colCondition === "boolean" && !colCondition) {
+          return acc;
+        }
 
         if (!col) {
           console.warn(`No column found for ${column} in ${props.schema}`);

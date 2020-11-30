@@ -59,6 +59,7 @@
 <script>
 import Chart from "@/components/charts/Chart";
 import ChartLines from "@/components/charts/ChartLines";
+import DataTable from "@/components/table/DataTable";
 
 import { requests as pendingRequests } from "@/assets/fakeRichieste";
 import pendingUsers from "@/assets/fakeUsers";
@@ -71,7 +72,7 @@ import users from "@/functions/users";
 
 export default {
   name: "Admin",
-  components: { ChartLines, Chart },
+  components: { ChartLines, Chart, DataTable },
   setup(props, { root }) {
     return {
       goToUser: users(root).goToUser

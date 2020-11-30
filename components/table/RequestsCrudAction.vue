@@ -46,16 +46,16 @@ export default {
   setup(props, { root, emit }) {
     const { $alerts, $apiCalls, $auth, $router, $enums } = root;
     const permissions = Permissions(root);
-    const actions = requestsCrudActionsFn(props.item, root);
+    const actions = requestsCrudActionsFn(props.item, root, emit);
 
     const menuOptions = computed(() => {
       return [
         {
           value: "delete",
           action: async (...atrs) => {
-            await actions.delete(...atrs);
-
-            emit("rowDeleted");
+            if (await actions.delete(...atrs)) {
+              emit("rowDeleted");
+            }
           },
           if:
             props.item.userId === $auth.user.id &&
@@ -64,9 +64,9 @@ export default {
         {
           value: "cancelRequest",
           action: async (...atrs) => {
-            await actions.cancel(...atrs);
-
-            emit("rowCanceled");
+            if (await actions.cancel(...atrs)) {
+              emit("rowCanceled");
+            }
           },
           if:
             props.item.userId === $auth.user.id &&
@@ -76,18 +76,18 @@ export default {
         {
           value: "approve",
           action: async (...atrs) => {
-            await actions.approve(...atrs);
-
-            emit("rowStatusChanged");
+            if (await actions.approve(props.item)) {
+              emit("rowStatusChanged");
+            }
           },
           if: permissions.userType === "admin"
         },
         {
           value: "reject",
           action: async (...atrs) => {
-            await actions.reject(...atrs);
-
-            emit("rowStatusChanged");
+            if (await actions.reject(...atrs)) {
+              emit("rowStatusChanged");
+            }
           },
           if: permissions.userType === "admin"
         }

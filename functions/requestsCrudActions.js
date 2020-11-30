@@ -1,10 +1,13 @@
+import RequestTypes from "../enums/RequestTypes"
+import RequestStatus from "../enums/RequestStatus"
+
 /**
  * 
  * @param {*} request 
  * @param {{}} param1 
  * @param {import("../@types/AlertsPlugin").AlertsPlugin} param1.$alerts 
  */
-export default function (request, { $apiCalls, $alerts, $options, $enums, $i18n }) {
+export default function (request, { $apiCalls, $alerts, $options, $enums, $i18n }, emit) {
   async function deleteFn() {
     const currentRequest = request.value ?? request
 
@@ -29,10 +32,15 @@ export default function (request, { $apiCalls, $alerts, $options, $enums, $i18n 
       return true
     } catch (er) {
       $alerts.error(er)
+      return false
     }
   }
 
-  async function approve() {
+  async function approve(requestData) {
+    if (requestData.type === RequestTypes.VERSAMENTO && requestData.status === RequestStatus.NUOVA) {
+      return emit("requestStartWorking", requestData);
+    }
+
     const currentRequest = request.value ?? request
 
     try {
@@ -57,6 +65,8 @@ export default function (request, { $apiCalls, $alerts, $options, $enums, $i18n 
       return true
     } catch (er) {
       $alerts.error(er)
+
+      return false
     }
   }
 
@@ -102,6 +112,7 @@ export default function (request, { $apiCalls, $alerts, $options, $enums, $i18n 
       return true
     } catch (er) {
       $alerts.error(er)
+      return false
     }
   }
 
@@ -146,6 +157,7 @@ export default function (request, { $apiCalls, $alerts, $options, $enums, $i18n 
       return true
     } catch (er) {
       $alerts.error(er)
+      return false
     }
   }
 

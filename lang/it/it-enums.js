@@ -67,5 +67,11 @@ export default {
     "cancelInterestCollected": "Annullamento riscossione interessi",
     "cancelDepositCollected": "Annullamento riscossione capitale",
     "cancelCommissionCollected": "Annullamento riscossione provvigioni",
+  },
+  "MessageTypes": {
+    'newsletter': "Newsletter",
+    'service': "Messaggio di servizio",
+    'conversation': "Conversazione",
+    'notification': "Notifica",
   }
 }
