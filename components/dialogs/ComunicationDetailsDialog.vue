@@ -342,6 +342,8 @@ export default {
       root.$enums.UserRoles["AGENTE"]
     ];
     const colors = {
+      "me": "green",
+      "admin": "light-blue",
       [root.$enums.UserRoles["CLIENTE"]]: "light-blue",
       [root.$enums.UserRoles["AGENTE"]]: "light-blue",
       [root.$enums.UserRoles["ADMIN"]]: "green",
@@ -479,7 +481,12 @@ export default {
     }
 
     function getItemColor(message) {
-      return colors[message.sender.role];
+      if(message.senderId === $auth.user.id){
+        return colors.me
+      }
+
+      return colors.admin;
+      // return colors[message.sender.role];
     }
 
     function getMessageContent(message) {
@@ -492,7 +499,7 @@ export default {
       const userType = _getUserType();
       const messageType = _getUserType(message.sender.role);
 
-      if (loggedUser.id === message.senderId || userType === messageType) {
+      if (loggedUser.id === message.senderId /* || userType === messageType */) {
         return true;
       }
     }
