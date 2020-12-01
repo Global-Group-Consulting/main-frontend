@@ -327,9 +327,11 @@ export function extraData(formContext) {
             if (!value) {
               return
             }
+            if (value.id === formContext.$auth.user.id) {
+              return formContext.$i18n.t("forms.reference-agent-you")
+            }
 
             return `${value.firstName} ${value.lastName}`
-
           }
         }
       }
@@ -346,14 +348,14 @@ export function extraData(formContext) {
           disabled: true,
           formatter: 'dateHourFormatter'
         },
-        'activated_at': {
-          disabled: true,
-          formatter: 'dateHourFormatter'
-        },
-        'validated_at': {
-          disabled: true,
-          formatter: 'dateHourFormatter'
-        },
+        /*  'activated_at': {
+           disabled: true,
+           formatter: 'dateHourFormatter'
+         },
+         'validated_at': {
+           disabled: true,
+           formatter: 'dateHourFormatter'
+         }, */
       }
     }
   ]

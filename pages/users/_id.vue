@@ -433,11 +433,18 @@ export default {
     onBeforeMount(async () => {
       const userId = $route.params.id;
 
-      $store.dispatch("fetchAgentsList", { $apiCalls, $auth });
+      if (permissions.changeAgenteRif) {
+        $store.dispatch("fetchAgentsList", { $apiCalls, $auth });
+      }
 
       if (userId === "new") {
         userForm.formData.value.role =
           +$route.query.type || $enums.UserRoles.CLIENTE;
+
+        if ($auth.user.role === $enums.UserRoles.AGENTE) {
+          userForm.formData.value.referenceAgent = $auth.user.id;
+          userForm.formData.value.referenceAgentData = $auth.user;
+        }
 
         return;
       }

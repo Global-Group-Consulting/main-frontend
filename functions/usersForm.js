@@ -93,13 +93,16 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set, $au
 
       let result
 
-      delete formData.value.files
+      const data = { ...formData.value }
+
+      delete data.files
+      delete data.referenceAgentData
 
       if (userIsNew.value) {
-        result = await $apiCalls.userCreate(formData.value)
+        result = await $apiCalls.userCreate(data)
         $router.replace("/users/" + result.id)
       } else {
-        result = await $apiCalls.userUpdate(formData.value)
+        result = await $apiCalls.userUpdate(data)
 
         $set(formData, "value", result)
       }

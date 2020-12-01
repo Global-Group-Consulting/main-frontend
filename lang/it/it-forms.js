@@ -58,6 +58,8 @@ export default {
   'phone': 'Telefono',
   'residence': 'Residenza',
   'reference-agent': 'Agente di riferimento',
+  'reference-agent-data': 'Agente di riferimento',
+  'reference-agent-you': 'Tu',
   'role': 'Ruolo',
   'vat-number': 'Partita IVA',
   'available-amount': 'Importo disponibile',
