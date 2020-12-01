@@ -7,6 +7,7 @@
  */
 
 import RequestTypes from "../../enums/RequestTypes"
+import RequestStatus from "../../enums/RequestStatus"
 
 /**
  * 
@@ -17,6 +18,7 @@ export default function (context) {
   const isVersamento = context.dialogData && context.dialogData.data?.type === context.$enums.RequestTypes.VERSAMENTO
   const isNew = !context.formData.id
   const readonly = context.dialogData.readonly
+  const isCompleted = context.formData.status && ![RequestStatus.NUOVA, RequestStatus.LAVORAZIONE].includes(context.formData.status)
 
   return [
     {
@@ -111,6 +113,18 @@ export default function (context) {
           component: 'date-picker',
           if: !isNew,
           disabled: true,
+          "prepend-icon": "",
+          "prepend-inner-icon": "mdi-calendar",
+        },
+      }
+    },
+    {
+      cols: {
+        completed_at: {
+          label: "requestCompletedAt",
+          if: isCompleted,
+          disabled: true,
+          formatter: "dateHourFormatter",
           "prepend-icon": "",
           "prepend-inner-icon": "mdi-calendar",
         },
