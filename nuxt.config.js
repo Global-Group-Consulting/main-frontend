@@ -6,6 +6,11 @@ import nuxtProxy from './config/nuxtModules/nuxtProxy'
 import nuxtVuetify from './config/nuxtModules/nuxtVuetify'
 import nuxtVueScrollTo from './config/nuxtModules/vueScrollTo'
 
+const IS_BETA = !!process.env.BETA
+const FAVICON_PATH = IS_BETA ? "/beta" : ""
+const FAVICON_VERSION = process.env.FAVICON_VERSION
+const APP_NAME = `${IS_BETA ? "[Beta] " : ""}Global Group Consulting`
+
 export default {
   /*
   ** Nuxt rendering mode
@@ -22,18 +27,26 @@ export default {
   ** See https://nuxtjs.org/api/configuration-head
   */
   head: {
-    titleTemplate: '%s — Global Group Consulting',
+    titleTemplate: `${IS_BETA ? "[BETA] " : ""}%s — Global Group Consulting`,
     title: 'Web App',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: "Private area for Global Group Consulting" }
+      { hid: 'description', name: 'description', content: "Private area for Global Group Consulting" },
+      { name: "apple-mobile-web-app-title", content: `${APP_NAME}` },
+      { name: "application-name", content: `${APP_NAME}` },
+      { name: "msapplication-TileColor", content: "#ffffff" },
+      { name: "theme-color", content: "#ffffff" },
+      { name: "msapplication-config", content: `${FAVICON_PATH}/browserconfig.xml?v=${FAVICON_VERSION}` }
     ],
     link: [
-      { rel: 'apple-touch-icon', sizes: "180x180", href: "/apple-icon.png" },
-      { rel: 'icon', type: 'image/png', sizes: "32x32", href: "/favicon-32x32.png" },
-      { rel: 'icon', type: 'image/png', sizes: "16x16", href: "/favicon-16x16.png" },
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: "icon", type: "image/x-icon", href: `${FAVICON_PATH}/favicon.ico?v=${FAVICON_VERSION}` },
+      { rel: "icon", type: "image/png", sizes: "32x32", href: `${FAVICON_PATH}/favicon-32x32.png?v=${FAVICON_VERSION}` },
+      { rel: "icon", type: "image/png", sizes: "16x16", href: `${FAVICON_PATH}/favicon-16x16.png?v=${FAVICON_VERSION}` },
+      { rel: "apple-touch-icon", sizes: "180x180", href: `${FAVICON_PATH}/apple-touch-icon.png?v=${FAVICON_VERSION}` },
+      { rel: "manifest", href: `${FAVICON_PATH}/site.webmanifest?v=${FAVICON_VERSION}` },
+      { rel: "mask-icon", href: `${FAVICON_PATH}/safari-pinned-tab.svg?v=${FAVICON_VERSION}", color:"#071d2b` },
+      { rel: "shortcut icon", href: `${FAVICON_PATH}/favicon.ico?v=${FAVICON_VERSION}` },
     ]
   },
   /*
@@ -107,7 +120,7 @@ export default {
   },
 
   serverMiddleware: [
-    // { path: '/api', handler: '~/server/index.js' }
+    // {path: '/api', handler: '~/server/index.js' }
   ],
 
   env: {
