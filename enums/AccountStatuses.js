@@ -26,7 +26,7 @@ class AccountStatuses extends BasicEnum {
     this.PENDING_SIGNATURE = "pending_signature"
 
     /** after user signature, waiting for agent confirmation */
-    this.PENDING_CONFIRM = "pending_confirm"
+    this.PENDING_CONFIRM = "pending_confirm" // questa credo sia inutile.. se utilizzo serv di firma remota, non serve.
 
     /** Account created and waiting for serv clienti validation */
     this.CREATED = "created"

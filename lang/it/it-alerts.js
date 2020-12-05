@@ -74,4 +74,10 @@ export default {
   "movements-import-success": "Dati importati correttamente!",
 
   "communication-new-success": "Messaggio inviato correttamente!",
+
+  "confirm-draft-user-title": "Confermare account?",
+  "confirm-draft-user-text": "Sei sicuro di voler confermare l'account dell'utente {firstName} {lastName}? Procedendo, si avvierà l'iter di attivazione dell'account, con la verifica dei dati da parte del Servizio Clienti e la Firma del contratto da parte del cliente.",
+  "confirm-draft-user-confirmBtnText": "Si, conferma account",
+  "confirm-draft-user-cancelBtnText": "Annulla",
+  "confirm-draft-user-success": "Richiesta di conferma inviata correttamente al Servizio Clienti!",
 }

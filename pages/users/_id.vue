@@ -45,33 +45,16 @@
             {{ $t("pages.usersId.btn-approve") }}
           </tooltip-btn>
 
-          <!-- <tooltip-btn
-            :tooltip="$t('pages.usersId.btn-send-activation-email-tooltip')"
-            icon-name="mdi-at"
-            text
-            v-if="!formData.accountVerifiedAt && !userIsNew"
-          >
-            {{ $t("pages.usersId.btn-send-activation-email") }}
-          </tooltip-btn>
-
           <tooltip-btn
-            :tooltip="$t('pages.usersId.btn-reset-password-tooltip')"
-            icon-name="mdi-lock-reset"
-            v-if="formData.accountVerifiedAt && !userIsNew"
+            :tooltip="$t('pages.usersId.btn-confirm-draft-user-tooltip')"
+            icon-name="mdi-account-check"
+            color="green"
             text
+            v-if="canConfirmDraftUser"
+            @click="askConfirmDraftUser"
           >
-            {{ $t("pages.usersId.btn-reset-password") }}
+            {{ $t("pages.usersId.btn-confirm-draft-user") }}
           </tooltip-btn>
-
-          <tooltip-btn
-            :tooltip="$t('pages.usersId.btn-send-email-tooltip')"
-            icon-name="mdi-email-plus"
-            text
-            @click="onSendEmail"
-            v-if="!userIsNew"
-          >
-            {{ $t("pages.usersId.btn-send-email") }}
-          </tooltip-btn> -->
 
           <v-spacer></v-spacer>
 
@@ -310,7 +293,34 @@ export default {
       );
     });
 
-    const getFormSchema = function(tab) {
+    const canConfirmDraftUser = computed(() => {
+      const refAgent = userForm.formData.value.referenceAgent;
+
+      return (
+        $auth.user.id === refAgent &&
+        userForm.formData.value.account_status === $enums.AccountStatuses.DRAFT
+      );
+    });
+
+    const communicationsList = computed(() => {
+      return [
+        {
+          value: "sendEmailActivation",
+          click: sendEmailActivation,
+          if: computed(
+            () =>
+              userForm.formData.value.account_status ===
+              AccountStatuses.APPROVED
+          )
+        },
+        {
+          value: "sendEmailForgot",
+          if: false
+        }
+      ].filter(_item => (_item.if === undefined ? true : _item.if.value));
+    });
+
+    const getFormSchema = function (tab) {
       const schema = userForm.formSchemas[tab.schema];
 
       if (!schema) {
@@ -320,7 +330,7 @@ export default {
       return schema;
     };
 
-    const approveUser = async function() {
+    const approveUser = async function () {
       try {
         await $alerts.askBeforeAction({
           key: "approve-user",
@@ -373,7 +383,7 @@ export default {
       $set(userForm.formData.value, "account_status", userData.account_status);
     };
 
-    const sendEmailActivation = async function() {
+    const sendEmailActivation = async function () {
       try {
         await $alerts.askBeforeAction({
           key: "send-email-activation",
@@ -388,23 +398,23 @@ export default {
       }
     };
 
-    const communicationsList = computed(() => {
-      return [
-        {
-          value: "sendEmailActivation",
-          click: sendEmailActivation,
-          if: computed(
-            () =>
-              userForm.formData.value.account_status ===
-              AccountStatuses.APPROVED
-          )
-        },
-        {
-          value: "sendEmailForgot",
-          if: false
-        }
-      ].filter(_item => (_item.if === undefined ? true : _item.if.value));
-    });
+    async function askConfirmDraftUser() {
+      try {
+        await $alerts.askBeforeAction({
+          key: "confirm-draft-user",
+          preConfirm: async () => {
+            const result = await $apiCalls.userConfirmDraft(
+              userForm.formData.value.id
+            );
+
+            userForm.formData.value.account_status = result.account_status
+          },
+          data: userForm.formData.value
+        });
+      } catch (er) {
+        $alerts.error(er);
+      }
+    }
 
     pageData.title = computed(() => {
       if (userForm.userIsNew.value) {
@@ -470,11 +480,13 @@ export default {
       canApprove,
       canChangeStatus,
       canSeeMovementsList,
+      canConfirmDraftUser,
       approveUser,
       permissions,
       openChangeStatusDialog,
       openMovementsList,
-      onAccountStatusChanged
+      onAccountStatusChanged,
+      askConfirmDraftUser
     };
   },
   computed: {},

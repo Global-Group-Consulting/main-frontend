@@ -57,6 +57,12 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
+  async userConfirmDraft(userId) {
+    return await this.post({
+      endPoint: `/api/users/${userId}/confirmDraft`
+    })
+  }
+
   async fetchAllUsers() {
     return await this.get({
       endPoint: `/api/users`

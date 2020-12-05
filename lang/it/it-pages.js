@@ -73,6 +73,8 @@ export default {
     'btn-previous': 'Indietro',
     'btn-approve': 'Approva',
     'btn-approve-tooltip': 'Approva l\'attivazione dell\'account',
+    'btn-confirm-draft-user': 'Confermare account',
+    'btn-confirm-draft-user-tooltip': 'Conferma account e richiedi verifica al Servizio Clienti.',
     'btn-movements-list': "Lista movimenti",
 
     tabs: {
