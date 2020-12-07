@@ -30,7 +30,10 @@
             @change="update(key, $event)"
           >
             <template v-slot:label>
-              {{ getLabel(field.label || key) }}
+              <component :is="invalidFields.includes(key) ? 'strong' : 'span'"
+                         :class="{'red--text': invalidFields.includes(key)}">
+                {{ getLabel(field.label || key) }}
+              </component>
 
               <v-tooltip
                 top
@@ -53,10 +56,25 @@
               </v-tooltip>
             </template>
 
-            <template v-slot:prepend v-if="editMode && !row.disableEditMode">
-              <v-checkbox
-                :disabled="field.disabled || field.readonly"
-              ></v-checkbox>
+            <template v-slot:prepend v-if="(editMode && !row.disableEditMode) || invalidFields.includes(key)">
+              <v-layout align-items-start>
+                <v-checkbox
+                  v-if="editMode && !row.disableEditMode"
+                  color="red"
+                  :ripple="false"
+                  :disabled="field.disabled || field.readonly"
+                  :hide-details="true"
+                  @change="onFieldChecked(key, $event)"
+                ></v-checkbox>
+
+                <v-tooltip bottom>
+                  <template v-slot:activator="{on}">
+                    <v-icon color="red" v-if="invalidFields.includes(key)" v-on="on">mdi-alert</v-icon>
+                  </template>
+
+                  <span>{{ $t("pages.usersId.info-incomplete-single-field") }}</span>
+                </v-tooltip>
+              </v-layout>
             </template>
           </component>
         </v-col>
@@ -107,12 +125,17 @@ export default {
       type: Object,
       default: () => ({})
     },
+    invalidFields: {
+      type: Array,
+      default: () => ([])
+    },
     fillRow: Boolean,
     editMode: Boolean
   },
   setup(props, { root }) {
-    const { $set } = root;
+    const {$set} = root;
     const form = reactive({});
+    const checkedFields = ref([])
 
     watch(
       () => props.value,
@@ -121,7 +144,8 @@ export default {
           // throw new Error("The schema provided is not a reactive element");
         }
 
-        for (let { cols } of props.schema.value || props.schema) {
+
+        for (let {cols} of props.schema.value || props.schema) {
           for (let name in cols) {
             $set(form, name, value[name]);
           }
@@ -131,7 +155,8 @@ export default {
     );
 
     return {
-      form
+      form,
+      checkedFields
     };
   },
   computed: {
@@ -215,6 +240,16 @@ export default {
 
       // announce validation statu only if must be validated
       mustValidate && this.announceStatus();
+    },
+
+    onFieldChecked(key, value) {
+      if (value) {
+        this.checkedFields.push(key)
+      } else {
+        this.checkedFields.splice(this.checkedFields.indexOf(key), 1)
+      }
+
+      this.$emit("checkedFieldsChange", this.checkedFields)
     },
 
     announceStatus() {

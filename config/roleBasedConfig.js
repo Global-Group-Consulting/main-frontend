@@ -128,7 +128,15 @@ const servClienti = {
         "deposit",
         "interestAmount"
       ]
-    }
+    },
+    usersToValidate: {
+      columns: [
+        "contractNumber",
+        "firstName",
+        "lastName",
+        "email",
+      ]
+    },
   }
 }
 

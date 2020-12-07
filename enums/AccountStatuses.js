@@ -16,17 +16,12 @@ ACTIVE - Utente accede la prima volta ed inserisce il codice ricevuto per email.
 
 */
 class AccountStatuses extends BasicEnum {
+  /** @enum */
   constructor() {
     super('AccountStatuses')
 
     /** Created but not completed */
     this.DRAFT = "draft"
-
-    /** Waiting for user signature */
-    this.PENDING_SIGNATURE = "pending_signature"
-
-    /** after user signature, waiting for agent confirmation */
-    this.PENDING_CONFIRM = "pending_confirm" // questa credo sia inutile.. se utilizzo serv di firma remota, non serve.
 
     /** Account created and waiting for serv clienti validation */
     this.CREATED = "created"
@@ -50,21 +45,8 @@ class AccountStatuses extends BasicEnum {
       [this.DRAFT]: {
         id: "draft",
       },
-      [this.PENDING_SIGNATURE]: {
-        id: "pending_signature",
-        roles: [UserRoles.CLIENTE]
-      },
-      [this.PENDING_CONFIRM]: {
-        id: "pending_confirm",
-        roles: [UserRoles.CLIENTE]
-      },
       [this.CREATED]: {
         id: "created",
-        roles: [UserRoles.CLIENTE]
-      },
-      [this.VALIDATED]: {
-        id: "validated",
-        color: "#FFEE58",
         roles: [UserRoles.CLIENTE]
       },
       [this.INCOMPLETE]: {
@@ -75,6 +57,11 @@ class AccountStatuses extends BasicEnum {
       [this.MUST_REVALIDATE]: {
         id: "must_revalidate",
         color: "#CE93D8",
+        roles: [UserRoles.CLIENTE]
+      },
+      [this.VALIDATED]: {
+        id: "validated",
+        color: "#FFEE58",
         roles: [UserRoles.CLIENTE]
       },
       [this.APPROVED]: {

@@ -61,6 +61,10 @@ export default {
     'subtitle': 'Stato utente: <strong>{accountState}</strong>',
     'subtitle-new-user': 'Creazione di un nuovo utente',
     'subtitle-new-user-with-role': 'Creazione di un nuovo utente con ruolo <strong>"${role}"</strong>',
+    'info-incomplete-data': "Questo account è stato segnalato come contenente dati non validi.",
+    'info-incomplete-data-message': "Messaggio:",
+    'info-incomplete-data-fields': "Campi non validi:",
+    'info-incomplete-single-field': "Questo campo è stato segnalato come non valido",
     'btn-go-back-tooltip': 'Torna all\'elenco degli utenti',
     'btn-send-activation-email': 'Invia email di attivazione',
     'btn-send-activation-email-tooltip': 'Invia email di attivazione',
@@ -75,6 +79,10 @@ export default {
     'btn-approve-tooltip': 'Approva l\'attivazione dell\'account',
     'btn-confirm-draft-user': 'Confermare account',
     'btn-confirm-draft-user-tooltip': 'Conferma account e richiedi verifica al Servizio Clienti.',
+    'btn-validate-user': "Convalida account",
+    'btn-validate-user-tooltip': "Convalida l'account e quindi invia il contratto da firmare.",
+    'btn-incomplete-user': "Segnala dati",
+    'btn-incomplete-user-tooltip': "Segnala all'agente di riferimento i dati non corretti.",
     'btn-movements-list': "Lista movimenti",
 
     tabs: {

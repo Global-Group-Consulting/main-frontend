@@ -11,6 +11,7 @@ export default {
   'request-amount': 'Importo',
   'request-currency': 'Valuta della richiesta',
   'pending-users-table': 'Utenti in attesa di approvazione',
+  'pending-verify-users-table': 'Utenti in attesa di validazione',
   'pending-requests-table': 'Richieste da evadere',
   'updated-at': 'Ultimo aggiornamento',
   'completed-at': 'Data completamento',

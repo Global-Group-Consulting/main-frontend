@@ -180,8 +180,17 @@ export function contactsData(formContext) {
             email: {}
           }
         },
-        'mobile': {},
-        'phone': {}
+        'mobile': {
+          validations: {
+            required: {},
+            phoneNumber: {}
+          }
+        },
+        'phone': {
+          validations: {
+            phoneNumber: {}
+          }
+        }
       }
     }
   ]
@@ -221,6 +230,20 @@ export function contractData(formContext) {
               params: 50
             }
           }
+        },
+      }
+    },
+    {
+      cols: {
+        'contractDoc': {
+          component: "file-uploader",
+          files: formContext.formData.contractFiles,
+          previewOnly: true
+        },
+        'contractDocSignLog': {
+          component: "file-uploader",
+          files: formContext.formData.contractFiles,
+          previewOnly: true
         },
       }
     },

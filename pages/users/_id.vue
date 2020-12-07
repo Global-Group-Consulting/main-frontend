@@ -6,10 +6,10 @@
         :subtitle="!userIsNew ? pageData.subtitle.value : ''"
         :icon="pageData.icon.value"
       >
-        <template v-slot:subtitle v-if="canChangeStatus && !userIsNew">
+        <template v-slot:subtitle v-if="!userIsNew">
           <div v-html="pageData.subtitle.value" class="d-inline-block"></div>
 
-          <v-tooltip bottom>
+          <v-tooltip bottom v-if="canChangeStatus">
             <template v-slot:activator="{ on }">
               <v-btn icon dark @click="openChangeStatusDialog" v-on="on">
                 <v-icon>mdi-pencil</v-icon>
@@ -18,6 +18,46 @@
 
             <span>Modifica stato</span>
           </v-tooltip>
+
+          <!-- Incomplete data info -->
+          <v-menu offset-y open-on-hover bottom v-if="showIncompleteDataInfo">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn icon dark v-on="on" v-bind="attrs">
+                <v-icon>mdi-information</v-icon>
+              </v-btn>
+            </template>
+
+            <v-card color="white" max-width="400px">
+              <v-card-text>
+                {{ $t("pages.usersId.info-incomplete-data") }}
+
+                <template v-if="formData.incompleteData && formData.incompleteData.message">
+                  <v-layout align-items-start class="mt-2">
+                    <strong>
+                      {{ $t('pages.usersId.info-incomplete-data-message') }}
+                    </strong>
+                    <div class="ml-2">
+                      {{ formData.incompleteData.message }}
+                    </div>
+                  </v-layout>
+                </template>
+
+                <template
+                  v-if="formData.incompleteData && formData.incompleteData.checkedFields && formData.incompleteData.checkedFields.length > 0">
+                  <v-layout align-items-start class="mt-2">
+                    <strong>
+                      {{ $t('pages.usersId.info-incomplete-data-fields') }}
+                    </strong>
+                    <div class="ml-2">
+                      <div v-for="field of formData.incompleteData.checkedFields">
+                        {{ $t(`forms.${$options.filters.formFieldNameFormatter(field)}`) }}
+                      </div>
+                    </div>
+                  </v-layout>
+                </template>
+              </v-card-text>
+            </v-card>
+          </v-menu>
         </template>
       </page-header>
 
@@ -34,6 +74,7 @@
 
           <v-spacer></v-spacer>
 
+          <!-- approve a user and change the status to "APPROVED" -->
           <tooltip-btn
             :tooltip="$t('pages.usersId.btn-approve-tooltip')"
             icon-name="mdi-check"
@@ -45,6 +86,7 @@
             {{ $t("pages.usersId.btn-approve") }}
           </tooltip-btn>
 
+          <!-- Set the user status to CREATED -->
           <tooltip-btn
             :tooltip="$t('pages.usersId.btn-confirm-draft-user-tooltip')"
             icon-name="mdi-account-check"
@@ -54,6 +96,30 @@
             @click="askConfirmDraftUser"
           >
             {{ $t("pages.usersId.btn-confirm-draft-user") }}
+          </tooltip-btn>
+
+          <!-- Set as VALIDATED a user that is in status CREATED -->
+          <tooltip-btn
+            :tooltip="$t('pages.usersId.btn-validate-user-tooltip')"
+            icon-name="mdi-account-check"
+            color="green"
+            text
+            v-if="canValidateUser"
+            @click="askValidateUser"
+          >
+            {{ $t("pages.usersId.btn-validate-user") }}
+          </tooltip-btn>
+
+          <!-- Set as INCOMPLETE a user that is in status CREATED -->
+          <tooltip-btn
+            :tooltip="$t('pages.usersId.btn-incomplete-user-tooltip')"
+            icon-name="mdi-account-alert"
+            color="red"
+            text
+            v-if="canValidateUser"
+            @click="askIncompleteUser"
+          >
+            {{ $t("pages.usersId.btn-incomplete-user") }}
           </tooltip-btn>
 
           <v-spacer></v-spacer>
@@ -112,17 +178,15 @@
             <v-tabs-items v-model="currentTab">
               <v-tab-item v-for="(tab, index) in formTabs" :key="index">
                 <v-card elevation="0">
-                  <!-- <v-card-title>{{
-                    $t("pages.usersId.tabs." + tab.cardTitle)
-                  }}</v-card-title> -->
-
                   <v-card-text>
                     <dynamic-fieldset
                       :schema="getFormSchema(tab)"
                       v-model="formData"
+                      :invalidFields="formData.incompleteData ? formData.incompleteData.checkedFields : []"
                       :ref="'dynamicForm_' + index"
-                      @status="saveStatus(tab.schema, $event)"
                       :edit-mode="editMode"
+                      @status="saveStatus(tab.schema, $event)"
+                      @checkedFieldsChange="onCheckedFieldsChange"
                     />
                   </v-card-text>
                 </v-card>
@@ -213,7 +277,8 @@ import FilePreviewer from "../..//components/dialogs/FilePreviewer";
 import StatusChangeDialog from "../../components/dialogs/StatusChangeDialog";
 import MovementsListDialog from "../../components/dialogs/MovementsListDialog";
 
-import { onBeforeMount, reactive, ref, computed } from "@vue/composition-api";
+import {kebabCase} from "lodash"
+import {onBeforeMount, reactive, ref, computed} from "@vue/composition-api";
 
 import AccountStatuses from "../../enums/AccountStatuses.js";
 import UserRoles from "@/enums/UserRoles.js";
@@ -245,18 +310,18 @@ export default {
       $set
     } = root;
     const currentTab = ref(0);
+    const checkedFields = ref([])
     const permissions = Permissions(root);
 
     const userForm = usersForm(root, refs);
 
-    const editMode = computed(
-      () =>
-        !userForm.userIsNew.value &&
-        userForm.userRole.value === $enums.UserRoles.CLIENTE &&
-        permissions.userType === "admin" &&
-        [AccountStatuses.CREATED, AccountStatuses.MUST_REVALIDATE].includes(
-          userForm.userAccountStatus.value
-        )
+    const editMode = computed(() =>
+      !userForm.userIsNew.value &&
+      userForm.userRole.value === $enums.UserRoles.CLIENTE &&
+      permissions.userRole === $enums.UserRoles.SERV_CLIENTI &&
+      [AccountStatuses.CREATED, AccountStatuses.MUST_REVALIDATE].includes(
+        userForm.userAccountStatus.value
+      )
     );
 
     const pageData = pageBasic(root, "usersId");
@@ -302,6 +367,11 @@ export default {
       );
     });
 
+    const canValidateUser = computed(() => {
+      return $auth.user.role === $enums.UserRoles.SERV_CLIENTI &&
+        [$enums.AccountStatuses.CREATED, $enums.AccountStatuses.MUST_REVALIDATE].includes(userForm.formData.value.account_status)
+    })
+
     const communicationsList = computed(() => {
       return [
         {
@@ -320,7 +390,11 @@ export default {
       ].filter(_item => (_item.if === undefined ? true : _item.if.value));
     });
 
-    const getFormSchema = function (tab) {
+    const showIncompleteDataInfo = computed(() => {
+      return [AccountStatuses.INCOMPLETE, AccountStatuses.MUST_REVALIDATE].includes(userForm.formData.value.account_status)
+    })
+
+    function getFormSchema(tab) {
       const schema = userForm.formSchemas[tab.schema];
 
       if (!schema) {
@@ -330,7 +404,7 @@ export default {
       return schema;
     };
 
-    const approveUser = async function () {
+    async function approveUser() {
       try {
         await $alerts.askBeforeAction({
           key: "approve-user",
@@ -347,7 +421,7 @@ export default {
       }
     };
 
-    const openChangeStatusDialog = function() {
+    function openChangeStatusDialog() {
       root.$store.dispatch("dialog/updateStatus", {
         title: $i18n.t("dialogs.statusChange.title", {
           status: $i18n.t(
@@ -363,7 +437,7 @@ export default {
       });
     };
 
-    const openMovementsList = function() {
+    function openMovementsList() {
       root.$store.dispatch("dialog/updateStatus", {
         title: $i18n.t("dialogs.movementsList.title"),
         id: "MovementsListDialog",
@@ -379,9 +453,13 @@ export default {
       });
     };
 
-    const onAccountStatusChanged = function(userData) {
+    function onAccountStatusChanged(userData) {
       $set(userForm.formData.value, "account_status", userData.account_status);
-    };
+    }
+
+    function onCheckedFieldsChange(newValue) {
+      root.$set(checkedFields, "value", newValue)
+    }
 
     const sendEmailActivation = async function () {
       try {
@@ -416,12 +494,73 @@ export default {
       }
     }
 
+    async function askValidateUser() {
+      try {
+        await $alerts.askBeforeAction({
+          key: "validate-user",
+          preConfirm: async () => {
+            const result = await $apiCalls.userValidate(
+              userForm.formData.value.id
+            );
+
+            userForm.formData.value.account_status = result.account_status
+          },
+          data: userForm.formData.value
+        });
+      } catch (er) {
+        $alerts.error(er);
+      }
+    }
+
+    async function askIncompleteUser() {
+      try {
+        const alertText = [root.$t("alerts.incomplete-user-text")]
+
+        if (checkedFields.value.length > 0) {
+          alertText.push("<br>" + root.$t("alerts.incomplete-user-text-fields", {
+            fieldsList: checkedFields.value.map(_field => "- " + root.$t("forms." + kebabCase(_field))).join("<br>")
+          }))
+        }
+
+        await $alerts.askBeforeAction({
+          key: "incomplete-user",
+          settings: {
+            width: "600px",
+            input: "textarea",
+            inputLabel: root.$t("alerts.incomplete-user-textarea-label"),
+            inputPlaceholder: root.$t("alerts.incomplete-user-textarea-placeholder"),
+            inputValidator: async (value) => {
+              if (checkedFields.value.length === 0 && !value) {
+                return root.$t("alerts.incomplete-user-textarea-validation")
+              }
+            },
+            html: alertText.join("<br>")
+          },
+          preConfirm: async (userInput) => {
+            debugger
+
+            const result = await $apiCalls.userIncomplete({
+              userId: userForm.formData.value.id,
+              message: userInput,
+              checkedFields: checkedFields.value,
+            });
+
+            userForm.formData.value.account_status = result.account_status
+            userForm.formData.value.incompleteData = result.incompleteData
+          },
+          data: userForm.formData.value
+        });
+      } catch (er) {
+        $alerts.error(er);
+      }
+    }
+
     pageData.title = computed(() => {
       if (userForm.userIsNew.value) {
         return $i18n.t(`pages.usersId.title-new-with-role`, {
           role: $i18n.t(
             "enums.UserRoles." +
-              $enums.UserRoles.getIdName(userForm.userRole.value)
+            $enums.UserRoles.getIdName(userForm.userRole.value)
           )
         });
       }
@@ -481,12 +620,17 @@ export default {
       canChangeStatus,
       canSeeMovementsList,
       canConfirmDraftUser,
+      canValidateUser,
+      showIncompleteDataInfo,
       approveUser,
       permissions,
       openChangeStatusDialog,
       openMovementsList,
       onAccountStatusChanged,
-      askConfirmDraftUser
+      onCheckedFieldsChange,
+      askConfirmDraftUser,
+      askValidateUser,
+      askIncompleteUser
     };
   },
   computed: {},

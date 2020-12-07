@@ -7,6 +7,7 @@
       :accept="accept || 'image/*,.pdf'"
       @input="onInput"
       @change="onChange"
+      v-if="!previewOnly"
     >
       <template v-slot:label>
         <slot name="label"></slot>
@@ -48,6 +49,9 @@
       </v-tooltip>
     </v-layout>
 
+    <slot name="label" v-if="previewOnly">
+    </slot>
+
     <v-list dense class="" v-if="filesList.length > 0">
       <template v-for="(file, index) in filesList">
         <v-divider :key="index" v-if="index > 0"></v-divider>
@@ -75,7 +79,7 @@
           <v-btn
             icon
             @click.prevent="removeFile(file, $event)"
-            v-if="!readonly && !$attrs.disabled"
+            v-if="!readonly && !$attrs.disabled && !previewOnly"
             :title="$t('forms.tooltip-remove-file')"
           >
             <v-icon small>mdi-close</v-icon>
@@ -107,6 +111,7 @@ export default {
       }
     },
     readonly: Boolean,
+    previewOnly: Boolean,
     editMode: Boolean
   },
   setup(props, { root }) {

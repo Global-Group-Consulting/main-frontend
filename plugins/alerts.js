@@ -167,9 +167,11 @@ export class Alerts {
       ...settings,
       preConfirm: async (value) => {
         try {
-          await preConfirm(value)
+          if (preConfirm) {
+            await preConfirm(value)
 
-          return this.toastSuccess(`${key}-success`)
+            return this.toastSuccess(`${key}-success`)
+          }
         } catch (er) {
           return this.error(er)
         }

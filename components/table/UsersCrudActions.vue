@@ -74,7 +74,8 @@
         {
           value: "sendCommunication",
           action: onSendCommunicationClick,
-          if: computed(() => props.item.id !== $auth.user.id),
+          if: computed(() => props.item.id !== $auth.user.id &&
+            props.item.account_status === $enums.AccountStatuses.ACTIVE),
         },
         {
           value: "showRequests",
@@ -82,9 +83,8 @@
           if: computed(
             () =>
               props.item.id !== $auth.user.id &&
-              [$enums.UserRoles.CLIENTE, $enums.UserRoles.AGENTE].includes(
-                props.item.role
-              )
+              [$enums.UserRoles.CLIENTE, $enums.UserRoles.AGENTE].includes(props.item.role) &&
+              props.item.account_status === $enums.AccountStatuses.ACTIVE
           ),
         },
         {
