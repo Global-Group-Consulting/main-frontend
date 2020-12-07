@@ -1,58 +1,20 @@
 <template>
   <div>
-    <v-file-input
-      v-bind="$attrs"
-      :value="formattedValue"
-      :label="label"
-      :accept="accept || 'image/*,.pdf'"
-      @input="onInput"
-      @change="onChange"
-      v-if="!previewOnly"
-    >
-      <template v-slot:label>
-        <slot name="label"></slot>
-      </template>
-      <template v-slot:prepend>
-        <slot name="prepend"></slot>
-      </template>
-    </v-file-input>
-
-    <v-layout
-      class="mt-3"
-      style="gap: 6px;"
-      v-if="formattedValue && formattedValue.length > 0"
-    >
-      <v-tooltip top v-for="file of formattedValue" :key="file.name">
-        <template v-slot:activator="{ on }">
-          <v-sheet
-            width="60"
-            height="60"
-            elevation="1"
-            rounded
-            v-on="on"
-            class="d-flex align-center justify-center"
-            @click="previewFile(file)"
-          >
-            <v-img
-              v-if="file.type.includes('image')"
-              width="100%"
-              height="100%"
-              contain
-              :src="getFilePreview(file)"
-            ></v-img>
-
-            <v-icon large v-else>mdi-file</v-icon>
-          </v-sheet>
+    <div>
+      <slot name="label" v-if="previewOnly">
+      </slot>
+      <v-menu offset-y open-on-hover bottom v-if="signinLogs.length > 0">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon v-on="on" v-bind="attrs" x-small color="info">
+            <v-icon small>mdi-information-outline</v-icon>
+          </v-btn>
         </template>
 
-        <span>{{ file.name }}</span>
-      </v-tooltip>
-    </v-layout>
+        <signing-logs-popup :value="signinLogs"></signing-logs-popup>
+      </v-menu>
+    </div>
 
-    <slot name="label" v-if="previewOnly">
-    </slot>
-
-    <v-list dense class="" v-if="filesList.length > 0 || previewOnly">
+    <v-list dense class="">
       <template v-for="(file, index) in filesList">
         <v-divider :key="index" v-if="index > 0"></v-divider>
 
@@ -96,10 +58,12 @@
 </template>
 
 <script>
-import { computed, ref } from "@vue/composition-api";
+import {computed, ref} from "@vue/composition-api";
 import jsFileDownload from "js-file-download";
+import SigningLogsPopup from "@/components/elements/SigningLogsPopup";
 
 export default {
+  components: {SigningLogsPopup},
   props: {
     value: "",
     label: "",
@@ -117,16 +81,20 @@ export default {
     },
     readonly: Boolean,
     previewOnly: Boolean,
-    editMode: Boolean
+    editMode: Boolean,
+    signinLogs: {
+      type: Array,
+      default: () => ([])
+    }
   },
-  setup(props, { root }) {
+  setup(props, {root}) {
     /**
      * @type {{
      * $alerts: import("../../../@types/AlertsPlugin").AlertsPlugin
      * $apiCalls: import("../../../@types/ApiCallsPlugin").ApiCallsPlugin
      * }}
      */
-    const { $apiCalls, $delete, $alerts } = root;
+    const {$apiCalls, $delete, $alerts} = root;
 
     const formattedValue = computed(() => props.value);
     /**
@@ -164,7 +132,7 @@ export default {
       }
     }
 
-    const openFile = async function(file) {
+    const openFile = async function (file) {
       try {
         const result = await $apiCalls.downloadFile(file._id);
 
@@ -172,7 +140,7 @@ export default {
         if (root.$store.getters["dialog/dialogState"]) {
           return window.open(
             URL.createObjectURL(
-              new Blob([result.data], { type: `${file.type}/${file.subtype}` })
+              new Blob([result.data], {type: `${file.type}/${file.subtype}`})
             ),
             "__blank"
           );
@@ -186,7 +154,7 @@ export default {
             mimeType: `${file.type}/${file.subtype}`,
             fileData: result.data,
             fileUrl: URL.createObjectURL(
-              new Blob([result.data], { type: `${file.type}/${file.subtype}` })
+              new Blob([result.data], {type: `${file.type}/${file.subtype}`})
             )
           }
         });
@@ -195,7 +163,7 @@ export default {
       }
     };
 
-    const downloadFile = async function(file, e) {
+    const downloadFile = async function (file, e) {
       e.preventDefault();
       e.stopPropagation();
 
@@ -212,7 +180,7 @@ export default {
       }
     };
 
-    const removeFile = async function(file, e) {
+    const removeFile = async function (file, e) {
       e.preventDefault();
       e.stopPropagation();
 

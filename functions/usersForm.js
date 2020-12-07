@@ -15,6 +15,7 @@ import { computed, ref, onMounted } from '@vue/composition-api'
 
 import PersonTypes from '../enums/PersonTypes'
 import UserRoles from '../enums/UserRoles'
+import AccountStatuses from '../enums/AccountStatuses'
 
 import usersTabs from '../config/tabs/usersIdTabs'
 import usersDataSchema from '../config/forms/usersDataSchema'
@@ -83,6 +84,19 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set, $au
     return result
   }
 
+  /**
+   * To use in case an account is in status INCOMPLETE.
+   * When saving ask the AGENT if it has corrected the invalid fields
+   *
+   * @returns {Promise<void>}
+   */
+  async function askIfDataIsComplete() {
+    return await $alerts.askBeforeAction({
+      key: "confirm-updated-incomplete-data",
+      data: formData.value
+    });
+  }
+
   async function onSaveClick() {
     try {
       const formValid = await validateAll();
@@ -93,13 +107,22 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set, $au
 
       let result
 
-      delete formData.value.files
+      const data = {...formData.value}
+
+      delete data.files
+      delete data.referenceAgentData
+
+      if (formData.value.account_status === AccountStatuses.INCOMPLETE) {
+        await askIfDataIsComplete()
+
+        data.incompleteData.completed = true
+      }
 
       if (userIsNew.value) {
-        result = await $apiCalls.userCreate(formData.value)
+        result = await $apiCalls.userCreate(data)
         $router.replace("/users/" + result.id)
       } else {
-        result = await $apiCalls.userUpdate(formData.value)
+        result = await $apiCalls.userUpdate(data)
 
         $set(formData, "value", result)
       }

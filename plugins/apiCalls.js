@@ -57,6 +57,30 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
+  async userConfirmDraft(userId) {
+    return await this.post({
+      endPoint: `/api/users/${userId}/confirmDraft`
+    })
+  }
+
+  async userValidate(userId) {
+    return await this.post({
+      endPoint: `/api/users/${userId}/validate`
+    })
+  }
+
+  /**
+   *
+   * @param {{userId: string, message: string, checkedFields: string[]}} data
+   * @returns {Promise<void>}
+   */
+  async userIncomplete(data) {
+    return await this.post({
+      endPoint: `/api/users/${data.userId}/incomplete`,
+      body: data
+    })
+  }
+
   async fetchAllUsers() {
     return await this.get({
       endPoint: `/api/users`

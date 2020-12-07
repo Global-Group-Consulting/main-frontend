@@ -6,10 +6,10 @@
         :subtitle="!userIsNew ? pageData.subtitle.value : ''"
         :icon="pageData.icon.value"
       >
-        <template v-slot:subtitle v-if="canChangeStatus && !userIsNew">
+        <template v-slot:subtitle v-if="!userIsNew">
           <div v-html="pageData.subtitle.value" class="d-inline-block"></div>
 
-          <v-tooltip bottom>
+          <v-tooltip bottom v-if="canChangeStatus">
             <template v-slot:activator="{ on }">
               <v-btn icon dark @click="openChangeStatusDialog" v-on="on">
                 <v-icon>mdi-pencil</v-icon>
@@ -18,6 +18,57 @@
 
             <span>Modifica stato</span>
           </v-tooltip>
+
+          <!-- Incomplete data info -->
+          <v-menu offset-y open-on-hover bottom v-if="showIncompleteDataInfo">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn icon dark v-on="on" v-bind="attrs">
+                <v-icon>mdi-information</v-icon>
+              </v-btn>
+            </template>
+
+            <v-card color="white" max-width="400px">
+              <v-card-text>
+                {{ $t("pages.usersId.info-incomplete-data") }}
+
+                <template v-if="formData.incompleteData && formData.incompleteData.message">
+                  <v-layout align-items-start class="mt-2">
+                    <strong>
+                      {{ $t('pages.usersId.info-incomplete-data-message') }}
+                    </strong>
+                    <div class="ml-2">
+                      {{ formData.incompleteData.message }}
+                    </div>
+                  </v-layout>
+                </template>
+
+                <template
+                  v-if="formData.incompleteData && formData.incompleteData.checkedFields && formData.incompleteData.checkedFields.length > 0">
+                  <v-layout align-items-start class="mt-2">
+                    <strong>
+                      {{ $t('pages.usersId.info-incomplete-data-fields') }}
+                    </strong>
+                    <div class="ml-2">
+                      <div v-for="field of formData.incompleteData.checkedFields">
+                        {{ $t(`forms.${$options.filters.formFieldNameFormatter(field)}`) }}
+                      </div>
+                    </div>
+                  </v-layout>
+                </template>
+              </v-card-text>
+            </v-card>
+          </v-menu>
+
+          <!-- Contract status -->
+          <v-menu offset-y open-on-hover bottom v-if="formData.account_status === $enums.AccountStatuses.VALIDATED">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn icon dark v-on="on" v-bind="attrs">
+                <v-icon>mdi-information</v-icon>
+              </v-btn>
+            </template>
+
+            <signing-logs-popup :value="formData.signinLogs"></signing-logs-popup>
+          </v-menu>
         </template>
       </page-header>
 
@@ -34,6 +85,7 @@
 
           <v-spacer></v-spacer>
 
+          <!-- approve a user and change the status to "APPROVED" -->
           <tooltip-btn
             :tooltip="$t('pages.usersId.btn-approve-tooltip')"
             icon-name="mdi-check"
@@ -45,33 +97,41 @@
             {{ $t("pages.usersId.btn-approve") }}
           </tooltip-btn>
 
-          <!-- <tooltip-btn
-            :tooltip="$t('pages.usersId.btn-send-activation-email-tooltip')"
-            icon-name="mdi-at"
+          <!-- Set the user status to CREATED -->
+          <tooltip-btn
+            :tooltip="$t('pages.usersId.btn-confirm-draft-user-tooltip')"
+            icon-name="mdi-account-check"
+            color="green"
             text
-            v-if="!formData.accountVerifiedAt && !userIsNew"
+            v-if="canConfirmDraftUser"
+            @click="askConfirmDraftUser"
           >
-            {{ $t("pages.usersId.btn-send-activation-email") }}
+            {{ $t("pages.usersId.btn-confirm-draft-user") }}
           </tooltip-btn>
 
+          <!-- Set as VALIDATED a user that is in status CREATED -->
           <tooltip-btn
-            :tooltip="$t('pages.usersId.btn-reset-password-tooltip')"
-            icon-name="mdi-lock-reset"
-            v-if="formData.accountVerifiedAt && !userIsNew"
+            :tooltip="$t('pages.usersId.btn-validate-user-tooltip')"
+            icon-name="mdi-account-check"
+            color="green"
             text
+            v-if="canValidateUser"
+            @click="askValidateUser"
           >
-            {{ $t("pages.usersId.btn-reset-password") }}
+            {{ $t("pages.usersId.btn-validate-user") }}
           </tooltip-btn>
 
+          <!-- Set as INCOMPLETE a user that is in status CREATED -->
           <tooltip-btn
-            :tooltip="$t('pages.usersId.btn-send-email-tooltip')"
-            icon-name="mdi-email-plus"
+            :tooltip="$t('pages.usersId.btn-incomplete-user-tooltip')"
+            icon-name="mdi-account-alert"
+            color="red"
             text
-            @click="onSendEmail"
-            v-if="!userIsNew"
+            v-if="canValidateUser"
+            @click="askIncompleteUser"
           >
-            {{ $t("pages.usersId.btn-send-email") }}
-          </tooltip-btn> -->
+            {{ $t("pages.usersId.btn-incomplete-user") }}
+          </tooltip-btn>
 
           <v-spacer></v-spacer>
 
@@ -111,9 +171,9 @@
         <v-card>
           <v-tabs
             v-model="currentTab"
-            :background-color="accentColor"
+            :color="accentColor"
             center-active
-            dark
+
             show-arrows
           >
             <v-tab
@@ -124,22 +184,21 @@
               {{ $t("pages.usersId.tabs." + section.title) }}
             </v-tab>
           </v-tabs>
+          <v-divider></v-divider>
 
           <div>
             <v-tabs-items v-model="currentTab">
               <v-tab-item v-for="(tab, index) in formTabs" :key="index">
                 <v-card elevation="0">
-                  <!-- <v-card-title>{{
-                    $t("pages.usersId.tabs." + tab.cardTitle)
-                  }}</v-card-title> -->
-
                   <v-card-text>
                     <dynamic-fieldset
                       :schema="getFormSchema(tab)"
                       v-model="formData"
+                      :invalidFields="formData.incompleteData ? formData.incompleteData.checkedFields : []"
                       :ref="'dynamicForm_' + index"
-                      @status="saveStatus(tab.schema, $event)"
                       :edit-mode="editMode"
+                      @status="saveStatus(tab.schema, $event)"
+                      @checkedFieldsChange="onCheckedFieldsChange"
                     />
                   </v-card-text>
                 </v-card>
@@ -230,7 +289,8 @@ import FilePreviewer from "../..//components/dialogs/FilePreviewer";
 import StatusChangeDialog from "../../components/dialogs/StatusChangeDialog";
 import MovementsListDialog from "../../components/dialogs/MovementsListDialog";
 
-import { onBeforeMount, reactive, ref, computed } from "@vue/composition-api";
+import {kebabCase} from "lodash"
+import {onBeforeMount, reactive, ref, computed} from "@vue/composition-api";
 
 import AccountStatuses from "../../enums/AccountStatuses.js";
 import UserRoles from "@/enums/UserRoles.js";
@@ -238,10 +298,12 @@ import userDetails from "@/functions/userDetails";
 import pageBasic from "@/functions/pageBasic";
 import usersForm from "../../functions/usersForm";
 import Permissions from "@/functions/permissions";
+import SigningLogsPopup from "@/components/elements/SigningLogsPopup";
 
 export default {
   name: "_id",
   components: {
+    SigningLogsPopup,
     UserMessage,
     DynamicFieldset,
     PageHeader,
@@ -262,18 +324,18 @@ export default {
       $set
     } = root;
     const currentTab = ref(0);
+    const checkedFields = ref([])
     const permissions = Permissions(root);
 
     const userForm = usersForm(root, refs);
 
-    const editMode = computed(
-      () =>
-        !userForm.userIsNew.value &&
-        userForm.userRole.value === $enums.UserRoles.CLIENTE &&
-        permissions.userType === "admin" &&
-        [AccountStatuses.CREATED, AccountStatuses.MUST_REVALIDATE].includes(
-          userForm.userAccountStatus.value
-        )
+    const editMode = computed(() =>
+      !userForm.userIsNew.value &&
+      userForm.userRole.value === $enums.UserRoles.CLIENTE &&
+      permissions.userRole === $enums.UserRoles.SERV_CLIENTI &&
+      [AccountStatuses.CREATED, AccountStatuses.MUST_REVALIDATE].includes(
+        userForm.userAccountStatus.value
+      )
     );
 
     const pageData = pageBasic(root, "usersId");
@@ -286,7 +348,8 @@ export default {
       const formData = userForm.formData.value;
 
       return (
-        formData.account_status === AccountStatuses.VALIDATED ||
+        (formData.account_status === AccountStatuses.VALIDATED &&
+          ![UserRoles.CLIENTE, UserRoles.AGENTE].includes(+formData.role)) ||
         (formData.account_status === AccountStatuses.DRAFT &&
           [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(+formData.role))
       );
@@ -310,83 +373,19 @@ export default {
       );
     });
 
-    const getFormSchema = function(tab) {
-      const schema = userForm.formSchemas[tab.schema];
+    const canConfirmDraftUser = computed(() => {
+      const refAgent = userForm.formData.value.referenceAgent;
 
-      if (!schema) {
-        return tab.schema;
-      }
+      return (
+        $auth.user.id === refAgent &&
+        userForm.formData.value.account_status === $enums.AccountStatuses.DRAFT
+      );
+    });
 
-      return schema;
-    };
-
-    const approveUser = async function() {
-      try {
-        await $alerts.askBeforeAction({
-          key: "approve-user",
-          preConfirm: async () => {
-            const result = await $apiCalls.userApprove(
-              userForm.formData.value.id
-            );
-            userForm.formData.value.account_status = result.account_status;
-          },
-          data: userForm.formData.value
-        });
-      } catch (er) {
-        $alerts.error(er);
-      }
-    };
-
-    const openChangeStatusDialog = function() {
-      root.$store.dispatch("dialog/updateStatus", {
-        title: $i18n.t("dialogs.statusChange.title", {
-          status: $i18n.t(
-            "enums.AccountStatuses." + userForm.formData.value.account_status
-          )
-        }),
-        id: "StatusChangeDialog",
-        fullscreen: false,
-        data: {
-          status: userForm.formData.value.account_status,
-          userRole: userForm.formData.value.role
-        }
-      });
-    };
-
-    const openMovementsList = function() {
-      root.$store.dispatch("dialog/updateStatus", {
-        title: $i18n.t("dialogs.movementsList.title"),
-        id: "MovementsListDialog",
-        fullscreen: false,
-        large: true,
-        readonly: true,
-        texts: {
-          cancelBtn: "dialogs.movementsList.btn-cancel"
-        },
-        data: {
-          user: userForm.formData.value
-        }
-      });
-    };
-
-    const onAccountStatusChanged = function(userData) {
-      $set(userForm.formData.value, "account_status", userData.account_status);
-    };
-
-    const sendEmailActivation = async function() {
-      try {
-        await $alerts.askBeforeAction({
-          key: "send-email-activation",
-          preConfirm: async () => {
-            const result = await $apiCalls.userSendEmailActivation(
-              userForm.formData.value.id
-            );
-          }
-        });
-      } catch (er) {
-        $alerts.error(er);
-      }
-    };
+    const canValidateUser = computed(() => {
+      return $auth.user.role === $enums.UserRoles.SERV_CLIENTI &&
+        [$enums.AccountStatuses.CREATED, $enums.AccountStatuses.MUST_REVALIDATE].includes(userForm.formData.value.account_status)
+    })
 
     const communicationsList = computed(() => {
       return [
@@ -406,12 +405,177 @@ export default {
       ].filter(_item => (_item.if === undefined ? true : _item.if.value));
     });
 
+    const showIncompleteDataInfo = computed(() => {
+      return [AccountStatuses.INCOMPLETE, AccountStatuses.MUST_REVALIDATE].includes(userForm.formData.value.account_status)
+    })
+
+    function getFormSchema(tab) {
+      const schema = userForm.formSchemas[tab.schema];
+
+      if (!schema) {
+        return tab.schema;
+      }
+
+      return schema;
+    };
+
+    async function approveUser() {
+      try {
+        await $alerts.askBeforeAction({
+          key: "approve-user",
+          preConfirm: async () => {
+            const result = await $apiCalls.userApprove(
+              userForm.formData.value.id
+            );
+            userForm.formData.value.account_status = result.account_status;
+          },
+          data: userForm.formData.value
+        });
+      } catch (er) {
+        $alerts.error(er);
+      }
+    };
+
+    function openChangeStatusDialog() {
+      root.$store.dispatch("dialog/updateStatus", {
+        title: $i18n.t("dialogs.statusChange.title", {
+          status: $i18n.t(
+            "enums.AccountStatuses." + userForm.formData.value.account_status
+          )
+        }),
+        id: "StatusChangeDialog",
+        fullscreen: false,
+        data: {
+          status: userForm.formData.value.account_status,
+          userRole: userForm.formData.value.role
+        }
+      });
+    };
+
+    function openMovementsList() {
+      root.$store.dispatch("dialog/updateStatus", {
+        title: $i18n.t("dialogs.movementsList.title"),
+        id: "MovementsListDialog",
+        fullscreen: false,
+        large: true,
+        readonly: true,
+        texts: {
+          cancelBtn: "dialogs.movementsList.btn-cancel"
+        },
+        data: {
+          user: userForm.formData.value
+        }
+      });
+    };
+
+    function onAccountStatusChanged(userData) {
+      $set(userForm.formData.value, "account_status", userData.account_status);
+    }
+
+    function onCheckedFieldsChange(newValue) {
+      root.$set(checkedFields, "value", newValue)
+    }
+
+    const sendEmailActivation = async function () {
+      try {
+        await $alerts.askBeforeAction({
+          key: "send-email-activation",
+          preConfirm: async () => {
+            const result = await $apiCalls.userSendEmailActivation(
+              userForm.formData.value.id
+            );
+          }
+        });
+      } catch (er) {
+        $alerts.error(er);
+      }
+    };
+
+    async function askConfirmDraftUser() {
+      try {
+        await $alerts.askBeforeAction({
+          key: "confirm-draft-user",
+          preConfirm: async () => {
+            const result = await $apiCalls.userConfirmDraft(
+              userForm.formData.value.id
+            );
+
+            userForm.formData.value.account_status = result.account_status
+          },
+          data: userForm.formData.value
+        });
+      } catch (er) {
+        $alerts.error(er);
+      }
+    }
+
+    async function askValidateUser() {
+      try {
+        await $alerts.askBeforeAction({
+          key: "validate-user",
+          preConfirm: async () => {
+            const result = await $apiCalls.userValidate(
+              userForm.formData.value.id
+            );
+
+            userForm.formData.value.account_status = result.account_status
+          },
+          data: userForm.formData.value
+        });
+      } catch (er) {
+        $alerts.error(er);
+      }
+    }
+
+    async function askIncompleteUser() {
+      try {
+        const alertText = [root.$t("alerts.incomplete-user-text")]
+
+        if (checkedFields.value.length > 0) {
+          alertText.push("<br>" + root.$t("alerts.incomplete-user-text-fields", {
+            fieldsList: checkedFields.value.map(_field => "- " + root.$t("forms." + kebabCase(_field))).join("<br>")
+          }))
+        }
+
+        await $alerts.askBeforeAction({
+          key: "incomplete-user",
+          settings: {
+            width: "600px",
+            input: "textarea",
+            inputLabel: root.$t("alerts.incomplete-user-textarea-label"),
+            inputPlaceholder: root.$t("alerts.incomplete-user-textarea-placeholder"),
+            inputValidator: async (value) => {
+              if (checkedFields.value.length === 0 && !value) {
+                return root.$t("alerts.incomplete-user-textarea-validation")
+              }
+            },
+            html: alertText.join("<br>")
+          },
+          preConfirm: async (userInput) => {
+            debugger
+
+            const result = await $apiCalls.userIncomplete({
+              userId: userForm.formData.value.id,
+              message: userInput,
+              checkedFields: checkedFields.value,
+            });
+
+            userForm.formData.value.account_status = result.account_status
+            userForm.formData.value.incompleteData = result.incompleteData
+          },
+          data: userForm.formData.value
+        });
+      } catch (er) {
+        $alerts.error(er);
+      }
+    }
+
     pageData.title = computed(() => {
       if (userForm.userIsNew.value) {
         return $i18n.t(`pages.usersId.title-new-with-role`, {
           role: $i18n.t(
             "enums.UserRoles." +
-              $enums.UserRoles.getIdName(userForm.userRole.value)
+            $enums.UserRoles.getIdName(userForm.userRole.value)
           )
         });
       }
@@ -433,11 +597,18 @@ export default {
     onBeforeMount(async () => {
       const userId = $route.params.id;
 
-      $store.dispatch("fetchAgentsList", { $apiCalls, $auth });
+      if (permissions.changeAgenteRif) {
+        $store.dispatch("fetchAgentsList", { $apiCalls, $auth });
+      }
 
       if (userId === "new") {
         userForm.formData.value.role =
           +$route.query.type || $enums.UserRoles.CLIENTE;
+
+        if ($auth.user.role === $enums.UserRoles.AGENTE) {
+          userForm.formData.value.referenceAgent = $auth.user.id;
+          userForm.formData.value.referenceAgentData = $auth.user;
+        }
 
         return;
       }
@@ -463,11 +634,18 @@ export default {
       canApprove,
       canChangeStatus,
       canSeeMovementsList,
+      canConfirmDraftUser,
+      canValidateUser,
+      showIncompleteDataInfo,
       approveUser,
       permissions,
       openChangeStatusDialog,
       openMovementsList,
-      onAccountStatusChanged
+      onAccountStatusChanged,
+      onCheckedFieldsChange,
+      askConfirmDraftUser,
+      askValidateUser,
+      askIncompleteUser
     };
   },
   computed: {},

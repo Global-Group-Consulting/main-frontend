@@ -74,4 +74,32 @@ export default {
   "movements-import-success": "Dati importati correttamente!",
 
   "communication-new-success": "Messaggio inviato correttamente!",
+
+  "confirm-draft-user-title": "Confermare account?",
+  "confirm-draft-user-text": "Sei sicuro di voler confermare l'account dell'utente {firstName} {lastName}? Procedendo, si avvierà l'iter di attivazione dell'account, con la verifica dei dati da parte del Servizio Clienti e la Firma del contratto da parte del cliente.",
+  "confirm-draft-user-confirmBtnText": "Si, conferma account",
+  "confirm-draft-user-cancelBtnText": "Annulla",
+  "confirm-draft-user-success": "Richiesta di conferma inviata correttamente al Servizio Clienti!",
+
+  "confirm-updated-incomplete-data-title": "Hai corretto i dati non validi?",
+  "confirm-updated-incomplete-data-text": "Procedendo, il servizio clienti ricontrollerà i dati inseriti.",
+  "confirm-updated-incomplete-data-confirmBtnText": "Si, corretto",
+  "confirm-updated-incomplete-data-cancelBtnText": "Annulla",
+
+  "validate-user-title": "Convalidare l'account?",
+  "validate-user-text": "Sei sicuro di voler convalidare e quindi confermare l'account dell'utente {firstName} {lastName}? Procedendo, l'utente e l'amministrazione riceveranno il contratto finale da firmare.",
+  "validate-user-confirmBtnText": "Si, convalida account",
+  "validate-user-cancelBtnText": "Annulla",
+  "validate-user-success": "Account convalidato con successo!",
+
+  "incomplete-user-title": "Segnalare dati non validi?",
+  "incomplete-user-text": "Procedendo, l'agente di riferimento verrà invitato a correggere i dati non validi.",
+  "incomplete-user-text-fields": "Verranno inoltre segnalati i seguenti campi:<br>{fieldsList}",
+  "incomplete-user-textarea-label": "Messaggio",
+  "incomplete-user-textarea-placeholder": "Eventuale messaggio da associare alla segnalazione...",
+  "incomplete-user-textarea-validation": "Non avendo selezionato nemmeno un campo da segnalare, è necessario indicare una motivazione per cui si sta segnalando questo account.",
+  "incomplete-user-confirmBtnText": "Si, segnala",
+  "incomplete-user-cancelBtnText": "Annulla",
+  "incomplete-user-success": "Segnalazione inviata correttamente!",
+
 }

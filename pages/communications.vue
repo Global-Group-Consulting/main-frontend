@@ -129,14 +129,11 @@ export default {
     const rawList = [];
     const communicationsTabs = computed(() =>
       CommunicationsTabs.filter(_tab => {
-        if (
-          _tab.key === "messagesSent" &&
-          $auth.user.role === $enums.UserRoles.CLIENTE
-        ) {
-          return false;
-        }
-
-        return true;
+        return _tab.key === "messagesSent"
+          ? ![$enums.UserRoles.CLIENTE, $enums.UserRoles.AGENTE].includes(
+              $auth.user.role
+            )
+          : true;
       })
     );
     const permissions = {
@@ -150,7 +147,7 @@ export default {
       ),
       seeToolbar: computed(
         () =>
-          permissions.createConversation.value &&
+          permissions.createConversation.value ||
           permissions.createServiceMessage.value
       )
     };

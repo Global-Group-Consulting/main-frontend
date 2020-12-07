@@ -72,6 +72,7 @@ const admin = {
         'currency',
         'type',
         'created_at',
+        ['updated_at', ["lavorazione"]],
         ['completed_at', ["accettata", "rifiutata"]],
         ['actions', ["nuova"]]
       ]
@@ -114,6 +115,7 @@ const servClienti = {
         'currency',
         'type',
         'created_at',
+        ['updated_at', ["lavorazione"]],
         ['completed_at', ["accettata", "rifiutata"]],
         ['actions', ["nuova"]]
       ]
@@ -126,7 +128,15 @@ const servClienti = {
         "deposit",
         "interestAmount"
       ]
-    }
+    },
+    usersToValidate: {
+      columns: [
+        "contractNumber",
+        "firstName",
+        "lastName",
+        "email",
+      ]
+    },
   }
 }
 
@@ -148,6 +158,7 @@ const cliente = {
         'currency',
         'type',
         'created_at',
+        ['updated_at', ["lavorazione"]],
         ['completed_at', ["accettata", "rifiutata"]],
         ['actions', ["nuova", "accettata"]]
       ]
@@ -192,6 +203,7 @@ const agente = {
         'currency',
         'type',
         'created_at',
+        ['updated_at', ["lavorazione"]],
         ['completed_at', ["accettata", "rifiutata"]],
         ['actions', ["nuova", "accettata"]]
       ]
