@@ -9,7 +9,7 @@
         <template v-slot:subtitle v-if="!userIsNew">
           <div v-html="pageData.subtitle.value" class="d-inline-block"></div>
 
-          <v-tooltip bottom v-if="canChangeStatus">
+          <!-- <v-tooltip bottom v-if="canChangeStatus">
             <template v-slot:activator="{ on }">
               <v-btn icon dark @click="openChangeStatusDialog" v-on="on">
                 <v-icon>mdi-pencil</v-icon>
@@ -17,7 +17,7 @@
             </template>
 
             <span>Modifica stato</span>
-          </v-tooltip>
+          </v-tooltip> -->
 
           <!-- Incomplete data info -->
           <v-menu offset-y open-on-hover bottom v-if="showIncompleteDataInfo">
@@ -92,7 +92,7 @@
             color="green"
             text
             v-if="canApprove"
-            @click="approveUser"
+            @click="askApproveUser"
           >
             {{ $t("pages.usersId.btn-approve") }}
           </tooltip-btn>
@@ -106,7 +106,7 @@
             v-if="canConfirmDraftUser"
             @click="askConfirmDraftUser"
           >
-            {{ $t("pages.usersId.btn-confirm-draft-user") }}
+            {{ $t("pages.usersId.btn-confirm-draft-user" + (userType === 'admin' ? '-admin' : '')) }}
           </tooltip-btn>
 
           <!-- Set as VALIDATED a user that is in status CREATED -->
@@ -173,13 +173,13 @@
             v-model="currentTab"
             :color="accentColor"
             center-active
-
             show-arrows
           >
             <v-tab
               v-for="(section, index) in formTabs"
               :key="index"
               :title="'pages.usersId.tabs.' + section.title"
+              :disabled="userIsNew"
             >
               {{ $t("pages.usersId.tabs." + section.title) }}
             </v-tab>
@@ -348,10 +348,8 @@ export default {
       const formData = userForm.formData.value;
 
       return (
-        (formData.account_status === AccountStatuses.VALIDATED &&
-          ![UserRoles.CLIENTE, UserRoles.AGENTE].includes(+formData.role)) ||
         (formData.account_status === AccountStatuses.DRAFT &&
-          [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(+formData.role))
+          permissions.superAdmin)
       );
     });
 
@@ -377,7 +375,7 @@ export default {
       const refAgent = userForm.formData.value.referenceAgent;
 
       return (
-        $auth.user.id === refAgent &&
+        ($auth.user.id === refAgent) &&
         userForm.formData.value.account_status === $enums.AccountStatuses.DRAFT
       );
     });
@@ -419,22 +417,6 @@ export default {
       return schema;
     };
 
-    async function approveUser() {
-      try {
-        await $alerts.askBeforeAction({
-          key: "approve-user",
-          preConfirm: async () => {
-            const result = await $apiCalls.userApprove(
-              userForm.formData.value.id
-            );
-            userForm.formData.value.account_status = result.account_status;
-          },
-          data: userForm.formData.value
-        });
-      } catch (er) {
-        $alerts.error(er);
-      }
-    };
 
     function openChangeStatusDialog() {
       root.$store.dispatch("dialog/updateStatus", {
@@ -485,6 +467,23 @@ export default {
               userForm.formData.value.id
             );
           }
+        });
+      } catch (er) {
+        $alerts.error(er);
+      }
+    };
+
+    async function askApproveUser() {
+      try {
+        await $alerts.askBeforeAction({
+          key: "approve-user",
+          preConfirm: async () => {
+            const result = await $apiCalls.userApprove(
+              userForm.formData.value.id
+            );
+            userForm.formData.value.account_status = result.account_status;
+          },
+          data: userForm.formData.value
         });
       } catch (er) {
         $alerts.error(er);
@@ -597,8 +596,8 @@ export default {
     onBeforeMount(async () => {
       const userId = $route.params.id;
 
-      if (permissions.changeAgenteRif) {
-        $store.dispatch("fetchAgentsList", { $apiCalls, $auth });
+      if (permissions.changeAgenteRif || (userForm.userIsNew.value && permissions.userRole !== $enums.UserRoles.AGENTE)) {
+        $store.dispatch("fetchAgentsList", {$apiCalls, $auth});
       }
 
       if (userId === "new") {
@@ -637,12 +636,12 @@ export default {
       canConfirmDraftUser,
       canValidateUser,
       showIncompleteDataInfo,
-      approveUser,
       permissions,
       openChangeStatusDialog,
       openMovementsList,
       onAccountStatusChanged,
       onCheckedFieldsChange,
+      askApproveUser,
       askConfirmDraftUser,
       askValidateUser,
       askIncompleteUser

@@ -7,11 +7,11 @@ export default {
   "delete-user-cancelBtnText": "Annulla",
   "delete-user-success": "Utente cancellato correttamente",
 
-  "approve-user-title": "Approvare l'utente?",
-  "approve-user-text": "Sei sicuro di voler approvare l'utente {firstName} {lastName}?",
-  "approve-user-confirmBtnText": "Si, approva",
+  "approve-user-title": "Attivare l'utente?",
+  "approve-user-text": "Continuando l'utente {firstName} {lastName} riceverà l'email di benvenuto con il relativo link per accedere alla sua area personale.",
+  "approve-user-confirmBtnText": "Si, attiva",
   "approve-user-cancelBtnText": "Annulla",
-  "approve-user-success": "Utente approvato correttamente",
+  "approve-user-success": "Utente attivato correttamente",
 
   "remove-file-title": "Rimuovere l'allegato?",
   "remove-file-text": "Sei sicuro di voler cancellare l'allegato {clientName}? L'operazione non sarà reversibile.",

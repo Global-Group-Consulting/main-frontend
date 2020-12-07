@@ -77,10 +77,12 @@ export default {
     'btn-next': 'Avanti',
     'btn-save': 'Salva modifiche',
     'btn-previous': 'Indietro',
-    'btn-approve': 'Approva',
-    'btn-approve-tooltip': 'Approva l\'attivazione dell\'account',
+    'btn-approve': 'Attiva account',
+    'btn-approve-tooltip': 'Attiva l\'account dell\'utente.',
     'btn-confirm-draft-user': 'Confermare account',
     'btn-confirm-draft-user-tooltip': 'Conferma account e richiedi verifica al Servizio Clienti.',
+    'btn-confirm-draft-user-admin': 'Attiva account',
+    'btn-confirm-draft-user-tooltip-admin': 'Attiva l\'account dell\'utente.',
     'btn-validate-user': "Convalida account",
     'btn-validate-user-tooltip': "Convalida l'account e quindi invia il contratto da firmare.",
     'btn-incomplete-user': "Segnala dati",
@@ -117,5 +119,12 @@ export default {
     'tableLavorazione-title': "Richieste in lavorazione",
     'tableAccettata-title': "Richieste accettate",
     'tableRifiutata-title': "Richieste rifiutate",
+  },
+  signResult: {
+    "success-title": "Contratto firmato!",
+    "success-message": "Grazie per aver completato la procedura di attivazione del suo contratto.<br>A breve riceverà un email con le informazioni per accedere la prima volta alla sua area personale.<br><br>Con l'occasione le diamo il benvenuto in Global Group Consulting!",
+
+    "reject-title": "Contratto rifiutato!",
+    "reject-message": "Ci dispiace che abbia rifiutato di firmare il contratto. Se pensa ci sia stato qualche tipo di errore, la invitiamo a contattare il nostro servizio clienti.<br><br>Cordiali saluti,<br>Global Group Consulting"
   }
 }

@@ -203,6 +203,8 @@ export function contactsData(formContext) {
  * @returns {FormSchema[]}
  */
 export function contractData(formContext) {
+  const {changeRole, changeAgenteRif, userRole, userType} = formContext.permissions
+
   return [
     {
       cols: {
@@ -212,6 +214,7 @@ export function contractData(formContext) {
           if: !formContext.userIsNew
         },
         'contractNumberLegacy': {
+          disabled: userType !== "admin",
           // disabled: true
         },
         'contractSignedAt': {
@@ -223,6 +226,7 @@ export function contractData(formContext) {
           type: "number",
           formatter: "percentageFormatter",
           appendIcon: "mdi-percent",
+          disabled: userType !== "admin" && !formContext.userIsNew,
           validations: {
             required: {},
             minValue: {
@@ -284,7 +288,11 @@ export function contractData(formContext) {
  * @returns {FormSchema[]}
  */
 export function extraData(formContext) {
-  const { changeRole, changeAgenteRif, userRole } = formContext.permissions
+  const {changeRole, changeAgenteRif, userRole} = formContext.permissions
+  const canChangeAgenteRif = computed(() => {
+    return (formContext.userIsNew && userRole !== UserRoles.AGENTE) ||
+      changeAgenteRif
+  })
 
   return [
     {
@@ -314,11 +322,11 @@ export function extraData(formContext) {
           }
         },
         'referenceAgent': {
-          if: formContext.showReferenceAgent && changeAgenteRif,
-          component: changeAgenteRif ? 'v-select' : null,
-          disabled: !changeAgenteRif,
+          if: formContext.showReferenceAgent && canChangeAgenteRif.value,
+          component: canChangeAgenteRif.value ? 'v-select' : null,
+          disabled: !canChangeAgenteRif.value,
           clearable: true,
-          formatter: !changeAgenteRif ? (value) => {
+          formatter: !canChangeAgenteRif.value ? (value) => {
             if (!value) {
               return
             }
@@ -332,7 +340,7 @@ export function extraData(formContext) {
             return `${foundedUser.firstName} ${foundedUser.lastName}`
 
           } : null,
-          items: !changeAgenteRif ? null : formContext.$store.getters.agentsList
+          items: !canChangeAgenteRif.value ? null : formContext.$store.getters.agentsList
             .reduce((acc, curr) => {
               if (+formContext.formData.role === UserRoles.AGENTE
                 && curr.id === formContext.formData.id) {
@@ -348,7 +356,7 @@ export function extraData(formContext) {
             }, [])
         },
         'referenceAgentData': {
-          if: formContext.showReferenceAgent && !changeAgenteRif,
+          if: formContext.showReferenceAgent && !canChangeAgenteRif.value,
           disabled: true,
           formatter: (value) => {
             if (!value) {
