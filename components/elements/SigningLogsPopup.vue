@@ -17,6 +17,10 @@
             <td>{{ $t("enums.SignRequestEvents." + log.event) }}</td>
             <td>{{ log.timestamp | dateHourFormatter }}</td>
           </tr>
+
+          <tr v-if="!value || value.length === 0">
+            <td colspan="99" class="text-center">Ancora nessun informazione disponibile...</td>
+          </tr>
           </tbody>
         </template>
       </v-simple-table>
