@@ -32,10 +32,8 @@
 
 <style lang="scss" scoped>
   .v-application, main {
-    background-color: #0061f2;
+    background-color: #071D2B;
   }
-
-
 </style>
 
 <style lang="scss">
