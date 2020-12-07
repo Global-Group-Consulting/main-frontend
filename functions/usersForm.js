@@ -29,7 +29,7 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set, $au
     role: UserRoles.CLIENTE,
     personType: PersonTypes.FISICA
   })
-  const permissions = Permissions({ $auth })
+  const permissions = Permissions({$auth})
   const userIsNew = computed(() => $route.params.id === "new" || !formData.value.id)
   const userRole = computed(() => formData.value.role)
   const userAccountStatus = computed(() => formData.value.account_status)
@@ -38,6 +38,7 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set, $au
   const userLegalReprItaly = computed(() => (formData.value.legalRepresentativeCountry || '').toLowerCase() === 'it')
   const showReferenceAgent = computed(() => [UserRoles.CLIENTE, UserRoles.AGENTE].includes(userRole.value))
   const userIsPersonaGiuridica = computed(() => +formData.value.personType === PersonTypes.GIURIDICA)
+  const userType = computed(() => [UserRoles.CLIENTE, UserRoles.AGENTE].includes(formData.value.role) ? "user" : "admin")
 
   /**
    * @type {import('@vue/composition-api').ComputedRef<{
@@ -58,6 +59,7 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set, $au
     userBirthItaly,
     userBusinessItaly,
     userLegalReprItaly,
+    userType,
     showReferenceAgent,
     permissions
   }))
@@ -144,6 +146,7 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set, $au
     userBirthItaly,
     userBusinessItaly,
     userLegalReprItaly,
+    userType,
     showReferenceAgent,
     onSaveClick,
     permissions
