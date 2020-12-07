@@ -2,7 +2,7 @@
   <div>
     <portal to="dialog-pre-content">
       <v-alert
-        v-if="![$enums.RequestStatus.NUOVA, $enums.RequestStatus.ACCETTATA].includes(formData.status)"
+        v-if="showAlert"
         :type="
           formData.status === $enums.RequestStatus.LAVORAZIONE
             ? 'info'
@@ -33,17 +33,28 @@
         <template
           v-else-if="formData.status === $enums.RequestStatus.LAVORAZIONE"
         >
-          {{ $t("dialogs.requests.alert-connected-communication") }}
-          <v-btn
-            link
-            outlined
-            x-small
-            :href="'/communications?open=' + conversationId"
-            target="__blank"
-          >
-            <v-icon x-small>mdi-open-in-new</v-icon>
-            {{ $t("dialogs.requests.btn-go-to-conversation") }}
-          </v-btn>
+          <template v-if="showConversatinLink">
+            {{ $t("dialogs.requests.alert-connected-communication") }}
+            <v-btn
+              link
+              outlined
+              x-small
+              :href="'/communications?open=' + conversationId"
+              target="__blank"
+            >
+              <v-icon x-small>mdi-open-in-new</v-icon>
+              {{ $t("dialogs.requests.btn-go-to-conversation") }}
+            </v-btn>
+          </template>
+
+          <template v-else>
+            {{
+              $t(
+                "dialogs.requests.alert-in-progress",
+                formData.conversation.creator
+              )
+            }}
+          </template>
         </template>
       </v-alert>
 
@@ -51,12 +62,7 @@
         dense
         elevation="2"
         color="blue-grey lighten-5"
-        v-if="
-          [
-            $enums.RequestStatus.NUOVA,
-            $enums.RequestStatus.LAVORAZIONE
-          ].includes(formData.status) && permissions.userType === 'admin'
-        "
+        v-if="canApprove"
       >
         <v-spacer></v-spacer>
         <v-toolbar-items>
@@ -132,10 +138,14 @@ export default {
       default: () => ({})
     }
   },
+  /**
+   * @param {{}} props
+   * @param {{root: {
+   *    $enums: typeof import("../../plugins/enums").enums,
+   *    $apiCalls: import("../../plugins/apiCalls").ApiCalls
+   * }, emit: function}} param1
+   */
   setup(props, { root, emit }) {
-    /**
-     * @type {{$apiCalls: import("../../plugins/apiCalls").ApiCalls}}
-     */
     const { $auth, $apiCalls, $store, $enums } = root;
     const { useGetters: dialogUseGetters } = createNamespacedHelpers("dialog");
     const { useGetters: userUseGetters } = createNamespacedHelpers("user");
@@ -191,6 +201,35 @@ export default {
     const conversationId = computed(
       () => dialogData.value?.data.conversation?.id
     );
+
+    const showAlert = computed(() => {
+      const statuses = [
+        $enums.RequestStatus.LAVORAZIONE,
+        $enums.RequestStatus.RIFIUTATA,
+        $enums.RequestStatus.ANNULLATA
+      ];
+
+      return statuses.includes(formData.value.status);
+    });
+
+    const showConversatinLink = computed(() => {
+      return (
+        formData.value.conversation &&
+        formData.value.conversation?.watchersIds?.includes($auth.user.id)
+      );
+    });
+
+    const canApprove = computed(() => {
+      const isNewRequest =
+        $enums.RequestStatus.NUOVA === +formData.value.status;
+      const isInProgress =
+        $enums.RequestStatus.LAVORAZIONE === +formData.value.status;
+      const ownByAdmin =
+        isInProgress &&
+        $auth.user.id === formData.value.conversation.createdById;
+
+      return (isNewRequest || ownByAdmin) && permissions.userType === "admin";
+    });
 
     async function onDelete() {
       const result = await actions.delete(this.formData);
@@ -275,7 +314,10 @@ export default {
       permissions,
       dialogData,
       availableWallets,
-      conversationId
+      conversationId,
+      showAlert,
+      showConversatinLink,
+      canApprove
     };
   },
   data() {

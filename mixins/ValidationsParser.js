@@ -1,9 +1,22 @@
 import * as Validators from 'vuelidate/lib/validators'
 
+Validators.phoneNumber = (value) => {
+  if (!value) {
+    return true
+  }
+  /**
+   * @type {string}
+   */
+  const valueToTest = value.toString().replace(/ /g, "")
+
+  return !!valueToTest.match(/(\+[0-9]{2}[0-9]{5,})/g)
+}
+
+
 export const validationRules = schema => {
   const toReturn = {}
 
-  for (const { cols } of schema) {
+  for (const {cols} of schema) {
     const rulesToReturn = Object.keys(cols).reduce((rules, elementName) => {
       const item = cols[elementName]
 

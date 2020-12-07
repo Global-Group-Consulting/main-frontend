@@ -11,6 +11,7 @@ export default {
   'request-amount': 'Importo',
   'request-currency': 'Valuta della richiesta',
   'pending-users-table': 'Utenti in attesa di approvazione',
+  'pending-verify-users-table': 'Utenti in attesa di validazione',
   'pending-requests-table': 'Richieste da evadere',
   'updated-at': 'Ultimo aggiornamento',
   'completed-at': 'Data completamento',
@@ -31,4 +32,7 @@ export default {
   'com-updated-at': "Data ultimo messaggio",
   'com-messages-count': "Messaggi totali",
   'com-messages-unread-count': "Messaggi non letti",
+  'sign-logs-user': "Utente",
+  'sign-logs-event': "Evento",
+  'sign-logs-date': "Data",
 }

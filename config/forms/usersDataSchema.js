@@ -180,8 +180,17 @@ export function contactsData(formContext) {
             email: {}
           }
         },
-        'mobile': {},
-        'phone': {}
+        'mobile': {
+          validations: {
+            required: {},
+            phoneNumber: {}
+          }
+        },
+        'phone': {
+          validations: {
+            phoneNumber: {}
+          }
+        }
       }
     }
   ]
@@ -199,14 +208,16 @@ export function contractData(formContext) {
       cols: {
         'contractNumber': {
           disabled: true,
+          formatter: 'contractNumberFormatter',
           if: !formContext.userIsNew
         },
         'contractNumberLegacy': {
           // disabled: true
         },
-        'contractDate': {
+        'contractSignedAt': {
           disabled: true,
-          if: !formContext.userIsNew,
+          formatter: 'dateHourFormatter',
+          if: !formContext.userIsNew && formContext.formData.contractSignedAt,
         },
         'contractPercentage': {
           type: "number",
@@ -222,6 +233,22 @@ export function contractData(formContext) {
             }
           }
         },
+      }
+    },
+    {
+      if: !formContext.userIsNew && formContext.formData.contractSignedAt,
+      cols: {
+        'contractDoc': {
+          component: "contract-doc",
+          signinLogs: formContext.formData.signinLogs,
+          files: formContext.formData.contractFiles,
+          previewOnly: true
+        },
+        'contractDocSignLog': {
+          component: "contract-doc",
+          files: formContext.formData.contractFiles,
+          previewOnly: true
+        }
       }
     },
     {
@@ -327,9 +354,11 @@ export function extraData(formContext) {
             if (!value) {
               return
             }
+            if (value.id === formContext.$auth.user.id) {
+              return formContext.$i18n.t("forms.reference-agent-you")
+            }
 
             return `${value.firstName} ${value.lastName}`
-
           }
         }
       }
@@ -346,14 +375,14 @@ export function extraData(formContext) {
           disabled: true,
           formatter: 'dateHourFormatter'
         },
-        'activated_at': {
-          disabled: true,
-          formatter: 'dateHourFormatter'
-        },
-        'validated_at': {
-          disabled: true,
-          formatter: 'dateHourFormatter'
-        },
+        /*  'activated_at': {
+           disabled: true,
+           formatter: 'dateHourFormatter'
+         },
+         'validated_at': {
+           disabled: true,
+           formatter: 'dateHourFormatter'
+         }, */
       }
     }
   ]
