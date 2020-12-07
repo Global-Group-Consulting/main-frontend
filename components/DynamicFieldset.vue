@@ -89,6 +89,7 @@ import DatePicker from "@/components/forms/inputs/DatePicker";
 import MoneyInput from "@/components/forms/inputs/MoneyInput";
 import FileUploader from "@/components/forms/inputs/FileUploader";
 import ReceiversCombobox from "@/components/forms/inputs/ReceiversCombobox";
+import ContractDoc from "@/components/forms/inputs/ContractDoc";
 import ContractSign from "@/components/hompage/activationWizard/ContractSign";
 
 import { validationRules, errorMessages } from "@/mixins/ValidationsParser";
@@ -108,7 +109,8 @@ export default {
     VTextarea,
     MoneyInput,
     FileUploader,
-    ReceiversCombobox
+    ReceiversCombobox,
+    ContractDoc
   },
   mixins: [validationMixin],
   validations() {

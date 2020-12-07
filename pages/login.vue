@@ -40,7 +40,7 @@ import { computed, ref } from "@vue/composition-api";
 
 export default {
   layout: "public",
-  auth: false,
+  auth: "guest",
   components: {DynamicFieldset, DefaultPanel},
 
   head() {

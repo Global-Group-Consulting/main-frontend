@@ -65,6 +65,8 @@ export default {
     'info-incomplete-data-message': "Messaggio:",
     'info-incomplete-data-fields': "Campi non validi:",
     'info-incomplete-single-field': "Questo campo è stato segnalato come non valido",
+    'info-sign-logs-title': "Dettaglio eventi firma",
+    'no-contract-available': "Documento non ancora disponibile",
     'btn-go-back-tooltip': 'Torna all\'elenco degli utenti',
     'btn-send-activation-email': 'Invia email di attivazione',
     'btn-send-activation-email-tooltip': 'Invia email di attivazione',

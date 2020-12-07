@@ -15,6 +15,7 @@ ACTIVE - Utente accede la prima volta ed inserisce il codice ricevuto per email.
 
 
 */
+/** @enum */
 class AccountStatuses extends BasicEnum {
   /** @enum */
   constructor() {

@@ -58,6 +58,17 @@
               </v-card-text>
             </v-card>
           </v-menu>
+
+          <!-- Contract status -->
+          <v-menu offset-y open-on-hover bottom v-if="formData.account_status === $enums.AccountStatuses.VALIDATED">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn icon dark v-on="on" v-bind="attrs">
+                <v-icon>mdi-information</v-icon>
+              </v-btn>
+            </template>
+
+            <signing-logs-popup :value="formData.signinLogs"></signing-logs-popup>
+          </v-menu>
         </template>
       </page-header>
 
@@ -160,9 +171,9 @@
         <v-card>
           <v-tabs
             v-model="currentTab"
-            :background-color="accentColor"
+            :color="accentColor"
             center-active
-            dark
+
             show-arrows
           >
             <v-tab
@@ -173,6 +184,7 @@
               {{ $t("pages.usersId.tabs." + section.title) }}
             </v-tab>
           </v-tabs>
+          <v-divider></v-divider>
 
           <div>
             <v-tabs-items v-model="currentTab">
@@ -286,10 +298,12 @@ import userDetails from "@/functions/userDetails";
 import pageBasic from "@/functions/pageBasic";
 import usersForm from "../../functions/usersForm";
 import Permissions from "@/functions/permissions";
+import SigningLogsPopup from "@/components/elements/SigningLogsPopup";
 
 export default {
   name: "_id",
   components: {
+    SigningLogsPopup,
     UserMessage,
     DynamicFieldset,
     PageHeader,
@@ -334,7 +348,8 @@ export default {
       const formData = userForm.formData.value;
 
       return (
-        formData.account_status === AccountStatuses.VALIDATED ||
+        (formData.account_status === AccountStatuses.VALIDATED &&
+          ![UserRoles.CLIENTE, UserRoles.AGENTE].includes(+formData.role)) ||
         (formData.account_status === AccountStatuses.DRAFT &&
           [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(+formData.role))
       );

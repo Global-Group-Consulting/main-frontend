@@ -17,7 +17,7 @@ export default {
   'business-zip': 'Cap',
   'contacts': 'Contatti',
   'contract-bic': 'BIC cliente',
-  'contract-date': 'Data stipula contratto',
+  'contract-signed-at': 'Data stipula contratto',
   'contract-iban': 'Iban cliente',
   'contract-number': 'Numero contratto',
   'contract-number-legacy': 'Vecchio numero contratto',

@@ -208,14 +208,16 @@ export function contractData(formContext) {
       cols: {
         'contractNumber': {
           disabled: true,
+          formatter: 'contractNumberFormatter',
           if: !formContext.userIsNew
         },
         'contractNumberLegacy': {
           // disabled: true
         },
-        'contractDate': {
+        'contractSignedAt': {
           disabled: true,
-          if: !formContext.userIsNew,
+          formatter: 'dateHourFormatter',
+          if: !formContext.userIsNew && formContext.formData.contractSignedAt,
         },
         'contractPercentage': {
           type: "number",
@@ -234,17 +236,19 @@ export function contractData(formContext) {
       }
     },
     {
+      if: !formContext.userIsNew && formContext.formData.contractSignedAt,
       cols: {
         'contractDoc': {
-          component: "file-uploader",
+          component: "contract-doc",
+          signinLogs: formContext.formData.signinLogs,
           files: formContext.formData.contractFiles,
           previewOnly: true
         },
         'contractDocSignLog': {
-          component: "file-uploader",
+          component: "contract-doc",
           files: formContext.formData.contractFiles,
           previewOnly: true
-        },
+        }
       }
     },
     {

@@ -32,4 +32,7 @@ export default {
   'com-updated-at': "Data ultimo messaggio",
   'com-messages-count': "Messaggi totali",
   'com-messages-unread-count': "Messaggi non letti",
+  'sign-logs-user': "Utente",
+  'sign-logs-event': "Evento",
+  'sign-logs-date': "Data",
 }
