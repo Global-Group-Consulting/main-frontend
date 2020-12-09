@@ -9,11 +9,15 @@
     v-on="$listeners"
   >
     <template v-slot:item.user.contractNumber="{ item }">
-      {{ $options.filters.contractNumberFormatter(item.user.contractNumber) }}
+      <template v-if="item.user">
+        {{ $options.filters.contractNumberFormatter(item.user.contractNumber) }}
+      </template>
     </template>
 
     <template v-slot:item.user="{ item }">
-      {{ $options.filters.userFormatter(item.user) }}
+      <template v-if="item.user">
+        {{ $options.filters.userFormatter(item.user) }}
+      </template>
     </template>
 
     <template v-slot:item.actions="{ item }">

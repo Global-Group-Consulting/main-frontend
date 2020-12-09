@@ -13,6 +13,7 @@
     @click:row="$emit('click:row', $event)"
     :locale="$i18n.locale"
     :options="options"
+    mobile-breakpoint="0"
   >
     <!-- Dynamic item templates -->
     <template v-for="col in headers" v-slot:[`item.${col.value}`]="{ item }">
