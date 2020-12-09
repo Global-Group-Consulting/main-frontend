@@ -181,10 +181,13 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async acceptRequest(data) {
+  async acceptRequest(data, paymentDocDate) {
     return await this._call({
       method: "PUT",
       endPoint: `/api/requests/${data.id}/approve`,
+      body: {
+        paymentDocDate
+      }
     })
   }
 
