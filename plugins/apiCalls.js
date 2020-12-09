@@ -220,6 +220,12 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
+  async fetchCommissionsStatus(data) {
+    return await this.get({
+      endPoint: "/api/commissions/status" + (data && data.userId ? `/${data.userId}` : ''),
+    })
+  }
+
   async dashboardFetch() {
     return await this.get({
       endPoint: "/api/dashboards"

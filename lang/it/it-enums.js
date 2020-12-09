@@ -63,6 +63,7 @@ export default {
     "cancelInterestCollected": "Annullamento riscossione interessi",
     "cancelDepositCollected": "Annullamento riscossione capitale",
     "cancelCommissionCollected": "Annullamento riscossione provvigioni",
+    "commissionsReinvestment": "Reinvestimento provvigioni",
   },
   "MessageTypes": {
     'newsletter': "Newsletter",
@@ -86,5 +87,13 @@ export default {
     "signer_forwarded": "L'utente ha inoltrato il documento",
     "signer_downloaded": "L'utente ha scaricato il documento",
     "signrequest_received": "Richiesta di firma ricevuta"
+  },
+  "CommissionType": {
+    "newDeposit": "Provvigione versamento",
+    "totalDeposit": "Provvigione deposito mensile",
+    "annualDeposit": "Provvigione deposito annuale",
+    "commissionsReinvestment": "Reinvestimento provvigioni",
+    "commissionsCollected": "Riscossione provvigioni",
+    "cancelCommissionsCollected": "Annullamento riscossione provvigioni",
   }
 }

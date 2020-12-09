@@ -35,4 +35,6 @@ export default {
   'sign-logs-user': "Utente",
   'sign-logs-event': "Evento",
   'sign-logs-date': "Data",
+  'commission-type': "Tipologia Provvigione",
+  'total-commissions': "Provvigioni attuali",
 }

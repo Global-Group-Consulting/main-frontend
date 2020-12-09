@@ -216,6 +216,15 @@ const agente = {
         "deposit",
         "interestAmount"
       ]
+    },
+    commissions: {
+      columns: [
+        "amountChange",
+        "commissionType",
+        "user",
+        "createdAt",
+        "totalCommissions"
+      ]
     }
   },
   blocks: {
