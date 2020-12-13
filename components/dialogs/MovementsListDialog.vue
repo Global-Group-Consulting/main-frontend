@@ -2,9 +2,40 @@
   <div>
     <portal to="dialog-content">
       <template v-if="!loading">
+        <v-alert :type="contractImported ? 'success' : 'warning'"
+                 outlined class="text-center mt-3"
+                 v-if="canImportContract && (!user.contractFiles || user.contractFiles.length === 0)">
+          <template v-if="!contractImported">
+            {{ $t("dialogs.movementsList.alert-no-contract", user) }}
+
+            <div class="d-flex justify-center">
+              <file-uploader
+                class="flex-fill"
+                style="max-width: 400px"
+                @change="contractToImport = $event"
+                accept=".pdf"
+                :placeholder="$t('dialogs.movementsList.file-placeholder')"
+              ></file-uploader>
+            </div>
+
+            <v-btn
+              text
+              outlined
+              @click="onImportContractClick(contractToImport)"
+              :disabled="!contractToImport"
+            >
+              {{ $t("dialogs.movementsList.btn-import-contract") }}
+            </v-btn>
+          </template>
+          <template v-else>
+            {{ $t("dialogs.movementsList.alert-import-contract-success") }}
+          </template>
+        </v-alert>
+
+
         <v-alert
           :type="listImported ? 'success' : 'info'"
-          class="text-center mt-3"
+          class="text-center"
           outlined
           v-if="movements.list.value.length === 0 || listImported"
         >
@@ -30,7 +61,7 @@
             <v-btn
               text
               outlined
-              @click="onImportClick"
+              @click="onImportListClick(fileToImport)"
               :disabled="!fileToImport"
             >
               {{ $t("dialogs.movementsList.btn-import") }}
@@ -66,14 +97,16 @@ import MovementsFn from "@/functions/movementsFn.js";
 import UserRoles from "@/enums/UserRoles";
 
 export default {
-  components: { MovementsListTable, FileUploader },
-  setup(props, { root }) {
-    const { $auth, $alerts, $apiCalls } = root;
-    const { useGetters: dialogUseGetters } = createNamespacedHelpers("dialog");
-    const { dialogData } = dialogUseGetters(["dialogData"]);
+  components: {MovementsListTable, FileUploader},
+  setup(props, {root, emit}) {
+    const {$auth, $alerts, $apiCalls} = root;
+    const {useGetters: dialogUseGetters} = createNamespacedHelpers("dialog");
+    const {dialogData} = dialogUseGetters(["dialogData"]);
     const movementsFn = MovementsFn(root);
     const fileToImport = ref(null);
+    const contractToImport = ref(null);
     const listImported = ref(false);
+    const contractImported = ref(false);
     const loading = ref(true);
     const user = dialogData.value.data.user;
 
@@ -82,13 +115,41 @@ export default {
       UserRoles.ADMIN
     ].includes(+$auth.user.role); //$auth.user.superAdmin;
 
-    async function onImportClick() {
+    const canImportContract = [
+      UserRoles.SERV_CLIENTI,
+      UserRoles.ADMIN
+    ].includes(+$auth.user.role);
+
+    async function onImportContractClick(file) {
+      try {
+        await $alerts.askBeforeAction({
+          key: "contract-import",
+          preConfirm: async () => {
+            const result = await $apiCalls.importContract({
+              fileToImport: file,
+              userId: user.id
+            });
+
+            // store the received data in the current list so that can be shown to the user
+            // root.$set(movementsFn.list, "value", result);
+
+            emit("userUpdated", result)
+
+            contractImported.value = true;
+          }
+        });
+      } catch (er) {
+        $alerts.error(er);
+      }
+    }
+
+    async function onImportListClick(file) {
       try {
         await $alerts.askBeforeAction({
           key: "movements-import",
           preConfirm: async () => {
             const result = await $apiCalls.importMovementsList({
-              fileToImport: fileToImport.value,
+              fileToImport: file,
               userId: user.id
             });
 
@@ -113,11 +174,15 @@ export default {
 
     return {
       movements: movementsFn,
-      onImportClick,
+      onImportContractClick,
+      onImportListClick,
       canImportMovements,
+      canImportContract,
       user,
       fileToImport,
+      contractToImport,
       listImported,
+      contractImported,
       loading
     };
   }

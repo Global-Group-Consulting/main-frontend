@@ -10,7 +10,7 @@ export default function ({ $auth }) {
   /**
    * @type {import("@vue/composition-api").ComputedRef<boolean>}
    */
-  const superAdmin = computed(() => $auth.user.superAdmin)
+  const superAdmin = computed(() => !!$auth.user.superAdmin)
 
   /**
    * @type {import("@vue/composition-api").ComputedRef<"user" | "admin">}

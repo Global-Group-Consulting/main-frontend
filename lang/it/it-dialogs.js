@@ -36,11 +36,12 @@ export default {
     'btn-reject-request': "Rifiuta richiesta",
   },
   communicationNewDialog: {
-    "title-conversation": "Nuova conversazione",
-    "title-service": "Nuovo messaggio singolo",
+    "title-conversation": "Nuovo ticket",
+    "title-service": "Nuova comunicazione",
     "title-handle-new-deposit": "Comunicazione versamento nuovo deposito",
     "subject-new-deposit": "Comunicazione nuova richiesta di versamento - {date}",
     "message-new-deposit": "Gentile {firstName} {lastName},\nabbiamo ricevuto la sua richiesta di versamento.\nPer procedere, la invitiamo ad effettuare un bonifico della somma di €{amount} all'iban:\n[CODICE IBAN] \n\nSuccessivamente, la invitiamo a rispondere a questa comunicazione inviandoci la contabile del pagamento.\n\nCordiali saluti",
+    "your-agent": "Il tuo agente",
     'btn-cancel': "Annulla",
     'btn-send': "Invia"
   },
@@ -58,10 +59,13 @@ export default {
   movementsList: {
     'title': 'Elenco dei movimenti',
     'alert-no-data': "Al momento, l'utente {firstName} {lastName} non ha ancora alcun movimento.",
+    'alert-no-contract': "Al momento, l'utente {firstName} {lastName} non ha ancora un contratto attivo. Nel caso in cui l'utente abbia sottoscritto un contratto cartaceo, è possibile importarlo, scegliendo il file pdf e premendo su 'Importa contratto'.",
     'alert-import-data': "Tuttavia, è possibile importare la lista dei movimenti precedenti da un file \".csv\". Per procedere, sceglire il file da importare e premere sul pulsante 'Importa lista'.",
     'alert-import-success': "L'operazione di importazione è andata a buon fine. La invitiamo a controllare l'esattezza dei dati importati.",
+    'alert-import-contract-success': "Contratto importato correttamente. Questo sarà visibile nella sezione relativa al contratto.",
     'file-placeholder': "Scegli un file...",
     'btn-cancel': 'Chiudi',
     'btn-import': 'Importa lista',
+    'btn-import-contract': 'Importa contratto',
   }
 }

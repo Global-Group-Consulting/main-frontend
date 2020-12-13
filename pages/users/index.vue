@@ -25,6 +25,7 @@
               :items="group"
               :items-per-page="10"
               :hide-default-footer="group.length <= 10"
+              mobile-breakpoint="0"
             >
               <template v-slot:item.superAdmin="{ item }">
                 <v-tooltip right v-if="item.superAdmin">

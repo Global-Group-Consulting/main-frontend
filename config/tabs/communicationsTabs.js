@@ -1,11 +1,11 @@
 export default [
   {
     key: "conversations",
-    title: "conversations",
+    title: "tickets",
   },
   {
     key: "messages",
-    title: "messages",
+    title: "communications",
   },
   {
     key: "messagesSent",

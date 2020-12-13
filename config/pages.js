@@ -16,5 +16,8 @@ export default {
   },
   'movements': {
     icon: 'mdi-swap-horizontal'
+  },
+  'wallet': {
+    icon: 'mdi-wallet'
   }
 }

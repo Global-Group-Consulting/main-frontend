@@ -18,9 +18,13 @@ export default {
   'UserRoles': {
     'superAdmin ': 'Super Admin',
     'admin': 'Amministrazione',
+    'admin_plural': 'Amministrazione',
     'servClienti': 'Servizio clienti',
+    'servClienti_plural': 'Servizio clienti',
     'agente': 'Agente',
+    'agente_plural': 'Agenti',
     'cliente': 'Cliente',
+    'cliente_plural': 'Clienti',
     'cliente-new': 'Cliente (da attivare)'
   },
   'Genders': {
@@ -41,7 +45,7 @@ export default {
   'RequestTypes': {
     'admin': 'Admin',
     'versamento': 'Versamento',
-    'interessi': 'Riscossione provvigioni',
+    'risc_provvigioni': 'Riscossione provvigioni',
     'risc_capitale': 'Prelievo deposito',
     'risc_interessi': 'Riscossione rendite (classic)',
   },
@@ -63,6 +67,7 @@ export default {
     "cancelInterestCollected": "Annullamento riscossione interessi",
     "cancelDepositCollected": "Annullamento riscossione capitale",
     "cancelCommissionCollected": "Annullamento riscossione provvigioni",
+    "commissionsReinvestment": "Reinvestimento provvigioni",
   },
   "MessageTypes": {
     'newsletter': "Newsletter",
@@ -86,5 +91,14 @@ export default {
     "signer_forwarded": "L'utente ha inoltrato il documento",
     "signer_downloaded": "L'utente ha scaricato il documento",
     "signrequest_received": "Richiesta di firma ricevuta"
+  },
+  "CommissionType": {
+    "newDeposit": "Provvigione versamento",
+    "totalDeposit": "Provvigione deposito mensile",
+    "annualDeposit": "Provvigione deposito annuale",
+    "commissionsReinvestment": "Reinvestimento provvigioni",
+    "commissionsCollected": "Riscossione provvigioni",
+    "cancelCommissionsCollected": "Annullamento riscossione provvigioni",
+    "commissionsToReinvest": "Chiusura mese e reinvestimento"
   }
 }

@@ -137,7 +137,7 @@
 
           <tooltip-btn
             :tooltip="$t('pages.usersId.btn-movements-list')"
-            icon-name="mdi-swap-vertical"
+            icon-name="mdi-view-list"
             text
             @click="openMovementsList"
             v-if="canSeeMovementsList"
@@ -277,6 +277,7 @@
 
     <movements-list-dialog
       v-if="$store.getters['dialog/dialogId'] === 'MovementsListDialog'"
+      @userUpdated="onUserUpdated"
     ></movements-list-dialog>
   </v-layout>
 </template>
@@ -452,6 +453,10 @@ export default {
 
     function onAccountStatusChanged(userData) {
       $set(userForm.formData.value, "account_status", userData.account_status);
+    }
+
+    function onUserUpdated(userData) {
+      $set(userForm.formData, "value", userData);
     }
 
     function onCheckedFieldsChange(newValue) {
@@ -640,6 +645,7 @@ export default {
       openChangeStatusDialog,
       openMovementsList,
       onAccountStatusChanged,
+      onUserUpdated,
       onCheckedFieldsChange,
       askApproveUser,
       askConfirmDraftUser,

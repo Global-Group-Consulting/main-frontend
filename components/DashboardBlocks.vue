@@ -1,7 +1,7 @@
 <template>
   <v-row class="">
     <v-col v-for="block of blocksList" :key="block.id" md="3" sm="6">
-      <v-card class="flex-fill flex-row d-flex align-start">
+      <v-card class="flex-fill flex-row d-flex align-start" style="height: 100%">
         <v-icon x-large class="ml-3 mt-3" :color="block.color">
           {{ block.icon }}
         </v-icon>
@@ -14,12 +14,13 @@
             }}
           </v-card-title>
           <v-card-text>
-            {{ $t(`pages.dashboard.${block.title}`) }}
+            {{ $t(`pages.${page}.${block.title}`) }}
           </v-card-text>
 
-          <v-card-actions class="text-right pt-0 transparent">
+          <v-card-actions class="text-right pt-0 transparent"
+                          v-if="block.action">
             <v-btn link text small color="primary" @click="block.action">
-              {{ $t(`pages.dashboard.${block.actionText}`) }}
+              {{ $t(`pages.${page}.${block.actionText}`) }}
             </v-btn>
           </v-card-actions>
         </div>
@@ -42,6 +43,10 @@ export default {
     dashboardData: {
       type: Object,
       required: true
+    },
+    page: {
+      default: "dashboard",
+      type: String
     }
   },
   setup(props, { root }) {
@@ -58,20 +63,25 @@ export default {
       },
       collectInterests() {
         $router.push("/requests?new=collect_interests");
+      },
+      collectCommissions() {
+        $router.push("/requests?new=collect_commissions");
       }
     };
 
     const blocksList = computed(() => {
-      const userRole = +$auth.user.role;
+      const userRole = props.forRole || +$auth.user.role;
       const roleName = UserRoles.getIdName(userRole);
 
       const blocks = _get(
         RoleBasedConfig,
-        `${roleName}.blocks.dashboard.blocks`
+          `${roleName}.blocks.${props.page}.blocks`
       );
 
       if (!blocks) {
-        console.warn("Can't find config for " + roleName);
+        console.warn("Can't find config for " + roleName)
+
+        return []
       }
 
       return blocks.reduce((acc, _block) => {

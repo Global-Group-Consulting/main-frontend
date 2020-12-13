@@ -34,7 +34,14 @@ export function formDataFromObject(obj, formDataInstance, prefix, removeEmpty = 
         formData.append((prefix ? `${prefix}.` : '') + key + "[]", _file)
       }
     } else if (value instanceof Array) {
-      value.forEach(entry => formData.append((prefix ? `${prefix}.` : '') + key + '[]', entry))
+      value.forEach(entry => {
+        if (entry.constructor.name === 'Object') {
+          // formDataFromObject(entry, formData, (prefix ? `${prefix}.` : '') + key + '[]')
+          formData.append((prefix ? `${prefix}.` : '') + key + '[]', JSON.stringify(entry))
+        } else {
+          formData.append((prefix ? `${prefix}.` : '') + key + '[]', entry)
+        }
+      })
     } else {
       formData.append((prefix ? `${prefix}.` : '') + key, value)
     }

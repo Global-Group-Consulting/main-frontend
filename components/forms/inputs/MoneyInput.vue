@@ -16,14 +16,14 @@
       <slot name="prepend"></slot>
     </template>
 
-    <template v-slot:append-outer v-if="suffix">
+    <template v-slot:append-outer v-if="suffix || (showMax && !$attrs.disabled && !$attrs.readonly)">
       <em v-html="suffix" class="v-text-field__suffix mt-1"></em>
 
-      <span class="mx-1" v-if="suffix && showMax"></span>
+      <span class="mx-1" v-if="suffix && showMax && !$attrs.disabled && !$attrs.readonly"></span>
 
       <v-btn
         text
-        v-if="showMax"
+        v-if="showMax && !$attrs.disabled && !$attrs.readonly"
         small
         outlined
         color="primary"
@@ -95,14 +95,15 @@
     },
     methods: {
       formatForEmit(value) {
-        let toEmit = value.toString();
+        const formattedValue = this.$options.filters.moneyFormatter(value)
+
+        let toEmit = formattedValue.toString();
 
         if (toEmit) {
-          toEmit = toEmit.replace(/[^.,0-9]/g, "");
-          toEmit = toEmit.replace(/\./g, "").replace(",", ".");
+          toEmit = +toEmit.replace(/\./g, "").replace(",", ".");
         }
 
-        return Number.isNaN(+toEmit) ? null : +toEmit;
+        return isNaN(toEmit) ? null : toEmit;
       },
       onChange(value) {
         this.$emit("change", this.formatForEmit(value));

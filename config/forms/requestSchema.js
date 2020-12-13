@@ -10,8 +10,8 @@ import RequestTypes from "../../enums/RequestTypes"
 import RequestStatus from "../../enums/RequestStatus"
 
 /**
- * 
- * @param {ComputedContext} context 
+ *
+ * @param {ComputedContext} context
  * @returns {import("../../@types/FormSchema").FormSchema[]}
  */
 export default function (context) {
@@ -33,7 +33,7 @@ export default function (context) {
             let mustHide = false
 
             if (type.value === context.$enums.RequestTypes.VERSAMENTO ||
-              (type.value === context.$enums.RequestTypes.INTERESSI &&
+              (type.value === context.$enums.RequestTypes.RISC_INTERESSI &&
                 context.$auth.user.role !== context.$enums.UserRoles.AGENTE)
             ) {
               mustHide = true

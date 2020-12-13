@@ -26,14 +26,15 @@ import CommunicationNewSchema from "@/config/forms/communicationNewSchema";
 
 import DynamicFieldset from "@/components/DynamicFieldset";
 
-import { ref, onBeforeMount, computed, onMounted } from "@vue/composition-api";
+import {ref, onBeforeMount, computed, onMounted} from "@vue/composition-api";
+import UserRoles from "@/enums/UserRoles";
 
 export default {
   name: "CommunicationNewDialog",
-  components: { DynamicFieldset },
+  components: {DynamicFieldset},
 
-  setup(props, { root, refs, emit }) {
-    const { $apiCalls, $alerts, $enums, $store } = root;
+  setup(props, {root, refs, emit}) {
+    const {$apiCalls, $alerts, $enums, $store, $auth} = root;
 
     const formData = ref({});
     const usersList = ref([]);
@@ -56,7 +57,7 @@ export default {
       return usersList.value;
     });
     const availableCC = computed(() => {
-      if (formData.value.receiver) {
+      if (formData.value.receiver && formData.value.receiver instanceof Array) {
         return usersList.value.filter(
           _cc =>
             !formData.value.receiver.find(
@@ -67,6 +68,7 @@ export default {
 
       return usersList.value;
     });
+    const userType = computed(() => [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes($auth.user.role) ? "admin" : "user")
 
     const communicationNewSchema = computed(CommunicationNewSchema);
 
@@ -78,17 +80,43 @@ export default {
           `enums.UserRoles.${$enums.UserRoles.getIdName(_user.role)}`
         );
 
-        if (lastType !== role) {
-          lastType = role;
-
-          acc.push(...[{ divider: true }, { header: role }]);
-        }
-
-        acc.push({
+        const toAdd = {
           value: _user.id,
           text: _user.firstName + " " + _user.lastName,
           role
-        });
+        }
+
+        if (!_user.id) {
+          Object.assign(toAdd, {
+            value: _user.role,
+            text: role,
+            role
+          })
+
+          if (dialogData.value.type !== $enums.MessageTypes.CONVERSATION) {
+            toAdd.text = root.$t(
+              `enums.UserRoles.${$enums.UserRoles.getIdName(_user.role)}_plural`
+            );
+
+          }
+        } else {
+          if ($enums.UserRoles.CLIENTE === $auth.user.role) {
+            toAdd.text += ` (${root.$t("dialogs.communicationNewDialog.your-agent")})`
+          } else {
+            toAdd.text += ` (${role})`
+          }
+        }
+
+        if (![$enums.UserRoles.CLIENTE, $enums.UserRoles.AGENTE].includes($auth.user.role)
+          && dialogData.value.type === $enums.MessageTypes.CONVERSATION) {
+          if (lastType !== role && $auth.user.role !== $enums.UserRoles.CLIENTE) {
+            lastType = role;
+
+            acc.push(...[{divider: true}, {header: role}]);
+          }
+        }
+
+        acc.push(toAdd);
 
         return acc;
       }, []);
@@ -109,9 +137,9 @@ export default {
         messageSending.value = true;
 
         const receiver = [
-          ...(formData.value.receiver || []),
-          ...(formData.value.watchers || [])
-        ];
+          (formData.value.receiver || []),
+          (formData.value.watchers || [])
+        ].flat();
 
         const communicationData = {
           content: formData.value.message,
@@ -126,6 +154,10 @@ export default {
         }
 
         const result = await $apiCalls.communicationSend(communicationData);
+
+        if (!result) {
+          throw new Error("No communication was created")
+        }
 
         emit("communicationAdded", result);
 
@@ -156,9 +188,13 @@ export default {
 
     onBeforeMount(async () => {
       try {
-        const result = await $apiCalls.communicationsFetchReceivers();
+        const result = await $apiCalls.communicationsFetchReceivers(dialogData.value.type);
 
         root.$set(usersList, "value", _formatUsersList(result));
+
+        if (userType.value === "user") {
+          formData.value.receiver = $enums.UserRoles.SERV_CLIENTI
+        }
 
         if (dialogData.value.request) {
           _fillFormData();

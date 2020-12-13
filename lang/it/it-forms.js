@@ -81,5 +81,12 @@ export default {
   'communication-cc': "CC",
   'communication-message': "Messaggio",
   'communication-attachments': "Allegati",
-
+  'agentCommissions': "Provvigioni Agente",
+  'new-deposit': "Provvigione sui versamenti",
+  'new-deposit-details': "Ad ogni nuovo versamento di un suo cliente, l'agente riceverà il {percentage} % in provvigioni.",
+  'total-deposit': "Provvigione sul deposito mensile",
+  'total-deposit-details': "Ad ogni ricapitalizzazione, per ogni suo cliente, l'agente riceverà x % calcolato sul capitale del cliente, in provvigioni.\n(X = 4 - la percentuale assegnata al cliente. Se quest'ultima è maggiore o uguale a 4, l'agente non riceverà nulla.)",
+  'annual-deposit': "Provvigione sul deposito annuale",
+  'annual-deposit-details': "Allo scadere di ogni anno, all'agente verrà riconosciuto una percentuale totale del 6%, corrisposta in 3 mensilità (aprile, agosto e dicembre), sul totale del capitale versato dai suoi clienti.",
+  'payment-doc-date': "Data contabile (gg/mm/aaaa)"
 }

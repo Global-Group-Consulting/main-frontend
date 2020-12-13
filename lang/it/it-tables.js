@@ -28,6 +28,7 @@ export default {
   'com-sender': "Mittente",
   'com-receiver': "Destinatari",
   'com-type': "Tipologia",
+  'com-creator': "Mittente",
   'com-created-at': "Data invio",
   'com-updated-at': "Data ultimo messaggio",
   'com-messages-count': "Messaggi totali",
@@ -35,4 +36,7 @@ export default {
   'sign-logs-user': "Utente",
   'sign-logs-event': "Evento",
   'sign-logs-date': "Data",
+  'commission-type': "Tipologia Provvigione",
+  'curr-month-commissions': "Provvigioni attuali",
+  'commission-percentage': "Percentuale applicata",
 }

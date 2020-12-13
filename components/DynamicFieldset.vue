@@ -90,7 +90,7 @@ import MoneyInput from "@/components/forms/inputs/MoneyInput";
 import FileUploader from "@/components/forms/inputs/FileUploader";
 import ReceiversCombobox from "@/components/forms/inputs/ReceiversCombobox";
 import ContractDoc from "@/components/forms/inputs/ContractDoc";
-import ContractSign from "@/components/hompage/activationWizard/ContractSign";
+import AgentCommissionsSelect from "@/components/forms/inputs/AgentCommissionsSelect";
 
 import { validationRules, errorMessages } from "@/mixins/ValidationsParser";
 import { validationMixin } from "vuelidate";
@@ -105,12 +105,12 @@ export default {
     VSelect,
     DatePicker,
     VFileInput,
-    ContractSign,
     VTextarea,
     MoneyInput,
     FileUploader,
     ReceiversCombobox,
-    ContractDoc
+    ContractDoc,
+    AgentCommissionsSelect
   },
   mixins: [validationMixin],
   validations() {
