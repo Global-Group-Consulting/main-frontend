@@ -39,18 +39,21 @@
         </v-toolbar-items>
       </v-toolbar>
 
-      <v-row v-for="table of requestsTables" :key="table.id">
-        <v-col cols="12">
-          <v-card>
-            <v-card-title class="p-relative">
-              <v-icon class="mr-2">{{ table.icon }}</v-icon>
-              {{ table.title }}
-              <div
-                class="v-alert__border v-alert__border--bottom"
-                :class="table.color"
-              ></div>
-            </v-card-title>
+      <v-tabs v-model="currentTab" :color="getTabColor">
+        <v-tab v-for="table of requestsTables" :key="table.id">
+          <v-icon class="mr-2">{{ table.icon }}</v-icon>
+          {{ table.title }} ({{ requestsGroups[table.id].length }})
+          <!--          <div
+                      class="v-alert__border v-alert__border&#45;&#45;bottom"
+                      :class="table.color"
+                    ></div>-->
 
+        </v-tab>
+      </v-tabs>
+
+      <v-tabs-items v-model="currentTab">
+        <v-tab-item v-for="table of requestsTables" :key="table.id">
+          <v-card>
             <requests-list-table
               :condition="table.id"
               :items="requestsGroups[table.id]"
@@ -60,10 +63,11 @@
               @click:row="openRequestDetails"
               @refetchData="onRefetchData"
               @requestStartWorking="onRequestStartWorking"
+              items-per-page="25"
             ></requests-list-table>
           </v-card>
-        </v-col>
-      </v-row>
+        </v-tab-item>
+      </v-tabs-items>
     </v-flex>
 
     <request-dialog
@@ -121,6 +125,7 @@ export default {
     } = root;
     const permissions = permissionsFn(root);
     const requestsList = ref([]);
+    const currentTab = ref(0);
     const requestsGroups = computed(() => {
       const toReturn = {
         nuova: [],
@@ -180,6 +185,10 @@ export default {
         }
       ];
     });
+
+    const getTabColor = computed(() => {
+      return requestsTables.value[currentTab.value].color
+    })
 
     async function _fetchAll() {
       try {
@@ -312,12 +321,15 @@ export default {
             break;
           case "collect_deposit":
           case "collect_interests":
+          case "collect_commissions":
             let type;
 
             if (query.new === "collect_deposit") {
               type = RequestTypes.RISC_CAPITALE;
             } else if (query.new === "collect_interests") {
               type = RequestTypes.RISC_INTERESSI;
+            } else if (query.new === "collect_commissions") {
+              type = RequestTypes.RISC_PROVVIGIONI;
             }
 
             newWithdrawlRequest(type);
@@ -329,10 +341,12 @@ export default {
     return {
       ...pageBasicFn(root, "requests"),
       ...tableHeadersFn(tableHeadersSchema, "requests", root),
+      currentTab,
       permissions,
       requestsList,
       requestsGroups,
       requestsTables,
+      getTabColor,
       newDepositRequest,
       newWithdrawlRequest,
       openRequestDetails,

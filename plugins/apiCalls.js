@@ -115,6 +115,15 @@ export class ApiCalls extends BasicApiCall {
     }))
   }
 
+  async importContract(body) {
+    return (await this._call({
+      method: "POST",
+      endPoint: `/api/users/${body.userId}/importContract`,
+      body,
+      uploadMode: true
+    }))
+  }
+
   async dashboardData() {
     return await this.get({
       endPoint: "/api/dashboards"
@@ -238,9 +247,9 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async communicationsFetchReceivers() {
+  async communicationsFetchReceivers(messageType) {
     return await this.get({
-      endPoint: "/api/communications/receivers"
+      endPoint: "/api/communications/receivers?m=" + messageType,
     })
   }
 

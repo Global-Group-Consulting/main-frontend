@@ -18,9 +18,13 @@ export default {
   'UserRoles': {
     'superAdmin ': 'Super Admin',
     'admin': 'Amministrazione',
+    'admin_plural': 'Amministrazione',
     'servClienti': 'Servizio clienti',
+    'servClienti_plural': 'Servizio clienti',
     'agente': 'Agente',
+    'agente_plural': 'Agenti',
     'cliente': 'Cliente',
+    'cliente_plural': 'Clienti',
     'cliente-new': 'Cliente (da attivare)'
   },
   'Genders': {
@@ -41,7 +45,7 @@ export default {
   'RequestTypes': {
     'admin': 'Admin',
     'versamento': 'Versamento',
-    'interessi': 'Riscossione provvigioni',
+    'risc_provvigioni': 'Riscossione provvigioni',
     'risc_capitale': 'Prelievo deposito',
     'risc_interessi': 'Riscossione rendite (classic)',
   },
@@ -95,5 +99,6 @@ export default {
     "commissionsReinvestment": "Reinvestimento provvigioni",
     "commissionsCollected": "Riscossione provvigioni",
     "cancelCommissionsCollected": "Annullamento riscossione provvigioni",
+    "commissionsToReinvest": "Chiusura mese e reinvestimento"
   }
 }

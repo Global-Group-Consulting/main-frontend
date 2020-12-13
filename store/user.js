@@ -9,9 +9,7 @@ const emptyWallets = [{
   interestPercentage: 0
 }, {
   type: WalletTypes.COMMISION,
-  deposit: 0,
-  interestAmount: 0,
-  interestPercentage: 0
+  currMonthCommissions: 0,
 }]
 
 export const state = () => ({
@@ -49,6 +47,9 @@ export const actions = {
       commit("UPDATE_WALLETS", [{
         ...result,
         type: WalletTypes.DEPOSIT
+      }, {
+        currMonthCommissions: result.currMonthCommissions,
+        type: WalletTypes.COMMISION
       }])
     } catch (er) {
       console.error(er)

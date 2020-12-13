@@ -1,9 +1,5 @@
 <template>
   <div>
-    <!-- <activation-wizard v-if="userMustActivate"
-                       class="mb-5"
-    /> -->
-
     <dashboard-blocks :dashboard-data="dashboardData"></dashboard-blocks>
 
     <v-row class="my-5">
@@ -34,14 +30,14 @@
       </v-col>
     </v-row>
 
-    <v-card width="100%" class="text-center mb-5">
+<!--    <v-card width="100%" class="text-center mb-5">
       <v-card-text>
         <chart-lines
           :labels="agentDashboardChart.labels"
           :datasets="chartsAdminDataset"
         />
       </v-card-text>
-    </v-card>
+    </v-card>-->
   </div>
 </template>
 

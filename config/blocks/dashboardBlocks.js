@@ -30,5 +30,38 @@ export default {
     value: "interestsCollected",
     actionText: "interestsCollect",
     action: "collectInterests"
+  },
+  monthCommissions: {
+    title: "monthCommissions",
+    icon: "mdi-wallet",
+    color: "green",
+    value: "monthCommissions",
+    actionText: "collectCommissions",
+    action: "collectCommissions"
+  },
+  reinvestedCommissions: {
+    title: "reinvestedCommissions",
+    icon: "mdi-wallet",
+    color: "orange",
+    value: "reinvestedCommissions",
+    // actionText: "reinvestedCommissions",
+    // action: "collectInterests"
+  },
+  collectedCommissions: {
+    title: "collectedCommissions",
+    icon: "mdi-wallet",
+    color: "red",
+    value: "collectedCommissions",
+    // actionText: "collectedCommissions",
+    // action: "collectInterests"
+  },
+  clientsTotalDeposit: {
+    title: "clientsTotalDeposit",
+    icon: "mdi-wallet",
+    color: "green",
+    value: "clientsTotalDeposit",
+    // actionText: "collectedCommissions",
+    // action: "collectInterests"
   }
+
 }

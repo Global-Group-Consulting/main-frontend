@@ -72,12 +72,12 @@ const menuItems = [
     type: 'group',
     text: 'utilities',
     childs: [
-      {
+      /*{
         id: 'calculator',
         text: 'calculator',
         icon: 'mdi-calculator-variant',
         link: '/calculator'
-      },
+      },*/
       {
         id: 'comunications',
         text: 'comunications',

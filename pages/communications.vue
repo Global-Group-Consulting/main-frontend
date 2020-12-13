@@ -8,13 +8,13 @@
       ></page-header>
 
       <v-toolbar class="mb-5" v-if="permissions.seeToolbar.value">
-        <v-toolbar-items class="flex-fill">
+        <v-toolbar-items class="flex-fill justify-center">
           <tooltip-btn
             :tooltip="$t('pages.communications.btn-new-conversation')"
             text
             icon-name="mdi-forum"
             @click="openNewCommunication($enums.MessageTypes.CONVERSATION)"
-            v-if="permissions.createConversation.value"
+            v-if="permissions.createTicket.value"
           >
             {{ $t("pages.communications.btn-new-conversation") }}
           </tooltip-btn>
@@ -24,7 +24,7 @@
             text
             icon-name="mdi-email-plus"
             @click="openNewCommunication($enums.MessageTypes.SERVICE)"
-            v-if="permissions.createServiceMessage.value"
+            v-if="permissions.createCommunication.value"
           >
             {{ $t("pages.communications.btn-new-message") }}
           </tooltip-btn>
@@ -63,17 +63,31 @@
                 }}
               </template>
 
-              <template v-slot:item.receiver="{ item }">
-                <span v-for="(receiver, i) of item.receiver" :key="receiver.id">
-                  {{ receiver.firstName }} {{ receiver.lastName }} ({{
-                    $t(
-                      "enums.UserRoles." +
-                        $enums.UserRoles.getIdName(receiver.role)
-                    )
-                  }})
+              <template v-slot:item.creator="{ item }">
+                <div v-if="item.createdById !== $auth.user.id">
+                  {{ item.creator.firstName }} {{ item.creator.lastName }}
+                </div>
 
-                  <span v-if="i < item.receiver.length - 1">, </span>
-                </span>
+                <div v-else>{{ $t("pages.communications.me") }}</div>
+              </template>
+
+              <template v-slot:item.receiver="{ item }">
+                <div v-for="(receiver, i) of item.receiver"
+                     :key="receiver.id || i"
+                     v-if="receiver">
+                  <span v-if="i < receiversShowLimit">
+                    {{ receiver.firstName }} {{ receiver.lastName }} ({{
+                      $t(
+                        "enums.UserRoles." +
+                        $enums.UserRoles.getIdName(receiver.role)
+                      )
+                    }})<span v-if="i < item.receiver.length - 1">, </span>
+                  </span>
+
+                  <span v-else-if="i === receiversShowLimit">
+                    + altri {{ item.receiver.length - receiversShowLimit }} utenti
+                  </span>
+                </div>
               </template>
 
               <template v-slot:item.unreadMessages="{ item }">
@@ -115,9 +129,15 @@ import CommunicationsTabs from "@/config/tabs/communicationsTabs";
 
 export default {
   name: "index",
-  components: { ComunicationDetailsDialog, CommunicationNewDialog },
-  setup(props, { root }) {
-    const { $apiCalls, $alerts, $enums, $auth, $route } = root;
+  components: {ComunicationDetailsDialog, CommunicationNewDialog},
+  props: {
+    receiversShowLimit: {
+      type: Number,
+      default: 2
+    }
+  },
+  setup(props, {root}) {
+    const {$apiCalls, $alerts, $enums, $auth, $route} = root;
 
     let dataRefreshTimer = null;
     const currentTab = ref(0);
@@ -130,25 +150,22 @@ export default {
     const communicationsTabs = computed(() =>
       CommunicationsTabs.filter(_tab => {
         return _tab.key === "messagesSent"
-          ? ![$enums.UserRoles.CLIENTE, $enums.UserRoles.AGENTE].includes(
-              $auth.user.role
-            )
-          : true;
+          ? $enums.UserRoles.ADMIN === $auth.user.role : true;
       })
     );
     const permissions = {
-      createConversation: computed(
-        () => $auth.user.role !== $enums.UserRoles.CLIENTE
+      createTicket: computed(
+        () => true//$auth.user.role !== $enums.UserRoles.CLIENTE
       ),
-      createServiceMessage: computed(() =>
-        [$enums.UserRoles.ADMIN, $enums.UserRoles.SERV_CLIENTI].includes(
+      createCommunication: computed(() =>
+        [$enums.UserRoles.ADMIN].includes(
           $auth.user.role
         )
       ),
       seeToolbar: computed(
         () =>
-          permissions.createConversation.value ||
-          permissions.createServiceMessage.value
+          permissions.createTicket.value ||
+          permissions.createCommunication.value
       )
     };
 
@@ -185,7 +202,6 @@ export default {
         fullscreen: isConversation,
         readonly: !isConversation || communication.readonly,
         texts: { cancelBtn: root.$t("dialogs.communicationDialog.btn-cancel") },
-        contentClass: "blue-grey lighten-5",
         data: {
           ...communication,
           isConversation
@@ -214,7 +230,7 @@ export default {
     async function onCommunicationAdded(communication) {
       const updatedSection = await $apiCalls.communicationsFetch(
         communication.type +
-          (communication.senderId === $auth.user.id ? "&out" : "")
+        (communication.senderId === $auth.user.id ? "&out" : "")
       );
 
       if (communication.type === $enums.MessageTypes.CONVERSATION) {

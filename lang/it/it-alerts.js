@@ -73,6 +73,12 @@ export default {
   "movements-import-cancelBtnText": "Annulla",
   "movements-import-success": "Dati importati correttamente!",
 
+  "contract-import-title": "Importare contratto?",
+  "contract-import-text": "Questo salverò il documento caricato come contratto dell'utente, il quale lo potrà successivamente consultare. <strong>L'operazione non potrà essere annullata ed il contratto non potrà essere modificato!</strong>",
+  "contract-import-confirmBtnText": "Si, importa il file",
+  "contract-import-cancelBtnText": "Annulla",
+  "contract-import-success": "Contratto importati correttamente!",
+
   "communication-new-success": "Messaggio inviato correttamente!",
 
   "confirm-draft-user-title": "Confermare account?",

@@ -6,9 +6,10 @@
       :icon="icon"
     ></page-header>
 
-    <!--    <dashboard-blocks :dashboard-data="dashboardData"></dashboard-blocks>-->
+    <dashboard-blocks :dashboard-data="dashboardData"
+                      page="wallet"></dashboard-blocks>
 
-    <v-row>
+    <v-row class="my-5">
       <v-col cols="12">
         <v-card>
 
@@ -38,10 +39,16 @@
               <div v-html="formatCommissionType(item)"></div>
             </template>
 
-            <template v-slot:item.totalCommissions="{ item }">
-      <span class="text-no-wrap">
-        € {{ item.totalCommissions|moneyFormatter }}
-      </span>
+            <template v-slot:item.commissionPercentage="{ item }">
+              <span v-if="item.commissionPercentage">
+                {{ item.commissionPercentage }} %
+              </span>
+            </template>
+
+            <template v-slot:item.currMonthCommissions="{ item }">
+              <span class="text-no-wrap">
+                € {{ item.currMonthCommissions|moneyFormatter }}
+              </span>
             </template>
 
           </data-table>
@@ -67,10 +74,10 @@ export default {
     const {$apiCalls, $options, $i18n} = root
     const dashboardData = reactive({
       blocks: {
-        monthTotalCommissions: 0,
-        agentTotalCommissions: 0,
-        monthCollectedCommissions: 0,
-        agentTotalReinvestedCommissions: 0
+        monthCommissions: 0,
+        reinvestedCommissions: 0,
+        collectedCommissions: 0,
+        clientsTotalDeposit: 0,
       }
     });
     const commissions = ref([])
@@ -111,7 +118,7 @@ export default {
      *@param {IMovement} item
      */
     function getItemClass(item) {
-      if (item.commissionType === CommissionType.COMMISSIONS_REINVESTMENT) {
+      if (item.commissionType === CommissionType.COMMISSIONS_TO_REINVEST) {
         return "yellow lighten-5";
       }
     }
