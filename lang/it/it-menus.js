@@ -11,5 +11,6 @@ export default {
   "approve": "Approva",
   "reject": "Rifiuta",
   "cancel": "Annulla",
-  "cancelRequest": "Annulla richiesta"
+  "cancelRequest": "Annulla richiesta",
+  "approveUser": "Attiva account"
 }

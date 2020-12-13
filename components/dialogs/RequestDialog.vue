@@ -190,8 +190,10 @@ export default {
           toReturn = wallet.value?.deposit ?? 0;
           break;
         case $enums.RequestTypes.RISC_INTERESSI:
-        case $enums.RequestTypes.INTERESSI:
           toReturn = wallet.value?.interestAmount ?? 0;
+          break;
+        case $enums.RequestTypes.RISC_PROVVIGIONI:
+          toReturn = wallet.value?.currMonthCommissions ?? 0;
           break;
       }
 
@@ -272,7 +274,7 @@ export default {
       () => formData.value.type,
       type => {
         formData.value.wallet =
-          type !== $enums.RequestTypes.INTERESSI
+          type !== $enums.RequestTypes.RISC_PROVVIGIONI
             ? $enums.WalletTypes.DEPOSIT
             : $enums.WalletTypes.COMMISION;
 
@@ -301,10 +303,6 @@ export default {
 
       $store.dispatch("user/updateWallets", { apiCalls: $apiCalls, data });
     });
-
-    // I set the wallet here so that i can force the "availableAmount" computed refresh
-    /* formData.value.wallet =
-      dialogData.value?.data.wallet || $enums.WalletTypes["DEPOSIT"]; */
 
     return {
       formData,

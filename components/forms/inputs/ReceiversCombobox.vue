@@ -21,7 +21,7 @@
       <template v-else>
         <v-list-item-content>
           <v-list-item-title v-html="data.item.text"></v-list-item-title>
-          <v-list-item-subtitle v-html="data.item.role"></v-list-item-subtitle>
+          <v-list-item-subtitle v-html="data.item.role" v-if="showRole"></v-list-item-subtitle>
         </v-list-item-content>
       </template>
     </template>
@@ -37,6 +37,9 @@
 
 <script>
 export default {
+  props: {
+    showRole: true
+  },
   methods: {
     remove(data) {
       const dataArray = data.parent.value;

@@ -87,7 +87,7 @@ export default {
     'btn-validate-user-tooltip': "Convalida l'account e quindi invia il contratto da firmare.",
     'btn-incomplete-user': "Segnala dati",
     'btn-incomplete-user-tooltip': "Segnala all'agente di riferimento i dati non corretti.",
-    'btn-movements-list': "Lista movimenti",
+    'btn-movements-list': "Movimenti e Contratto",
 
     tabs: {
       'user-data': 'Dati Utente',
@@ -100,13 +100,14 @@ export default {
 
   },
   communications: {
-    title: 'Comunicazioni e messaggi',
+    title: 'Ticket e comunicazioni',
     subtitle: '',
-    conversations: "Conversazioni",
-    messages: "Messaggi & Notifiche",
-    messagesSent: "Messaggi Inviati",
-    "btn-new-conversation": "Nuova conversazione",
-    "btn-new-message": "Nuovo messaggio singolo"
+    tickets: "Ticket",
+    communications: "Comunicazioni",
+    messagesSent: "Comunicazioni Inviate",
+    me: "Me",
+    "btn-new-conversation": "Nuovo ticket",
+    "btn-new-message": "Nuova comunicazione"
   },
   requests: {
     title: "Elenco delle richieste",
@@ -115,10 +116,10 @@ export default {
     "btnWithdrawal-tooltip": "Crea una richiesta di riscossione",
     "btnDeposit": "Versamento",
     "btnDeposit-tooltip": "Versa nuova liquidità",
-    'tableNuova-title': "Richieste in attesa di approvazione",
-    'tableLavorazione-title': "Richieste in lavorazione",
-    'tableAccettata-title': "Richieste accettate",
-    'tableRifiutata-title': "Richieste rifiutate",
+    'tableNuova-title': "In attesa",
+    'tableLavorazione-title': "In lavorazione",
+    'tableAccettata-title': "Accettate",
+    'tableRifiutata-title': "Rifiutate",
   },
   signResult: {
     "success-title": "Contratto firmato!",
@@ -126,5 +127,14 @@ export default {
 
     "reject-title": "Contratto rifiutato!",
     "reject-message": "Ci dispiace che abbia rifiutato di firmare il contratto. Se pensa ci sia stato qualche tipo di errore, la invitiamo a contattare il nostro servizio clienti.<br><br>Cordiali saluti,<br>Global Group Consulting"
+  },
+  wallet: {
+    title: "Wallet provvigioni",
+    subtitle: "",
+    monthCommissions: "Provvigioni guadagnate",
+    reinvestedCommissions: "Provvigioni reinvestite",
+    collectedCommissions: "Provvigioni riscosse",
+    clientsTotalDeposit: "Versamenti dei clienti nell'ultimo anno",
+    collectCommissions: "Preleva"
   }
 }

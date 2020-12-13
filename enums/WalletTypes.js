@@ -1,9 +1,9 @@
 import { BasicEnum } from '@/classes/BasicEnum'
-
+/**
+ * @enum
+ */
 class WalletTypes extends BasicEnum {
-  /**
-   * @enum
-   */
+
   constructor () {
     super('WalletTypes')
 

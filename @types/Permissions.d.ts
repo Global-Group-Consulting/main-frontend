@@ -1,6 +1,7 @@
 export interface Permissions {
   userRole: number
   userType: "admin" | "user"
+  superAdmin: boolean
   addUsers: boolean
   addUsers_admin: boolean
   addUsers_servClienti: boolean

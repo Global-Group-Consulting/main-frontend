@@ -8,6 +8,7 @@ import axios from "@nuxtjs/axios"
 
 import { computed } from '@vue/composition-api'
 import moment from 'moment'
+import permissions from "@/functions/permissions";
 
 /**
  * @typedef {import('../../@types/UserFormSchemaContext').UserFormSchemaContext} FormContext
@@ -277,6 +278,16 @@ export function contractData(formContext) {
         'contractInvestmentAttachment': {
           component: "file-uploader",
           files: formContext.formData.files
+        },
+      }
+    },
+    {
+      if: formContext.formData.role === UserRoles.AGENTE,
+      legend: "agentCommissions",
+      cols: {
+        "commissionsAssigned": {
+          component: "agent-commissions-select",
+          disabled: !formContext.permissions.superAdmin,
         },
       }
     }

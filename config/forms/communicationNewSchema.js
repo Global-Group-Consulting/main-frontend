@@ -3,13 +3,16 @@
  */
 
 import MessageTypes from "@/enums/MessageTypes"
+import UserRoles from "@/enums/UserRoles";
 
 /**
  *
- * @param {FormContext} formContext
+ * @param {FormContext} context
  * @returns {FormSchema[]}
  */
 export default function (context) {
+  const userType = [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(context.$auth.user.role) ? "admin" : "user"
+  const messageType = context.dialogData.type !== MessageTypes.CONVERSATION ? "communication" : "ticket"
 
   return [
     {
@@ -28,13 +31,15 @@ export default function (context) {
       cols: {
         'receiver': {
           label: "communication-receiver",
-          component: "receivers-combobox",
-          multiple: true,
+          component: userType === "admin" ? "receivers-combobox" : "v-select",
+          multiple: userType === "admin",
           outlined: true,
-          clearable: true,
-          deletableChips: true,
+          offsetY: true,
+          clearable: userType === "admin",
+          deletableChips: userType === "admin",
           dense: true,
-          smallChips: true,
+          showRole: messageType === "ticket",
+          smallChips: userType === "admin",
           items: context.availableReceivers,
           validations: {
             required: {}
@@ -55,6 +60,7 @@ export default function (context) {
           smallChips: true,
           items: context.availableCC,
           if: context.dialogData.type === MessageTypes.CONVERSATION
+            && userType === "admin"
         },
       }
     },

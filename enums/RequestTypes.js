@@ -1,5 +1,7 @@
 import { BasicEnum } from '../classes/BasicEnum'
-
+/**
+ * @enum
+ */
 class RequestTypes extends BasicEnum {
   constructor() {
     super('RequestTypes')
@@ -10,7 +12,7 @@ class RequestTypes extends BasicEnum {
     this.RISC_INTERESSI = 4
 
     // Reinvestimento Interessi maturati da un agente
-    this.INTERESSI = 5
+    this.RISC_PROVVIGIONI = 5
 
     this.data = {
       /*  [this.ADMIN]: {
@@ -30,8 +32,8 @@ class RequestTypes extends BasicEnum {
         text: 'Riscossione interessi'
       },
       // interessi maturati mensilmente
-      [this.INTERESSI]: {
-        id: 'interessi',
+      [this.RISC_PROVVIGIONI]: {
+        id: 'risc_provvigioni',
       }
     }
   }

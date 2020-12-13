@@ -97,9 +97,7 @@
             >
               <div v-if="compactMode">
                 <v-card-title class="text-subtitle-1 py-2">
-                  <div>
-                    {{ getSender(item) }}
-                  </div>
+                  <div v-html="getSender(item)"></div>
                 </v-card-title>
                 <v-divider :color="getItemColor(item)"></v-divider>
               </div>
@@ -159,27 +157,29 @@
         <div v-else>
           <v-layout>
             <div v-if="showReceivers">
-              <div>{{ $t("dialogs.communicationDialog.receivers") }}:</div>
+              <strong class="d-block">{{ $t("dialogs.communicationDialog.receivers") }} ({{
+                  dialogData.receiver.length
+                }}):</strong>
 
-              <span
-                v-for="(receiver, i) of dialogData.receiver"
-                :key="receiver.id"
-              >
-                {{ receiver.firstName }} {{ receiver.lastName }} ({{
-                  $t(
-                    "enums.UserRoles." +
+              <div style="max-height: 100px; overflow: auto" class="pr-3">
+                <div
+                  v-for="(receiver, i) of dialogData.receiver"
+                  :key="receiver.id || i" v-if="receiver"
+                >
+                  {{ receiver.firstName }} {{ receiver.lastName }} ({{
+                    $t(
+                      "enums.UserRoles." +
                       $enums.UserRoles.getIdName(receiver.role)
-                  )
-                }})
-
-                <span v-if="i < dialogData.receiver.length - 1">, </span><br />
-              </span>
+                    )
+                  }})<span v-if="i < dialogData.receiver.length - 1">, </span><br/>
+                </div>
+              </div>
             </div>
 
             <v-spacer></v-spacer>
 
             <div>
-              <div>
+              <strong class="d-block">
                 {{
                   $t(
                     `enums.MessageTypes.${$enums.MessageTypes.getIdName(
@@ -187,7 +187,7 @@
                     )}`
                   )
                 }}
-              </div>
+              </strong>
               <small>
                 {{ $options.filters.dateHourFormatter(dialogData.created_at) }}
               </small>
@@ -475,9 +475,14 @@ export default {
     }
 
     function getSender(message) {
-      return message.senderId === $auth.user.id
-        ? root.$t("dialogs.communicationDialog.you")
-        : message.sender.name;
+      const isMe = message.senderId === $auth.user.id
+      const userName = isMe ? root.$t("dialogs.communicationDialog.you") : message.sender.name;
+
+      if (!isMe && message.sender.id) {
+        return `<a href="/users/${message.senderId}" target="_blank">${userName} (${root.$t(`enums.UserRoles.${$enums.UserRoles.getIdName(message.sender.role)}`)})</a>`
+      }
+
+      return userName
     }
 
     function getItemColor(message) {

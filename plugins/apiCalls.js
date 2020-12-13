@@ -115,6 +115,15 @@ export class ApiCalls extends BasicApiCall {
     }))
   }
 
+  async importContract(body) {
+    return (await this._call({
+      method: "POST",
+      endPoint: `/api/users/${body.userId}/importContract`,
+      body,
+      uploadMode: true
+    }))
+  }
+
   async dashboardData() {
     return await this.get({
       endPoint: "/api/dashboards"
@@ -181,10 +190,13 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async acceptRequest(data) {
+  async acceptRequest(data, paymentDocDate) {
     return await this._call({
       method: "PUT",
       endPoint: `/api/requests/${data.id}/approve`,
+      body: {
+        paymentDocDate
+      }
     })
   }
 
@@ -217,6 +229,12 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
+  async fetchCommissionsStatus(data) {
+    return await this.get({
+      endPoint: "/api/commissions/status" + (data && data.userId ? `/${data.userId}` : ''),
+    })
+  }
+
   async dashboardFetch() {
     return await this.get({
       endPoint: "/api/dashboards"
@@ -229,9 +247,9 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async communicationsFetchReceivers() {
+  async communicationsFetchReceivers(messageType) {
     return await this.get({
-      endPoint: "/api/communications/receivers"
+      endPoint: "/api/communications/receivers?m=" + messageType,
     })
   }
 

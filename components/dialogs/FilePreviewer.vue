@@ -49,7 +49,11 @@
     computed: {
       ...mapGetters({ dialogData: "dialog/dialogData" }),
       isImage() {
-        return this.dialogData?.data?.mimeType.indexOf("image") > -1;
+        try {
+          return this.dialogData?.data?.mimeType.indexOf("image") > -1;
+        } catch (er) {
+          return false
+        }
       },
     },
     methods: {

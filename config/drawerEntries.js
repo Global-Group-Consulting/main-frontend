@@ -20,17 +20,37 @@ const menuItems = [
   },
   {
     type: 'group',
+    text: 'portfolio',
+    ruoli: [UserRoles.AGENTE],
+    childs: [
+      {
+        id: 'users',
+        text: 'clients',
+        icon: 'mdi-account-group',
+        link: '/users',
+      },
+      {
+        id: 'wallet',
+        text: "wallet",
+        icon: 'mdi-wallet',
+        link: '/wallet',
+        ruoli: [UserRoles.AGENTE]
+      }
+    ]
+  },
+  {
+    type: 'group',
     text: ruolo => [UserRoles.SUPER_ADMIN,
-    UserRoles.ADMIN,
-    UserRoles.SERV_CLIENTI]
+      UserRoles.ADMIN,
+      UserRoles.SERV_CLIENTI]
       .includes(ruolo) ? 'users-management' : 'my-account',
     childs: [
       {
         id: 'users',
-        text: ruolo => UserRoles.AGENTE ? 'clients' : 'users',
+        text: 'users',
         icon: 'mdi-account-group',
         link: '/users',
-        ruoli: [UserRoles.ADMIN, UserRoles.SERV_CLIENTI, UserRoles.AGENTE]
+        ruoli: [UserRoles.ADMIN, UserRoles.SERV_CLIENTI]
       },
       {
         id: 'movements',
@@ -52,12 +72,12 @@ const menuItems = [
     type: 'group',
     text: 'utilities',
     childs: [
-      {
+      /*{
         id: 'calculator',
         text: 'calculator',
         icon: 'mdi-calculator-variant',
         link: '/calculator'
-      },
+      },*/
       {
         id: 'comunications',
         text: 'comunications',

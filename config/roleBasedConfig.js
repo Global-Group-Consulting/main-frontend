@@ -45,6 +45,7 @@ const defaults = {
       columns: [
         "subject",
         "createdAt",
+        "creator",
         "updatedAt",
         "unreadMessages",
       ]
@@ -172,6 +173,14 @@ const cliente = {
         "interestAmount"
       ]
     },
+    conversations: {
+      columns: [
+        "subject",
+        "createdAt",
+        "updatedAt",
+        "unreadMessages",
+      ]
+    }
   },
   blocks: {
     dashboard: {
@@ -216,6 +225,16 @@ const agente = {
         "deposit",
         "interestAmount"
       ]
+    },
+    commissions: {
+      columns: [
+        "amountChange",
+        "commissionType",
+        "commissionPercentage",
+        "user",
+        "createdAt",
+        "currMonthCommissions"
+      ]
     }
   },
   blocks: {
@@ -225,6 +244,14 @@ const agente = {
         "interestAmount",
         "interestsCollected",
         "depositCollected",
+      ]
+    },
+    wallet: {
+      blocks: [
+        "monthCommissions",
+        "reinvestedCommissions",
+        "collectedCommissions",
+        "clientsTotalDeposit",
       ]
     }
   }
