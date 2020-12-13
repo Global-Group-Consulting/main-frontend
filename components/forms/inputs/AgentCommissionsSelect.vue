@@ -95,11 +95,11 @@ export default {
           newValueItem && selection.value.push(item.name)
         }
 
-        if (!newValueItem || newValueItem.value === item.value) {
-          continue
+        if (!newValueItem || newValueItem.percent <= 0) {
+          item.value = item.defaultValue
+        } else if (+newValueItem.percent !== +item.value) {
+          item.value = newValueItem.percent || item.defaultValue
         }
-
-        item.value = newValueItem.value || item.defaultValue
       }
     }, {immediate: true, deep: true})
 
