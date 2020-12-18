@@ -159,8 +159,9 @@
                 @click="item.click"
               >
                 <v-list-item-title>{{
-                  $t("menus." + item.value)
-                }}</v-list-item-title>
+                    $t("menus." + item.value)
+                  }}
+                </v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
@@ -228,7 +229,8 @@
                   )
                 }}
                 <v-icon v-if="currentTab < formTabs.length - 1"
-                  >mdi-chevron-right</v-icon
+                >mdi-chevron-right
+                </v-icon
                 >
                 <v-icon v-else class="ml-2">mdi-content-save</v-icon>
               </v-btn>
@@ -313,7 +315,7 @@ export default {
     MovementsListDialog
   },
   middleware: ["pagesAuth"],
-  setup(props, { root, refs }) {
+  setup(props, {root, refs}) {
     const {
       $apiCalls,
       $alerts,
@@ -459,7 +461,17 @@ export default {
       $set(userForm.formData, "value", userData);
     }
 
-    function onCheckedFieldsChange(newValue) {
+    function onCheckedFieldsChange() {
+      const newValue = []
+
+      for (const formKey in refs) {
+        const fieldsArray = refs[formKey][0].checkedFields
+
+        if (fieldsArray && fieldsArray.length > 0) {
+          newValue.push(...fieldsArray)
+        }
+      }
+
       root.$set(checkedFields, "value", newValue)
     }
 
@@ -655,11 +667,12 @@ export default {
   },
   computed: {},
   methods: {
-    saveStatus() {},
+    saveStatus() {
+    },
     async goNext() {
       const formValid = await this.$refs[
         `dynamicForm_${this.currentTab}`
-      ][0].validate();
+        ][0].validate();
 
       // If there form is invalid, don't proceed
       if (!formValid) {
