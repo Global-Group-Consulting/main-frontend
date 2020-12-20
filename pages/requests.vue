@@ -63,7 +63,7 @@
               @click:row="openRequestDetails"
               @refetchData="onRefetchData"
               @requestStartWorking="onRequestStartWorking"
-              items-per-page="25"
+              :items-per-page="25"
             ></requests-list-table>
           </v-card>
         </v-tab-item>
@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import { ref, computed, onBeforeMount, onMounted } from "@vue/composition-api";
+import {ref, computed, onBeforeMount, onMounted, watch} from "@vue/composition-api";
 
 // configs
 import tableHeadersSchema from "../config/tables/requestsSchema";
@@ -112,7 +112,7 @@ export default {
     RequestsListTable,
     CommunicationNewDialog
   },
-  setup(props, { root }) {
+  setup(props, {root}) {
     const {
       $apiCalls,
       $set,
@@ -121,6 +121,7 @@ export default {
       $i18n,
       $options,
       $route,
+      $router,
       $alerts
     } = root;
     const permissions = permissionsFn(root);
@@ -272,7 +273,7 @@ export default {
           type: $enums.MessageTypes.CONVERSATION,
           subject: root.$t(
             "dialogs.communicationNewDialog.subject-new-deposit",
-            { date: $options.filters.dateFormatter(request.created_at) }
+            {date: $options.filters.dateFormatter(request.created_at)}
           ),
           receiver: request.user.id,
           message: root.$t(
@@ -292,22 +293,26 @@ export default {
       _fetchAll();
     }
 
-    onBeforeMount(async () => {
-      const query = $route.query;
+      function onQueryChange(route) {
+        const query = route.query;
 
+        if (query.open) {
+          const idToOpen = query.open;
+
+          const request = requestsList.value.find(_req => _req.id === idToOpen);
+
+          if (request) {
+            openRequestDetails(request);
+          }
+
+          root.$router.replace({query: {}});
+        }
+      }
+
+    onBeforeMount(async () => {
       await _fetchAll();
 
-      if (query.open) {
-        const idToOpen = query.open;
-
-        const request = requestsList.value.find(_req => _req.id === idToOpen);
-
-        if (request) {
-          openRequestDetails(request);
-        }
-
-        root.$router.replace({ query: {} });
-      }
+      onQueryChange($route)
     });
 
     onMounted(() => {
@@ -355,8 +360,14 @@ export default {
       onRequestDeleted,
       onRequestStatusChanged,
       onRequestStartWorking,
-      onCommunicationAdded
+      onCommunicationAdded,
+      onQueryChange
     };
+  },
+  beforeRouteUpdate(to, from, next) {
+    this.onQueryChange(to)
+
+    next()
   }
 };
 </script>

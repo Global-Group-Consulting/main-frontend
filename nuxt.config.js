@@ -30,23 +30,23 @@ export default {
     titleTemplate: `${IS_BETA ? "[BETA] " : ""}%s — Global Group Consulting`,
     title: 'Web App',
     meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: "Private area for Global Group Consulting" },
-      { name: "apple-mobile-web-app-title", content: `${APP_NAME}` },
-      { name: "application-name", content: `${APP_NAME}` },
-      { name: "msapplication-TileColor", content: "#ffffff" },
-      { name: "theme-color", content: "#ffffff" },
-      { name: "msapplication-config", content: `${FAVICON_PATH}/browserconfig.xml?v=${FAVICON_VERSION}` }
+      {charset: 'utf-8'},
+      {name: 'viewport', content: 'width=device-width, initial-scale=1'},
+      {hid: 'description', name: 'description', content: "Private area for Global Group Consulting"},
+      {name: "apple-mobile-web-app-title", content: `${APP_NAME}`},
+      {name: "application-name", content: `${APP_NAME}`},
+      {name: "msapplication-TileColor", content: "#ffffff"},
+      {name: "theme-color", content: "#ffffff"},
+      {name: "msapplication-config", content: `${FAVICON_PATH}/browserconfig.xml?v=${FAVICON_VERSION}`}
     ],
     link: [
-      { rel: "icon", type: "image/x-icon", href: `${FAVICON_PATH}/favicon.ico?v=${FAVICON_VERSION}` },
-      { rel: "icon", type: "image/png", sizes: "32x32", href: `${FAVICON_PATH}/favicon-32x32.png?v=${FAVICON_VERSION}` },
-      { rel: "icon", type: "image/png", sizes: "16x16", href: `${FAVICON_PATH}/favicon-16x16.png?v=${FAVICON_VERSION}` },
-      { rel: "apple-touch-icon", sizes: "180x180", href: `${FAVICON_PATH}/apple-touch-icon.png?v=${FAVICON_VERSION}` },
-      { rel: "manifest", href: `${FAVICON_PATH}/site.webmanifest?v=${FAVICON_VERSION}` },
-      { rel: "mask-icon", href: `${FAVICON_PATH}/safari-pinned-tab.svg?v=${FAVICON_VERSION}", color:"#071d2b` },
-      { rel: "shortcut icon", href: `${FAVICON_PATH}/favicon.ico?v=${FAVICON_VERSION}` },
+      {rel: "icon", type: "image/x-icon", href: `${FAVICON_PATH}/favicon.ico?v=${FAVICON_VERSION}`},
+      {rel: "icon", type: "image/png", sizes: "32x32", href: `${FAVICON_PATH}/favicon-32x32.png?v=${FAVICON_VERSION}`},
+      {rel: "icon", type: "image/png", sizes: "16x16", href: `${FAVICON_PATH}/favicon-16x16.png?v=${FAVICON_VERSION}`},
+      {rel: "apple-touch-icon", sizes: "180x180", href: `${FAVICON_PATH}/apple-touch-icon.png?v=${FAVICON_VERSION}`},
+      {rel: "manifest", href: `${FAVICON_PATH}/site.webmanifest?v=${FAVICON_VERSION}`},
+      {rel: "mask-icon", href: `${FAVICON_PATH}/safari-pinned-tab.svg?v=${FAVICON_VERSION}", color:"#071d2b`},
+      {rel: "shortcut icon", href: `${FAVICON_PATH}/favicon.ico?v=${FAVICON_VERSION}`},
     ]
   },
   /*
@@ -67,9 +67,10 @@ export default {
     './plugins/enums.js',
     './plugins/mixins.js',
     './plugins/global-components.js',
+    './plugins/socket.js',
     './plugins/vue-composition-api.js',
     './plugins/vue-portal.js',
-    { src: './plugins/vuex-persist', ssr: false }
+    {src: './plugins/vuex-persist', ssr: false}
   ],
   /*
   ** Auto import components
@@ -124,6 +125,7 @@ export default {
   ],
 
   env: {
-    version: require('./package.json').version
+    version: require('./package.json').version,
+    SOCKET_URL: process.env.SOCKET_URL
   }
 }

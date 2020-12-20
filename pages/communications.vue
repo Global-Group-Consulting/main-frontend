@@ -48,7 +48,8 @@
             >
               <template v-slot:item.subject="{ item }" v-if="currentTab === 1">
                 <v-icon color="red" v-if="!item.read_at" x-small
-                  >mdi-asterisk</v-icon
+                >mdi-asterisk
+                </v-icon
                 >
                 {{ item.subject }}
               </template>
@@ -117,7 +118,7 @@
 </template>
 
 <script>
-import { reactive, onBeforeMount, ref, computed } from "@vue/composition-api";
+import {reactive, onBeforeMount, ref, computed} from "@vue/composition-api";
 
 import ComunicationDetailsDialog from "@/components/dialogs/ComunicationDetailsDialog";
 import CommunicationNewDialog from "@/components/dialogs/CommunicationNewDialog";
@@ -201,7 +202,7 @@ export default {
         title: communication.subject,
         fullscreen: isConversation,
         readonly: !isConversation || communication.readonly,
-        texts: { cancelBtn: root.$t("dialogs.communicationDialog.btn-cancel") },
+        texts: {cancelBtn: root.$t("dialogs.communicationDialog.btn-cancel")},
         data: {
           ...communication,
           isConversation
@@ -268,10 +269,8 @@ export default {
       communication.request.status = changedCommunication.request.status;
     }
 
-    onBeforeMount(async () => {
-      const query = $route.query;
-
-      await _fetchAll();
+    function onQueryChange(route) {
+      const query = route.query;
 
       if (query.open) {
         const idToOpen = query.open;
@@ -282,8 +281,14 @@ export default {
           openCommunication(communication);
         }
 
-        root.$router.replace({ query: {} });
+        root.$router.replace({query: {}});
       }
+    }
+
+    onBeforeMount(async () => {
+      await _fetchAll();
+
+      onQueryChange($route)
     });
 
     return {
@@ -296,8 +301,14 @@ export default {
       onCommunicationAdded,
       onSetAsRead,
       permissions,
-      onRequestStatusChanged
+      onRequestStatusChanged,
+      onQueryChange
     };
+  },
+  beforeRouteUpdate(to, from, next) {
+    this.onQueryChange(to)
+
+    next()
   }
 };
 </script>
