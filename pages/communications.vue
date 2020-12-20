@@ -33,7 +33,12 @@
 
       <v-tabs v-model="currentTab">
         <v-tab v-for="tab of communicationsTabs" :key="tab.key">
-          {{ $t(`pages.communications.${tab.title}`) }}
+          <v-badge :content="tab.unreadCounter"
+                   :value="tab.unreadCounter"
+                   color="orange"
+          >
+            {{ $t(`pages.communications.${tab.title}`) }}
+          </v-badge>
         </v-tab>
       </v-tabs>
 
@@ -127,10 +132,12 @@ import pageBasic from "@/functions/pageBasic";
 import requestsCrudActions from "@/functions/requestsCrudActions.js";
 
 import CommunicationsTabs from "@/config/tabs/communicationsTabs";
+import DataTable from "@/components/table/DataTable";
+import PageHeader from "@/components/blocks/PageHeader";
 
 export default {
   name: "index",
-  components: {ComunicationDetailsDialog, CommunicationNewDialog},
+  components: {PageHeader, DataTable, ComunicationDetailsDialog, CommunicationNewDialog},
   props: {
     receiversShowLimit: {
       type: Number,
@@ -148,11 +155,27 @@ export default {
       conversations: []
     });
     const rawList = [];
-    const communicationsTabs = computed(() =>
-      CommunicationsTabs.filter(_tab => {
-        return _tab.key === "messagesSent"
-          ? $enums.UserRoles.ADMIN === $auth.user.role : true;
-      })
+    const communicationsTabs = computed(() => {
+        const tabs = CommunicationsTabs.filter(_tab => {
+          return _tab.key === "messagesSent"
+            ? $enums.UserRoles.ADMIN === $auth.user.role : true;
+        })
+
+        return tabs.map(tab => {
+          const dataList = communicationsList[tab.key]
+          let counter = 0
+
+          if (tab.key === "conversations") {
+            counter = dataList.reduce((acc, curr) => curr.unreadMessages > 0 ? acc + 1 : acc, 0)
+          } else if (tab.key === "messages") {
+            counter = dataList.reduce((acc, curr) => !curr.read_at ? acc + 1 : acc, 0)
+          }
+
+          tab.unreadCounter = counter
+
+          return tab
+        })
+      }
     );
     const permissions = {
       createTicket: computed(
@@ -176,7 +199,14 @@ export default {
 
         rawList.push(...Object.values(result).flat());
 
-        root.$set(communicationsList, "messages", result.messages);
+        root.$set(communicationsList, "messages", result.messages.map(_msg => {
+          // i create anyway the prop so i can observe it when changes.
+          if (!_msg.read_at) {
+            _msg.read_at = null
+          }
+
+          return _msg
+        }));
         root.$set(communicationsList, "messagesSent", result.messagesSent);
         root.$set(communicationsList, "conversations", result.conversations);
       } catch (er) {
@@ -242,23 +272,21 @@ export default {
     }
 
     /**
-     * @param {string[]} unreadMessagesIds
+     * @param {string} unreadMessagesId
      */
     async function onSetAsRead(unreadMessagesId) {
-      // conversation
-      if (currentTab.value === 0) {
-        communicationsList.conversations.forEach(_com => {
-          if (_com.id === unreadMessagesId) {
+      const unreadMessage = rawList.find(_comm => _comm.id === unreadMessagesId)
+      const msgType = "unreadMessages" in unreadMessage ? "conversations" : "messages"
+
+      communicationsList[msgType].forEach(_com => {
+        if (_com.id === unreadMessagesId) {
+          if (msgType === "conversations") {
             _com.unreadMessages = 0;
-          }
-        });
-      } else if (currentTab.value === 1) {
-        communicationsList.messages.forEach(_com => {
-          if (_com.id === unreadMessagesId) {
+          } else {
             _com.read_at = new Date().toISOString();
           }
-        });
-      }
+        }
+      });
     }
 
     function onRequestStatusChanged(changedCommunication) {
@@ -284,6 +312,7 @@ export default {
         root.$router.replace({query: {}});
       }
     }
+
 
     onBeforeMount(async () => {
       await _fetchAll();
