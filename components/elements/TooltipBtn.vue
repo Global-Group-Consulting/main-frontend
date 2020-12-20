@@ -22,7 +22,7 @@ export default {
     iconName: String,
     breakpoint: {
       type: String,
-      default: "md"
+      default: "sm"
     }
   }
 };

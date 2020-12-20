@@ -57,6 +57,30 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
+  async userConfirmDraft(userId) {
+    return await this.post({
+      endPoint: `/api/users/${userId}/confirmDraft`
+    })
+  }
+
+  async userValidate(userId) {
+    return await this.post({
+      endPoint: `/api/users/${userId}/validate`
+    })
+  }
+
+  /**
+   *
+   * @param {{userId: string, message: string, checkedFields: string[]}} data
+   * @returns {Promise<void>}
+   */
+  async userIncomplete(data) {
+    return await this.post({
+      endPoint: `/api/users/${data.userId}/incomplete`,
+      body: data
+    })
+  }
+
   async fetchAllUsers() {
     return await this.get({
       endPoint: `/api/users`
@@ -86,6 +110,15 @@ export class ApiCalls extends BasicApiCall {
     return (await this._call({
       method: "POST",
       endPoint: `/api/movements/import`,
+      body,
+      uploadMode: true
+    }))
+  }
+
+  async importContract(body) {
+    return (await this._call({
+      method: "POST",
+      endPoint: `/api/users/${body.userId}/importContract`,
       body,
       uploadMode: true
     }))
@@ -157,10 +190,13 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async acceptRequest(data) {
+  async acceptRequest(data, paymentDocDate) {
     return await this._call({
       method: "PUT",
       endPoint: `/api/requests/${data.id}/approve`,
+      body: {
+        paymentDocDate
+      }
     })
   }
 
@@ -193,9 +229,50 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
+  async fetchCommissionsStatus(data) {
+    return await this.get({
+      endPoint: "/api/commissions/status" + (data && data.userId ? `/${data.userId}` : ''),
+    })
+  }
+
   async dashboardFetch() {
     return await this.get({
       endPoint: "/api/dashboards"
+    })
+  }
+
+  async communicationsFetch(type) {
+    return await this.get({
+      endPoint: "/api/communications" + (type ? `?t=${type}` : "")
+    })
+  }
+
+  async communicationsFetchReceivers(messageType) {
+    return await this.get({
+      endPoint: "/api/communications/receivers?m=" + messageType,
+    })
+  }
+
+  async conversationFetch(id) {
+    return await this.get({
+      endPoint: `/api/communications/conversations/${id}`
+    })
+  }
+
+  async communicationSend(body) {
+    return await this._call({
+      method: "POST",
+      endPoint: `/api/communications`,
+      body,
+      uploadMode: true
+    })
+  }
+
+  async messagesSetAsRead(body) {
+    return await this._call({
+      method: "PATCH",
+      endPoint: `/api/communications/messages`,
+      body,
     })
   }
 }

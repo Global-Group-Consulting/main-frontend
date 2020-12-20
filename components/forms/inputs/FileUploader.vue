@@ -7,6 +7,7 @@
       :accept="accept || 'image/*,.pdf'"
       @input="onInput"
       @change="onChange"
+      v-if="!previewOnly"
     >
       <template v-slot:label>
         <slot name="label"></slot>
@@ -16,7 +17,42 @@
       </template>
     </v-file-input>
 
-    <v-list dense class="" v-if="filesList.length > 0">
+    <v-layout
+      class="mt-3"
+      style="gap: 6px;"
+      v-if="formattedValue && formattedValue.length > 0"
+    >
+      <v-tooltip top v-for="file of formattedValue" :key="file.name">
+        <template v-slot:activator="{ on }">
+          <v-sheet
+            width="60"
+            height="60"
+            elevation="1"
+            rounded
+            v-on="on"
+            class="d-flex align-center justify-center"
+            @click="previewFile(file)"
+          >
+            <v-img
+              v-if="file.type.includes('image')"
+              width="100%"
+              height="100%"
+              contain
+              :src="getFilePreview(file)"
+            ></v-img>
+
+            <v-icon large v-else>mdi-file</v-icon>
+          </v-sheet>
+        </template>
+
+        <span>{{ file.name }}</span>
+      </v-tooltip>
+    </v-layout>
+
+    <slot name="label" v-if="previewOnly">
+    </slot>
+
+    <v-list dense class="" v-if="filesList.length > 0 || previewOnly">
       <template v-for="(file, index) in filesList">
         <v-divider :key="index" v-if="index > 0"></v-divider>
 
@@ -43,19 +79,24 @@
           <v-btn
             icon
             @click.prevent="removeFile(file, $event)"
-            v-if="!readonly && !$attrs.disabled"
+            v-if="!readonly && !$attrs.disabled && !previewOnly"
             :title="$t('forms.tooltip-remove-file')"
           >
             <v-icon small>mdi-close</v-icon>
           </v-btn>
         </v-list-item>
       </template>
+      <v-list-item v-if="filesList.length === 0 && previewOnly" class="px-0">
+        <span class="text-truncate text-no-wrap font-italic grey--text">
+            {{ $t("pages.usersId.no-contract-available") }}
+          </span>
+      </v-list-item>
     </v-list>
   </div>
 </template>
 
 <script>
-import { computed } from "@vue/composition-api";
+import { computed, ref } from "@vue/composition-api";
 import jsFileDownload from "js-file-download";
 
 export default {
@@ -67,6 +108,7 @@ export default {
     accept: "",
     fieldKey: "",
     files: Array,
+    preview: Boolean,
     toDelete: {
       type: Array,
       default() {
@@ -74,6 +116,7 @@ export default {
       }
     },
     readonly: Boolean,
+    previewOnly: Boolean,
     editMode: Boolean
   },
   setup(props, { root }) {
@@ -94,6 +137,32 @@ export default {
         ? props.files.filter(_file => _file.fieldName === props.fieldKey)
         : [];
     });
+
+    function getFilePreview(file) {
+      if (file instanceof File) {
+        return URL.createObjectURL(file);
+      }
+
+      return new Promise(async (resolve, reject) => {
+        const result = await $apiCalls.downloadFile(file.id);
+
+        resolve(
+          URL.createObjectURL(
+            new Blob([result.data], {
+              type: `${file.type}/${file.subtype}`
+            })
+          )
+        );
+      });
+    }
+
+    async function previewFile(file) {
+      try {
+        window.open(await getFilePreview(file), "__blank");
+      } catch (er) {
+        $alerts.error(er);
+      }
+    }
 
     const openFile = async function(file) {
       try {
@@ -178,7 +247,9 @@ export default {
       filesList,
       downloadFile,
       removeFile,
-      openFile
+      openFile,
+      previewFile,
+      getFilePreview
     };
   },
   methods: {

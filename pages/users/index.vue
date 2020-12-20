@@ -7,30 +7,29 @@
         :icon="icon"
       ></page-header>
 
-      <!-- <v-toolbar elevation="0" class="transparent white--text">
-        <v-toolbar-item>
-          <v-btn>ssd</v-btn>
-        </v-toolbar-item>
-      </v-toolbar> -->
 
-      <v-row>
-        <v-col cols="12" v-for="(group, key) in usersGroups" :key="key">
-          <v-card dark :color="getUerRoleData(key).color">
-            <v-card-title>{{
-              $t("enums.UserRoles." + $enums.UserRoles.getIdName(key))
-            }}</v-card-title>
-            <v-data-table
+      <v-tabs v-model="currentTab" :color="getTabColor">
+        <v-tab v-for="group of usersList" :key="group.id">
+          {{ $t(`enums.UserRoles.${$enums.UserRoles.getIdName(group.id)}_plural`) }}
+        </v-tab>
+      </v-tabs>
+
+      <v-tabs-items v-model="currentTab">
+        <v-tab-item v-for="group of usersList" :key="group.id">
+          <v-card>
+            <data-table
+              :condition="+group.id"
+              :items="group.data"
+              table-key="users"
+              schema="usersSchema"
               light
-              :headers="getTableHeaders(key)"
-              :items="group"
-              :items-per-page="10"
-              :hide-default-footer="group.length <= 10"
             >
               <template v-slot:item.superAdmin="{ item }">
                 <v-tooltip right v-if="item.superAdmin">
                   <template v-slot:activator="{ on, attrs }">
                     <v-icon v-on="on" v-bind="attrs" class="d-inline-block"
-                      >mdi-diamond-stone</v-icon
+                    >mdi-diamond-stone
+                    </v-icon
                     >
                   </template>
 
@@ -38,17 +37,15 @@
                 </v-tooltip>
               </template>
 
-              <template v-slot:item.contractNumber="{ item }">
-                {{
-                  $options.filters.contractNumberFormatter(item.contractNumber)
-                }}
-              </template>
-
-              <template v-slot:item.businessRegion="{ item }">
-                {{
-                  item.businessRegion
-                    | regionFormatter($store.getters["enums/regionsList"])
-                }}
+              <template v-slot:item.referenceAgent="{item}">
+                <v-btn text v-if="item.referenceAgentData" small
+                       target="_blank"
+                       class="text-capitalize"
+                       color="primary"
+                       :href="'users/' + item.referenceAgent">
+                  <v-icon small class="mr-2">mdi-open-in-new</v-icon>
+                  {{ item.referenceAgentData.firstName }} {{ item.referenceAgentData.lastName }}
+                </v-btn>
               </template>
 
               <template v-slot:item.account_status="{ item }">
@@ -58,7 +55,7 @@
                   {{
                     $t(
                       "enums.AccountStatuses." +
-                        $enums.AccountStatuses.getIdName(item.account_status)
+                      $enums.AccountStatuses.getIdName(item.account_status)
                     )
                   }}
                 </v-chip>
@@ -70,9 +67,75 @@
                   @userDeleted="onUserDeleted(item, group)"
                 />
               </template>
-            </v-data-table>
+            </data-table>
           </v-card>
-        </v-col>
+        </v-tab-item>
+      </v-tabs-items>
+
+
+      <v-row>
+        <!--        <v-col cols="12" v-for="(group, key) in usersGroups" :key="key">
+                  <v-card dark :color="getUerRoleData(key).color">
+                    <v-card-title>{{
+                        $t("enums.UserRoles." + $enums.UserRoles.getIdName(key))
+                      }}
+                    </v-card-title>
+                    <v-data-table
+                      light
+                      :headers="getTableHeaders(key)"
+                      :items="group"
+                      :items-per-page="10"
+                      :hide-default-footer="group.length <= 10"
+                      mobile-breakpoint="0"
+                    >
+                      <template v-slot:item.superAdmin="{ item }">
+                        <v-tooltip right v-if="item.superAdmin">
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-icon v-on="on" v-bind="attrs" class="d-inline-block"
+                            >mdi-diamond-stone
+                            </v-icon
+                            >
+                          </template>
+
+                          <span>Super Admin</span>
+                        </v-tooltip>
+                      </template>
+
+                      <template v-slot:item.contractNumber="{ item }">
+                        {{
+                          $options.filters.contractNumberFormatter(item.contractNumber)
+                        }}
+                      </template>
+
+                      <template v-slot:item.businessRegion="{ item }">
+                        {{
+                          item.businessRegion
+                            | regionFormatter($store.getters["enums/regionsList"])
+                        }}
+                      </template>
+
+                      <template v-slot:item.account_status="{ item }">
+                        <v-chip
+                          :color="$enums.AccountStatuses.get(item.account_status).color"
+                        >
+                          {{
+                            $t(
+                              "enums.AccountStatuses." +
+                              $enums.AccountStatuses.getIdName(item.account_status)
+                            )
+                          }}
+                        </v-chip>
+                      </template>
+
+                      <template v-slot:item.actions="{ item }">
+                        <users-crud-actions
+                          :item="item"
+                          @userDeleted="onUserDeleted(item, group)"
+                        />
+                      </template>
+                    </v-data-table>
+                  </v-card>
+                </v-col>-->
 
         <!-- Floating action button -->
         <v-fab-transition>
@@ -114,10 +177,10 @@
                 </v-btn>
               </template>
               <span>{{
-                $t(
-                  "enums.UserRoles." + $enums.UserRoles.getIdName(userBtn.type)
-                )
-              }}</span>
+                  $t(
+                    "enums.UserRoles." + $enums.UserRoles.getIdName(userBtn.type)
+                  )
+                }}</span>
             </v-tooltip>
 
             <!-- <v-tooltip left>
@@ -140,16 +203,18 @@ import PageHeader from "@/components/blocks/PageHeader";
 import UsersCrudActions from "@/components/table/UsersCrudActions";
 import usersPage from "@/functions/usersPage";
 import pageBasic from "@/functions/pageBasic";
-import { onMounted, computed } from "@vue/composition-api";
+import {onMounted, computed, ref} from "@vue/composition-api";
 
 import Permissions from "../../functions/permissions";
+import DataTable from "@/components/table/DataTable";
 
 export default {
   name: "index",
-  components: { UsersCrudActions, PageHeader },
+  components: {DataTable, UsersCrudActions, PageHeader},
   middleware: ["pagesAuth"],
-  setup(props, { root }) {
-    const { $enums, $auth } = root;
+  setup(props, {root}) {
+    const {$enums, $auth} = root;
+    const currentTab = ref(0);
     const permissions = Permissions(root);
     const usersPageData = usersPage(root);
     const newUserBtns = computed(() =>
@@ -173,11 +238,19 @@ export default {
       ].filter(_entry => _entry.if)
     );
 
+    const getTabColor = computed(() => {
+      const selectedTable = usersPageData.usersList.value[currentTab.value]
+
+      return selectedTable ? $enums.UserRoles.get(selectedTable.id).color : ""
+    })
+
     return {
       ...usersPageData,
       ...pageBasic(root, "users"),
       permissions,
-      newUserBtns
+      newUserBtns,
+      getTabColor,
+      currentTab
     };
   },
   data() {

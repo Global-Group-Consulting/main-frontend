@@ -14,6 +14,7 @@
           v-bind="getColumns(row)"
           v-for="(field, key, fieldIndex) in row.cols"
           v-if="field.hasOwnProperty('if') ? field.if : true"
+          :class="row.class || 'pb-0'"
           :key="key"
         >
           <component
@@ -29,7 +30,10 @@
             @change="update(key, $event)"
           >
             <template v-slot:label>
-              {{ getLabel(field.label || key) }}
+              <component :is="invalidFields.includes(key) ? 'strong' : 'span'"
+                         :class="{'red--text': invalidFields.includes(key)}">
+                {{ getLabel(field.label || key) }}
+              </component>
 
               <v-tooltip
                 top
@@ -52,10 +56,25 @@
               </v-tooltip>
             </template>
 
-            <template v-slot:prepend v-if="editMode && !row.disableEditMode">
-              <v-checkbox
-                :disabled="field.disabled || field.readonly"
-              ></v-checkbox>
+            <template v-slot:prepend v-if="(editMode && !row.disableEditMode) || invalidFields.includes(key)">
+              <v-layout align-items-start>
+                <v-checkbox
+                  v-if="editMode && !row.disableEditMode"
+                  color="red"
+                  :ripple="false"
+                  :disabled="field.disabled || field.readonly"
+                  :hide-details="true"
+                  @change="onFieldChecked(key, $event)"
+                ></v-checkbox>
+
+                <v-tooltip bottom>
+                  <template v-slot:activator="{on}">
+                    <v-icon color="red" v-if="invalidFields.includes(key)" v-on="on">mdi-alert</v-icon>
+                  </template>
+
+                  <span>{{ $t("pages.usersId.info-incomplete-single-field") }}</span>
+                </v-tooltip>
+              </v-layout>
             </template>
           </component>
         </v-col>
@@ -69,7 +88,9 @@ import { VTextField, VTextarea, VSelect, VFileInput } from "vuetify/lib";
 import DatePicker from "@/components/forms/inputs/DatePicker";
 import MoneyInput from "@/components/forms/inputs/MoneyInput";
 import FileUploader from "@/components/forms/inputs/FileUploader";
-import ContractSign from "@/components/hompage/activationWizard/ContractSign";
+import ReceiversCombobox from "@/components/forms/inputs/ReceiversCombobox";
+import ContractDoc from "@/components/forms/inputs/ContractDoc";
+import AgentCommissionsSelect from "@/components/forms/inputs/AgentCommissionsSelect";
 
 import { validationRules, errorMessages } from "@/mixins/ValidationsParser";
 import { validationMixin } from "vuelidate";
@@ -84,10 +105,12 @@ export default {
     VSelect,
     DatePicker,
     VFileInput,
-    ContractSign,
     VTextarea,
     MoneyInput,
-    FileUploader
+    FileUploader,
+    ReceiversCombobox,
+    ContractDoc,
+    AgentCommissionsSelect
   },
   mixins: [validationMixin],
   validations() {
@@ -104,12 +127,17 @@ export default {
       type: Object,
       default: () => ({})
     },
+    invalidFields: {
+      type: Array,
+      default: () => ([])
+    },
     fillRow: Boolean,
     editMode: Boolean
   },
   setup(props, { root }) {
-    const { $set } = root;
+    const {$set} = root;
     const form = reactive({});
+    const checkedFields = ref([])
 
     watch(
       () => props.value,
@@ -118,7 +146,8 @@ export default {
           // throw new Error("The schema provided is not a reactive element");
         }
 
-        for (let { cols } of props.schema.value || props.schema) {
+
+        for (let {cols} of props.schema.value || props.schema) {
           for (let name in cols) {
             $set(form, name, value[name]);
           }
@@ -128,7 +157,8 @@ export default {
     );
 
     return {
-      form
+      form,
+      checkedFields
     };
   },
   computed: {
@@ -140,11 +170,17 @@ export default {
         return;
       }
 
-      return {
+      const toReturn = {
         cols: "12",
         sm: "6",
         lg: "4"
       };
+
+      if (row.maxCols) {
+        toReturn.lg = 12 / row.maxCols;
+      }
+
+      return toReturn;
     },
     getValue(field, key) {
       let value = this.value[key];
@@ -206,6 +242,16 @@ export default {
 
       // announce validation statu only if must be validated
       mustValidate && this.announceStatus();
+    },
+
+    onFieldChecked(key, value) {
+      if (value) {
+        this.checkedFields.push(key)
+      } else {
+        this.checkedFields.splice(this.checkedFields.indexOf(key), 1)
+      }
+
+      this.$emit("checkedFieldsChange", this.checkedFields)
     },
 
     announceStatus() {

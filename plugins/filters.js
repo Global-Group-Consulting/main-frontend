@@ -2,7 +2,7 @@ import Vue from 'vue'
 import moment from 'moment'
 import Cleave from 'cleave.js'
 
-import { capitalize } from "lodash"
+import {capitalize, kebabCase} from "lodash"
 
 class BriteConverter {
   static toBrite(value) {
@@ -49,20 +49,34 @@ export function percentageFormatter(value) {
   return value
 }
 
-export function dateFormatter(value, includeHours) {
+export function dateFormatter(value, includeHours, humanFormat) {
   if (!value) {
     return ''
   }
 
+  let momentDate
+  let format
+  let toReturn
+
   if (!isNaN(Number(value))) {
-    return moment(Number(value)).format('L' + (includeHours ? ' LT' : ''))
+    momentDate = moment(Number(value))
+    format = 'L' + (includeHours ? ' LT' : '')
+  } else {
+    momentDate = moment(value)
+    format = 'L' + (includeHours ? ' LT' : '')
   }
 
-  return moment(value).format('L' + (includeHours ? ' LT' : ''))
+  if (humanFormat && momentDate.isSameOrAfter(moment().subtract(2, "days"))) {
+    toReturn = momentDate.fromNow()
+  } else {
+    toReturn = momentDate.format(format)
+  }
+
+  return toReturn
 }
 
-export function dateHourFormatter(value) {
-  return dateFormatter(value, true)
+export function dateHourFormatter(value, humanFormat) {
+  return dateFormatter(value, true, humanFormat)
 }
 
 export function datePickerFormatter(value) {
@@ -122,6 +136,10 @@ export function userFormatter(user) {
   return `${capitalize(user.lastName)} ${capitalize(user.firstName)}`
 }
 
+export function formFieldNameFormatter(field) {
+  return kebabCase(field)
+}
+
 Vue.filter('dateFormatter', dateFormatter)
 Vue.filter('dateHourFormatter', dateHourFormatter)
 Vue.filter('datePickerFormatter', datePickerFormatter)
@@ -131,3 +149,4 @@ Vue.filter('contractNumberFormatter', contractNumberFormatter)
 Vue.filter('regionFormatter', regionFormatter)
 Vue.filter('numberCasting', numberCasting)
 Vue.filter('userFormatter', userFormatter)
+Vue.filter('formFieldNameFormatter', formFieldNameFormatter)

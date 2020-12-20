@@ -10,7 +10,7 @@ export default function ({ $auth }) {
   /**
    * @type {import("@vue/composition-api").ComputedRef<boolean>}
    */
-  const superAdmin = computed(() => $auth.user.superAdmin)
+  const superAdmin = computed(() => !!$auth.user.superAdmin)
 
   /**
    * @type {import("@vue/composition-api").ComputedRef<"user" | "admin">}
@@ -23,6 +23,7 @@ export default function ({ $auth }) {
   const permissions = reactive({
     userRole,
     userType,
+    superAdmin,
     addUsers: computed(() => userRole.value !== UserRoles.CLIENTE),
     addUsers_admin: computed(() => !!superAdmin.value),
     addUsers_servClienti: computed(() => !!superAdmin.value),

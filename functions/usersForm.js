@@ -15,6 +15,7 @@ import { computed, ref, onMounted } from '@vue/composition-api'
 
 import PersonTypes from '../enums/PersonTypes'
 import UserRoles from '../enums/UserRoles'
+import AccountStatuses from '../enums/AccountStatuses'
 
 import usersTabs from '../config/tabs/usersIdTabs'
 import usersDataSchema from '../config/forms/usersDataSchema'
@@ -28,7 +29,7 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set, $au
     role: UserRoles.CLIENTE,
     personType: PersonTypes.FISICA
   })
-  const permissions = Permissions({ $auth })
+  const permissions = Permissions({$auth})
   const userIsNew = computed(() => $route.params.id === "new" || !formData.value.id)
   const userRole = computed(() => formData.value.role)
   const userAccountStatus = computed(() => formData.value.account_status)
@@ -37,6 +38,7 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set, $au
   const userLegalReprItaly = computed(() => (formData.value.legalRepresentativeCountry || '').toLowerCase() === 'it')
   const showReferenceAgent = computed(() => [UserRoles.CLIENTE, UserRoles.AGENTE].includes(userRole.value))
   const userIsPersonaGiuridica = computed(() => +formData.value.personType === PersonTypes.GIURIDICA)
+  const userType = computed(() => [UserRoles.CLIENTE, UserRoles.AGENTE].includes(formData.value.role) ? "user" : "admin")
 
   /**
    * @type {import('@vue/composition-api').ComputedRef<{
@@ -57,6 +59,7 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set, $au
     userBirthItaly,
     userBusinessItaly,
     userLegalReprItaly,
+    userType,
     showReferenceAgent,
     permissions
   }))
@@ -83,6 +86,19 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set, $au
     return result
   }
 
+  /**
+   * To use in case an account is in status INCOMPLETE.
+   * When saving ask the AGENT if it has corrected the invalid fields
+   *
+   * @returns {Promise<void>}
+   */
+  async function askIfDataIsComplete() {
+    return await $alerts.askBeforeAction({
+      key: "confirm-updated-incomplete-data",
+      data: formData.value
+    });
+  }
+
   async function onSaveClick() {
     try {
       const formValid = await validateAll();
@@ -93,13 +109,22 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set, $au
 
       let result
 
-      delete formData.value.files
+      const data = {...formData.value}
+
+      delete data.files
+      delete data.referenceAgentData
+
+      if (formData.value.account_status === AccountStatuses.INCOMPLETE) {
+        await askIfDataIsComplete()
+
+        data.incompleteData.completed = true
+      }
 
       if (userIsNew.value) {
-        result = await $apiCalls.userCreate(formData.value)
+        result = await $apiCalls.userCreate(data)
         $router.replace("/users/" + result.id)
       } else {
-        result = await $apiCalls.userUpdate(formData.value)
+        result = await $apiCalls.userUpdate(data)
 
         $set(formData, "value", result)
       }
@@ -121,6 +146,7 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set, $au
     userBirthItaly,
     userBusinessItaly,
     userLegalReprItaly,
+    userType,
     showReferenceAgent,
     onSaveClick,
     permissions

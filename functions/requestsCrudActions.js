@@ -1,10 +1,14 @@
+import RequestTypes from "../enums/RequestTypes"
+import RequestStatus from "../enums/RequestStatus"
+import moment from "moment";
+
 /**
- * 
- * @param {*} request 
- * @param {{}} param1 
- * @param {import("../@types/AlertsPlugin").AlertsPlugin} param1.$alerts 
+ *
+ * @param {*} request
+ * @param {{}} param1
+ * @param {import("../@types/AlertsPlugin").AlertsPlugin} param1.$alerts
  */
-export default function (request, { $apiCalls, $alerts, $options, $enums, $i18n }) {
+export default function (request, { $apiCalls, $alerts, $options, $enums, $i18n }, emit) {
   async function deleteFn() {
     const currentRequest = request.value ?? request
 
@@ -29,17 +33,68 @@ export default function (request, { $apiCalls, $alerts, $options, $enums, $i18n 
       return true
     } catch (er) {
       $alerts.error(er)
+      return false
     }
   }
 
-  async function approve() {
+  async function approve(requestData) {
+    if (requestData.type === RequestTypes.VERSAMENTO && requestData.status === RequestStatus.NUOVA) {
+      return emit("requestStartWorking", requestData);
+    }
+
     const currentRequest = request.value ?? request
 
     try {
       await $alerts.askBeforeAction({
         key: "approve-request",
-        preConfirm: async () => {
-          await $apiCalls.acceptRequest(currentRequest);
+        preConfirm: async (value) => {
+          await $apiCalls.acceptRequest(currentRequest, moment(value, "DD/MM/YYYY", true).toDate());
+        },
+        settings: {
+          input: "text",
+          inputPlaceholder: $i18n.t("forms.payment-doc-date"),
+          inputValidator: (value) => {
+            if (!value) {
+              return $i18n.t("validators.required")
+            }
+
+            const incomingDate = moment(value, "DD/MM/YYYY", true)
+
+            if (!incomingDate.isValid()) {
+              return $i18n.t("validators.date")
+            }
+
+            const minMonthDate = moment().subtract(1, "months")
+              .set({
+                'date': 1,
+                'hour': 0,
+                "minute": 0,
+                "second": 0,
+                "millisecond": 0
+              })
+
+            // Assure that the date is not older then 1st of previous month
+            if ((minMonthDate.isAfter(incomingDate))) {
+              return $i18n.t("validators.dateToOld")
+            }
+
+            const minCurrentMonthDate = moment().set({
+              'date': 1,
+              'hour': 0,
+              "minute": 0,
+              "second": 0,
+              "millisecond": 0
+            })
+            /*
+            If the current date is > 15, and the date refers to the precious month,
+            then it means that the recapitalization has
+            already occurred and also the agents commission calculation, so we can't add
+            a movement on the previous month.
+             */
+            if (moment().date() > 15 && minCurrentMonthDate.isAfter(incomingDate)) {
+              return $i18n.t("validators.dateBeforeRecapitalization")
+            }
+          }
         },
         data: {
           type: $i18n.t(
@@ -57,6 +112,8 @@ export default function (request, { $apiCalls, $alerts, $options, $enums, $i18n 
       return true
     } catch (er) {
       $alerts.error(er)
+
+      return false
     }
   }
 
@@ -102,6 +159,7 @@ export default function (request, { $apiCalls, $alerts, $options, $enums, $i18n 
       return true
     } catch (er) {
       $alerts.error(er)
+      return false
     }
   }
 
@@ -146,6 +204,7 @@ export default function (request, { $apiCalls, $alerts, $options, $enums, $i18n 
       return true
     } catch (er) {
       $alerts.error(er)
+      return false
     }
   }
 

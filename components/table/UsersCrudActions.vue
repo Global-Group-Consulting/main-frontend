@@ -29,6 +29,7 @@
 <script>
   import { computed } from "@vue/composition-api";
   import Permissions from "../../functions/permissions";
+  import AccountStatuses from "@/enums/AccountStatuses";
 
   export default {
     name: "UsersCrudActions",
@@ -62,9 +63,28 @@
         });
       };
 
-      const onSendCommunicationClick = function () {};
+      const onSendCommunicationClick = function () {
+      };
 
-      const onShowRequestsClick = function () {};
+      const onShowRequestsClick = function () {
+      };
+
+      const onApproveUserClick = async function () {
+        try {
+          await $alerts.askBeforeAction({
+            key: "approve-user",
+            preConfirm: async () => {
+              const result = await $apiCalls.userApprove(
+                props.item.id
+              );
+              props.item.account_status = result.account_status;
+            },
+            data: props.item
+          });
+        } catch (er) {
+          $alerts.error(er);
+        }
+      };
 
       const menuOptions = [
         {
@@ -74,7 +94,8 @@
         {
           value: "sendCommunication",
           action: onSendCommunicationClick,
-          if: computed(() => props.item.id !== $auth.user.id),
+          if: computed(() => props.item.id !== $auth.user.id &&
+            props.item.account_status === $enums.AccountStatuses.ACTIVE),
         },
         {
           value: "showRequests",
@@ -82,14 +103,23 @@
           if: computed(
             () =>
               props.item.id !== $auth.user.id &&
-              [$enums.UserRoles.CLIENTE, $enums.UserRoles.AGENTE].includes(
-                props.item.role
-              )
+              [$enums.UserRoles.CLIENTE, $enums.UserRoles.AGENTE].includes(props.item.role) &&
+              props.item.account_status === $enums.AccountStatuses.ACTIVE
           ),
         },
         {
           value: "enterAs",
           if: computed(() => false),
+        },
+        {
+          value: "approveUser",
+          action: onApproveUserClick,
+          if: computed(
+            () => (
+              (props.item.account_status === $enums.AccountStatuses.DRAFT &&
+                permissions.superAdmin)
+            )),
+          divider: true,
         },
         {
           value: "delete",

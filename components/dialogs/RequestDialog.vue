@@ -1,38 +1,68 @@
 <template>
   <div>
-    <portal to="dialog-content">
+    <portal to="dialog-pre-content">
       <v-alert
-        type="warning"
-        class="mt-3"
-        v-if="formData.status === $enums.RequestStatus.RIFIUTATA"
+        v-if="showAlert"
+        :type="
+          formData.status === $enums.RequestStatus.LAVORAZIONE
+            ? 'info'
+            : 'warning'
+        "
+        class="mb-0"
+        tile
+        dense
       >
-        <div v-html="$t('dialogs.requests.alert-reject-reason')"></div>
-        <div>{{ formData.rejectReason }}</div>
-      </v-alert>
+        <template v-if="formData.status === $enums.RequestStatus.RIFIUTATA">
+          <div v-html="$t('dialogs.requests.alert-reject-reason')"></div>
+          <strong>{{ formData.rejectReason }}</strong>
+        </template>
 
-      <v-alert
-        type="warning"
-        class="mt-3"
-        v-else-if="formData.status === $enums.RequestStatus.ANNULLATA"
-      >
-        <div
-          v-html="
-            $t('dialogs.requests.alert-cancel-reason', {
-              date: $options.filters.dateHourFormatter(formData.completed_at)
-            })
-          "
-        ></div>
-        <div>{{ formData.cancelReason }}</div>
+        <template
+          v-else-if="formData.status === $enums.RequestStatus.ANNULLATA"
+        >
+          <div
+            v-html="
+              $t('dialogs.requests.alert-cancel-reason', {
+                date: $options.filters.dateHourFormatter(formData.completed_at)
+              })
+            "
+          ></div>
+          <strong>{{ formData.cancelReason }}</strong>
+        </template>
+
+        <template
+          v-else-if="formData.status === $enums.RequestStatus.LAVORAZIONE"
+        >
+          <template v-if="showConversatinLink">
+            {{ $t("dialogs.requests.alert-connected-communication") }}
+            <v-btn
+              link
+              outlined
+              x-small
+              :href="'/communications?open=' + conversationId"
+              target="__blank"
+            >
+              <v-icon x-small>mdi-open-in-new</v-icon>
+              {{ $t("dialogs.requests.btn-go-to-conversation") }}
+            </v-btn>
+          </template>
+
+          <template v-else>
+            {{
+              $t(
+                "dialogs.requests.alert-in-progress",
+                formData.conversation.creator
+              )
+            }}
+          </template>
+        </template>
       </v-alert>
 
       <v-toolbar
         dense
         elevation="2"
         color="blue-grey lighten-5"
-        v-if="
-          formData.status === $enums.RequestStatus.NUOVA &&
-            permissions.userType === 'admin'
-        "
+        v-if="canApprove"
       >
         <v-spacer></v-spacer>
         <v-toolbar-items>
@@ -47,7 +77,9 @@
         </v-toolbar-items>
         <v-spacer></v-spacer>
       </v-toolbar>
+    </portal>
 
+    <portal to="dialog-content">
       <v-form :disabled="!!readonly" @submit.prevent="">
         <dynamic-fieldset
           :ref="'request-form'"
@@ -89,12 +121,12 @@ import { createNamespacedHelpers } from "vuex-composition-helpers";
 import DynamicFieldset from "@/components/DynamicFieldset";
 import requestSchema from "@/config/forms/requestSchema";
 
-import WalletTypes from "../../enums/WalletTypes";
-
 import requestsCrudActionsFn from "../../functions/requestsCrudActions";
 import permissionsFn from "../../functions/permissions";
 import { admin } from "../../config/roleBasedConfig";
+import WalletTypes from "../../enums/WalletTypes";
 import RequestStatus from "../../enums/RequestStatus";
+import RequestTypes from "../../enums/RequestTypes";
 
 export default {
   name: "RequestDialog",
@@ -106,10 +138,14 @@ export default {
       default: () => ({})
     }
   },
+  /**
+   * @param {{}} props
+   * @param {{root: {
+   *    $enums: typeof import("../../plugins/enums").enums,
+   *    $apiCalls: import("../../plugins/apiCalls").ApiCalls
+   * }, emit: function}} param1
+   */
   setup(props, { root, emit }) {
-    /**
-     * @type {{$apiCalls: import("../../plugins/apiCalls").ApiCalls}}
-     */
     const { $auth, $apiCalls, $store, $enums } = root;
     const { useGetters: dialogUseGetters } = createNamespacedHelpers("dialog");
     const { useGetters: userUseGetters } = createNamespacedHelpers("user");
@@ -125,7 +161,7 @@ export default {
       currency: dialogData.value?.data.currency || $enums.CurrencyType["EURO"]
     });
 
-    const actions = requestsCrudActionsFn(formData, root);
+    const actions = requestsCrudActionsFn(formData, root, emit);
 
     const wallet = computed(() => {
       return availableWallets.value.find(
@@ -154,12 +190,47 @@ export default {
           toReturn = wallet.value?.deposit ?? 0;
           break;
         case $enums.RequestTypes.RISC_INTERESSI:
-        case $enums.RequestTypes.INTERESSI:
           toReturn = wallet.value?.interestAmount ?? 0;
+          break;
+        case $enums.RequestTypes.RISC_PROVVIGIONI:
+          toReturn = wallet.value?.currMonthCommissions ?? 0;
           break;
       }
 
       return toReturn;
+    });
+
+    const conversationId = computed(
+      () => dialogData.value?.data.conversation?.id
+    );
+
+    const showAlert = computed(() => {
+      const statuses = [
+        $enums.RequestStatus.LAVORAZIONE,
+        $enums.RequestStatus.RIFIUTATA,
+        $enums.RequestStatus.ANNULLATA
+      ];
+
+      return statuses.includes(formData.value.status);
+    });
+
+    const showConversatinLink = computed(() => {
+      return (
+        formData.value.conversation &&
+        formData.value.conversation?.watchersIds?.includes($auth.user.id)
+      );
+    });
+
+    const canApprove = computed(() => {
+      const isNewRequest =
+        $enums.RequestStatus.NUOVA === +formData.value.status;
+      const isInProgress =
+        $enums.RequestStatus.LAVORAZIONE === +formData.value.status;
+      const ownByAdmin =
+        isInProgress &&
+        $auth.user.id === formData.value.conversation.createdById;
+
+      return (isNewRequest || ownByAdmin) && permissions.userType === "admin";
     });
 
     async function onDelete() {
@@ -173,7 +244,7 @@ export default {
     }
 
     async function onApprove() {
-      const result = await actions.approve(this.formData);
+      const result = await actions.approve(formData.value);
 
       if (result) {
         this.close();
@@ -183,7 +254,7 @@ export default {
     }
 
     async function onReject() {
-      const result = await actions.reject(this.formData);
+      const result = await actions.reject(formData);
 
       if (result) {
         this.close();
@@ -203,7 +274,7 @@ export default {
       () => formData.value.type,
       type => {
         formData.value.wallet =
-          type !== $enums.RequestTypes.INTERESSI
+          type !== $enums.RequestTypes.RISC_PROVVIGIONI
             ? $enums.WalletTypes.DEPOSIT
             : $enums.WalletTypes.COMMISION;
 
@@ -233,10 +304,6 @@ export default {
       $store.dispatch("user/updateWallets", { apiCalls: $apiCalls, data });
     });
 
-    // I set the wallet here so that i can force the "availableAmount" computed refresh
-    /* formData.value.wallet =
-      dialogData.value?.data.wallet || $enums.WalletTypes["DEPOSIT"]; */
-
     return {
       formData,
       onDelete,
@@ -244,7 +311,11 @@ export default {
       onReject,
       permissions,
       dialogData,
-      availableWallets
+      availableWallets,
+      conversationId,
+      showAlert,
+      showConversatinLink,
+      canApprove
     };
   },
   data() {

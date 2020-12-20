@@ -1,6 +1,6 @@
 {
   "name": "ggc-frontend",
-  "version": "1.1.5",
+  "version": "1.4.5",
   "description": "Global Group Consulting frontend app.",
   "private": true,
   "scripts": {
@@ -11,24 +11,31 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "@adonisjs/websocket-client": "^1.0.9",
     "@nuxtjs/auth": "^4.9.1",
     "@nuxtjs/axios": "^5.12.2",
     "@nuxtjs/dotenv": "^1.4.1",
     "@nuxtjs/moment": "^1.6.1",
     "@nuxtjs/proxy": "^2.0.1",
     "@vue/composition-api": "^1.0.0-beta.14",
+    "animate.css": "^4.1.1",
     "body-parser": "^1.19.0",
     "chart.js": "^2.9.3",
     "cleave.js": "^1.6.0",
     "concurrently": "^5.3.0",
     "express": "^4.17.1",
+    "fuse.js": "^6.4.3",
     "js-file-download": "^0.4.12",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.28.0",
+    "npm-force-resolutions": "^0.0.3",
     "nuxt": "^2.14.0",
     "nuxt-i18n": "^6.15.1",
     "portal-vue": "^2.1.7",
     "sweetalert2": "^10.0.2",
+    "tippy.js": "^6.2.7",
+    "tiptap": "1.30.0",
+    "tiptap-extensions": "^1.33.2",
     "v-currency-field": "^3.1.1",
     "vue": "^2.6.12",
     "vue-chartjs": "^3.5.1",
@@ -43,6 +50,9 @@
   "devDependencies": {
     "@nuxt/types": "^2.14.5",
     "@nuxtjs/vuetify": "^1.11.2"
+  },
+  "resolutions": {
+    "tiptap/**/prosemirror-model": "1.11.0"
   },
   "volta": {
     "node": "14.11.0"

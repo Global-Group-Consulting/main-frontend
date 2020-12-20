@@ -41,15 +41,15 @@ import { computed, ref } from "@vue/composition-api";
 export default {
   layout: "public",
   auth: "guest",
-  components: { DynamicFieldset, DefaultPanel },
+  components: {DynamicFieldset, DefaultPanel},
 
   head() {
     return {
       title: "Login"
     };
   },
-  setup(props, { root, refs: $refs }) {
-    const { $enums } = root;
+  setup(props, {root, refs: $refs}) {
+    const {$enums} = root;
     const formData = ref({
       email: "",
       password: ""
@@ -57,7 +57,7 @@ export default {
 
     const formSchema = computed(context => ref(loginSchema(context)));
 
-    const onFormSubmit = async function() {
+    const onFormSubmit = async function () {
       if (!(await $refs["loginForm"].validate())) {
         return;
       }

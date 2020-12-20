@@ -61,6 +61,12 @@ export default {
     'subtitle': 'Stato utente: <strong>{accountState}</strong>',
     'subtitle-new-user': 'Creazione di un nuovo utente',
     'subtitle-new-user-with-role': 'Creazione di un nuovo utente con ruolo <strong>"${role}"</strong>',
+    'info-incomplete-data': "Questo account è stato segnalato come contenente dati non validi.",
+    'info-incomplete-data-message': "Messaggio:",
+    'info-incomplete-data-fields': "Campi non validi:",
+    'info-incomplete-single-field': "Questo campo è stato segnalato come non valido",
+    'info-sign-logs-title': "Dettaglio eventi firma",
+    'no-contract-available': "Documento non ancora disponibile",
     'btn-go-back-tooltip': 'Torna all\'elenco degli utenti',
     'btn-send-activation-email': 'Invia email di attivazione',
     'btn-send-activation-email-tooltip': 'Invia email di attivazione',
@@ -71,9 +77,17 @@ export default {
     'btn-next': 'Avanti',
     'btn-save': 'Salva modifiche',
     'btn-previous': 'Indietro',
-    'btn-approve': 'Approva',
-    'btn-approve-tooltip': 'Approva l\'attivazione dell\'account',
-    'btn-movements-list': "Lista movimenti",
+    'btn-approve': 'Attiva account',
+    'btn-approve-tooltip': 'Attiva l\'account dell\'utente.',
+    'btn-confirm-draft-user': 'Confermare account',
+    'btn-confirm-draft-user-tooltip': 'Conferma account e richiedi verifica al Servizio Clienti.',
+    'btn-confirm-draft-user-admin': 'Attiva account',
+    'btn-confirm-draft-user-tooltip-admin': 'Attiva l\'account dell\'utente.',
+    'btn-validate-user': "Convalida account",
+    'btn-validate-user-tooltip': "Convalida l'account e quindi invia il contratto da firmare.",
+    'btn-incomplete-user': "Segnala dati",
+    'btn-incomplete-user-tooltip': "Segnala all'agente di riferimento i dati non corretti.",
+    'btn-movements-list': "Movimenti e Contratto",
 
     tabs: {
       'user-data': 'Dati Utente',
@@ -85,9 +99,15 @@ export default {
     }
 
   },
-  comunications: {
-    title: 'Comunicazioni con gli utenti',
-    subtitle: ''
+  communications: {
+    title: 'Chat e comunicazioni',
+    subtitle: '',
+    tickets: "Chat",
+    communications: "Comunicazioni",
+    messagesSent: "Comunicazioni Inviate",
+    me: "Me",
+    "btn-new-conversation": "Nuova chat",
+    "btn-new-message": "Nuova comunicazione"
   },
   requests: {
     title: "Elenco delle richieste",
@@ -96,8 +116,25 @@ export default {
     "btnWithdrawal-tooltip": "Crea una richiesta di riscossione",
     "btnDeposit": "Versamento",
     "btnDeposit-tooltip": "Versa nuova liquidità",
-    'tableNuova-title': "Richieste in attesa di approvazione",
-    'tableAccettata-title': "Richieste accettate",
-    'tableRifiutata-title': "Richieste rifiutate",
+    'tableNuova-title': "In attesa",
+    'tableLavorazione-title': "In lavorazione",
+    'tableAccettata-title': "Accettate",
+    'tableRifiutata-title': "Rifiutate",
+  },
+  signResult: {
+    "success-title": "Contratto firmato!",
+    "success-message": "Grazie per aver completato la procedura di attivazione del suo contratto.<br>A breve riceverà un email con le informazioni per accedere la prima volta alla sua area personale.<br><br>Con l'occasione le diamo il benvenuto in Global Group Consulting!",
+
+    "reject-title": "Contratto rifiutato!",
+    "reject-message": "Ci dispiace che abbia rifiutato di firmare il contratto. Se pensa ci sia stato qualche tipo di errore, la invitiamo a contattare il nostro servizio clienti.<br><br>Cordiali saluti,<br>Global Group Consulting"
+  },
+  wallet: {
+    title: "Wallet provvigioni",
+    subtitle: "",
+    monthCommissions: "Provvigioni guadagnate",
+    reinvestedCommissions: "Provvigioni reinvestite",
+    collectedCommissions: "Provvigioni riscosse",
+    clientsTotalDeposit: "Versamenti dei clienti nell'ultimo anno",
+    collectCommissions: "Preleva"
   }
 }

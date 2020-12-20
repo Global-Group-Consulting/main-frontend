@@ -7,16 +7,18 @@
  */
 
 import RequestTypes from "../../enums/RequestTypes"
+import RequestStatus from "../../enums/RequestStatus"
 
 /**
- * 
- * @param {ComputedContext} context 
+ *
+ * @param {ComputedContext} context
  * @returns {import("../../@types/FormSchema").FormSchema[]}
  */
 export default function (context) {
   const isVersamento = context.dialogData && context.dialogData.data?.type === context.$enums.RequestTypes.VERSAMENTO
   const isNew = !context.formData.id
   const readonly = context.dialogData.readonly
+  const isCompleted = context.formData.status && ![RequestStatus.NUOVA, RequestStatus.LAVORAZIONE].includes(context.formData.status)
 
   return [
     {
@@ -31,7 +33,7 @@ export default function (context) {
             let mustHide = false
 
             if (type.value === context.$enums.RequestTypes.VERSAMENTO ||
-              (type.value === context.$enums.RequestTypes.INTERESSI &&
+              (type.value === context.$enums.RequestTypes.RISC_PROVVIGIONI &&
                 context.$auth.user.role !== context.$enums.UserRoles.AGENTE)
             ) {
               mustHide = true
@@ -111,6 +113,18 @@ export default function (context) {
           component: 'date-picker',
           if: !isNew,
           disabled: true,
+          "prepend-icon": "",
+          "prepend-inner-icon": "mdi-calendar",
+        },
+      }
+    },
+    {
+      cols: {
+        completed_at: {
+          label: "requestCompletedAt",
+          if: isCompleted,
+          disabled: true,
+          formatter: "dateHourFormatter",
           "prepend-icon": "",
           "prepend-inner-icon": "mdi-calendar",
         },

@@ -16,6 +16,39 @@ const defaults = {
         'accountStatus',
         'actions'
       ]
+    },
+    movements: {
+      columns: [
+        "amountChange",
+        "movementType",
+        "createdAt",
+        "deposit",
+        "interestAmount"
+      ]
+    },
+    messages: {
+      columns: [
+        "subject",
+        "type",
+        "createdAt",
+      ]
+    },
+    messagesSent: {
+      columns: [
+        "subject",
+        "type",
+        "receiver",
+        "createdAt",
+      ]
+    },
+    conversations: {
+      columns: [
+        "subject",
+        "createdAt",
+        "creator",
+        "updatedAt",
+        "unreadMessages",
+      ]
     }
   }
 }
@@ -24,10 +57,12 @@ const admin = {
   tables: {
     users: {
       columns: [
-        'superAdmin',
+        ['superAdmin', [UserRoles.ADMIN]],
+        ['contractNumber', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         'firstName',
         'lastName',
         'email',
+        ['referenceAgent', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         'accountStatus',
         'actions'
       ]
@@ -40,6 +75,7 @@ const admin = {
         'currency',
         'type',
         'created_at',
+        ['updated_at', ["lavorazione"]],
         ['completed_at', ["accettata", "rifiutata"]],
         ['actions', ["nuova"]]
       ]
@@ -69,9 +105,11 @@ const servClienti = {
   tables: {
     users: {
       columns: [
+        ['contractNumber', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         'firstName',
         'lastName',
         'email',
+        ['referenceAgent', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         'accountStatus',
         'actions'
       ]
@@ -82,6 +120,7 @@ const servClienti = {
         'currency',
         'type',
         'created_at',
+        ['updated_at', ["lavorazione"]],
         ['completed_at', ["accettata", "rifiutata"]],
         ['actions', ["nuova"]]
       ]
@@ -94,28 +133,27 @@ const servClienti = {
         "deposit",
         "interestAmount"
       ]
-    }
+    },
+    usersToValidate: {
+      columns: [
+        "contractNumber",
+        "firstName",
+        "lastName",
+        "email",
+      ]
+    },
   }
 }
 
 const cliente = {
   tables: {
-    users: {
-      columns: [
-        'contractNumber',
-        'firstName',
-        'lastName',
-        'email',
-        'accountStatus',
-        'actions'
-      ]
-    },
     requests: {
       columns: [
         'amount',
         'currency',
         'type',
         'created_at',
+        ['updated_at', ["lavorazione"]],
         ['completed_at', ["accettata", "rifiutata"]],
         ['actions', ["nuova", "accettata"]]
       ]
@@ -127,6 +165,14 @@ const cliente = {
         "createdAt",
         "deposit",
         "interestAmount"
+      ]
+    },
+    conversations: {
+      columns: [
+        "subject",
+        "createdAt",
+        "updatedAt",
+        "unreadMessages",
       ]
     }
   },
@@ -160,6 +206,7 @@ const agente = {
         'currency',
         'type',
         'created_at',
+        ['updated_at', ["lavorazione"]],
         ['completed_at', ["accettata", "rifiutata"]],
         ['actions', ["nuova", "accettata"]]
       ]
@@ -172,6 +219,16 @@ const agente = {
         "deposit",
         "interestAmount"
       ]
+    },
+    commissions: {
+      columns: [
+        "amountChange",
+        "commissionType",
+        "commissionPercentage",
+        "user",
+        "createdAt",
+        "currMonthCommissions"
+      ]
     }
   },
   blocks: {
@@ -182,6 +239,14 @@ const agente = {
         "interestsCollected",
         "depositCollected",
       ]
+    },
+    wallet: {
+      blocks: [
+        "monthCommissions",
+        "reinvestedCommissions",
+        "collectedCommissions",
+        "clientsTotalDeposit",
+      ]
     }
   }
 }
@@ -191,6 +256,7 @@ const agente = {
 export { admin, servClienti, agente, cliente }
 
 export default {
+  defaults,
   admin,
   servClienti,
   agente,

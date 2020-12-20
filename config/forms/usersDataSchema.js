@@ -8,6 +8,7 @@ import axios from "@nuxtjs/axios"
 
 import { computed } from '@vue/composition-api'
 import moment from 'moment'
+import permissions from "@/functions/permissions";
 
 /**
  * @typedef {import('../../@types/UserFormSchemaContext').UserFormSchemaContext} FormContext
@@ -180,8 +181,17 @@ export function contactsData(formContext) {
             email: {}
           }
         },
-        'mobile': {},
-        'phone': {}
+        'mobile': {
+          validations: {
+            required: {},
+            phoneNumber: {}
+          }
+        },
+        'phone': {
+          validations: {
+            phoneNumber: {}
+          }
+        }
       }
     }
   ]
@@ -194,24 +204,30 @@ export function contactsData(formContext) {
  * @returns {FormSchema[]}
  */
 export function contractData(formContext) {
+  const {changeRole, changeAgenteRif, userRole, userType} = formContext.permissions
+
   return [
     {
       cols: {
         'contractNumber': {
           disabled: true,
+          formatter: 'contractNumberFormatter',
           if: !formContext.userIsNew
         },
         'contractNumberLegacy': {
+          disabled: userType !== "admin",
           // disabled: true
         },
-        'contractDate': {
+        'contractSignedAt': {
           disabled: true,
-          if: !formContext.userIsNew,
+          formatter: 'dateHourFormatter',
+          if: !formContext.userIsNew && formContext.formData.contractSignedAt,
         },
         'contractPercentage': {
           type: "number",
           formatter: "percentageFormatter",
           appendIcon: "mdi-percent",
+          disabled: userType !== "admin" && !formContext.userIsNew,
           validations: {
             required: {},
             minValue: {
@@ -222,6 +238,22 @@ export function contractData(formContext) {
             }
           }
         },
+      }
+    },
+    {
+      if: !formContext.userIsNew && formContext.formData.contractSignedAt,
+      cols: {
+        'contractDoc': {
+          component: "contract-doc",
+          signinLogs: formContext.formData.signinLogs,
+          files: formContext.formData.contractFiles,
+          previewOnly: true
+        },
+        'contractDocSignLog': {
+          component: "contract-doc",
+          files: formContext.formData.contractFiles,
+          previewOnly: true
+        }
       }
     },
     {
@@ -248,6 +280,16 @@ export function contractData(formContext) {
           files: formContext.formData.files
         },
       }
+    },
+    {
+      if: formContext.formData.role === UserRoles.AGENTE,
+      legend: "agentCommissions",
+      cols: {
+        "commissionsAssigned": {
+          component: "agent-commissions-select",
+          disabled: !formContext.permissions.superAdmin,
+        },
+      }
     }
   ]
 }
@@ -257,7 +299,11 @@ export function contractData(formContext) {
  * @returns {FormSchema[]}
  */
 export function extraData(formContext) {
-  const { changeRole, changeAgenteRif, userRole } = formContext.permissions
+  const {changeRole, changeAgenteRif, userRole} = formContext.permissions
+  const canChangeAgenteRif = computed(() => {
+    return (formContext.userIsNew && userRole !== UserRoles.AGENTE) ||
+      changeAgenteRif
+  })
 
   return [
     {
@@ -287,11 +333,11 @@ export function extraData(formContext) {
           }
         },
         'referenceAgent': {
-          if: formContext.showReferenceAgent && changeAgenteRif,
-          component: changeAgenteRif ? 'v-select' : null,
-          disabled: !changeAgenteRif,
+          if: formContext.showReferenceAgent && canChangeAgenteRif.value,
+          component: canChangeAgenteRif.value ? 'v-select' : null,
+          disabled: !canChangeAgenteRif.value,
           clearable: true,
-          formatter: !changeAgenteRif ? (value) => {
+          formatter: !canChangeAgenteRif.value ? (value) => {
             if (!value) {
               return
             }
@@ -305,7 +351,7 @@ export function extraData(formContext) {
             return `${foundedUser.firstName} ${foundedUser.lastName}`
 
           } : null,
-          items: !changeAgenteRif ? null : formContext.$store.getters.agentsList
+          items: !canChangeAgenteRif.value ? null : formContext.$store.getters.agentsList
             .reduce((acc, curr) => {
               if (+formContext.formData.role === UserRoles.AGENTE
                 && curr.id === formContext.formData.id) {
@@ -321,15 +367,17 @@ export function extraData(formContext) {
             }, [])
         },
         'referenceAgentData': {
-          if: formContext.showReferenceAgent && !changeAgenteRif,
+          if: formContext.showReferenceAgent && !canChangeAgenteRif.value,
           disabled: true,
           formatter: (value) => {
             if (!value) {
               return
             }
+            if (value.id === formContext.$auth.user.id) {
+              return formContext.$i18n.t("forms.reference-agent-you")
+            }
 
             return `${value.firstName} ${value.lastName}`
-
           }
         }
       }
@@ -346,14 +394,14 @@ export function extraData(formContext) {
           disabled: true,
           formatter: 'dateHourFormatter'
         },
-        'activated_at': {
-          disabled: true,
-          formatter: 'dateHourFormatter'
-        },
-        'validated_at': {
-          disabled: true,
-          formatter: 'dateHourFormatter'
-        },
+        /*  'activated_at': {
+           disabled: true,
+           formatter: 'dateHourFormatter'
+         },
+         'validated_at': {
+           disabled: true,
+           formatter: 'dateHourFormatter'
+         }, */
       }
     }
   ]

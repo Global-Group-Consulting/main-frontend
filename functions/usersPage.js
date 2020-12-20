@@ -1,7 +1,7 @@
-import { get as _get, sortBy as _sortBy } from 'lodash'
+import {get as _get, sortBy as _sortBy} from 'lodash'
 
 import usersFunctions from '@/functions/users'
-import { computed, onBeforeMount, reactive, ref } from '@vue/composition-api'
+import {computed, onBeforeMount, reactive, ref} from '@vue/composition-api'
 
 import roleBasedConfig from '@/config/roleBasedConfig'
 import availableTableColumns from '@/config/tables/usersSchema'
@@ -9,9 +9,11 @@ import UserRoles from "../enums/UserRoles"
 import Permissions from "./permissions"
 
 export default function (root) {
-  const { $apiCalls, $alerts, $enums, $set, $store } = root
-  const { goToUser } = usersFunctions(root)
+  const {$apiCalls, $alerts, $enums, $set, $store} = root
+  const {goToUser} = usersFunctions(root)
   const permissions = Permissions(root)
+
+  const usersList = ref([])
 
   const usersGroups = reactive({
     [UserRoles.CLIENTE]: [],
@@ -41,7 +43,7 @@ export default function (root) {
       let result = await $apiCalls.fetchAllUsers()
 
       result = result.map(_entry => {
-        switch (_entry.id) {
+        switch (+_entry.id) {
           case UserRoles.ADMIN:
             _entry.index = 3
 
@@ -113,17 +115,19 @@ export default function (root) {
   onBeforeMount(async () => {
     const result = await fetchAllUsers()
 
+    $set(usersList, "value", result)
+
     for (const entry of result) {
       $set(usersGroups, entry.id, entry.data)
     }
   })
 
 
-
   return {
     usersGroups: usersToExpose,
     onRowClick: goToUser,
     fetchAllUsers,
+    usersList,
     getUerRoleData,
     getTableHeaders,
     onUserDeleted

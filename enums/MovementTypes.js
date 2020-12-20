@@ -17,6 +17,8 @@ class MovementTypes extends BasicEnum {
     this.CANCEL_DEPOSIT_COLLECTED = 8
     this.CANCEL_COMMISSION_COLLECTED = 9
 
+    this.COMMISSIONS_REINVESTMENT = 10
+
     super.data = {
       [this.INITIAL_DEPOSIT]: {
         id: "initialDeposit"
@@ -47,6 +49,9 @@ class MovementTypes extends BasicEnum {
       },
       [this.CANCEL_COMMISSION_COLLECTED]: {
         id: "cancelCommissionCollected"
+      },
+      [this.COMMISSIONS_REINVESTMENT]: {
+        id: "commissionsReinvestment"
       },
     }
   }

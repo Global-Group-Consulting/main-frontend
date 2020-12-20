@@ -14,5 +14,7 @@ export default {
   'developer': "Sviluppatore",
   'emailStatuses': "Stato Email",
   'errors': "Errori & Logs",
-  'version': "Versione"
+  'version': "Versione",
+  'portfolio': "Portfolio agente",
+  'wallet': "Wallet provvigioni"
 }
