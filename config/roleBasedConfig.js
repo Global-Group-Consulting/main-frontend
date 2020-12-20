@@ -57,10 +57,12 @@ const admin = {
   tables: {
     users: {
       columns: [
-        'superAdmin',
+        ['superAdmin', [UserRoles.ADMIN]],
+        ['contractNumber', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         'firstName',
         'lastName',
         'email',
+        ['referenceAgent', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         'accountStatus',
         'actions'
       ]
@@ -103,9 +105,11 @@ const servClienti = {
   tables: {
     users: {
       columns: [
+        ['contractNumber', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         'firstName',
         'lastName',
         'email',
+        ['referenceAgent', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         'accountStatus',
         'actions'
       ]
@@ -143,16 +147,6 @@ const servClienti = {
 
 const cliente = {
   tables: {
-    users: {
-      columns: [
-        'contractNumber',
-        'firstName',
-        'lastName',
-        'email',
-        'accountStatus',
-        'actions'
-      ]
-    },
     requests: {
       columns: [
         'amount',

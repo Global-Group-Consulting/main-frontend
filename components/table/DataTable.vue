@@ -95,7 +95,7 @@ export default {
         return {};
       }
     },
-    condition: String
+    condition: String | Number
   },
   setup(props, { root }) {
     const { $auth } = root;
