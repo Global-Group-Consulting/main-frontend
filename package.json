@@ -1,6 +1,6 @@
 {
   "name": "ggc-frontend",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "description": "Global Group Consulting frontend app.",
   "private": true,
   "scripts": {

@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <portal to="dialog-content">
+  <div ref="test">
+    <portal to="dialog-content" ref="dialogContent">
       <dynamic-fieldset
         :schema="communicationNewSchema"
         v-model="formData"
@@ -26,16 +26,18 @@ import CommunicationNewSchema from "@/config/forms/communicationNewSchema";
 
 import DynamicFieldset from "@/components/DynamicFieldset";
 
-import {ref, onBeforeMount, computed, onMounted} from "@vue/composition-api";
+import {ref, onBeforeMount, computed, onMounted, nextTick, } from "@vue/composition-api";
 import UserRoles from "@/enums/UserRoles";
 
 export default {
   name: "CommunicationNewDialog",
   components: {DynamicFieldset},
 
-  setup(props, {root, refs, emit}) {
+  setup(props, {root, refs, emit, app}) {
     const {$apiCalls, $alerts, $enums, $store, $auth} = root;
 
+    const test = ref(null);
+    const form = ref(null);
     const formData = ref({});
     const usersList = ref([]);
     const messageSending = ref(false);
@@ -71,6 +73,8 @@ export default {
     const userType = computed(() => [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes($auth.user.role) ? "admin" : "user")
 
     const communicationNewSchema = computed(CommunicationNewSchema);
+
+    console.log(this)
 
     function _formatUsersList(list) {
       let lastType = "";
@@ -131,7 +135,7 @@ export default {
     }
 
     async function onSubmit() {
-      const form = refs["form"];
+      const form = refs.dialogContent.$slots.default[0].componentInstance
 
       if (!(await form.validate())) {
         return;
@@ -231,7 +235,12 @@ export default {
       messageSending,
       close: closeDialog
     };
-  }
+  },
+  computed: {
+    formRef() {
+      return this.$refs.form
+    }
+  },
 };
 </script>
 
