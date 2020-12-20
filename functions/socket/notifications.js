@@ -89,6 +89,10 @@ export default function ({$socket, $set, $i18n, $router, $alerts}) {
       topic.value.on("newNotification", wsOnNewNotification)
 
       topic.value.on("close", () => {
+        if (!$socket.mustRetry) {
+          return
+        }
+
         reconnectionInterval = setTimeout(async () => {
           await connectToTopic()
         }, 1000)

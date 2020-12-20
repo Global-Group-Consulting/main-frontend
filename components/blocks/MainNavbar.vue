@@ -119,6 +119,9 @@ export default {
         });
 
         await root.$auth.logout("local");
+
+        root.$socket.close()
+
       } catch (er) {
         console.log(er);
       }

@@ -7,6 +7,7 @@ class Socket {
     this.ws = Ws(context.env.SOCKET_URL)
 
     this.isConnected = ref(false)
+    this.mustRetry = true
     this.topics = {}
     this.connections = []
     this.pendingConnections = []
@@ -26,6 +27,8 @@ class Socket {
             // ctx._subscribe(topic)
           }
         }
+
+        ctx.mustRetry = true
 
         resolve(this.ws)
       })
@@ -97,6 +100,11 @@ class Socket {
     }
 
     return this.topics[topic]
+  }
+
+  close(){
+    this.ws.close()
+    this.mustRetry = false
   }
 }
 
