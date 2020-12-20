@@ -20,6 +20,9 @@ class MessageTypes extends BasicEnum {
     /** Simple notification of any kind. This doesn't expect an answer */
     this.NOTIFICATION = 4
 
+    this.BUG_REPORT = 5
+
+
     this.data = {
       [this.NEWSLETTER]: {
         id: 'newsletter',
@@ -32,6 +35,9 @@ class MessageTypes extends BasicEnum {
       },
       [this.NOTIFICATION]: {
         id: 'notification',
+      },
+      [this.BUG_REPORT]: {
+        id: 'bug_report',
       }
     }
   }

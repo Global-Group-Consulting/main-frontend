@@ -100,13 +100,13 @@ export default {
 
   },
   communications: {
-    title: 'Ticket e comunicazioni',
+    title: 'Chat e comunicazioni',
     subtitle: '',
-    tickets: "Ticket",
+    tickets: "Chat",
     communications: "Comunicazioni",
     messagesSent: "Comunicazioni Inviate",
     me: "Me",
-    "btn-new-conversation": "Nuovo ticket",
+    "btn-new-conversation": "Nuova chat",
     "btn-new-message": "Nuova comunicazione"
   },
   requests: {

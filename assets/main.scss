@@ -1,6 +1,13 @@
 @import "sweetAlert";
 @import "vueToasted";
 
+@import "../node_modules/animate.css/animate.min.css";
+
+
+/*@import "../node_modules/animate.css/source/_vars.css";
+@import "../node_modules/animate.css/source/_base.css";
+@import "../node_modules/animate.css/source/attention_seekers/swing.css";*/
+
 .p-relative {
   position: relative !important;
 }

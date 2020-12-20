@@ -568,7 +568,6 @@ export default {
             html: alertText.join("<br>")
           },
           preConfirm: async (userInput) => {
-            debugger
 
             const result = await $apiCalls.userIncomplete({
               userId: userForm.formData.value.id,

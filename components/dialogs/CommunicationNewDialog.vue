@@ -76,8 +76,12 @@ export default {
       let lastType = "";
 
       return list.reduce((acc, _user) => {
-        const role = root.$t(
-          `enums.UserRoles.${$enums.UserRoles.getIdName(_user.role)}`
+        let receiverRole = _user.role
+        let role = root.$t(
+          `enums.UserRoles.${$enums.UserRoles.getIdName(
+            receiverRole instanceof Array ?
+              UserRoles.SERV_CLIENTI : _user.role
+          )}`
         );
 
         const toAdd = {
@@ -161,8 +165,10 @@ export default {
 
         emit("communicationAdded", result);
 
-        $alerts.toastSuccess("communication-new-success");
-        closeDialog();
+        $alerts.toastSuccess(communicationData.type !== $enums.MessageTypes.BUG_REPORT ?
+          "communication-new-success" : "bug-report-success");
+
+        await closeDialog();
       } catch (er) {
         $alerts.error(er);
       } finally {
@@ -188,12 +194,22 @@ export default {
 
     onBeforeMount(async () => {
       try {
-        const result = await $apiCalls.communicationsFetchReceivers(dialogData.value.type);
+        if (dialogData.value.type !== $enums.MessageTypes.BUG_REPORT) {
+          const result = await $apiCalls.communicationsFetchReceivers(dialogData.value.type);
 
-        root.$set(usersList, "value", _formatUsersList(result));
+          root.$set(usersList, "value", _formatUsersList(result));
+        }
 
         if (userType.value === "user") {
           formData.value.receiver = $enums.UserRoles.SERV_CLIENTI
+        }
+
+        if (dialogData.value.type === $enums.MessageTypes.BUG_REPORT) {
+          root.$set(formData, "value", {
+            type: dialogData.value.type,
+            subject: dialogData.value.subject,
+            receiver: [dialogData.value.receiver],
+          });
         }
 
         if (dialogData.value.request) {

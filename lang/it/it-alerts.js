@@ -80,6 +80,7 @@ export default {
   "contract-import-success": "Contratto importati correttamente!",
 
   "communication-new-success": "Messaggio inviato correttamente!",
+  "bug-report-success": "Segnalazione inviata correttamente!",
 
   "confirm-draft-user-title": "Confermare account?",
   "confirm-draft-user-text": "Sei sicuro di voler confermare l'account dell'utente {firstName} {lastName}? Procedendo, si avvierà l'iter di attivazione dell'account, con la verifica dei dati da parte del Servizio Clienti e la Firma del contratto da parte del cliente.",
