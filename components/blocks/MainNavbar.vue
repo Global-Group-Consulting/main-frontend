@@ -7,6 +7,16 @@
     <v-spacer></v-spacer>
 
     <v-toolbar-items>
+      <v-tooltip bottom>
+        <template v-slot:activator="{on}">
+          <v-btn text v-on="on" color="orange lighten-3"
+                 @click="openBugReport">
+            <v-icon>mdi-bug</v-icon>
+          </v-btn>
+        </template>
+        Segnala un problema
+      </v-tooltip>
+
       <v-menu offset-y max-width="350"
               :disabled="!notifications.connected">
         <template v-slot:activator="{ on, attrs }">
@@ -99,6 +109,12 @@
         </v-list>
       </v-menu>
     </v-toolbar-items>
+
+    <communication-new-dialog
+      v-if="$store.getters['dialog/dialogId'] === 'CommunicationNewDialog'"
+      @communicationAdded="onBugReported"
+    ></communication-new-dialog>
+
   </v-app-bar>
 </template>
 
@@ -106,11 +122,12 @@
 import socketNotificationsFn from "@/functions/socket/notifications";
 import {computed, onMounted, ref} from "@vue/composition-api";
 import {moneyFormatter} from "@/plugins/filters";
+import CommunicationNewDialog from "@/components/dialogs/CommunicationNewDialog";
 
 export default {
   name: "MainNavbar",
+  components: {CommunicationNewDialog},
   setup(props, {root}) {
-
     async function logout() {
       try {
         const result = await root.$alerts.ask({
@@ -131,9 +148,29 @@ export default {
       root.$router.push("/users/" + root.$auth.user.id);
     }
 
+    async function openBugReport() {
+      root.$store.dispatch("dialog/updateStatus", {
+        id: "CommunicationNewDialog",
+        title: root.$t(`dialogs.communicationNewDialog.title-bug-report`),
+        fullscreen: false,
+        readonly: false,
+        data: {
+          type: root.$enums.MessageTypes.BUG_REPORT,
+          receiver: root.$enums.UserRoles.ADMIN,
+          subject: `Segnalazione BUG - ${root.$auth.user.firstName} ${root.$auth.user.lastName}`
+        }
+      });
+    }
+
+    async function onBugReported() {
+
+    }
+
     return {
       logout,
       vieMyProfile,
+      openBugReport,
+      onBugReported,
       ...socketNotificationsFn(root)
     }
   },

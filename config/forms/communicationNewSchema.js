@@ -21,6 +21,7 @@ export default function (context) {
           label: "communication-subject",
           outlined: true,
           dense: true,
+          if: context.dialogData.type !== MessageTypes.BUG_REPORT,
           validations: {
             required: {}
           }
@@ -41,6 +42,7 @@ export default function (context) {
           showRole: messageType === "ticket",
           smallChips: userType === "admin",
           items: context.availableReceivers,
+          if: context.dialogData.type !== MessageTypes.BUG_REPORT,
           validations: {
             required: {}
           }

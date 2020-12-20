@@ -421,7 +421,7 @@ export default {
           await $apiCalls.messagesSetAsRead({ ids: unreadMessages });
           emit("setAsRead", dialogData.value.id);
         }
-      }, 5000);
+      }, 2000);
     }
 
     function _extractMentions() {

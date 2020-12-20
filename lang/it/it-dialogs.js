@@ -38,6 +38,7 @@ export default {
   communicationNewDialog: {
     "title-conversation": "Nuovo ticket",
     "title-service": "Nuova comunicazione",
+    "title-bug-report": "Segnalazione di un problema",
     "title-handle-new-deposit": "Comunicazione versamento nuovo deposito",
     "subject-new-deposit": "Comunicazione nuova richiesta di versamento - {date}",
     "message-new-deposit": "Gentile {firstName} {lastName},\nabbiamo ricevuto la sua richiesta di versamento.\nPer procedere, la invitiamo ad effettuare un bonifico della somma di €{amount} all'iban:\n[CODICE IBAN] \n\nSuccessivamente, la invitiamo a rispondere a questa comunicazione inviandoci la contabile del pagamento.\n\nCordiali saluti",

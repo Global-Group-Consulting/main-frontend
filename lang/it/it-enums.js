@@ -74,6 +74,7 @@ export default {
     'service': "Messaggio di servizio",
     'conversation': "Conversazione",
     'notification': "Notifica",
+    'bug_report': "Segnalazione problema",
   },
   "SignRequestEvents": {
     "convert_error": "Errore creazione documento",
