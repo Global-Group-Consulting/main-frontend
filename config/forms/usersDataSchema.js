@@ -5,8 +5,9 @@ import AccountStatuses from '../../enums/AccountStatuses'
 import Genders from '@/enums/Genders'
 
 import axios from "@nuxtjs/axios"
+import {required, requiredIf} from 'vuelidate/lib/validators'
 
-import { computed } from '@vue/composition-api'
+import {computed} from '@vue/composition-api'
 import moment from 'moment'
 import permissions from "@/functions/permissions";
 
@@ -54,17 +55,23 @@ export function basicData(formContext) {
       cols: {
         'firstName': {
           validations: {
-            required: {}
+            requiredIf: {
+              params: () => !formContext.userIsPersonaGiuridica
+            }
           }
         },
         'lastName': {
           validations: {
-            required: {}
+            requiredIf: {
+              params: () => !formContext.userIsPersonaGiuridica
+            }
           }
         },
         'fiscalCode': {
           validations: {
-            required: {}
+            requiredIf: {
+              params: () => !formContext.userIsPersonaGiuridica
+            }
           }
         },
         'gender': {
@@ -121,6 +128,7 @@ export function addressData(formContext) {
   return [
     {
       if: formContext.userIsPersonaGiuridica,
+      legend: `business-residence`,
       cols: {
         'businessCountry': {
           component: 'v-select',

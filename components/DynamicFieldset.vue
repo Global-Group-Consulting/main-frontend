@@ -37,10 +37,9 @@
 
               <v-tooltip
                 top
-                v-if="
-                  field.validations &&
-                    field.validations.required &&
-                    !(field.readonly || field.disabled)
+                v-if="field.validations
+                  && (field.validations.required || field.validations.requiredIf && field.validations.requiredIf.params())
+                  && !(field.readonly || field.disabled)
                 "
               >
                 <template v-slot:activator="{ on }">
@@ -84,7 +83,7 @@
 </template>
 
 <script>
-import { VTextField, VTextarea, VSelect, VFileInput } from "vuetify/lib";
+import {VTextField, VTextarea, VSelect, VFileInput} from "vuetify/lib";
 import DatePicker from "@/components/forms/inputs/DatePicker";
 import MoneyInput from "@/components/forms/inputs/MoneyInput";
 import FileUploader from "@/components/forms/inputs/FileUploader";
@@ -92,11 +91,11 @@ import ReceiversCombobox from "@/components/forms/inputs/ReceiversCombobox";
 import ContractDoc from "@/components/forms/inputs/ContractDoc";
 import AgentCommissionsSelect from "@/components/forms/inputs/AgentCommissionsSelect";
 
-import { validationRules, errorMessages } from "@/mixins/ValidationsParser";
-import { validationMixin } from "vuelidate";
-import { kebabCase as _kebabCase, get as _get } from "lodash";
+import {validationRules, errorMessages} from "@/mixins/ValidationsParser";
+import {validationMixin} from "vuelidate";
+import {kebabCase as _kebabCase, get as _get} from "lodash";
 
-import { onMounted, reactive, ref, watch } from "@vue/composition-api";
+import {onMounted, reactive, ref, watch} from "@vue/composition-api";
 
 export default {
   name: "DynamicFieldset",
@@ -134,7 +133,7 @@ export default {
     fillRow: Boolean,
     editMode: Boolean
   },
-  setup(props, { root }) {
+  setup(props, {root}) {
     const {$set} = root;
     const form = reactive({});
     const checkedFields = ref([])
@@ -153,7 +152,7 @@ export default {
           }
         }
       },
-      { deep: true, immediate: true }
+      {deep: true, immediate: true}
     );
 
     return {

@@ -59,6 +59,7 @@ export default {
   'person-type': 'Tipologia soggetto',
   'phone': 'Telefono',
   'residence': 'Residenza',
+  'business-residence': 'Sede legale',
   'reference-agent': 'Agente di riferimento',
   'reference-agent-data': 'Agente di riferimento',
   'reference-agent-you': 'Tu',
