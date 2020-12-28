@@ -285,6 +285,16 @@ export function contractData(formContext) {
             }
           }
         },
+        'contractInitialInvestmentGold': {
+          disabled: [AccountStatuses.APPROVED, AccountStatuses.ACTIVE, AccountStatuses.VALIDATED].includes(formContext.formData.account_status),
+          type: "number",
+          prefix: "gr.",
+          validations: {
+            minValue: {
+              params: 1
+            }
+          }
+        },
         'contractInvestmentAttachment': {
           component: "file-uploader",
           files: formContext.formData.files

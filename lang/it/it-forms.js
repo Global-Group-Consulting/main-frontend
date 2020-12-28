@@ -23,6 +23,7 @@ export default {
   'contract-number-legacy': 'Vecchio numero contratto',
   'contract-percentage': 'Percentuale assegnata',
   'contract-initial-investment': 'Investimento iniziale',
+  'contract-initial-investment-gold': 'Investimento iniziale (Oro)',
   'contract-initial-payment-method': 'Metodo di pagamento',
   'contract-initial-payment-method-other': 'Altro metodo',
   'contract-investment-attachment': 'Contabile versamento iniziale',
