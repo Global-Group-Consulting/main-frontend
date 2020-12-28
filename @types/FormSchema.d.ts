@@ -1,7 +1,7 @@
-import { Formatters } from "./Formatters";
+import {Formatters} from "./Formatters";
 
 export interface FormSchema {
-  if?: boolean | function,
+  if?: boolean | Function,
   legend?: string,
   disableEditMode?: boolean,
   class?: string,
@@ -11,10 +11,9 @@ export interface FormSchema {
       component?: string,
       label?: string,
       formatter?: Formatters,
-      disabled?: boolean,
       if?: any,
-      items?: [] | function
-      disabled?: boolean | function
+      items?: [] | Function;
+      disabled?: boolean | Function;
       type?: string
       files?: [],
       clearable?: boolean,

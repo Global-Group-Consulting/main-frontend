@@ -23,6 +23,8 @@ export default {
   'contract-number-legacy': 'Vecchio numero contratto',
   'contract-percentage': 'Percentuale assegnata',
   'contract-initial-investment': 'Investimento iniziale',
+  'contract-initial-payment-method': 'Metodo di pagamento',
+  'contract-initial-payment-method-other': 'Altro metodo',
   'contract-investment-attachment': 'Contabile versamento iniziale',
   'contract-doc': "Contratto firmato",
   'contract-doc-sign-log': "Autenticazione firma contratto",
@@ -89,5 +91,6 @@ export default {
   'total-deposit-details': "Ad ogni ricapitalizzazione, per ogni suo cliente, l'agente riceverà x % calcolato sul capitale del cliente, in provvigioni.\n(X = 4 - la percentuale assegnata al cliente. Se quest'ultima è maggiore o uguale a 4, l'agente non riceverà nulla.)",
   'annual-deposit': "Provvigione sul deposito annuale",
   'annual-deposit-details': "Allo scadere di ogni anno, all'agente verrà riconosciuto una percentuale totale del 6%, corrisposta in 3 mensilità (aprile, agosto e dicembre), sul totale del capitale versato dai suoi clienti.",
-  'payment-doc-date': "Data contabile (gg/mm/aaaa)"
+  'payment-doc-date': "Data contabile (gg/mm/aaaa)",
+  'initial-investment-legend': "Investimento iniziale"
 }

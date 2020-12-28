@@ -1,5 +1,6 @@
 import DocumentTypes from '@/enums/DocumentTypes'
 import PersonTypes from '@/enums/PersonTypes'
+import PaymentMethods from '@/enums/PaymentMethods'
 import UserRoles from '../../enums/UserRoles'
 import AccountStatuses from '../../enums/AccountStatuses'
 import Genders from '@/enums/Genders'
@@ -271,6 +272,7 @@ export function contractData(formContext) {
       }
     },
     {
+      legend: "initial-investment-legend",
       cols: {
         'contractInitialInvestment': {
           disabled: [AccountStatuses.APPROVED, AccountStatuses.ACTIVE, AccountStatuses.VALIDATED].includes(formContext.formData.account_status),
@@ -286,6 +288,20 @@ export function contractData(formContext) {
         'contractInvestmentAttachment': {
           component: "file-uploader",
           files: formContext.formData.files
+        },
+      },
+    },
+    {
+      cols: {
+        'contractInitialPaymentMethod': {
+          component: "v-select",
+          items: PaymentMethods,
+          validations: {
+            required: {}
+          }
+        },
+        'contractInitialPaymentMethodOther': {
+          if: formContext.formData.contractInitialPaymentMethod === PaymentMethods.ALTRO
         },
       }
     },
