@@ -50,6 +50,7 @@
 
               <template v-slot:item.account_status="{ item }">
                 <v-chip
+                  small
                   :color="$enums.AccountStatuses.get(item.account_status).color"
                 >
                   {{
@@ -66,6 +67,41 @@
                   :item="item"
                   @userDeleted="onUserDeleted(item, group)"
                 />
+              </template>
+
+              <template v-slot:item.contractSignedAt="{item}">
+                <div v-if="item.contractSignedAt">
+                  <template v-if="!item.contractImported">
+
+
+                    <v-menu offset-y open-on-hover left>
+                      <template v-slot:activator="{ on, attrs }">
+                        <a v-on="on" v-bind="attrs" class="text-decoration-underline-dotted">
+                          {{ $t("tables.contract-signed") }}
+                        </a>
+                      </template>
+
+                      <signing-logs-popup :value="item.signinLogs || []"></signing-logs-popup>
+                    </v-menu>
+                  </template>
+
+                  <template v-else>
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{on}">
+                        <a v-on="on" class="text-decoration-underline-dotted">
+                          {{ $t("tables.contract-imported") }}
+                        </a>
+                      </template>
+                      <span>{{
+                          $t("tables.contract-imported-at", {date: $options.filters.dateHourFormatter(item.contractSignedAt)})
+                        }}</span>
+                    </v-tooltip>
+                  </template>
+                </div>
+
+                <div v-else class="red--text">
+                  {{ $t("tables.contract-not-signed") }}
+                </div>
               </template>
             </data-table>
           </v-card>
@@ -207,10 +243,11 @@ import {onMounted, computed, ref} from "@vue/composition-api";
 
 import Permissions from "../../functions/permissions";
 import DataTable from "@/components/table/DataTable";
+import SigningLogsPopup from "@/components/elements/SigningLogsPopup";
 
 export default {
   name: "index",
-  components: {DataTable, UsersCrudActions, PageHeader},
+  components: {SigningLogsPopup, DataTable, UsersCrudActions, PageHeader},
   middleware: ["pagesAuth"],
   setup(props, {root}) {
     const {$enums, $auth} = root;
