@@ -90,6 +90,7 @@ import FileUploader from "@/components/forms/inputs/FileUploader";
 import ReceiversCombobox from "@/components/forms/inputs/ReceiversCombobox";
 import ContractDoc from "@/components/forms/inputs/ContractDoc";
 import AgentCommissionsSelect from "@/components/forms/inputs/AgentCommissionsSelect";
+import PasswordInput from "@/components/forms/inputs/PasswordInput";
 
 import {validationRules, errorMessages} from "@/mixins/ValidationsParser";
 import {validationMixin} from "vuelidate";
@@ -109,7 +110,8 @@ export default {
     FileUploader,
     ReceiversCombobox,
     ContractDoc,
-    AgentCommissionsSelect
+    AgentCommissionsSelect,
+    PasswordInput
   },
   mixins: [validationMixin],
   validations() {

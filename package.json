@@ -45,7 +45,8 @@
     "vue-toasted": "^1.1.28",
     "vuelidate": "^0.7.5",
     "vuex-composition-helpers": "^1.0.21",
-    "vuex-persist": "^2.2.0"
+    "vuex-persist": "^2.2.0",
+    "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
     "@nuxt/types": "^2.14.5",

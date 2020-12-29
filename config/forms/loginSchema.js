@@ -13,7 +13,7 @@ export default function (context) {
     {
       cols: {
         'password': {
-          type: "password",
+          component: "passwordInput",
           validations: {
             required: {}
           }
