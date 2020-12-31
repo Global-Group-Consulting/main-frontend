@@ -24,8 +24,9 @@
           ></v-divider>
           <v-list-item :key="entry.value" :entry="entry" @click="entry.action">
             <v-list-item-title>{{
-              $t("menus." + entry.value)
-            }}</v-list-item-title>
+                $t("menus." + entry.value)
+              }}
+            </v-list-item-title>
           </v-list-item>
         </template>
       </v-list>
@@ -34,7 +35,7 @@
 </template>
 
 <script>
-import { computed } from "@vue/composition-api";
+import {computed} from "@vue/composition-api";
 import Permissions from "../../functions/permissions";
 import requestsCrudActionsFn from "../../functions/requestsCrudActions";
 
@@ -43,8 +44,8 @@ export default {
   props: {
     item: {}
   },
-  setup(props, { root, emit }) {
-    const { $alerts, $apiCalls, $auth, $router, $enums } = root;
+  setup(props, {root, emit}) {
+    const {$alerts, $apiCalls, $auth, $router, $enums} = root;
     const permissions = Permissions(root);
     const actions = requestsCrudActionsFn(props.item, root, emit);
 
@@ -90,6 +91,10 @@ export default {
             }
           },
           if: permissions.userType === "admin"
+        }, {
+          value: "downloadReceipt",
+          action: async () => await actions.downloadReceipt(props.item.id),
+          if: permissions.userType === "user" && props.item.type === $enums.RequestTypes.VERSAMENTO
         }
       ].filter(_entry => {
         return _entry.if;

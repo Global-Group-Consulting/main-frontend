@@ -13,5 +13,6 @@ export default {
   "cancel": "Annulla",
   "cancelRequest": "Annulla richiesta",
   "approveUser": "Attiva account",
-  "noNotifications": "Nessuna nuova notifica"
+  "noNotifications": "Nessuna nuova notifica",
+  "downloadReceipt": "Scarica integrazione"
 }
