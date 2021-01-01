@@ -3,7 +3,7 @@
     nuxt
     :to="data.link"
     :ripple="false"
-    :color="!userMustActivate ? 'yellow' : 'grey lighten-3'"
+    :color="'grey lighten-3'"
   >
     <v-list-item-action>
       <v-icon>{{ data.icon }}</v-icon>

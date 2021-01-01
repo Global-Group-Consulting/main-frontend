@@ -15,6 +15,7 @@
           :disabled="!formValid"
           color="primary"
           type="submit"
+          rounded
           :loading="gLoading"
           @click="onFormSubmit"
         >
@@ -29,8 +30,8 @@
     </template>
 
     <template v-slot:actions v-if="!formSent">
-      <v-btn text to="/login" small>
-        {{ $t("pages.recover.back-to-login") }}
+      <v-btn text to="/login" small  rounded>
+        > {{ $t("pages.recover.back-to-login") }}
       </v-btn>
     </template>
   </default-panel>

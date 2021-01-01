@@ -39,7 +39,7 @@
         </v-toolbar-items>
       </v-toolbar>
 
-      <v-tabs v-model="currentTab" :color="getTabColor">
+      <v-tabs v-model="currentTab" :color="getTabColor" centered>
         <v-tab v-for="table of requestsTables" :key="table.id">
           <v-icon class="mr-2">{{ table.icon }}</v-icon>
           {{ table.title }} ({{ requestsGroups[table.id].length }})

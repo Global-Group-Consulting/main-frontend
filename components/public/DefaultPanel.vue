@@ -1,47 +1,52 @@
 <template>
-  <v-card class="elevation-12 rounded-lg"
-          :loading="loading"
-          :disabled="!!loading"
-  >
-    <v-sheet class="card-header">
-      <v-card-title class="">{{ title }}</v-card-title>
-    </v-sheet>
+  <div>
 
-    <v-divider></v-divider>
+    <div class="d-flex justify-content-center mb-10 ">
+      <v-img src="/logo_dark.png" position="center" height="100px" contain></v-img>
+    </div>
 
-    <v-card-text>
-      <p class="subtitle-1" v-if="message">{{ message }}</p>
+    <v-card class="elevation-12 rounded-lg"
+            style="padding: 50px 70px"
+            :loading="loading"
+            :disabled="!!loading"
+    >
+      <div class="text-center text-h5">{{ title }}</div>
 
-      <slot></slot>
-    </v-card-text>
 
-    <v-divider></v-divider>
+      <v-card-text>
+        <p class="subtitle-1" v-if="message">{{ message }}</p>
 
-    <v-card-actions class="justify-center" v-if="this.$slots.actions">
-      <slot name="actions"></slot>
-    </v-card-actions>
-  </v-card>
+        <slot></slot>
+      </v-card-text>
+
+      <!--      <v-divider></v-divider>-->
+
+      <v-card-actions class="justify-center" v-if="this.$slots.actions">
+        <slot name="actions"></slot>
+      </v-card-actions>
+    </v-card>
+  </div>
 </template>
 
 <script>
-  export default {
-    name:  'DefaultPanel',
-    data () {
-      return {
-        loading: false
-      }
-    },
-    props: {
-      title:        '',
-      message:      '',
-      loadingModel: false
-    },
-    watch: {
-      loadingModel (value) {
-        this.loading = value ? 'accent' : false
-      }
+export default {
+  name: 'DefaultPanel',
+  data() {
+    return {
+      loading: false
+    }
+  },
+  props: {
+    title: '',
+    message: '',
+    loadingModel: false
+  },
+  watch: {
+    loadingModel(value) {
+      this.loading = value ? 'accent' : false
     }
   }
+}
 </script>
 
 <style scoped></style>

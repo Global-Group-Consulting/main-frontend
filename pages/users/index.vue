@@ -8,7 +8,7 @@
       ></page-header>
 
 
-      <v-tabs v-model="currentTab" :color="getTabColor">
+      <v-tabs v-model="currentTab" :color="getTabColor" centered>
         <v-tab v-for="group of usersList" :key="group.id">
           {{ $t(`enums.UserRoles.${$enums.UserRoles.getIdName(group.id)}_plural`) }}
         </v-tab>
@@ -108,71 +108,7 @@
         </v-tab-item>
       </v-tabs-items>
 
-
       <v-row>
-        <!--        <v-col cols="12" v-for="(group, key) in usersGroups" :key="key">
-                  <v-card dark :color="getUerRoleData(key).color">
-                    <v-card-title>{{
-                        $t("enums.UserRoles." + $enums.UserRoles.getIdName(key))
-                      }}
-                    </v-card-title>
-                    <v-data-table
-                      light
-                      :headers="getTableHeaders(key)"
-                      :items="group"
-                      :items-per-page="10"
-                      :hide-default-footer="group.length <= 10"
-                      mobile-breakpoint="0"
-                    >
-                      <template v-slot:item.superAdmin="{ item }">
-                        <v-tooltip right v-if="item.superAdmin">
-                          <template v-slot:activator="{ on, attrs }">
-                            <v-icon v-on="on" v-bind="attrs" class="d-inline-block"
-                            >mdi-diamond-stone
-                            </v-icon
-                            >
-                          </template>
-
-                          <span>Super Admin</span>
-                        </v-tooltip>
-                      </template>
-
-                      <template v-slot:item.contractNumber="{ item }">
-                        {{
-                          $options.filters.contractNumberFormatter(item.contractNumber)
-                        }}
-                      </template>
-
-                      <template v-slot:item.businessRegion="{ item }">
-                        {{
-                          item.businessRegion
-                            | regionFormatter($store.getters["enums/regionsList"])
-                        }}
-                      </template>
-
-                      <template v-slot:item.account_status="{ item }">
-                        <v-chip
-                          :color="$enums.AccountStatuses.get(item.account_status).color"
-                        >
-                          {{
-                            $t(
-                              "enums.AccountStatuses." +
-                              $enums.AccountStatuses.getIdName(item.account_status)
-                            )
-                          }}
-                        </v-chip>
-                      </template>
-
-                      <template v-slot:item.actions="{ item }">
-                        <users-crud-actions
-                          :item="item"
-                          @userDeleted="onUserDeleted(item, group)"
-                        />
-                      </template>
-                    </v-data-table>
-                  </v-card>
-                </v-col>-->
-
         <!-- Floating action button -->
         <v-fab-transition>
           <v-speed-dial

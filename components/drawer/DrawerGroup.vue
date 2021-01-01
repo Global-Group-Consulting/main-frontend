@@ -1,20 +1,29 @@
 <template>
-  <div class="my-6">
-<!--    <v-divider></v-divider>-->
+  <div class="">
+    <!--    <v-divider></v-divider>-->
 
-<!--    <v-list-group :value="true" color="white">-->
-<!--      <template v-slot:activator v-if="false">
-        <v-list-item-content>
-          <v-list-item-title>{{ data.text }}</v-list-item-title>
-        </v-list-item-content>
-      </template>-->
+    <!--    <v-list-group :value="true" color="white">-->
+    <!--      <template v-slot:activator v-if="false">
+            <v-list-item-content>
+              <v-list-item-title>{{ data.text }}</v-list-item-title>
+            </v-list-item-content>
+          </template>-->
 
-<!--      <v-divider></v-divider>-->
+    <!--      <v-divider></v-divider>-->
+    <v-list-item class="mt-3">
+      <v-list-item-action class="my-0" >
+      </v-list-item-action>
 
-      <div v-for="(child, index) in data.childs" :key="index">
-        <drawer-item :data="child" />
-      </div>
-<!--    </v-list-group>-->
+      <v-list-item-content class="py-0">
+        <v-list-item-title class="text-uppercase">{{ data.text }}</v-list-item-title>
+        <v-divider></v-divider>
+      </v-list-item-content>
+    </v-list-item>
+
+    <div v-for="(child, index) in data.childs" :key="index">
+      <drawer-item :data="child"/>
+    </div>
+    <!--    </v-list-group>-->
   </div>
 </template>
 
@@ -23,7 +32,7 @@ import DrawerItem from "~/components/drawer/DrawerItem";
 
 export default {
   name: "DrawerGroup",
-  components: { DrawerItem },
+  components: {DrawerItem},
   props: {
     data: {}
   }

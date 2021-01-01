@@ -3,10 +3,14 @@
 // The variables you want to modify
 // $font-size-root: 20px;
 
+$btn-text-transform: none;
+$card-border-radius: 20px;
+$tabs-bar-background-color: transparent;
+
 $material-light: (
   "background": #F7F7F7,
   "app-bar": #F7F7F7,
-  "navigation-drawer": #071D2A
+  "navigation-drawer": #071D2A,
 );
 
 $material-dark: (

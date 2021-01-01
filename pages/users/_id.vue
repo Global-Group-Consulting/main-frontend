@@ -169,11 +169,11 @@
       </v-toolbar>
 
       <v-form>
-        <v-card>
           <v-tabs
             v-model="currentTab"
             :color="accentColor"
             center-active
+            centered
             show-arrows
           >
             <v-tab
@@ -185,9 +185,8 @@
               {{ $t("pages.usersId.tabs." + section.title) }}
             </v-tab>
           </v-tabs>
-          <v-divider></v-divider>
 
-          <div>
+          <v-card>
             <v-tabs-items v-model="currentTab">
               <v-tab-item v-for="(tab, index) in formTabs" :key="index">
                 <v-card elevation="0">
@@ -206,14 +205,15 @@
               </v-tab-item>
             </v-tabs-items>
 
-            <v-card-actions>
-              <v-btn @click="goBack" v-if="currentTab > 0" text>
+            <v-card-actions >
+              <v-btn @click="goBack" v-if="currentTab > 0" text rounded>
                 <v-icon>mdi-chevron-left</v-icon>
                 {{ $t("pages.usersId.btn-previous") }}
               </v-btn>
               <v-spacer></v-spacer>
               <v-btn
                 dark
+                rounded
                 :color="
                   currentTab < formTabs.length - 1 ? accentColor : 'success'
                 "
@@ -235,8 +235,8 @@
                 <v-icon v-else class="ml-2">mdi-content-save</v-icon>
               </v-btn>
             </v-card-actions>
-          </div>
-        </v-card>
+          </v-card>
+
 
         <!-- Floating action button -->
         <v-fab-transition v-if="!userIsNew && currentTab < formTabs.length - 1">
