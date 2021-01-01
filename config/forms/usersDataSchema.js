@@ -11,6 +11,7 @@ import {required, requiredIf} from 'vuelidate/lib/validators'
 import {computed} from '@vue/composition-api'
 import moment from 'moment'
 import permissions from "@/functions/permissions";
+import ClubPacks from "@/enums/ClubPacks";
 
 /**
  * @typedef {import('../../@types/UserFormSchemaContext').UserFormSchemaContext} FormContext
@@ -49,6 +50,29 @@ export function basicData(formContext) {
       cols: {
         'businessName': {},
         'vatNumber': {}
+      }
+    },
+    {
+      if: formContext.userIsPersonaGiuridica,
+      legend: `business-residence`,
+      cols: {
+        'businessCountry': {
+          component: 'v-select',
+          items: 'enums.countriesList'
+        },
+        'businessRegion': {
+          component: 'v-select',
+          items: 'enums.regionsList',
+          if: formContext.userBusinessItaly
+        },
+        'businessProvince': {
+          component: 'v-select',
+          items: 'enums.provincesList',
+          if: formContext.userBusinessItaly
+        },
+        'businessCity': {},
+        'businessZip': {},
+        'businessAddress': {}
       }
     },
     {
@@ -101,6 +125,28 @@ export function basicData(formContext) {
       }
     },
     {
+      legend: (formContext.userIsPersonaGiuridica ? `${formContext.userIsPersonaGiuridica ? 'legal-representative-' : ''}` : '') + 'residence',
+      cols: {
+        'legalRepresentativeCountry': {
+          component: 'v-select',
+          items: 'enums.countriesList'
+        },
+        'legalRepresentativeRegion': {
+          component: 'v-select',
+          items: 'enums.regionsList',
+          if: formContext.userLegalReprItaly
+        },
+        'legalRepresentativeProvince': {
+          component: 'v-select',
+          items: 'enums.provincesList',
+          if: formContext.userLegalReprItaly
+        },
+        'legalRepresentativeCity': {},
+        'legalRepresentativeZip': {},
+        'legalRepresentativeAddress': {}
+      }
+    },
+    {
       legend: 'identity-docs',
       cols: {
         'docType': {
@@ -116,7 +162,29 @@ export function basicData(formContext) {
           component: "file-uploader",
           files: formContext.formData.files
         }
-
+      }
+    },
+    {
+      legend: 'contacts',
+      cols: {
+        'email': {
+          disabled: !formContext.userIsNew,
+          validations: {
+            required: {},
+            email: {}
+          }
+        },
+        'mobile': {
+          validations: {
+            required: {},
+            phoneNumber: {}
+          }
+        },
+        'phone': {
+          validations: {
+            phoneNumber: {}
+          }
+        }
       }
     }
   ]
@@ -332,6 +400,38 @@ export function contractData(formContext) {
  * @param {FormContext} formContext
  * @returns {FormSchema[]}
  */
+export function clubData(formContext) {
+  const gold = formContext.formData.gold
+
+  return [
+    {
+      cols: {
+        'gold': {
+          component: "v-switch",
+          falseValue: false,
+          inputValue: formContext.formData.gold
+        }
+      }
+    }, {
+      cols: {
+        'clubCardNumber': {
+          type: "number",
+          disabled: !gold
+        },
+        'clubPack': {
+          component: "v-select",
+          items: ClubPacks,
+          disabled: !gold
+        }
+      }
+    }
+  ]
+}
+
+/**
+ * @param {FormContext} formContext
+ * @returns {FormSchema[]}
+ */
 export function extraData(formContext) {
   const {changeRole, changeAgenteRif, userRole} = formContext.permissions
   const canChangeAgenteRif = computed(() => {
@@ -449,5 +549,6 @@ export default {
   addressData,
   contactsData,
   contractData,
+  clubData,
   extraData
 }

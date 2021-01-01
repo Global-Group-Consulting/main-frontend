@@ -132,6 +132,11 @@ export default {
     "bonifico": "Bonifico",
     "assegno": "Assegno",
     "altro": "Altro",
+  },
+  'ClubPacks': {
+    "basic": "Basic",
+    "fast": "Fast",
+    "premium": "Premium",
   }
 }
 

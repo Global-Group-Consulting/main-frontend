@@ -20,14 +20,16 @@
           </v-tooltip> -->
 
           <!-- Incomplete data info -->
-          <v-menu offset-y open-on-hover bottom v-if="showIncompleteDataInfo">
+          <v-menu offset-y open-on-hover bottom
+                  v-if="showIncompleteDataInfo"
+                  >
             <template v-slot:activator="{ on, attrs }">
-              <v-btn icon dark v-on="on" v-bind="attrs">
+              <v-btn icon v-on="on" v-bind="attrs">
                 <v-icon>mdi-information</v-icon>
               </v-btn>
             </template>
 
-            <v-card color="white" max-width="400px">
+            <v-card color="white" max-width="400px" flat>
               <v-card-text>
                 {{ $t("pages.usersId.info-incomplete-data") }}
 
@@ -60,9 +62,10 @@
           </v-menu>
 
           <!-- Contract status -->
-          <v-menu offset-y open-on-hover bottom v-if="formData.account_status === $enums.AccountStatuses.VALIDATED">
+          <v-menu offset-y open-on-hover bottom
+                  v-if="formData.account_status === $enums.AccountStatuses.VALIDATED">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn icon dark v-on="on" v-bind="attrs">
+              <v-btn icon v-on="on" v-bind="attrs">
                 <v-icon>mdi-information</v-icon>
               </v-btn>
             </template>

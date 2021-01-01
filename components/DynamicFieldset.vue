@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import {VTextField, VTextarea, VSelect, VFileInput} from "vuetify/lib";
+import {VTextField, VTextarea, VSelect, VFileInput, VSwitch} from "vuetify/lib";
 import DatePicker from "@/components/forms/inputs/DatePicker";
 import MoneyInput from "@/components/forms/inputs/MoneyInput";
 import FileUploader from "@/components/forms/inputs/FileUploader";
@@ -103,6 +103,7 @@ export default {
   components: {
     VTextField,
     VSelect,
+    VSwitch,
     DatePicker,
     VFileInput,
     VTextarea,

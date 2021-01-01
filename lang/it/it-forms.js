@@ -46,12 +46,12 @@ export default {
   'legal-representative': 'Rappresentante legale',
   'legal-representative-address': 'Indirizzo',
   'legal-representative-birth-date': 'Data di nascita del Rappresentante legale',
-  'legal-representative-birth-data-legend': 'Dati di nascita del Rappresentante legale',
+  'legal-representative-birth-data-legend': ' > Dati di nascita del Rappresentante legale',
   'legal-representative-city': 'Città',
   'legal-representative-country': 'Nazione',
   'legal-representative-province': 'Provincia',
   'legal-representative-region': 'Regione',
-  'legal-representative-residence': 'Residenza del Rappresentante legale',
+  'legal-representative-residence': ' > Residenza del Rappresentante legale',
   'legal-representative-zip': 'Cap',
   'mobile': 'Cellulare',
   'message': 'Messaggio',
@@ -93,5 +93,8 @@ export default {
   'annual-deposit': "Provvigione sul deposito annuale",
   'annual-deposit-details': "Allo scadere di ogni anno, all'agente verrà riconosciuto una percentuale totale del 6%, corrisposta in 3 mensilità (aprile, agosto e dicembre), sul totale del capitale versato dai suoi clienti.",
   'payment-doc-date': "Data contabile (gg/mm/aaaa)",
-  'initial-investment-legend': "Investimento iniziale"
+  'initial-investment-legend': "Investimento iniziale",
+  'gold': "Investimenti Gold",
+  'club-pack': "Pacchetto attivo",
+  'club-card-number': "N° Tessera Socio"
 }
