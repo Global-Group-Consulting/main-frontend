@@ -2,6 +2,7 @@
   <v-list-item
     nuxt
     :to="data.link"
+    :ripple="false"
     :color="!userMustActivate ? 'yellow' : 'grey lighten-3'"
   >
     <v-list-item-action>

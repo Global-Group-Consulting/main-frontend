@@ -1,15 +1,19 @@
 <template>
-  <v-app-bar clipped-left app>
-    <v-app-bar-nav-icon @click.stop="$emit('toggleDrawer')"/>
+  <v-app-bar app class="main-navbar"
+             elevate-on-scroll
+             clipped-left
+  >
+    <!--    <v-app-bar-nav-icon @click.stop="$emit('toggleDrawer')"/>-->
 
-    <v-toolbar-title v-text="'Global Group Consulting'"/>
+    <!--    <v-toolbar-title v-text="'Global Group Consulting'"/>-->
 
     <v-spacer></v-spacer>
 
-    <v-toolbar-items>
+    <div>
       <v-tooltip bottom>
         <template v-slot:activator="{on}">
-          <v-btn text v-on="on" color="orange lighten-3"
+          <v-btn v-on="on" color="orange lighten-3"
+                 icon
                  @click="openBugReport">
             <v-icon>mdi-bug</v-icon>
           </v-btn>
@@ -20,11 +24,11 @@
       <v-menu offset-y max-width="350"
               :disabled="!notifications.connected">
         <template v-slot:activator="{ on, attrs }">
-          <v-btn text tile v-on="on" v-bind="attrs"
+          <v-btn v-on="on" v-bind="attrs"
+                 icon
                  :disabled="!notifications.connected">
 
             <v-icon v-if="unreadMessages.length === 0">mdi-bell</v-icon>
-
 
             <v-badge :content="unreadMessages.length" v-else
                      bordered
@@ -108,7 +112,7 @@
           </v-list-item>
         </v-list>
       </v-menu>
-    </v-toolbar-items>
+    </div>
 
     <communication-new-dialog
       v-if="$store.getters['dialog/dialogId'] === 'CommunicationNewDialog'"
@@ -177,6 +181,10 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+.main-navbar::v-deep {
+  &.v-app-bar--is-scrolled {
+    background-color: #fff !important;
+  }
+}
 </style>

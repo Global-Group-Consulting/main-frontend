@@ -72,7 +72,7 @@
         </template>
       </page-header>
 
-      <v-toolbar class="mb-5">
+      <v-toolbar class="mb-5" rounded>
         <v-toolbar-items class="flex-fill">
           <tooltip-btn
             v-if="permissions.seeOtherUsers"
