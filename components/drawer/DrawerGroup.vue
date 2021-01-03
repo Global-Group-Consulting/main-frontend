@@ -10,7 +10,7 @@
           </template>-->
 
     <!--      <v-divider></v-divider>-->
-    <v-list-item class="mt-3">
+<!--    <v-list-item class="mt-3">
       <v-list-item-action class="my-0" >
       </v-list-item-action>
 
@@ -18,7 +18,7 @@
         <v-list-item-title class="text-uppercase">{{ data.text }}</v-list-item-title>
         <v-divider></v-divider>
       </v-list-item-content>
-    </v-list-item>
+    </v-list-item>-->
 
     <div v-for="(child, index) in data.childs" :key="index">
       <drawer-item :data="child"/>

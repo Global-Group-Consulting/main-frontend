@@ -7,10 +7,8 @@
         :icon="icon"
       ></page-header>
 
-      <v-toolbar class="mb-5" v-if="permissions.userType === 'user'">
-        <v-toolbar-items class="flex-fill">
-          <v-spacer></v-spacer>
-
+      <page-toolbar>
+        <template slot="center-block">
           <tooltip-btn
             v-if="permissions.addRequest"
             :tooltip="$t('pages.requests.btnWithdrawal-tooltip')"
@@ -35,9 +33,45 @@
             {{ $t("pages.requests.btnDeposit") }}
           </tooltip-btn>
 
-          <v-spacer></v-spacer>
-        </v-toolbar-items>
-      </v-toolbar>
+          <v-menu offset-y
+                  transition="slide-y-transition"
+                  v-if="permissions.userType === 'admin'"
+                  :close-on-content-click="true"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                color="primary"
+                text
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-icon class="mr-2">mdi-download</v-icon>
+                {{ $t("pages.requests.btnDownloadReport") }}
+
+                <v-icon class="">mdi-chevron-down</v-icon>
+              </v-btn>
+            </template>
+
+            <v-card>
+              <v-list>
+                <v-list-item @click="onDownloadReportClick()">
+                  <v-list-item-title>{{ getLastMonth() }}</v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="onDownloadReportClick(2)">
+                  <v-list-item-title>{{ getLastMonth(2) }}</v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="onDownloadReportClick(3)">
+                  <v-list-item-title>{{ getLastMonth(3) }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-card>
+
+
+          </v-menu>
+
+
+        </template>
+      </page-toolbar>
 
       <v-tabs v-model="currentTab" :color="getTabColor" centered>
         <v-tab v-for="table of requestsTables" :key="table.id">
@@ -88,6 +122,9 @@
 <script>
 import {ref, computed, onBeforeMount, onMounted, watch} from "@vue/composition-api";
 
+import jsFileDownload from "js-file-download"
+import {capitalize} from "lodash"
+
 // configs
 import tableHeadersSchema from "../config/tables/requestsSchema";
 
@@ -103,9 +140,11 @@ import pageBasicFn from "../functions/pageBasic";
 import tableHeadersFn from "../functions/tablesHeaders";
 import permissionsFn from "../functions/permissions";
 import RequestTypes from "../enums/RequestTypes";
+import PageToolbar from "@/components/blocks/PageToolbar";
 
 export default {
   components: {
+    PageToolbar,
     RequestDialog,
     PageHeader,
     RequestsCrudActions,
@@ -115,14 +154,15 @@ export default {
   setup(props, {root}) {
     const {
       $apiCalls,
+      $alerts,
       $set,
       $enums,
       $store,
       $i18n,
       $options,
+      $moment,
       $route,
       $router,
-      $alerts
     } = root;
     const permissions = permissionsFn(root);
     const requestsList = ref([]);
@@ -186,7 +226,6 @@ export default {
         }
       ];
     });
-
     const getTabColor = computed(() => {
       return requestsTables.value[currentTab.value].color
     })
@@ -199,6 +238,23 @@ export default {
       } catch (er) {
         $alerts.error(er);
       }
+    }
+
+    function getLastMonth(months, returnMoment = false) {
+      const now = $moment()
+      let rightMonth = now.date() > 15 ? now : now.subtract(1, "months")
+
+      if (months) {
+        rightMonth = now.subtract(months - 1, "months")
+      }
+
+      if (returnMoment) {
+        return rightMonth
+      }
+
+      const prevMonth = $moment(rightMonth).subtract(1, "months")
+
+      return capitalize(rightMonth.format("MMMM YYYY")) + ` (16 ${prevMonth.format("MMM")} - 15 ${rightMonth.format("MMM")})`
     }
 
     function onRefetchData() {
@@ -293,21 +349,33 @@ export default {
       _fetchAll();
     }
 
-      function onQueryChange(route) {
-        const query = route.query;
+    function onQueryChange(route) {
+      const query = route.query;
 
-        if (query.open) {
-          const idToOpen = query.open;
+      if (query.open) {
+        const idToOpen = query.open;
 
-          const request = requestsList.value.find(_req => _req.id === idToOpen);
+        const request = requestsList.value.find(_req => _req.id === idToOpen);
 
-          if (request) {
-            openRequestDetails(request);
-          }
-
-          root.$router.replace({query: {}});
+        if (request) {
+          openRequestDetails(request);
         }
+
+        root.$router.replace({query: {}});
       }
+    }
+
+    async function onDownloadReportClick(months) {
+      const rightMonth = getLastMonth(months, true)
+
+      try {
+        const file = await $apiCalls.downloadRequestsReport(rightMonth.format("YYYY-MM"))
+
+        jsFileDownload(file.data, $i18n.t("pages.requests.fileReportName", {date: getLastMonth(months)})  + ".xlsx")
+      } catch (er) {
+        $alerts.error(er)
+      }
+    }
 
     onBeforeMount(async () => {
       await _fetchAll();
@@ -352,6 +420,7 @@ export default {
       requestsGroups,
       requestsTables,
       getTabColor,
+      getLastMonth,
       newDepositRequest,
       newWithdrawlRequest,
       openRequestDetails,
@@ -361,7 +430,8 @@ export default {
       onRequestStatusChanged,
       onRequestStartWorking,
       onCommunicationAdded,
-      onQueryChange
+      onQueryChange,
+      onDownloadReportClick
     };
   },
   beforeRouteUpdate(to, from, next) {

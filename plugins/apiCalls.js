@@ -224,6 +224,14 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
+  async downloadRequestsReport(months) {
+    return await this._call({
+      method: "GET",
+      endPoint: `/api/docs/reports/requests?m=${months}`,
+      downloadMode: true
+    })
+  }
+
   /**
    * @returns {{
    *  deposit: number
