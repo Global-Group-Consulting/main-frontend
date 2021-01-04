@@ -365,6 +365,11 @@ export default {
       }
     }
 
+    /**
+     *
+     * @param months
+     * @returns {Promise<void>}
+     */
     async function onDownloadReportClick(months) {
       const rightMonth = getLastMonth(months, true)
 
