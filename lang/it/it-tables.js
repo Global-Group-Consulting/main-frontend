@@ -1,5 +1,11 @@
 export default {
   'contract-number': 'Id Contratto',
+  'contract-status': 'Stato Contratto',
+  'contract-not-signed': 'Da firmare / importare',
+  'contract-signed': 'Firmato',
+  'contract-signed-at': 'Firmato in data {date}',
+  'contract-imported': 'Importato',
+  'contract-imported-at': 'Importato in data {date}',
   'first-name': 'Nome',
   'last-name': 'Cognome',
   'user': 'Utente',

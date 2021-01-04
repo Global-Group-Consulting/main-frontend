@@ -63,6 +63,7 @@ const admin = {
         'lastName',
         'email',
         ['referenceAgent', [UserRoles.AGENTE, UserRoles.CLIENTE]],
+        ['contractStatus', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         'accountStatus',
         'actions'
       ]
@@ -110,6 +111,7 @@ const servClienti = {
         'lastName',
         'email',
         ['referenceAgent', [UserRoles.AGENTE, UserRoles.CLIENTE]],
+        ['contractStatus', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         'accountStatus',
         'actions'
       ]

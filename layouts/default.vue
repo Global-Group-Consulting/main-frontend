@@ -2,9 +2,10 @@
   <v-app>
     <drawer v-model="drawerModel"></drawer>
 
-    <main-navbar @toggleDrawer="toggleDrawer"></main-navbar>
+
 
     <v-main>
+      <main-navbar @toggleDrawer="toggleDrawer"></main-navbar>
       <!--<v-alert v-if="mockingUser"
                type="error"
                tile

@@ -10,20 +10,26 @@ export default function (formContext) {
       cardTitle: 'user-data',
       schema: "basicData"
     },
-    {
+    /*{
       title: `user-${formContext.userIsPersonaGiuridica.value ? 'legal-' : ''}residence`,
       cardTitle: `user-${formContext.userIsPersonaGiuridica.value ? 'legal-' : ''}residence`,
       schema: "addressData"
-    },
-    {
+    },*/
+   /* {
       title: 'contacts',
       cardTitle: 'contacts',
       schema: "contactsData"
-    },
+    },*/
     {
       title: 'contract',
       cardTitle: 'contract',
       schema: "contractData",
+      if: userType.value === "user"
+    },
+    {
+      title: 'club',
+      cardTitle: 'club',
+      schema: "clubData",
       if: userType.value === "user"
     },
     {

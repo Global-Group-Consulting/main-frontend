@@ -13,5 +13,9 @@ export default {
   "cancel": "Annulla",
   "cancelRequest": "Annulla richiesta",
   "approveUser": "Attiva account",
-  "noNotifications": "Nessuna nuova notifica"
+  "noNotifications": "Nessuna nuova notifica",
+  "downloadReceipt": "Scarica integrazione",
+  "lastMonth": "Ultimo mese",
+  "last2Month": "Ultimi 2 mese",
+  "last3Month": "Ultimi 3 mesi"
 }

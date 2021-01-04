@@ -1,6 +1,7 @@
 import RequestTypes from "../enums/RequestTypes"
 import RequestStatus from "../enums/RequestStatus"
 import moment from "moment";
+import jsFileDownload from "js-file-download";
 
 /**
  *
@@ -8,7 +9,7 @@ import moment from "moment";
  * @param {{}} param1
  * @param {import("../@types/AlertsPlugin").AlertsPlugin} param1.$alerts
  */
-export default function (request, { $apiCalls, $alerts, $options, $enums, $i18n }, emit) {
+export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n}, emit) {
   async function deleteFn() {
     const currentRequest = request.value ?? request
 
@@ -208,10 +209,23 @@ export default function (request, { $apiCalls, $alerts, $options, $enums, $i18n 
     }
   }
 
+  async function downloadReceipt(reqId) {
+    try {
+      const result = await $apiCalls.downloadRequestReceipt(reqId)
+
+      jsFileDownload(result.data, result.headers["x-file-name"]);
+      return true
+    } catch (er) {
+      $alerts.error(er)
+      return false
+    }
+  }
+
   return {
     delete: deleteFn,
     approve,
     reject,
-    cancel
+    cancel,
+    downloadReceipt
   }
 }

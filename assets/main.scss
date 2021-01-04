@@ -11,3 +11,14 @@
 .p-relative {
   position: relative !important;
 }
+
+.text-decoration-underline-dotted {
+  text-decoration: underline dotted;
+}
+
+.theme--light {
+  &.v-tabs-items, &.v-tabs > .v-tabs-bar {
+    background-color: transparent !important;
+  }
+
+}

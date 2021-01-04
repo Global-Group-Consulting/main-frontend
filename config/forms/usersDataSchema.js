@@ -1,14 +1,17 @@
 import DocumentTypes from '@/enums/DocumentTypes'
 import PersonTypes from '@/enums/PersonTypes'
+import PaymentMethods from '@/enums/PaymentMethods'
 import UserRoles from '../../enums/UserRoles'
 import AccountStatuses from '../../enums/AccountStatuses'
 import Genders from '@/enums/Genders'
 
 import axios from "@nuxtjs/axios"
+import {required, requiredIf} from 'vuelidate/lib/validators'
 
-import { computed } from '@vue/composition-api'
+import {computed} from '@vue/composition-api'
 import moment from 'moment'
 import permissions from "@/functions/permissions";
+import ClubPacks from "@/enums/ClubPacks";
 
 /**
  * @typedef {import('../../@types/UserFormSchemaContext').UserFormSchemaContext} FormContext
@@ -50,21 +53,50 @@ export function basicData(formContext) {
       }
     },
     {
+      if: formContext.userIsPersonaGiuridica,
+      legend: `business-residence`,
+      cols: {
+        'businessCountry': {
+          component: 'v-select',
+          items: 'enums.countriesList'
+        },
+        'businessRegion': {
+          component: 'v-select',
+          items: 'enums.regionsList',
+          if: formContext.userBusinessItaly
+        },
+        'businessProvince': {
+          component: 'v-select',
+          items: 'enums.provincesList',
+          if: formContext.userBusinessItaly
+        },
+        'businessCity': {},
+        'businessZip': {},
+        'businessAddress': {}
+      }
+    },
+    {
       legend: formContext.userIsPersonaGiuridica ? 'legal-representative' : '',
       cols: {
         'firstName': {
           validations: {
-            required: {}
+            requiredIf: {
+              params: () => !formContext.userIsPersonaGiuridica
+            }
           }
         },
         'lastName': {
           validations: {
-            required: {}
+            requiredIf: {
+              params: () => !formContext.userIsPersonaGiuridica
+            }
           }
         },
         'fiscalCode': {
           validations: {
-            required: {}
+            requiredIf: {
+              params: () => !formContext.userIsPersonaGiuridica
+            }
           }
         },
         'gender': {
@@ -93,6 +125,28 @@ export function basicData(formContext) {
       }
     },
     {
+      legend: (formContext.userIsPersonaGiuridica ? `${formContext.userIsPersonaGiuridica ? 'legal-representative-' : ''}` : '') + 'residence',
+      cols: {
+        'legalRepresentativeCountry': {
+          component: 'v-select',
+          items: 'enums.countriesList'
+        },
+        'legalRepresentativeRegion': {
+          component: 'v-select',
+          items: 'enums.regionsList',
+          if: formContext.userLegalReprItaly
+        },
+        'legalRepresentativeProvince': {
+          component: 'v-select',
+          items: 'enums.provincesList',
+          if: formContext.userLegalReprItaly
+        },
+        'legalRepresentativeCity': {},
+        'legalRepresentativeZip': {},
+        'legalRepresentativeAddress': {}
+      }
+    },
+    {
       legend: 'identity-docs',
       cols: {
         'docType': {
@@ -108,7 +162,29 @@ export function basicData(formContext) {
           component: "file-uploader",
           files: formContext.formData.files
         }
-
+      }
+    },
+    {
+      legend: 'contacts',
+      cols: {
+        'email': {
+          disabled: !formContext.userIsNew,
+          validations: {
+            required: {},
+            email: {}
+          }
+        },
+        'mobile': {
+          validations: {
+            required: {},
+            phoneNumber: {}
+          }
+        },
+        'phone': {
+          validations: {
+            phoneNumber: {}
+          }
+        }
       }
     }
   ]
@@ -121,6 +197,7 @@ export function addressData(formContext) {
   return [
     {
       if: formContext.userIsPersonaGiuridica,
+      legend: `business-residence`,
       cols: {
         'businessCountry': {
           component: 'v-select',
@@ -263,6 +340,7 @@ export function contractData(formContext) {
       }
     },
     {
+      legend: "initial-investment-legend",
       cols: {
         'contractInitialInvestment': {
           disabled: [AccountStatuses.APPROVED, AccountStatuses.ACTIVE, AccountStatuses.VALIDATED].includes(formContext.formData.account_status),
@@ -275,9 +353,33 @@ export function contractData(formContext) {
             }
           }
         },
+        'contractInitialInvestmentGold': {
+          disabled: [AccountStatuses.APPROVED, AccountStatuses.ACTIVE, AccountStatuses.VALIDATED].includes(formContext.formData.account_status),
+          type: "number",
+          prefix: "gr.",
+          validations: {
+            minValue: {
+              params: 1
+            }
+          }
+        },
         'contractInvestmentAttachment': {
           component: "file-uploader",
           files: formContext.formData.files
+        },
+      },
+    },
+    {
+      cols: {
+        'contractInitialPaymentMethod': {
+          component: "v-select",
+          items: PaymentMethods,
+          validations: {
+            required: {}
+          }
+        },
+        'contractInitialPaymentMethodOther': {
+          if: formContext.formData.contractInitialPaymentMethod === PaymentMethods.ALTRO
         },
       }
     },
@@ -289,6 +391,38 @@ export function contractData(formContext) {
           component: "agent-commissions-select",
           disabled: !formContext.permissions.superAdmin,
         },
+      }
+    }
+  ]
+}
+
+/**
+ * @param {FormContext} formContext
+ * @returns {FormSchema[]}
+ */
+export function clubData(formContext) {
+  const gold = formContext.formData.gold
+
+  return [
+    {
+      cols: {
+        'gold': {
+          component: "v-switch",
+          falseValue: false,
+          inputValue: formContext.formData.gold
+        }
+      }
+    }, {
+      cols: {
+        'clubCardNumber': {
+          type: "number",
+          disabled: !gold
+        },
+        'clubPack': {
+          component: "v-select",
+          items: ClubPacks,
+          disabled: !gold
+        }
       }
     }
   ]
@@ -415,5 +549,6 @@ export default {
   addressData,
   contactsData,
   contractData,
+  clubData,
   extraData
 }

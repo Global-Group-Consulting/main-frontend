@@ -1,4 +1,4 @@
-import { BasicApiCall } from '../classes/BasicApiCall'
+import {BasicApiCall} from '../classes/BasicApiCall'
 
 import UserRoles from "../enums/UserRoles"
 
@@ -95,8 +95,8 @@ export class ApiCalls extends BasicApiCall {
 
   async fetchUserDetails(_id) {
     return (await this.get({
-      endPoint: `/api/users/` + _id
-    })
+        endPoint: `/api/users/` + _id
+      })
     )
   }
 
@@ -204,7 +204,7 @@ export class ApiCalls extends BasicApiCall {
     return await this._call({
       method: "PUT",
       endPoint: `/api/requests/${data.id}/reject`,
-      body: { reason: data.reason }
+      body: {reason: data.reason}
     })
   }
 
@@ -212,7 +212,23 @@ export class ApiCalls extends BasicApiCall {
     return await this._call({
       method: "PUT",
       endPoint: `/api/requests/${data.id}/cancel`,
-      body: { reason: data.reason }
+      body: {reason: data.reason}
+    })
+  }
+
+  async downloadRequestReceipt(reqId) {
+    return await this._call({
+      method: "GET",
+      endPoint: `/api/docs/receipt/deposit?id=${reqId}`,
+      downloadMode: true
+    })
+  }
+
+  async downloadRequestsReport(months) {
+    return await this._call({
+      method: "GET",
+      endPoint: `/api/docs/reports/requests?m=${months}`,
+      downloadMode: true
     })
   }
 

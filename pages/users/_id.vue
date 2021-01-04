@@ -20,14 +20,16 @@
           </v-tooltip> -->
 
           <!-- Incomplete data info -->
-          <v-menu offset-y open-on-hover bottom v-if="showIncompleteDataInfo">
+          <v-menu offset-y open-on-hover bottom
+                  v-if="showIncompleteDataInfo"
+                  >
             <template v-slot:activator="{ on, attrs }">
-              <v-btn icon dark v-on="on" v-bind="attrs">
+              <v-btn icon v-on="on" v-bind="attrs">
                 <v-icon>mdi-information</v-icon>
               </v-btn>
             </template>
 
-            <v-card color="white" max-width="400px">
+            <v-card color="white" max-width="400px" flat>
               <v-card-text>
                 {{ $t("pages.usersId.info-incomplete-data") }}
 
@@ -60,9 +62,10 @@
           </v-menu>
 
           <!-- Contract status -->
-          <v-menu offset-y open-on-hover bottom v-if="formData.account_status === $enums.AccountStatuses.VALIDATED">
+          <v-menu offset-y open-on-hover bottom
+                  v-if="formData.account_status === $enums.AccountStatuses.VALIDATED">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn icon dark v-on="on" v-bind="attrs">
+              <v-btn icon v-on="on" v-bind="attrs">
                 <v-icon>mdi-information</v-icon>
               </v-btn>
             </template>
@@ -72,7 +75,7 @@
         </template>
       </page-header>
 
-      <v-toolbar class="mb-5">
+      <v-toolbar class="mb-5" rounded>
         <v-toolbar-items class="flex-fill">
           <tooltip-btn
             v-if="permissions.seeOtherUsers"
@@ -169,11 +172,11 @@
       </v-toolbar>
 
       <v-form>
-        <v-card>
           <v-tabs
             v-model="currentTab"
             :color="accentColor"
             center-active
+            centered
             show-arrows
           >
             <v-tab
@@ -185,9 +188,8 @@
               {{ $t("pages.usersId.tabs." + section.title) }}
             </v-tab>
           </v-tabs>
-          <v-divider></v-divider>
 
-          <div>
+          <v-card>
             <v-tabs-items v-model="currentTab">
               <v-tab-item v-for="(tab, index) in formTabs" :key="index">
                 <v-card elevation="0">
@@ -206,14 +208,15 @@
               </v-tab-item>
             </v-tabs-items>
 
-            <v-card-actions>
-              <v-btn @click="goBack" v-if="currentTab > 0" text>
+            <v-card-actions >
+              <v-btn @click="goBack" v-if="currentTab > 0" text rounded>
                 <v-icon>mdi-chevron-left</v-icon>
                 {{ $t("pages.usersId.btn-previous") }}
               </v-btn>
               <v-spacer></v-spacer>
               <v-btn
                 dark
+                rounded
                 :color="
                   currentTab < formTabs.length - 1 ? accentColor : 'success'
                 "
@@ -235,8 +238,8 @@
                 <v-icon v-else class="ml-2">mdi-content-save</v-icon>
               </v-btn>
             </v-card-actions>
-          </div>
-        </v-card>
+          </v-card>
+
 
         <!-- Floating action button -->
         <v-fab-transition v-if="!userIsNew && currentTab < formTabs.length - 1">

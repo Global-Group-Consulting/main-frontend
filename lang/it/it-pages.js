@@ -95,7 +95,8 @@ export default {
       'user-legal-residence': 'Sede legale / Residenza',
       'contacts': 'Contatti',
       'contract': 'Contratto',
-      'other': 'Varie'
+      'club': 'Gold / Global Club',
+      'other': 'Ruolo / Varie'
     }
 
   },
@@ -116,10 +117,12 @@ export default {
     "btnWithdrawal-tooltip": "Crea una richiesta di riscossione",
     "btnDeposit": "Versamento",
     "btnDeposit-tooltip": "Versa nuova liquidità",
+    "btnDownloadReport": "Scarica Report",
     'tableNuova-title': "In attesa",
     'tableLavorazione-title': "In lavorazione",
     'tableAccettata-title': "Accettate",
     'tableRifiutata-title': "Rifiutate",
+    "fileReportName": "Report {date}"
   },
   signResult: {
     "success-title": "Contratto firmato!",

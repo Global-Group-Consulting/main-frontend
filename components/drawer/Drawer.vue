@@ -1,26 +1,48 @@
 <template>
   <v-navigation-drawer
-    :value="value"
-    @input="$emit('input', $event)"
+    class="drawer"
     app
-    clipped
     dark
-    :src="drawerBgSrc"
+    permanent
+    mini-variant
+    mini-variant-width="80"
+    expand-on-hover
   >
+
     <div class="d-flex flex-column" style="height: 100%">
+
+      <v-list class="pt-0">
+        <v-list-item style="opacity: 1">
+          <v-list-item-action>
+            <v-img src="/logo_white.png" height="40px" width="80px" position="center" contain></v-img>
+          </v-list-item-action>
+
+          <v-list-item-content style="overflow: hidden; white-space: nowrap; line-height: 1">
+            <strong>
+              Global Group<br>Consulting
+            </strong>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+
       <v-list expand class="flex-grow-1">
         <div v-for="item in drawerItems" :key="item.id">
-          <drawer-item v-if="item.type !== 'group'" :data="item" />
+          <drawer-item v-if="item.type !== 'group'" :data="item"/>
 
-          <drawer-group v-else :data="item" />
+          <drawer-group v-else :data="item"/>
         </div>
       </v-list>
 
       <v-list class="">
-        <v-list-item
-          >{{ $t("drawer.version") }} beta
-          {{ $store.state.appVersion }}</v-list-item
-        >
+        <v-list-item>
+          <v-list-item-action>
+            v {{ $store.state.appVersion }}
+          </v-list-item-action>
+
+          <v-list-item-content>
+            <v-list-item-title></v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </div>
   </v-navigation-drawer>
@@ -30,19 +52,19 @@
 import drawerItems from "@/config/drawerEntries";
 import DrawerItem from "@/components/drawer/DrawerItem";
 import DrawerGroup from "~/components/drawer/DrawerGroup";
-import { mapGetters } from "vuex";
+import {mapGetters} from "vuex";
 
 export default {
   name: "Drawer",
-  components: { DrawerGroup, DrawerItem },
+  components: {DrawerGroup, DrawerItem},
   data() {
     return {};
   },
   props: {
     value: {
       type: Boolean,
-      default: false
     }
+
   },
   computed: {
     drawerItems,
@@ -62,22 +84,44 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.v-navigation-drawer__image {
-  opacity: 0.7;
+<style lang="scss" scoped>
+.drawer::v-deep {
+  border-top-right-radius: 20px;
 
-  &:after {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-image: linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.9) 0%,
-      rgba(0, 0, 0, 0) 100%
-    );
+  &.v-navigation-drawer--is-mouseover {
+    border-top-right-radius: 0px;
+  }
+
+  .v-list-item {
+    justify-content: start !important;
+    opacity: .5;
+    padding: 0;
+
+    .v-list-item__action {
+      width: 80px;
+      justify-content: center;
+      margin-right: 0 !important;
+    }
+
+    &.v-list-item--active {
+      opacity: 1;
+
+      &:before {
+        opacity: 0;
+      }
+
+      &:after {
+        background-color: white;
+        width: 5px;
+        opacity: 1;
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 20px;
+      }
+    }
   }
 }
 </style>

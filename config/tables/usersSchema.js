@@ -6,6 +6,7 @@ export default {
   'accountStatus': { text: 'tables.account-status', value: 'account_status' },
   'referenceAgent': { text: 'tables.reference-agent', value: 'referenceAgent' },
   'validatedAt': { text: 'tables.validated-at', value: 'validated_at' },
+  'contractStatus': { text: 'tables.contract-status', value: 'contractSignedAt' },
   'superAdmin': {
     value: 'superAdmin',
     sortable: false,

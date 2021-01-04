@@ -31,7 +31,7 @@
         </v-toolbar-items>
       </v-toolbar>
 
-      <v-tabs v-model="currentTab">
+      <v-tabs v-model="currentTab" centered>
         <v-tab v-for="tab of communicationsTabs" :key="tab.key">
           <v-badge :content="tab.unreadCounter"
                    :value="tab.unreadCounter"

@@ -1,4 +1,4 @@
-import { sortBy as _sortBy, capitalize as _capitalize } from 'lodash'
+import { sortBy as _sortBy, capitalize as _capitalize, startCase as _startCase } from 'lodash'
 
 export const state = () => ({
   /**
@@ -52,7 +52,7 @@ export const getters = {
     const list = state.provinces.reduce((acc, province) => {
       acc.push({
         value: province.sigla,
-        text: _capitalize(province.nome)
+        text: _startCase(province.nome)
       })
 
       return acc

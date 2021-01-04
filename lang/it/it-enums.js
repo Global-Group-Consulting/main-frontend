@@ -127,5 +127,16 @@ export default {
     "message_chat_message": "Hai un nuovo messaggio in una chat.",
     "message_communication": "Nuova comunicazione",
     "message_communication_message": "Hai una nuova comunicazione.",
+  },
+  'PaymentMethods': {
+    "bonifico": "Bonifico",
+    "assegno": "Assegno",
+    "altro": "Altro",
+  },
+  'ClubPacks': {
+    "basic": "Basic",
+    "fast": "Fast",
+    "premium": "Premium",
   }
 }
+
