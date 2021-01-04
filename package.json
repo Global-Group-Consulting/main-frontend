@@ -3,6 +3,9 @@
   "version": "1.5.0",
   "description": "Global Group Consulting frontend app.",
   "private": true,
+  "engines": {
+    "node": "12.18.4"
+  },
   "scripts": {
     "dev": "nuxt",
     "staging": "nuxt",
@@ -54,8 +57,5 @@
   },
   "resolutions": {
     "tiptap/**/prosemirror-model": "1.11.0"
-  },
-  "volta": {
-    "node": "14.11.0"
   }
 }
