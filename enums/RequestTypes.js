@@ -1,4 +1,5 @@
-import { BasicEnum } from '../classes/BasicEnum'
+import {BasicEnum} from '../classes/BasicEnum'
+
 /**
  * @enum
  */
@@ -13,6 +14,9 @@ class RequestTypes extends BasicEnum {
 
     // Reinvestimento Interessi maturati da un agente
     this.RISC_PROVVIGIONI = 5
+
+    this.RISC_CAPITALE_GOLD = 6
+    this.RISC_INTERESSI_BRITE = 7
 
     this.data = {
       /*  [this.ADMIN]: {
@@ -34,6 +38,12 @@ class RequestTypes extends BasicEnum {
       // interessi maturati mensilmente
       [this.RISC_PROVVIGIONI]: {
         id: 'risc_provvigioni',
+      },
+      [this.RISC_CAPITALE_GOLD]: {
+        id: 'risc_capitale_gold',
+      },
+      [this.RISC_INTERESSI_BRITE]: {
+        id: 'risc_interessi_brite',
       }
     }
   }

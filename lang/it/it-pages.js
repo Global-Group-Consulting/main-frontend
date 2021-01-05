@@ -113,8 +113,10 @@ export default {
   requests: {
     title: "Elenco delle richieste",
     subtitle: '',
-    "btnWithdrawal": "Riscossione",
-    "btnWithdrawal-tooltip": "Crea una richiesta di riscossione",
+    "btnWithdrawal": "Risc.Classic",
+    "btnWithdrawalGold": "Risc. Gold",
+    "btnWithdrawal-tooltip": "Crea una richiesta di Riscossione Classic",
+    "btnWithdrawalGold-tooltip": "Crea una richiesta di Riscossione Gold",
     "btnDeposit": "Versamento",
     "btnDeposit-tooltip": "Versa nuova liquidità",
     "btnDownloadReport": "Scarica Report",
