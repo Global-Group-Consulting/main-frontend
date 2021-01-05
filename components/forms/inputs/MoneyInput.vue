@@ -50,6 +50,10 @@
         type: Number,
         default: 1,
       },
+      showBrite: {
+        type: Boolean,
+        default: true
+      },
       showMax: Boolean,
       maxValue: Number,
     },
@@ -58,6 +62,10 @@
         return this.$enums.CurrencyType.get(this.activeCurrency)?.symbol;
       },
       suffix() {
+        if (!this.showBrite){
+          return ""
+        }
+
         const value =
           this.activeCurrency === 1 ? this.briteValue : this.numericValue;
         const prefixCurrency = this.activeCurrency === 1 ? 2 : 1;

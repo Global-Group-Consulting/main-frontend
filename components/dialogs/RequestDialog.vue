@@ -186,10 +186,12 @@ export default {
 
       switch (formData.value.type) {
         case $enums.RequestTypes.RISC_CAPITALE:
+        case $enums.RequestTypes.RISC_CAPITALE_GOLD:
         case $enums.RequestTypes.VERSAMENTO:
           toReturn = wallet.value?.deposit ?? 0;
           break;
         case $enums.RequestTypes.RISC_INTERESSI:
+        case $enums.RequestTypes.RISC_INTERESSI_BRITE:
           toReturn = wallet.value?.interestAmount ?? 0;
           break;
         case $enums.RequestTypes.RISC_PROVVIGIONI:

@@ -48,15 +48,11 @@
 </template>
 
 <script>
-import Chart from "@/components/charts/Chart";
 import ChartLines from "@/components/charts/ChartLines";
 import RequestsListTable from "@/components/table/RequestsListTable";
 
-import { requests as pendingRequests } from "@/assets/fakeRichieste";
 
 import adminDashboardChart from "@/config/charts/adminDashboard";
-import availableTableColumns from "@/config/tables/usersSchema";
-import requestsTableSchema from "@/config/tables/requestsSchema";
 import users from "@/functions/users";
 import { computed, onMounted, reactive, ref } from "@vue/composition-api";
 
@@ -91,7 +87,6 @@ export default {
   },
   data() {
     return {
-      pendingRequests
     };
   },
   computed: {

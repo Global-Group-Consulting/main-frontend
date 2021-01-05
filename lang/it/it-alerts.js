@@ -40,6 +40,18 @@ export default {
   "send-request-cancelBtnText": "Annulla",
   "send-request-success": "Richiesta inviata correttamente!",
 
+  "send-request-brite-title": "",
+  "send-request-brite-text": "Sei sicuro di voler inviare la nuova richiesta di <strong>Riscossione Brite</strong> del valore di <strong>{amount}</strong>?",
+  "send-request-brite-confirmBtnText": "Si, invia",
+  "send-request-brite-cancelBtnText": "Annulla",
+  "send-request-brite-success": "Richiesta inviata correttamente!",
+
+  "send-request-gold-title": "",
+  "send-request-gold-text": "Sei sicuro di voler inviare la nuova richiesta di <strong>Prelievo oro fisico</strong> del valore di <strong>{amount}</strong>?",
+  "send-request-gold-confirmBtnText": "Si, invia",
+  "send-request-gold-cancelBtnText": "Annulla",
+  "send-request-gold-success": "Richiesta inviata correttamente!",
+
   "delete-request-title": "",
   "delete-request-text": "Sei sicuro di voler eliminare la richiesta di <strong>{type}</strong> del valore di <strong>{amount}</strong>?",
   "delete-request-confirmBtnText": "Si, elimina",

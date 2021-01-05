@@ -7,8 +7,8 @@
         :icon="icon"
       ></page-header>
 
-      <v-toolbar class="mb-5" v-if="permissions.seeToolbar.value">
-        <v-toolbar-items class="flex-fill justify-center">
+      <page-toolbar v-if="permissions.seeToolbar.value">
+        <template slot="center-block">
           <tooltip-btn
             :tooltip="$t('pages.communications.btn-new-conversation')"
             text
@@ -28,10 +28,10 @@
           >
             {{ $t("pages.communications.btn-new-message") }}
           </tooltip-btn>
-        </v-toolbar-items>
-      </v-toolbar>
+        </template>
+      </page-toolbar>
 
-      <v-tabs v-model="currentTab" centered>
+      <v-tabs v-model="currentTab" class="ml-3">
         <v-tab v-for="tab of communicationsTabs" :key="tab.key">
           <v-badge :content="tab.unreadCounter"
                    :value="tab.unreadCounter"
@@ -42,9 +42,9 @@
         </v-tab>
       </v-tabs>
 
-      <v-tabs-items v-model="currentTab">
-        <v-tab-item v-for="tab of communicationsTabs" :key="tab.key">
-          <v-card>
+      <v-card class="overflow-hidden">
+        <v-tabs-items v-model="currentTab">
+          <v-tab-item v-for="tab of communicationsTabs" :key="tab.key">
             <data-table
               :items="communicationsList[tab.key]"
               :table-key="tab.key"
@@ -104,9 +104,9 @@
                 <span v-else></span>
               </template>
             </data-table>
-          </v-card>
-        </v-tab-item>
-      </v-tabs-items>
+          </v-tab-item>
+        </v-tabs-items>
+      </v-card>
     </v-flex>
 
     <comunication-details-dialog
@@ -134,10 +134,11 @@ import requestsCrudActions from "@/functions/requestsCrudActions.js";
 import CommunicationsTabs from "@/config/tabs/communicationsTabs";
 import DataTable from "@/components/table/DataTable";
 import PageHeader from "@/components/blocks/PageHeader";
+import PageToolbar from "@/components/blocks/PageToolbar";
 
 export default {
   name: "index",
-  components: {PageHeader, DataTable, ComunicationDetailsDialog, CommunicationNewDialog},
+  components: {PageToolbar, PageHeader, DataTable, ComunicationDetailsDialog, CommunicationNewDialog},
   props: {
     receiversShowLimit: {
       type: Number,

@@ -77,6 +77,7 @@ export default {
   'request-reject-reason': 'Motivazione rifiuto richiesta',
   'request-created-at': 'Data creazione richiesta',
   'request-completed-at': 'Data completamento richiesta',
+  'request-iban': "IBAN",
   'wallet-type': 'Wallet',
   'tooltip-download-file': "Scarica file",
   'tooltip-remove-file': "Cancella file",
