@@ -24,22 +24,24 @@
 <script>
 /** @typedef {import("../@types/Movement").IMovement} IMovement */
 
-import { ref, onBeforeMount } from "@vue/composition-api";
+import {ref, onBeforeMount} from "@vue/composition-api";
 
-import PageHeader from "../components/blocks/PageHeader";
 import DataTable from "../components/table/DataTable";
 import MovementTypes from "../enums/MovementTypes";
 import MovementsFn from "@/functions/movementsFn.js";
 
 import pageBasicFn from "../functions/pageBasic";
+import PageHeader from "@/components/blocks/PageHeader";
+import MovementsListTable from "@/components/table/MovementsListTable";
 
 export default {
-  component: {
+  components: {
     PageHeader,
+    MovementsListTable,
     DataTable
   },
-  setup(props, { root }) {
-    const { $apiCalls, $set, $options, $i18n } = root;
+  setup(props, {root}) {
+    const {$apiCalls, $set, $options, $i18n} = root;
     const movementsFn = MovementsFn(root);
 
     onBeforeMount(movementsFn.fetchList);

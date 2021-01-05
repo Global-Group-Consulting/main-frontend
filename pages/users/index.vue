@@ -8,15 +8,15 @@
       ></page-header>
 
 
-      <v-tabs v-model="currentTab" :color="getTabColor" centered>
+      <v-tabs v-model="currentTab" class="ml-3">
         <v-tab v-for="group of usersList" :key="group.id">
           {{ $t(`enums.UserRoles.${$enums.UserRoles.getIdName(group.id)}_plural`) }}
         </v-tab>
       </v-tabs>
 
-      <v-tabs-items v-model="currentTab">
-        <v-tab-item v-for="group of usersList" :key="group.id">
-          <v-card>
+      <v-card class="overflow-hidden">
+        <v-tabs-items v-model="currentTab">
+          <v-tab-item v-for="group of usersList" :key="group.id">
             <data-table
               :condition="+group.id"
               :items="group.data"
@@ -104,9 +104,9 @@
                 </div>
               </template>
             </data-table>
-          </v-card>
-        </v-tab-item>
-      </v-tabs-items>
+          </v-tab-item>
+        </v-tabs-items>
+      </v-card>
 
       <v-row>
         <!-- Floating action button -->

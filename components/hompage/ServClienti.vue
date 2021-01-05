@@ -81,8 +81,6 @@ import Chart from "@/components/charts/Chart";
 import ChartLines from "@/components/charts/ChartLines";
 import DataTable from "@/components/table/DataTable";
 
-import { requests as pendingRequests } from "@/assets/fakeRichieste";
-import pendingUsers from "@/assets/fakeUsers";
 
 import adminDashboardChart from "@/config/charts/adminDashboard";
 import usersTableSchema from "@/config/tables/usersSchema";

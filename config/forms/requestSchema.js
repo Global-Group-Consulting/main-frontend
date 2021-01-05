@@ -130,6 +130,22 @@ export default function (context) {
         },
       }
     },
+    {
+      cols: {
+        clubCardNumber: {
+          disabled: true,
+          if: context.formData.typeClub === "brite"
+        },
+      }
+    },
+    {
+      cols: {
+        iban: {
+          disabled: true,
+          if: context.formData.typeClub === "brite"
+        },
+      }
+    },
     /* {
       cols: {
         requestAttachment: {

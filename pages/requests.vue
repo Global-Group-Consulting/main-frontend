@@ -23,6 +23,18 @@
 
           <tooltip-btn
             v-if="permissions.addRequest"
+            :tooltip="$t('pages.requests.btnWithdrawalGold-tooltip')"
+            text
+            color="orange"
+            breakpoint="sm"
+            icon-name="mdi-bank-minus"
+            @click="newWithdrawlRequestGold"
+          >
+            {{ $t("pages.requests.btnWithdrawalGold") }}
+          </tooltip-btn>
+
+          <tooltip-btn
+            v-if="permissions.addRequest"
             :tooltip="$t('pages.requests.btnDeposit-tooltip')"
             text
             color="green"
@@ -73,21 +85,18 @@
         </template>
       </page-toolbar>
 
-      <v-tabs v-model="currentTab" :color="getTabColor" centered>
+      <v-tabs v-model="currentTab" class="ml-3">
         <v-tab v-for="table of requestsTables" :key="table.id">
-          <v-icon class="mr-2">{{ table.icon }}</v-icon>
+          <v-icon class="mr-2" small :color="requestsTables[currentTab].id === table.id ? table.color : ''">
+            {{ table.icon }}
+          </v-icon>
           {{ table.title }} ({{ requestsGroups[table.id].length }})
-          <!--          <div
-                      class="v-alert__border v-alert__border&#45;&#45;bottom"
-                      :class="table.color"
-                    ></div>-->
-
         </v-tab>
       </v-tabs>
 
-      <v-tabs-items v-model="currentTab">
-        <v-tab-item v-for="table of requestsTables" :key="table.id">
-          <v-card>
+      <v-card class="overflow-hidden">
+        <v-tabs-items v-model="currentTab">
+          <v-tab-item v-for="table of requestsTables" :key="table.id">
             <requests-list-table
               :condition="table.id"
               :items="requestsGroups[table.id]"
@@ -99,9 +108,9 @@
               @requestStartWorking="onRequestStartWorking"
               :items-per-page="25"
             ></requests-list-table>
-          </v-card>
-        </v-tab-item>
-      </v-tabs-items>
+          </v-tab-item>
+        </v-tabs-items>
+      </v-card>
     </v-flex>
 
     <request-dialog
@@ -111,6 +120,14 @@
       @requestStartWorking="onRequestStartWorking"
       v-if="$store.getters['dialog/dialogId'] === 'RequestDialog'"
     ></request-dialog>
+
+    <request-dialog-gold
+      @newRequestAdded="onNewRequestAdded"
+      @requestDeleted="onRequestDeleted"
+      @requestStatusChanged="onRequestStatusChanged"
+      @requestStartWorking="onRequestStartWorking"
+      v-if="$store.getters['dialog/dialogId'] === 'RequestDialogGold'"
+    ></request-dialog-gold>
 
     <communication-new-dialog
       v-if="$store.getters['dialog/dialogId'] === 'CommunicationNewDialog'"
@@ -141,9 +158,11 @@ import tableHeadersFn from "../functions/tablesHeaders";
 import permissionsFn from "../functions/permissions";
 import RequestTypes from "../enums/RequestTypes";
 import PageToolbar from "@/components/blocks/PageToolbar";
+import RequestDialogGold from "@/components/dialogs/RequestGoldDialog";
 
 export default {
   components: {
+    RequestDialogGold,
     PageToolbar,
     RequestDialog,
     PageHeader,
@@ -293,6 +312,19 @@ export default {
       });
     }
 
+    function newWithdrawlRequestGold(type) {
+      $store.dispatch("dialog/updateStatus", {
+        title: $i18n.t("dialogs.requests.title-withdrawal-gold"),
+        id: "RequestDialogGold",
+        fullscreen: true,
+        theme: "global-club",
+        noActions: true,
+        data: {
+          type: type || $enums.RequestTypes.RISC_CAPITALE
+        }
+      });
+    }
+
     function openRequestDetails(row) {
       const userId = row.user_id;
       let title = $i18n.t("dialogs.requests.title-details");
@@ -376,7 +408,7 @@ export default {
       try {
         const file = await $apiCalls.downloadRequestsReport(rightMonth.format("YYYY-MM"))
 
-        jsFileDownload(file.data, $i18n.t("pages.requests.fileReportName", {date: getLastMonth(months)})  + ".xlsx")
+        jsFileDownload(file.data, $i18n.t("pages.requests.fileReportName", {date: getLastMonth(months)}) + ".xlsx")
       } catch (er) {
         $alerts.error(er)
       }
@@ -428,6 +460,7 @@ export default {
       getLastMonth,
       newDepositRequest,
       newWithdrawlRequest,
+      newWithdrawlRequestGold,
       openRequestDetails,
       onRefetchData,
       onNewRequestAdded,

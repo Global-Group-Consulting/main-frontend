@@ -2,7 +2,7 @@ import moment from 'moment'
 import { upperFirst } from "lodash"
 
 function getMonths(data) {
-  const iterations = 6
+  const iterations = 12
   const toReturn = []
 
   for (let i = 0; i < data.length && i < iterations; i++) {
@@ -26,15 +26,15 @@ export default {
       id: 'deposit',
       borderColor: '#91c839',
       // backgroundColor: 'rgba(140, 195, 43, .9)',
-      data: [2000, 2100, 2200, 1800, 1900, 1500]
+      data: []
     },
     {
       id: 'interestAmount',
       borderColor: '#39c8c8',
       // backgroundColor: 'rgba(46, 193, 194, .9)',
-      data: [200, 210, 220, 180, 190, 150]
+      data: []
     },
-    /* 
+    /*
     {
       label: 'charts.picket-deposit',
       borderColor: '#c83939',

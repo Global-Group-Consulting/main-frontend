@@ -45,7 +45,8 @@
     </template>
 
     <template v-slot:item.type="{ item }">
-      {{ getTipoRichiesta(item.type) }}
+      <v-icon color="orange" v-if="item.typeClub">mdi-cards-spade</v-icon>
+      {{ getTipoRichiesta(item.type, item) }}
     </template>
   </data-table>
 </template>
@@ -55,13 +56,13 @@ import RequestsCrudActions from "../../components/table/RequestsCrudAction";
 import tableHeadersFn from "../../functions/tablesHeaders";
 
 export default {
-  components: { RequestsCrudActions },
+  components: {RequestsCrudActions},
   props: {
     items: Array
     // condition: String // serve per decidere se mostrare una colonna, in base all'array passato come configurazione
   },
-  setup(props, { root, emit }) {
-    const { $enums, $set, $apiCalls, $store } = root;
+  setup(props, {root, emit}) {
+    const {$enums, $set, $apiCalls, $store} = root;
 
     function getItemClass(item) {
       if (+item.status == $enums.RequestStatus.ANNULLATA) {
@@ -97,6 +98,7 @@ export default {
         ? "+"
         : "-";
     }
+
     function getAmountClass(sign) {
       const minus = "red--text";
       const plus = "green--text";
@@ -104,7 +106,7 @@ export default {
       return sign === "-" ? minus : plus;
     }
 
-    function getTipoRichiesta(_id) {
+    function getTipoRichiesta(_id, item) {
       const id = $enums.RequestTypes.get(_id).id;
 
       return root.$t("enums.RequestTypes." + id);

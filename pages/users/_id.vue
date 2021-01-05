@@ -22,7 +22,7 @@
           <!-- Incomplete data info -->
           <v-menu offset-y open-on-hover bottom
                   v-if="showIncompleteDataInfo"
-                  >
+          >
             <template v-slot:activator="{ on, attrs }">
               <v-btn icon v-on="on" v-bind="attrs">
                 <v-icon>mdi-information</v-icon>
@@ -75,8 +75,8 @@
         </template>
       </page-header>
 
-      <v-toolbar class="mb-5" rounded>
-        <v-toolbar-items class="flex-fill">
+      <page-toolbar>
+        <template slot="left-block">
           <tooltip-btn
             v-if="permissions.seeOtherUsers"
             :tooltip="$t('pages.usersId.btn-go-back-tooltip')"
@@ -85,8 +85,9 @@
             @click="$router.push('/users')"
           >
           </tooltip-btn>
+        </template>
 
-          <v-spacer></v-spacer>
+        <template slot="center-block">
 
           <!-- approve a user and change the status to "APPROVED" -->
           <tooltip-btn
@@ -136,8 +137,9 @@
             {{ $t("pages.usersId.btn-incomplete-user") }}
           </tooltip-btn>
 
-          <v-spacer></v-spacer>
+        </template>
 
+        <template slot="right-block">
           <tooltip-btn
             :tooltip="$t('pages.usersId.btn-movements-list')"
             icon-name="mdi-view-list"
@@ -168,77 +170,76 @@
               </v-list-item>
             </v-list>
           </v-menu>
-        </v-toolbar-items>
-      </v-toolbar>
+        </template>
+      </page-toolbar>
 
       <v-form>
-          <v-tabs
-            v-model="currentTab"
-            :color="accentColor"
-            center-active
-            centered
-            show-arrows
+        <v-tabs
+          v-model="currentTab"
+          center-active
+          show-arrows
+          class="ml-3"
+        >
+          <v-tab
+            v-for="(section, index) in formTabs"
+            :key="index"
+            :title="'pages.usersId.tabs.' + section.title"
+            :disabled="userIsNew"
           >
-            <v-tab
-              v-for="(section, index) in formTabs"
-              :key="index"
-              :title="'pages.usersId.tabs.' + section.title"
-              :disabled="userIsNew"
-            >
-              {{ $t("pages.usersId.tabs." + section.title) }}
-            </v-tab>
-          </v-tabs>
+            {{ $t("pages.usersId.tabs." + section.title) }}
+          </v-tab>
+        </v-tabs>
 
-          <v-card>
-            <v-tabs-items v-model="currentTab">
-              <v-tab-item v-for="(tab, index) in formTabs" :key="index">
-                <v-card elevation="0">
-                  <v-card-text>
-                    <dynamic-fieldset
-                      :schema="getFormSchema(tab)"
-                      v-model="formData"
-                      :invalidFields="formData.incompleteData ? formData.incompleteData.checkedFields : []"
-                      :ref="'dynamicForm_' + index"
-                      :edit-mode="editMode"
-                      @status="saveStatus(tab.schema, $event)"
-                      @checkedFieldsChange="onCheckedFieldsChange"
-                    />
-                  </v-card-text>
-                </v-card>
-              </v-tab-item>
-            </v-tabs-items>
+        <v-card>
+          <v-tabs-items v-model="currentTab">
+            <v-tab-item v-for="(tab, index) in formTabs" :key="index">
+              <v-card elevation="0">
+                <v-card-text>
+                  <dynamic-fieldset
+                    :schema="getFormSchema(tab)"
+                    v-model="formData"
+                    :invalidFields="formData.incompleteData ? formData.incompleteData.checkedFields : []"
+                    :ref="'dynamicForm_' + index"
+                    :edit-mode="editMode"
+                    @status="saveStatus(tab.schema, $event)"
+                    @checkedFieldsChange="onCheckedFieldsChange"
+                  />
+                </v-card-text>
+              </v-card>
+            </v-tab-item>
+          </v-tabs-items>
 
-            <v-card-actions >
-              <v-btn @click="goBack" v-if="currentTab > 0" text rounded>
-                <v-icon>mdi-chevron-left</v-icon>
-                {{ $t("pages.usersId.btn-previous") }}
-              </v-btn>
-              <v-spacer></v-spacer>
-              <v-btn
-                dark
-                rounded
-                :color="
+          <v-card-actions>
+            <v-btn @click="goBack" v-if="currentTab > 0" text rounded>
+              <v-icon>mdi-chevron-left</v-icon>
+              {{ $t("pages.usersId.btn-previous") }}
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn
+              dark
+              rounded
+              :color="
                   currentTab < formTabs.length - 1 ? accentColor : 'success'
                 "
-                @click="
+              @click="
                   currentTab < formTabs.length - 1 ? goNext() : onSaveClick()
                 "
+            >
+              {{
+                $t(
+                  `pages.usersId.btn-${
+                    currentTab < formTabs.length - 1 ? "next" : "save"
+                  }`
+                )
+              }}
+              <v-icon v-if="currentTab < formTabs.length - 1"
+              >mdi-chevron-right
+              </v-icon
               >
-                {{
-                  $t(
-                    `pages.usersId.btn-${
-                      currentTab < formTabs.length - 1 ? "next" : "save"
-                    }`
-                  )
-                }}
-                <v-icon v-if="currentTab < formTabs.length - 1"
-                >mdi-chevron-right
-                </v-icon
-                >
-                <v-icon v-else class="ml-2">mdi-content-save</v-icon>
-              </v-btn>
-            </v-card-actions>
-          </v-card>
+              <v-icon v-else class="ml-2">mdi-content-save</v-icon>
+            </v-btn>
+          </v-card-actions>
+        </v-card>
 
 
         <!-- Floating action button -->
@@ -305,10 +306,12 @@ import pageBasic from "@/functions/pageBasic";
 import usersForm from "../../functions/usersForm";
 import Permissions from "@/functions/permissions";
 import SigningLogsPopup from "@/components/elements/SigningLogsPopup";
+import PageToolbar from "@/components/blocks/PageToolbar";
 
 export default {
   name: "_id",
   components: {
+    PageToolbar,
     SigningLogsPopup,
     UserMessage,
     DynamicFieldset,
