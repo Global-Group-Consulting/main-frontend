@@ -234,6 +234,7 @@ export default {
         title: communication.subject,
         large: true,
         showCloseBtn: true,
+        theme: "communications",
         // fullscreen: isConversation,
         readonly: !isConversation || communication.readonly,
         texts: {cancelBtn: root.$t("dialogs.communicationDialog.btn-cancel")},

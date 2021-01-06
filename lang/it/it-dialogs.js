@@ -72,5 +72,8 @@ export default {
     'btn-cancel': 'Chiudi',
     'btn-import': 'Importa lista',
     'btn-import-contract': 'Importa contratto',
+  },
+  changelog: {
+    title: "Dettaglio degli Aggiornamenti"
   }
 }

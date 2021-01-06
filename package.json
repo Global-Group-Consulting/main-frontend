@@ -35,6 +35,7 @@
     "nuxt": "^2.14.0",
     "nuxt-i18n": "^6.15.1",
     "portal-vue": "^2.1.7",
+    "showdown": "^1.9.1",
     "sweetalert2": "^10.0.2",
     "tippy.js": "^6.2.7",
     "tiptap": "1.30.0",

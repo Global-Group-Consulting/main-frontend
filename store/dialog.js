@@ -8,7 +8,7 @@ const defaultData = {
   large: false,
   noActions: false,
   retainFocus: true,
-  theme: "communications",
+  theme: "",
   showCloseBtn: false,
   contentClass: "",
   texts: {

@@ -17,7 +17,7 @@
             <span class="headline" v-html="dialogData.title"></span>
           </v-card-title>
 
-          <v-card-title v-if="dialogData.fullscreen || m, dialogData.showCloseBtn">
+          <v-card-title v-if="dialogData.fullscreen || dialogData.showCloseBtn">
             <v-btn icon @click="close">
               <v-icon>mdi-close</v-icon>
             </v-btn>

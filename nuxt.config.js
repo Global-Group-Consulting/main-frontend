@@ -6,6 +6,9 @@ import nuxtProxy from './config/nuxtModules/nuxtProxy'
 import nuxtVuetify from './config/nuxtModules/nuxtVuetify'
 import nuxtVueScrollTo from './config/nuxtModules/vueScrollTo'
 
+// Autogenerate the changelog html from .md file
+import "./changelog"
+
 const IS_BETA = !!process.env.BETA
 const FAVICON_PATH = IS_BETA ? "/beta" : ""
 const FAVICON_VERSION = process.env.FAVICON_VERSION
