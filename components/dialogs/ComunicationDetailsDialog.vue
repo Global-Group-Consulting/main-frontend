@@ -126,7 +126,7 @@
 
                 <!-- message attachmetns -->
                 <div v-if="item.files && item.files.length > 0">
-                  <v-list dense light>
+                  <v-list dense color="transparent">
                     <v-divider></v-divider>
                     <v-list-item
                       v-for="file in item.files"
@@ -199,7 +199,7 @@
           <div class="my-6" v-html="dialogData.content"></div>
 
           <div v-if="dialogData.files && dialogData.files.length > 0">
-            <v-list dense light>
+            <v-list dense color="transparent">
               <v-divider></v-divider>
               <v-list-item
                 v-for="file in dialogData.files"
@@ -694,9 +694,7 @@ export default {
     margin-top: 7px;
   }
 
-  .v-card--text{
-    background-color: #f7f7f7;
-  }
+
 }
 
 .demo {

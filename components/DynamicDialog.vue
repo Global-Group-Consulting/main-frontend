@@ -5,7 +5,7 @@
       :persistent="true"
       :fullscreen="dialogData.fullscreen"
       :transition="dialogData.fullscreen ? 'dialog-bottom-transition' : ''"
-      :content-class="darkMode ? 'theme-' + dialogData.theme : ''"
+      :content-class="dialogData.theme ? 'theme-' + dialogData.theme : ''"
       :dark="darkMode"
       :retain-focus="false"
       scrollable
@@ -130,6 +130,14 @@ export default {
 .theme-global-club {
   .dynamic-dialog-content {
     background-color: #000;
+  }
+}
+
+.theme-communications {
+  .dynamic-dialog-content {
+    .v-card__text {
+      background-color: #f7f7f7;
+    }
   }
 }
 </style>
