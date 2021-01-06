@@ -17,7 +17,7 @@
             <span class="headline" v-html="dialogData.title"></span>
           </v-card-title>
 
-          <v-card-title v-if="dialogData.fullscreen">
+          <v-card-title v-if="dialogData.fullscreen || m, dialogData.showCloseBtn">
             <v-btn icon @click="close">
               <v-icon>mdi-close</v-icon>
             </v-btn>
@@ -117,7 +117,13 @@ export default {
 }
 
 .dynamic-dialog-content {
-  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  .v-card__text {
+    overflow: auto;
+  }
 }
 
 

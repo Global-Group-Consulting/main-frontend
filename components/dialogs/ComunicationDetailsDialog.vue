@@ -687,11 +687,15 @@ export default {
 
 <style scoped lang="scss">
 .comunication-details::v-deep {
-  margin-bottom: -20px;
+  //margin-bottom: -20px;
 
   .v-timeline-item__opposite {
     align-self: flex-start;
     margin-top: 7px;
+  }
+
+  .v-card--text{
+    background-color: #f7f7f7;
   }
 }
 
