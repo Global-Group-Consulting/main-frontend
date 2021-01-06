@@ -84,6 +84,8 @@ export default {
     color: "orange",
   },
 
+  loadingIndicator: "./components/loadingIndicator.html",
+
   /*
   ** Nuxt.js dev-modules
   */
@@ -123,6 +125,8 @@ export default {
   serverMiddleware: [
     // {path: '/api', handler: '~/server/index.js' }
   ],
+
+  pageTransition: 'fade',
 
   env: {
     version: require('./package.json').version,
