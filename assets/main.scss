@@ -4,6 +4,10 @@
 @import "../node_modules/animate.css/animate.min.css";
 @import "../node_modules/vue2-animate/src/sass/vue2-animate.scss";
 
+html{
+  overflow-y: auto !important;
+}
+
 .p-relative {
   position: relative !important;
 }

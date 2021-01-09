@@ -33,15 +33,32 @@
         </div>
       </v-list>
 
-      <v-list class="">
-        <v-list-item @click="onVersionChangelogClick">
+      <v-list class="" dense>
+
+        <v-list-item @click="onVersionChangelogClick" dense>
           <v-list-item-action>
-            v {{ $store.state.appVersion }}
+            <small>
+              v {{ $store.state.appVersion }}
+            </small>
           </v-list-item-action>
 
           <v-list-item-content>
             <v-list-item-title>
               Mostra dettagli
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item dense href="https://globalgroup.consulting/" target="_blank">
+          <v-list-item-action>
+            <small>
+              © {{ $moment().format("YYYY") }}
+            </small>
+          </v-list-item-action>
+
+          <v-list-item-content>
+            <v-list-item-title>
+              GlobalGroup.Consulting
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
