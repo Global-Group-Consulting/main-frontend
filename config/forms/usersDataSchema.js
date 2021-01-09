@@ -402,6 +402,7 @@ export function contractData(formContext) {
  */
 export function clubData(formContext) {
   const gold = formContext.formData.gold
+  const canChange = formContext.$auth.user.role === UserRoles.ADMIN
 
   return [
     {
@@ -409,6 +410,7 @@ export function clubData(formContext) {
         'gold': {
           component: "v-switch",
           falseValue: false,
+          disabled: !canChange,
           inputValue: formContext.formData.gold
         }
       }
@@ -416,12 +418,12 @@ export function clubData(formContext) {
       cols: {
         'clubCardNumber': {
           type: "number",
-          disabled: !gold
+          disabled: !gold || !canChange
         },
         'clubPack': {
           component: "v-select",
           items: ClubPacks,
-          disabled: !gold
+          disabled: !gold || !canChange
         }
       }
     }

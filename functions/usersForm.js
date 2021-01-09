@@ -11,7 +11,7 @@
  * @property {Boolean} showReferenceAgent
  */
 
-import { computed, ref, onMounted } from '@vue/composition-api'
+import {computed, ref, onMounted} from '@vue/composition-api'
 
 import PersonTypes from '../enums/PersonTypes'
 import UserRoles from '../enums/UserRoles'
@@ -21,7 +21,7 @@ import usersTabs from '../config/tabs/usersIdTabs'
 import usersDataSchema from '../config/forms/usersDataSchema'
 import Permissions from './permissions'
 
-export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set, $auth }, refs) {
+export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $auth}, refs) {
   /**
    * @type {import('@vue/composition-api').Ref<Partial<import("../@types/UserFormData").UserDataSchema>>}
    */
@@ -125,6 +125,10 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set, $au
         $router.replace("/users/" + result.id)
       } else {
         result = await $apiCalls.userUpdate(data)
+
+        if ($auth.user.id === result.id) {
+          $auth.setUser(result)
+        }
 
         $set(formData, "value", result)
       }
