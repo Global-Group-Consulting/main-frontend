@@ -3,6 +3,7 @@ module.exports = `<h2 id="v161small05012021small">v 1.6.1 - <small>05/01/2021</s
 <ul>
 <li>Transizioni al cambio delle pagine</li>
 <li>Aggiunta lista dei cambiamenti per ogni versione</li>
+<li>Email nel caso di notifica in app non letta entro 30 minuti</li>
 </ul>
 <h3 id="miglioramenti">Miglioramenti</h3>
 <ul>
