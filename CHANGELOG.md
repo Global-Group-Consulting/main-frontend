@@ -4,6 +4,7 @@
 ### Aggiunte
 - Transizioni al cambio delle pagine
 - Aggiunta lista dei cambiamenti per ogni versione
+- Email nel caso di notifica in app non letta entro 30 minuti
 
 ### Miglioramenti
 - Grafica splash screen iniziale
