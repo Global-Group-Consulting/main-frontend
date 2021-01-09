@@ -33,18 +33,42 @@
         </div>
       </v-list>
 
-      <v-list class="">
-        <v-list-item>
+      <v-list class="" dense>
+
+        <v-list-item @click="onVersionChangelogClick" dense>
           <v-list-item-action>
-            v {{ $store.state.appVersion }}
+            <small>
+              v {{ $store.state.appVersion }}
+            </small>
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title></v-list-item-title>
+            <v-list-item-title>
+              Mostra dettagli
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item dense href="https://globalgroup.consulting/" target="_blank">
+          <v-list-item-action>
+            <small>
+              © {{ $moment().format("YYYY") }}
+            </small>
+          </v-list-item-action>
+
+          <v-list-item-content>
+            <v-list-item-title>
+              GlobalGroup.Consulting
+            </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
     </div>
+
+    <changelog-dialog
+      v-if="$store.getters['dialog/dialogId'] === 'ChangelogDialog'"
+    ></changelog-dialog>
+
   </v-navigation-drawer>
 </template>
 
@@ -53,13 +77,12 @@ import drawerItems from "@/config/drawerEntries";
 import DrawerItem from "@/components/drawer/DrawerItem";
 import DrawerGroup from "~/components/drawer/DrawerGroup";
 import {mapGetters} from "vuex";
+import ChangelogDialog from "@/components/dialogs/ChangelogDialog";
+
 
 export default {
   name: "Drawer",
-  components: {DrawerGroup, DrawerItem},
-  data() {
-    return {};
-  },
+  components: {ChangelogDialog, DrawerGroup, DrawerItem},
   props: {
     value: {
       type: Boolean,
@@ -79,6 +102,16 @@ export default {
       const ruoloBgSrc = this.$enums.UserRoles.get(this.user.role)?.bgSrc;
 
       return root + ruoloBgSrc;
+    }
+  },
+  methods: {
+    onVersionChangelogClick() {
+      this.$store.dispatch("dialog/updateStatus", {
+        title: this.$t("dialogs.changelog.title"),
+        showCloseBtn: true,
+        noActions: true,
+        id: "ChangelogDialog"
+      });
     }
   }
 };

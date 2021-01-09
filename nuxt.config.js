@@ -6,6 +6,9 @@ import nuxtProxy from './config/nuxtModules/nuxtProxy'
 import nuxtVuetify from './config/nuxtModules/nuxtVuetify'
 import nuxtVueScrollTo from './config/nuxtModules/vueScrollTo'
 
+// Autogenerate the changelog html from .md file
+import "./changelog"
+
 const IS_BETA = !!process.env.BETA
 const FAVICON_PATH = IS_BETA ? "/beta" : ""
 const FAVICON_VERSION = process.env.FAVICON_VERSION
@@ -84,6 +87,8 @@ export default {
     color: "orange",
   },
 
+  loadingIndicator: "./components/loadingIndicator.html",
+
   /*
   ** Nuxt.js dev-modules
   */
@@ -123,6 +128,8 @@ export default {
   serverMiddleware: [
     // {path: '/api', handler: '~/server/index.js' }
   ],
+
+  pageTransition: 'fade',
 
   env: {
     version: require('./package.json').version,

@@ -22,7 +22,7 @@
           </tooltip-btn>
 
           <tooltip-btn
-            v-if="permissions.addRequest"
+            v-if="permissions.addRequestGold"
             :tooltip="$t('pages.requests.btnWithdrawalGold-tooltip')"
             text
             color="orange"

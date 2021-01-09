@@ -48,6 +48,7 @@
             <data-table
               :items="communicationsList[tab.key]"
               :table-key="tab.key"
+              :items-per-page="25"
               schema="communicationsSchema"
               @click:row="openCommunication"
             >
@@ -231,7 +232,10 @@ export default {
       root.$store.dispatch("dialog/updateStatus", {
         id: "CommunicationDetailsDialog",
         title: communication.subject,
-        fullscreen: isConversation,
+        large: true,
+        showCloseBtn: true,
+        theme: "communications",
+        // fullscreen: isConversation,
         readonly: !isConversation || communication.readonly,
         texts: {cancelBtn: root.$t("dialogs.communicationDialog.btn-cancel")},
         data: {

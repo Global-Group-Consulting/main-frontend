@@ -2,11 +2,11 @@
 @import "vueToasted";
 
 @import "../node_modules/animate.css/animate.min.css";
+@import "../node_modules/vue2-animate/src/sass/vue2-animate.scss";
 
-
-/*@import "../node_modules/animate.css/source/_vars.css";
-@import "../node_modules/animate.css/source/_base.css";
-@import "../node_modules/animate.css/source/attention_seekers/swing.css";*/
+html{
+  overflow-y: auto !important;
+}
 
 .p-relative {
   position: relative !important;
