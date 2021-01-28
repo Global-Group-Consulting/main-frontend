@@ -141,5 +141,8 @@ export default {
     collectedCommissions: "Provvigioni riscosse",
     clientsTotalDeposit: "Versamenti dei clienti nell'ultimo anno",
     collectCommissions: "Preleva"
+  },
+  calculator: {
+    title: "Preventivi"
   }
 }

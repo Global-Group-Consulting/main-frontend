@@ -31,7 +31,7 @@
         </template>
       </page-toolbar>
 
-      <v-tabs v-model="currentTab" class="ml-3">
+      <v-tabs v-model="currentTab" >
         <v-tab v-for="tab of communicationsTabs" :key="tab.key">
           <v-badge :content="tab.unreadCounter"
                    :value="tab.unreadCounter"
@@ -43,7 +43,7 @@
       </v-tabs>
 
       <v-card class="overflow-hidden">
-        <v-tabs-items v-model="currentTab">
+        <v-tabs-items v-model="currentTab" touchless>
           <v-tab-item v-for="tab of communicationsTabs" :key="tab.key">
             <data-table
               :items="communicationsList[tab.key]"

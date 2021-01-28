@@ -19,5 +19,8 @@ export default {
   },
   'wallet': {
     icon: 'mdi-wallet'
+  },
+  'calculator': {
+    icon: 'mdi-calculator'
   }
 }

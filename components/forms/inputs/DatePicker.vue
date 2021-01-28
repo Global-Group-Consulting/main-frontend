@@ -22,7 +22,7 @@
         v-on="on"
         v-bind="$attrs"
         @change="onInput"
-        :clearable="!readonly && !disabled"
+        :clearable="clearable"
         :disabled="disabled"
         :class="{ 'edit-mode': editMode }"
       >
@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { datePickerFormatter } from "~/plugins/filters";
+import {datePickerFormatter} from "~/plugins/filters";
 
 export default {
   name: "DatePicker",
@@ -73,9 +73,13 @@ export default {
     },
     readonly: Boolean,
     disabled: Boolean,
-    editMode: Boolean
+    editMode: Boolean,
   },
-  computed: {},
+  computed: {
+    clearable() {
+      return this.$attrs.clearable ?? (!this.readonly && !this.disabled)
+    }
+  },
   methods: {
     onInput(value) {
       if (this.opened) {
@@ -86,7 +90,7 @@ export default {
     }
   },
   watch: {
-    value: function(value) {
+    value: function (value) {
       const newValue = datePickerFormatter(this.value);
 
       if (this.dateValue !== newValue) {

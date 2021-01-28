@@ -1,17 +1,15 @@
 <template>
-  <div>
+  <div class="default-panel">
 
     <div class="d-flex justify-content-center mb-10 ">
       <v-img src="/logo_dark.png" position="center" height="100px" contain></v-img>
     </div>
 
-    <v-card class="elevation-12 rounded-lg"
-            style="padding: 50px 70px"
+    <v-card class="elevation-12 rounded-lg default-panel-card"
             :loading="loading"
             :disabled="!!loading"
     >
       <div class="text-center text-h5">{{ title }}</div>
-
 
       <v-card-text>
         <p class="subtitle-1" v-if="message">{{ message }}</p>
@@ -49,4 +47,24 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+@import '~vuetify/src/styles/styles.sass';
+
+.default-panel::v-deep {
+  .default-panel-card{
+    padding: 50px 70px;
+  }
+}
+
+@media #{map-get($display-breakpoints, 'sm-and-down')}{
+  .default-panel::v-deep {
+    //margin-top: -25vh;
+
+    .default-panel-card{
+      padding: 30px 0px;
+    }
+  }
+}
+
+
+</style>

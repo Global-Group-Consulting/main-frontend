@@ -1,7 +1,9 @@
 <template>
-  <v-app-bar app class="main-navbar"
-             elevate-on-scroll
+  <v-app-bar class="main-navbar"
              clipped-left
+             height="56"
+             max-height="56"
+             :class="dynamicClasses"
   >
     <!--    <v-app-bar-nav-icon @click.stop="$emit('toggleDrawer')"/>-->
 
@@ -73,9 +75,9 @@
         </v-list>
       </v-menu>
 
-      <v-menu offset-y>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn text v-on="on" v-bind="attrs">
+      <account-menu v-if="$vuetify.breakpoint.smAndUp">
+        <template v-slot:menu-activator="{on}">
+          <v-btn text v-on="on">
             <v-icon class="mr-3">mdi-account-circle</v-icon>
 
             <small class="caption" style="text-transform: none">
@@ -83,40 +85,12 @@
             </small>
           </v-btn>
         </template>
-
-        <v-list>
-          <v-list-item>
-            <v-list-item-subtitle>
-              {{ $auth.user.email }}<br/>
-              {{
-                $t(
-                  "enums.UserRoles." + $enums.UserRoles.get($auth.user.role).id
-                )
-              }}
-            </v-list-item-subtitle
-            >
-          </v-list-item>
-
-          <v-divider></v-divider>
-
-          <v-list-item @click="vieMyProfile">
-            <v-icon class="mr-3">mdi-badge-account-horizontal-outline</v-icon>
-            <v-list-item-title>{{ $t("menus.myProfile") }}</v-list-item-title>
-          </v-list-item>
-          <v-divider></v-divider>
-          <v-list-item @click="logout">
-            <v-icon class="mr-3">mdi-logout</v-icon>
-            <v-list-item-title>
-              {{ $t("menus.logout") }}
-            </v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
+      </account-menu>
     </div>
 
     <communication-new-dialog
-      v-if="$store.getters['dialog/dialogId'] === 'CommunicationNewDialog'"
-      @communicationAdded="onBugReported"
+        v-if="$store.getters['dialog/dialogId'] === 'CommunicationNewDialog'"
+        @communicationAdded="onBugReported"
     ></communication-new-dialog>
 
   </v-app-bar>
@@ -127,30 +101,20 @@ import socketNotificationsFn from "@/functions/socket/notifications";
 import {computed, onMounted, ref} from "@vue/composition-api";
 import {moneyFormatter} from "@/plugins/filters";
 import CommunicationNewDialog from "@/components/dialogs/CommunicationNewDialog";
+import AccountMenu from "@/components/elements/AccountMenu";
 
 export default {
   name: "MainNavbar",
-  components: {CommunicationNewDialog},
+  components: {AccountMenu, CommunicationNewDialog},
   setup(props, {root}) {
-    async function logout() {
-      try {
-        const result = await root.$alerts.ask({
-          title: root.$t("alerts.logout-title"),
-          text: root.$t("alerts.logout-text")
-        });
+    let scrollElement;
+    let scrollTop = ref(0)
 
-        await root.$auth.logout("local");
-
-        root.$socket.close()
-
-      } catch (er) {
-        console.log(er);
+    const dynamicClasses = computed(() => {
+      return {
+        "v-app-bar--hide-shadow": scrollTop.value == 0
       }
-    }
-
-    async function vieMyProfile() {
-      root.$router.push("/users/" + root.$auth.user.id);
-    }
+    })
 
     async function openBugReport() {
       root.$store.dispatch("dialog/updateStatus", {
@@ -170,11 +134,23 @@ export default {
 
     }
 
+    function handleScroll() {
+      scrollTop.value = scrollElement.scrollTop
+    }
+
+
+    onMounted(() => {
+      scrollElement = document.querySelector("main")
+
+      scrollElement.addEventListener('scroll', handleScroll);
+
+      handleScroll()
+    })
+
     return {
-      logout,
-      vieMyProfile,
       openBugReport,
       onBugReported,
+      dynamicClasses,
       ...socketNotificationsFn(root)
     }
   },
@@ -183,6 +159,8 @@ export default {
 
 <style scoped lang="scss">
 .main-navbar::v-deep {
+  z-index: 1;
+
   &.v-app-bar--is-scrolled {
     background-color: #fff !important;
   }

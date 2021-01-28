@@ -1,3 +1,4 @@
+import actions from '~/lang/it/it-actions'
 import alerts from '~/lang/it/it-alerts'
 import charts from '~/lang/it/it-charts'
 import dialogs from '~/lang/it/it-dialogs'
@@ -11,6 +12,7 @@ import tables from '~/lang/it/it-tables'
 import validators from '~/lang/it/it-validators'
 
 export default {
+  actions,
   alerts,
   charts,
   dialogs,

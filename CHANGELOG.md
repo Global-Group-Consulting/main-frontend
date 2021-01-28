@@ -1,5 +1,14 @@
 [comment]: <> (## Non ancora rilasciato)
 
+## v 1.6.2 - <small>TBA</small>
+### Aggiunte
+- Barra di ricerca nell'elenco degli utenti
+- Barra di navigazione in mobile
+- Calcolatrice per preventivi
+
+### Miglioramenti
+- Lettura tabelle in mobile 
+
 ## v 1.6.1 - <small>05/01/2021</small>
 ### Aggiunte
 - Transizioni al cambio delle pagine

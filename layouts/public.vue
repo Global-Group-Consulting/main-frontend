@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-main>
-      <v-container fluid class="fill-height">
+      <v-container fluid :class="{'fill-height': $vuetify.breakpoint.mdAndUp}">
         <v-row align="center"
                justify="center"
         >

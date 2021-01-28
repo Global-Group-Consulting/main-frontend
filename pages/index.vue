@@ -7,7 +7,9 @@
       show-user-role
     ></page-header>
 
-    <component :is="userPage" />
+    <component :is="userPage"/>
+
+    <mobile-menu-actions :actions-list="actionsList"></mobile-menu-actions>
   </div>
 </template>
 
@@ -18,14 +20,25 @@ import Agente from "@/components/hompage/Agente";
 import ServClienti from "@/components/hompage/ServClienti";
 
 import PageHeader from "@/components/blocks/PageHeader";
+import MobileMenuActions from "@/components/MobileMenuActions";
 import pageBasic from "@/functions/pageBasic";
 
 export default {
-  components: { PageHeader, Admin, Cliente, Agente, ServClienti },
+  components: {PageHeader, Admin, Cliente, Agente, ServClienti, MobileMenuActions},
 
-  setup(props, { root }) {
+  setup(props, {root}) {
+    const actionsList = [
+      {
+        title: "Zao asdajhdgjashgdjasgdjh",
+      },
+      {
+        title: "Zao",
+      }
+    ]
+
     return {
-      ...pageBasic(root, "dashboard")
+      ...pageBasic(root, "dashboard"),
+      actionsList
     };
   },
   data() {
