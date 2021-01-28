@@ -2,23 +2,15 @@
   <v-app>
     <drawer v-model="drawerModel"></drawer>
 
-
+    <main-navbar @toggleDrawer="toggleDrawer"></main-navbar>
 
     <v-main>
-      <main-navbar @toggleDrawer="toggleDrawer"></main-navbar>
-      <!--<v-alert v-if="mockingUser"
-               type="error"
-               tile
-               elevation="3"
-               class="mb-0">
-        Attenzione! Si sta visualizzando l'account dell'utente Mario Rossi, pertanto tutte le azioni eseguite si
-        ripercuoteranno sull'utente stesso.
-      </v-alert>-->
-
-      <v-container fluid class="mb-16 pb-8">
+      <v-container fluid>
         <nuxt ref="viewEl"></nuxt>
       </v-container>
     </v-main>
+
+    <bottom-drawer></bottom-drawer>
 
     <dynamic-dialog></dynamic-dialog>
   </v-app>
@@ -28,9 +20,10 @@
 import Drawer from "@/components/drawer/Drawer";
 import DynamicDialog from "@/components/DynamicDialog";
 import MainNavbar from "@/components/blocks/MainNavbar";
+import BottomDrawer from "@/components/blocks/BottomDrawer";
 
 export default {
-  components: {MainNavbar, DynamicDialog, Drawer},
+  components: {BottomDrawer, MainNavbar, DynamicDialog, Drawer},
 
   data() {
     return {
@@ -45,4 +38,7 @@ export default {
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+
+
+</style>

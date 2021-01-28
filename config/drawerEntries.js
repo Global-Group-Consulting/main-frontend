@@ -55,14 +55,14 @@ const menuItems = [
       {
         id: 'movements',
         text: 'movements',
-        icon: 'mdi-swap-horizontal',
+        icon: 'mdi-swap-horizontal-bold',
         link: '/movements',
         ruoli: [UserRoles.CLIENTE, UserRoles.AGENTE]
       },
       {
         id: 'requests',
         text: 'requests',
-        icon: 'mdi-fire',
+        icon: 'mdi-list-status',
         link: '/requests',
         ruoli: [UserRoles.ADMIN, UserRoles.AGENTE, UserRoles.CLIENTE]
       },
@@ -72,17 +72,17 @@ const menuItems = [
     type: 'group',
     text: 'utilities',
     childs: [
-      /*{
-        id: 'calculator',
-        text: 'calculator',
-        icon: 'mdi-calculator-variant',
-        link: '/calculator'
-      },*/
       {
         id: 'comunications',
         text: 'comunications',
         icon: 'mdi-email-multiple',
         link: '/communications'
+      },
+      {
+        id: 'calculator',
+        text: 'calculator',
+        icon: 'mdi-calculator-variant',
+        link: '/calculator'
       }
     ]
   },
@@ -130,7 +130,7 @@ const menuItems = [
  * @private
  */
 function _analyzeEntry(entry, ruolo, i18n) {
-  const newEntry = { ...entry }
+  const newEntry = {...entry}
 
   // Se il parametro è una function la esegue, passando il ruolo e l'entry come parametri
   if (entry.text && typeof entry.text === 'function') {

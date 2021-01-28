@@ -1,15 +1,17 @@
 <template>
-  <v-row justify="center" class="dynamic-dialog">
+  <v-row justify="center" class="dynamic-dialog"
+         style="position: fixed"
+         v-if="dialogState" >
     <v-dialog
-      :value="dialogState"
-      :persistent="true"
-      :fullscreen="dialogData.fullscreen"
-      :transition="dialogData.fullscreen ? 'dialog-bottom-transition' : ''"
-      :content-class="dialogData.theme ? 'theme-' + dialogData.theme : ''"
-      :dark="darkMode"
-      :retain-focus="false"
-      scrollable
-      :max-width="dialogData.large ? '900px' : '600px'"
+        :value="dialogState"
+        :persistent="true"
+        :fullscreen="dialogData.fullscreen"
+        :transition="dialogData.fullscreen ? 'dialog-bottom-transition' : ''"
+        :content-class="dialogData.theme ? 'theme-' + dialogData.theme : ''"
+        :dark="darkMode"
+        :retain-focus="false"
+        scrollable
+        :max-width="dialogData.large ? '900px' : '600px'"
     >
       <v-card>
         <div class="d-flex dynamic-dialog-title">
@@ -29,14 +31,14 @@
         <div class="dynamic-dialog-content flex-fill">
 
           <portal-target
-            name="dialog-pre-content"
-            :slot-props="dialogData"
+              name="dialog-pre-content"
+              :slot-props="dialogData"
           ></portal-target>
 
           <v-card-text ref="dialogContent" :class="dialogData.contentClass">
             <portal-target
-              name="dialog-content"
-              :slot-props="dialogData"
+                name="dialog-content"
+                :slot-props="dialogData"
             ></portal-target>
           </v-card-text>
         </div>
@@ -46,9 +48,9 @@
         <v-card-actions v-if="!dialogData.noActions"
                         class="dynamic-dialog-actions">
           <portal-target
-            name="dialog-actions"
-            style="width: 100%"
-            class="d-flex align-center"
+              name="dialog-actions"
+              style="width: 100%"
+              class="d-flex align-center"
           >
             <portal-target name="dialog-actions-left"></portal-target>
 
@@ -59,10 +61,10 @@
                 {{ $t(dialogData.texts.cancelBtn) }}
               </v-btn>
               <v-btn
-                color="blue darken-1"
-                text
-                @click="close"
-                v-if="!dialogData.readonly"
+                  color="blue darken-1"
+                  text
+                  @click="close"
+                  v-if="!dialogData.readonly"
               >
                 {{ $t(dialogData.texts.confirmBtn) }}
               </v-btn>

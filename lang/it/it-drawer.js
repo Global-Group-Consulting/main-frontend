@@ -7,7 +7,7 @@ export default {
   'movements': 'Movimenti',
   'requests': 'Richieste',
   'utilities': 'Utilità',
-  'calculator': 'Calcolatrice',
+  'calculator': 'Preventivi',
   'comunications': 'Comunicazioni',
   'advanced': "Avanzate",
   'translations': "Traduzioni",
@@ -16,5 +16,11 @@ export default {
   'errors': "Errori & Logs",
   'version': "Versione",
   'portfolio': "Portfolio agente",
-  'wallet': "Wallet provvigioni"
+  'wallet': "Wallet provvigioni",
+  'bottom-home': "Home",
+  'bottom-movements': "Movimenti",
+  'bottom-requests': "Richieste",
+  'bottom-account': "Account",
+  'bottom-other': "Altro",
+  'bottom-users': "Utenti",
 }

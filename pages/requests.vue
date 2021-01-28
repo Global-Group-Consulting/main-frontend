@@ -80,12 +80,10 @@
 
 
           </v-menu>
-
-
         </template>
       </page-toolbar>
 
-      <v-tabs v-model="currentTab" class="ml-3">
+      <v-tabs v-model="currentTab">
         <v-tab v-for="table of requestsTables" :key="table.id">
           <v-icon class="mr-2" small :color="requestsTables[currentTab].id === table.id ? table.color : ''">
             {{ table.icon }}
@@ -95,7 +93,7 @@
       </v-tabs>
 
       <v-card class="overflow-hidden">
-        <v-tabs-items v-model="currentTab">
+        <v-tabs-items v-model="currentTab" touchless>
           <v-tab-item v-for="table of requestsTables" :key="table.id">
             <requests-list-table
               :condition="table.id"
@@ -133,6 +131,8 @@
       v-if="$store.getters['dialog/dialogId'] === 'CommunicationNewDialog'"
       @communicationAdded="onCommunicationAdded"
     ></communication-new-dialog>
+
+    <mobile-menu-actions :actions-list="actionsList"></mobile-menu-actions>
   </v-layout>
 </template>
 
@@ -248,6 +248,25 @@ export default {
     const getTabColor = computed(() => {
       return requestsTables.value[currentTab.value].color
     })
+
+    const actionsList = [
+      {
+        if: permissions.addRequest,
+        tooltip: "$t('pages.requests.btnWithdrawal-tooltip')",
+        color: "red",
+        breakpoint: "sm",
+        iconName: "mdi-cash-minus",
+        click: newWithdrawlRequest,
+        options: {
+          text: true
+        }
+      },
+      {
+        title: "RiCiao",
+        icon: "",
+        click: ""
+      }
+    ]
 
     async function _fetchAll() {
       try {
@@ -469,7 +488,8 @@ export default {
       onRequestStartWorking,
       onCommunicationAdded,
       onQueryChange,
-      onDownloadReportClick
+      onDownloadReportClick,
+      actionsList
     };
   },
   beforeRouteUpdate(to, from, next) {

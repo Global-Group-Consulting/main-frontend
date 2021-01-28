@@ -8,18 +8,20 @@ import RequestStatus from '../enums/RequestStatus'
 import WalletTypes from '../enums/WalletTypes'
 import CurrencyType from '../enums/CurrencyType'
 import MessageTypes from '../enums/MessageTypes'
+import MovementTypes from '../enums/MovementTypes'
 
 export const enums = {
   AccountStatuses,
+  CurrencyType,
   DocumentTypes,
   Genders,
+  MessageTypes,
+  MovementTypes,
   PersonTypes,
-  UserRoles,
-  RequestTypes,
   RequestStatus,
+  RequestTypes,
+  UserRoles,
   WalletTypes,
-  CurrencyType,
-  MessageTypes
 }
 
 export default (context, inject) => {

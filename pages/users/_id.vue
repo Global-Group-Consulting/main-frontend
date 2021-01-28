@@ -243,7 +243,7 @@
 
 
         <!-- Floating action button -->
-        <v-fab-transition v-if="!userIsNew && currentTab < formTabs.length - 1">
+        <v-fab-transition v-if="!userIsNew && currentTab < formTabs.length - 1 && $vuetify.breakpoint.smAndUp">
           <v-tooltip left>
             <template v-slot:activator="{ on }">
               <v-btn

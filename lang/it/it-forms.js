@@ -97,5 +97,9 @@ export default {
   'initial-investment-legend': "Investimento iniziale",
   'gold': "Investimenti Gold",
   'club-pack': "Pacchetto attivo",
-  'club-card-number': "N° Tessera Socio"
+  'club-card-number': "N° Tessera Socio",
+  'calc-initial-deposit': "Deposito iniziale",
+  'calc-interest-percentage': "Percentuale assegnata",
+  'calc-initial-date': "Data inizio",
+  'calc-final-date': "Data fine",
 }

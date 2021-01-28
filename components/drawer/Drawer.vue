@@ -1,20 +1,27 @@
 <template>
   <v-navigation-drawer
-    class="drawer"
-    app
-    dark
-    permanent
-    mini-variant
-    mini-variant-width="80"
-    expand-on-hover
+      class="drawer"
+      :temporary="!permanentDrawer"
+      :absolute="!permanentDrawer"
+      :right="!permanentDrawer"
+      :dark="permanentDrawer"
+      :permanent="permanentDrawer"
+      :mini-variant="permanentDrawer"
+      :expand-on-hover="permanentDrawer"
+      mini-variant-width="80"
+      app
+      v-model="drawerOpen"
+      touchless
+
   >
 
     <div class="d-flex flex-column" style="height: 100%">
 
       <v-list class="pt-0">
-        <v-list-item style="opacity: 1">
+        <v-list-item style="opacity: 1" v-if="permanentDrawer">
           <v-list-item-action>
-            <v-img src="/logo_white.png" height="40px" width="80px" position="center" contain></v-img>
+            <v-img :src="`/logo_${permanentDrawer ? 'white' : 'dark'}.png`"
+                   height="40px" width="80px" position="center" contain></v-img>
           </v-list-item-action>
 
           <v-list-item-content style="overflow: hidden; white-space: nowrap; line-height: 1">
@@ -23,6 +30,23 @@
             </strong>
           </v-list-item-content>
         </v-list-item>
+
+        <v-list-item two-line v-else>
+          <v-list-item-action>
+            <v-icon large>mdi-account-circle</v-icon>
+          </v-list-item-action>
+
+          <v-list-item-content>
+            <v-list-item-title>{{ $auth.user.email }}</v-list-item-title>
+            <v-list-item-subtitle>
+              {{
+                $t("enums.UserRoles." + $enums.UserRoles.get($auth.user.role).id)
+              }}
+            </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-divider></v-divider>
       </v-list>
 
       <v-list expand class="flex-grow-1">
@@ -33,8 +57,31 @@
         </div>
       </v-list>
 
-      <v-list class="" dense>
+      <v-list v-if="!permanentDrawer">
+        <v-divider></v-divider>
+        <v-list-item @click="account.vieMyProfile">
+          <v-list-item-action>
+            <v-icon class="mr-3">mdi-badge-account-horizontal-outline</v-icon>
+          </v-list-item-action>
 
+          <v-list-item-content>
+            <v-list-item-title>{{ $t("menus.myProfile") }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item @click="account.logout">
+          <v-list-item-action>
+            <v-icon class="mr-3">mdi-logout</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>
+              {{ $t("menus.logout") }}
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-divider></v-divider>
+      </v-list>
+
+      <v-list class="" dense>
         <v-list-item @click="onVersionChangelogClick" dense>
           <v-list-item-action>
             <small>
@@ -66,7 +113,7 @@
     </div>
 
     <changelog-dialog
-      v-if="$store.getters['dialog/dialogId'] === 'ChangelogDialog'"
+        v-if="$store.getters['dialog/dialogId'] === 'ChangelogDialog'"
     ></changelog-dialog>
 
   </v-navigation-drawer>
@@ -76,9 +123,9 @@
 import drawerItems from "@/config/drawerEntries";
 import DrawerItem from "@/components/drawer/DrawerItem";
 import DrawerGroup from "~/components/drawer/DrawerGroup";
-import {mapGetters} from "vuex";
+import {mapGetters, mapState} from "vuex";
 import ChangelogDialog from "@/components/dialogs/ChangelogDialog";
-
+import accountMenuActions from "~/functions/accountMenuActions";
 
 export default {
   name: "Drawer",
@@ -87,13 +134,23 @@ export default {
     value: {
       type: Boolean,
     }
-
+  },
+  setup(props, {root}) {
+    return {
+      account: accountMenuActions(root)
+    }
+  },
+  data() {
+    return {
+      drawerOpen: false
+    }
   },
   computed: {
     drawerItems,
     ...mapGetters({
       userMustActivate: "user/mustActivate"
     }),
+    ...mapState(["mobileDrawerOpen"]),
     user() {
       return this.$auth.user || {};
     },
@@ -102,6 +159,9 @@ export default {
       const ruoloBgSrc = this.$enums.UserRoles.get(this.user.role)?.bgSrc;
 
       return root + ruoloBgSrc;
+    },
+    permanentDrawer() {
+      return !!this.$vuetify.breakpoint.smAndUp
     }
   },
   methods: {
@@ -113,47 +173,77 @@ export default {
         id: "ChangelogDialog"
       });
     }
+  },
+  watch: {
+    drawerOpen(val) {
+      if (!val) {
+        this.$store.dispatch("toggleMobileDrawer", false)
+      }
+    },
+    mobileDrawerOpen(val) {
+      this.drawerOpen = val
+    },
+    permanentDrawer(value) {
+      this.$store.dispatch("toggleMobileDrawer", value)
+    }
   }
 };
 </script>
 
 <style lang="scss" scoped>
 .drawer::v-deep {
-  border-top-right-radius: 20px;
 
-  &.v-navigation-drawer--is-mouseover {
-    border-top-right-radius: 0px;
+  &.theme--dark {
+    border-top-right-radius: 20px;
+
+    &.v-navigation-drawer--is-mouseover {
+      border-top-right-radius: 0px;
+    }
+
+    .v-list-item {
+      opacity: .5;
+
+      .v-list-item__action {
+        width: 80px;
+      }
+
+      &.v-list-item--active {
+        opacity: 1;
+
+        &:before {
+          opacity: 0;
+        }
+
+        &:after {
+          background-color: white;
+          width: 5px;
+          opacity: 1;
+          position: absolute;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          border-top-right-radius: 20px;
+          border-bottom-right-radius: 20px;
+        }
+      }
+    }
+  }
+
+  &.theme--light {
+    .v-list-item--active {
+      color: #071d2a !important;
+      caret-color: #071d2a !important;
+    }
   }
 
   .v-list-item {
     justify-content: start !important;
-    opacity: .5;
     padding: 0;
 
     .v-list-item__action {
-      width: 80px;
+      width: 60px;
       justify-content: center;
       margin-right: 0 !important;
-    }
-
-    &.v-list-item--active {
-      opacity: 1;
-
-      &:before {
-        opacity: 0;
-      }
-
-      &:after {
-        background-color: white;
-        width: 5px;
-        opacity: 1;
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        border-top-right-radius: 20px;
-        border-bottom-right-radius: 20px;
-      }
     }
   }
 }

@@ -17,6 +17,19 @@ const defaults = {
         'actions'
       ]
     },
+    usersFilter: {
+      columns: [
+        'contractNumber',
+        'firstName',
+        'lastName',
+        'email',
+        'referenceAgent',
+        'contractStatus',
+        'role',
+        'accountStatus',
+        'actions'
+      ]
+    },
     movements: {
       columns: [
         "amountChange",
@@ -49,6 +62,18 @@ const defaults = {
         "updatedAt",
         "unreadMessages",
       ]
+    },
+    calculator: {
+      columns: [
+        "date",
+        "depositAdded",
+        "depositCurrent",
+        "interestAmount",
+        "interestRecapitalized",
+        "interestCollected",
+        "depositCollected",
+        "brite",
+      ]
     }
   }
 }
@@ -68,6 +93,7 @@ const admin = {
         'actions'
       ]
     },
+
     requests: {
       columns: [
         'contractNumber',
@@ -254,8 +280,7 @@ const agente = {
 }
 
 
-
-export { admin, servClienti, agente, cliente }
+export {admin, servClienti, agente, cliente}
 
 export default {
   defaults,
