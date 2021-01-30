@@ -31,8 +31,13 @@
       "@types/node",
       "@nuxt/types",
       "@nuxtjs/moment",
+      "@nuxtjs/auth",
       "nuxt-i18n",
-      "./@types"
+      "@nuxtjs/vuetify"
+    ],
+    "typeRoots": [
+      "./@types",
+      "./node_modules/@types"
     ]
   },
   "exclude": [

@@ -7,14 +7,15 @@
     "node": "12.18.4"
   },
   "scripts": {
-    "dev": "nuxt",
-    "staging": "nuxt",
-    "build": "nuxt build",
-    "start": "nuxt start",
-    "generate": "nuxt generate"
+    "dev": "nuxt-ts",
+    "staging": "nuxt-ts",
+    "build": "nuxt-ts build",
+    "start": "nuxt-ts start",
+    "generate": "nuxt-ts generate"
   },
   "dependencies": {
     "@adonisjs/websocket-client": "^1.0.9",
+    "@nuxt/typescript-runtime": "^2.0.1",
     "@nuxtjs/auth": "^4.9.1",
     "@nuxtjs/axios": "^5.12.2",
     "@nuxtjs/dotenv": "^1.4.1",

@@ -39,38 +39,22 @@
         <v-icon large>{{ btn.icon }}</v-icon>
         <small>{{ btn.text ? $t("drawer." + btn.text) : '' }}</small>
       </v-btn>
-
-
-      <!--      <account-menu v-else-if="btn.component='account-menu'"
-                          :offset-y="false">
-              <template v-slot:menu-activator="{on}">
-                <v-btn large
-                       tile
-                       depressed
-                       v-on="on"
-                >
-                  <v-icon large>{{ btn.icon }}</v-icon>
-                  <small>{{ btn.text ? $t("drawer." + btn.text) : '' }}</small>
-                </v-btn>
-              </template>
-            </account-menu>-->
     </div>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import AccountMenu from "@/components/elements/AccountMenu";
+import {defineComponent, computed} from "@vue/composition-api";
 
-export default {
+export default defineComponent({
   name: "BottomDrawer",
   components: {AccountMenu},
-  data() {
-    return {}
-  },
-  computed: {
-    btnsConfig() {
-      const adminRoles = [this.$enums.UserRoles.ADMIN, this.$enums.UserRoles.SERV_CLIENTI]
-      const userRole = this.$auth.user.role
+  setup(props, {root}) {
+    const {$enums, $auth, $store} = root
+    const btnsConfig = computed(() => {
+      const adminRoles = [$enums.UserRoles.ADMIN, $enums.UserRoles.SERV_CLIENTI]
+      const userRole = $auth.user.role
 
       const items = [
         {
@@ -107,15 +91,19 @@ export default {
           id: "other",
           text: "bottom-other",
           icon: "mdi-dots-horizontal",
-          click: () => this.$store.dispatch('toggleMobileDrawer', true),
+          click: () => $store.dispatch('toggleMobileDrawer', true),
           // component: "fullDrawer"
         }
       ]
 
       return items.filter((_item) => !("if" in _item) || (_item.if))
+    })
+
+    return {
+      btnsConfig
     }
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>

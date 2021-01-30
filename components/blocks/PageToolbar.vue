@@ -4,6 +4,7 @@
              rounded
              outlined
              dense
+             v-if="$vuetify.breakpoint.smAndUp"
   >
     <v-toolbar-items class="flex-fill">
       <slot name="left-block">
@@ -12,6 +13,7 @@
                      v-bind="prepareOptions(action.options)"
                      :icon-name="action.icon"
                      @click="action.click"
+                     :disabled="action.disabled"
                      v-if="('if' in action ? action.if : true)"
         >
           {{ $t(`actions.${action.text}`) }}
@@ -26,6 +28,7 @@
                      v-bind="prepareOptions(action.options)"
                      :icon-name="action.icon"
                      @click="action.click"
+                     :disabled="action.disabled"
                      v-if="('if' in action ? action.if : true)"
         >
           {{ $t(`actions.${action.text}`) }}
@@ -40,6 +43,7 @@
                      v-bind="prepareOptions(action.options)"
                      :icon-name="action.icon"
                      @click="action.click"
+                     :disabled="action.disabled"
                      v-if="('if' in action ? action.if : true)"
         >
           {{ $t(`actions.${action.text}`) }}
@@ -61,10 +65,10 @@ export default defineComponent({
       default: () => [],
     }
   },
-  setup({actionsList}) {
-    const leftActionsList = computed<ActionItem[]>(() => actionsList.filter((action: ActionItem) => action.position === "left"))
-    const centerActionsList = computed<ActionItem[]>(() => actionsList.filter((action: ActionItem) => action.position === "center" || !action.position))
-    const rightActionsList = computed<ActionItem[]>(() => actionsList.filter((action: ActionItem) => action.position === "right"))
+  setup(props) {
+    const leftActionsList = computed<ActionItem[]>(() => props.actionsList.filter((action: ActionItem) => action.position === "left"))
+    const centerActionsList = computed<ActionItem[]>(() => props.actionsList.filter((action: ActionItem) => action.position === "center" || !action.position))
+    const rightActionsList = computed<ActionItem[]>(() => props.actionsList.filter((action: ActionItem) => action.position === "right"))
 
     function prepareOptions(newSettings: ActionItemOptions) {
       const defaults = {text: true}
