@@ -8,6 +8,7 @@
       ></page-header>
 
       <page-toolbar :actions-list="actionsList"></page-toolbar>
+      <mobile-menu-actions :actions-list="actionsList"></mobile-menu-actions>
 
       <v-form @submit.prevent="onCalcUpdate">
         <v-tabs v-model="currentTab">
@@ -20,72 +21,61 @@
             <v-tabs-items :value="currentTab">
               <v-tab-item>
                 <dynamic-fieldset :schema="formSchema" v-model="formData"></dynamic-fieldset>
-
               </v-tab-item>
 
               <v-tab-item>
-                <v-simple-table class="table-no-hover">
-                  <colgroup>
-                    <col style="width: 33%">
-                    <col style="width: 33%">
-                    <col style="width: 33%">
-                    <col style="width: 1%">
-                  </colgroup>
-                  <thead>
-                  <tr>
-                    <th>Data</th>
-                    <th>Tipo movimento</th>
-                    <th>Valore</th>
-                    <th></th>
-                  </tr>
-                  </thead>
-                  <tbody>
-
-                  <tr v-for="movement of movementsList">
-                    <td>
-                      <date-picker
-                        :value="movement.date" dense hide-details
-                        @change="movement.date = $event"
-                        prepend-icon=""
-                        :min="$moment(formData.initialDate).toISOString()"
-                        :max="$moment(formData.finalDate).toISOString()"
-                      ></date-picker>
-                    </td>
-                    <td>
-                      <v-select v-model="movement.type"
-                                dense hide-details
-                                :items="movementsSelectItems"></v-select>
-                    </td>
-                    <td>
-                      <money-input v-model="movement.amount"
-                                   dense hide-details
-                      ></money-input>
-                    </td>
-                    <td>
-                      <v-btn icon @click="onRemoveMovement(movement)" small>
-                        <v-icon>mdi-close</v-icon>
-                      </v-btn>
-                    </td>
-                  </tr>
-
-                  <tr v-if="!movementsList.length">
-                    <td colspan="99" class="text-center">Nessun movimento disponibile...</td>
-                  </tr>
-                  </tbody>
-                </v-simple-table>
+                <data-table id="quotationMovementsTable"
+                            tableKey="calculatorMovements"
+                            schema="calculatorMovementsSchema"
+                            :items="movementsList"
+                            :items-per-page="25">
+                  <template v-slot:item.date="{item}">
+                    <date-picker
+                      :value="item.date" dense hi>de-details
+                      @change="item.date = $event"
+                      prepend-icon=""
+                      :min="$moment(formData.initialDate).toISOString()"
+                      :max="$moment(formData.finalDate).toISOString()"
+                    ></date-picker>
+                  </template>
+                  <template v-slot:item.type="{item}">
+                    <v-select v-model="item.type"
+                              dense hide-details
+                              :items="movementsSelectItems"></v-select>
+                  </template>
+                  <template v-slot:item.amount="{item}">
+                    <money-input v-model="item.amount"
+                                 dense hide-details
+                    ></money-input>
+                  </template>
+                  <template v-slot:item.actions="{item}">
+                    <v-btn icon @click="onRemoveMovement(item)" small>
+                      <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                  </template>
+                </data-table>
               </v-tab-item>
             </v-tabs-items>
           </v-card-text>
 
-          <v-card-actions class="pa-3">
-            <v-btn type="submit" color="primary" rounded>Applica</v-btn>
-            <v-btn type="button" class="ml-3" rounded @click="onAddMovement" outlined
+          <v-card-actions class="pa-3 flex-wrap">
+            <v-btn type="submit" color="primary"
+                   rounded
+                   class="mb-2 mb-sm-0"
+                   :block="$vuetify.breakpoint.xsOnly">Applica
+            </v-btn>
+            <v-btn type="button" class="ml-0 mb-2 mb-sm-0 ml-sm-3"
+                   rounded @click="onAddMovement"
+                   outlined
+                   :block="$vuetify.breakpoint.xsOnly"
                    color="grey">Aggiungi movimento
             </v-btn>
 
             <v-spacer></v-spacer>
 
-            <v-btn type="button" rounded @click="onNewQuotation" outlined color="grey">Nuovo preventivo</v-btn>
+            <v-btn type="button" rounded @click="onNewQuotation" outlined color="grey"
+                   :block="$vuetify.breakpoint.xsOnly">Nuovo preventivo
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-form>
@@ -96,52 +86,51 @@
         schema="calculatorSchema"
         :items="tableData"
         :items-per-page="25">
-        <template v-slot:item.date="{item, value}">{{ $moment(value).format("MMMM YYYY") }}</template>
-        <template v-slot:item.depositAdded="{item, value}"><span
-          class="green--text">{{ value | moneyFormatter(false, true) }}</span>
+        <template v-slot:item.date="{item, value}">
+          {{ $moment(value).format("MMMM YYYY") }}
+        </template>
+        <template v-slot:item.depositAdded="{item, value}">
+          <span class="green--text">{{ value | moneyFormatter(false, true) }}</span>
         </template>
         <template v-slot:item.depositCurrent="{item, value}">
           <strong>{{ value | moneyFormatter(false, true) }}</strong>
         </template>
         <template v-slot:item.depositCollected="{item, value}"><span class="red--text">
           {{ value | moneyFormatter(false, true) }}</span></template>
-        <template v-slot:item.interestAmount="{item, value}">{{ value | moneyFormatter(false, true) }}</template>
-        <template v-slot:item.interestRecapitalized="{item, value}"><span
-          class="lime--text text--darken-2">{{ value | moneyFormatter(false, true) }}</span></template>
-        <template v-slot:item.interestCollected="{item, value}"><span class="red--text">{{
-            value | moneyFormatter(false, true)
-          }}</span></template>
-        <template v-slot:item.brite="{item, value}"><span class="yellow--text text--darken-2">{{
-            value | moneyFormatter(true, true)
-          }}</span></template>
+        <template v-slot:item.interestAmount="{item, value}">
+          {{ value | moneyFormatter(false, true) }}
+        </template>
+        <template v-slot:item.interestRecapitalized="{item, value}">
+          <span class="lime--text text--darken-2">{{ value | moneyFormatter(false, true) }}</span>
+        </template>
+        <template v-slot:item.interestCollected="{item, value}">
+          <span class="red--text">{{ value | moneyFormatter(false, true) }}</span>
+        </template>
+        <template v-slot:item.brite="{item, value}">
+          <span class="yellow--text text--darken-2">{{ value | moneyFormatter(true, true) }}</span>
+        </template>
       </data-table>
     </v-flex>
   </v-layout>
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, reactive, ref} from "@vue/composition-api";
-
-import PageHeader from "@/components/blocks/PageHeader";
-import PageToolbar from "@/components/blocks/PageToolbar";
-
-import pageBasic from "~/functions/pageBasic";
-import calculatorFormSchema from "~/config/forms/calculatorSchema";
-
-
+import {computed, defineComponent, ref} from "@vue/composition-api";
 import {ActionItem} from "~/@types/ActionItem";
 import {Movement, QuotationEntry} from "~/@types/Calculator";
+import {Moment} from "moment"
+import {kebabCase} from "lodash"
 
 import JsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import ExcelJS from "exceljs"
-
 import JsDownload from "js-file-download"
-import {kebabCase} from "lodash"
+
+import pageBasic from "~/functions/pageBasic";
+import calculatorFormSchema from "~/config/forms/calculatorSchema";
 
 export default defineComponent({
     name: 'calculator',
-    components: {PageHeader, PageToolbar},
     setup(props, {root}) {
       const {$moment, $enums, $i18n} = root
       const currentTab = ref(0)
@@ -156,22 +145,24 @@ export default defineComponent({
       })
       const tableData = ref<QuotationEntry[]>([])
       const movementsList = ref<Movement[]>([])
-      const actionsList: ActionItem[] = [
+      const actionsList: ActionItem[] = computed<ActionItem[]>(() => ([
         {
           text: "download-pdf",
           tooltip: "download-pdf-tooltip",
           position: "right",
           icon: "mdi-file-pdf",
+          disabled: tableData.value.length === 0,
           click: downloadPDF
         }, {
           text: "download-xls",
           tooltip: "download-xls-tooltip",
           position: "right",
           icon: "mdi-file-excel",
+          disabled: tableData.value.length === 0,
           click: downloadXLS
         }
-      ]
-      const formSchema = computed(calculatorFormSchema)
+      ]))
+      const formSchema = computed(() => calculatorFormSchema({formData}))
 
       const movementsSelectItems = computed(() => {
         return $enums.MovementTypes.list.reduce(
@@ -304,24 +295,22 @@ export default defineComponent({
             // theme: 'TableStyleDark3',
             showRowStripes: true,
           },
-          columns: Object.keys(tableData.value[0]).reduce((acc, curr: string) => {
+          columns: Object.keys(tableData.value[0]).reduce<any[]>((acc, curr: string) => {
             acc.push({
               name: $i18n.t("tables.calc-" + kebabCase(curr))
             })
             return acc
           }, []),
-          rows: tableData.value.reduce((acc, curr: QuotationEntry) => {
-            acc.push(Object.values(curr).map((val: number | $moment) => {
-              if (val instanceof $moment) {
+          rows: tableData.value.reduce<any[]>((acc, curr: QuotationEntry) => {
+            const data = Object.values(curr).map((val: number | Moment) => {
+              if ($moment.isMoment(val)) {
                 return val.format("MMMM YYYY")
               }
 
-              if (val instanceof Number) {
-                return val.toFixed(2)
-              }
+              return val.toFixed(2)
+            })
 
-              return val
-            }))
+            acc.push(data)
 
             return acc
           }, []),
@@ -330,7 +319,7 @@ export default defineComponent({
         try {
           const buffer = await workbook.xlsx.writeBuffer();
 
-          JsDownload(buffer, "test.xlsx")
+          JsDownload(buffer, "ggc_preventivo_investimento.xlsx")
         } catch (er) {
           console.error(er)
         }

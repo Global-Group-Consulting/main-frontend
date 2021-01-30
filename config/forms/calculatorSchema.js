@@ -8,11 +8,7 @@
 
 import moment from "moment"
 
-/**
- *
- * @param {ComputedContext} context
- * @returns {import("../../@types/FormSchema").FormSchema[]}
- */
+
 export default function (context) {
   return [
     {

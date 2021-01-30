@@ -74,6 +74,14 @@ const defaults = {
         "depositCollected",
         "brite",
       ]
+    },
+    calculatorMovements: {
+      columns: [
+        'date',
+        'movementType',
+        'amount',
+        'actions',
+      ]
     }
   }
 }
