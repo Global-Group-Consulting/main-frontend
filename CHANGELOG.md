@@ -1,6 +1,10 @@
 [comment]: <> (## Non ancora rilasciato)
 
-## v 1.6.2 - <small>TBA</small>
+## v 1.6.3 - <small>TBA</small>
+### Aggiunte
+- Pulsanti per scaricare il preventivo corrente
+
+## v 1.6.2 - <small>28/01/2020</small>
 ### Aggiunte
 - Barra di ricerca nell'elenco degli utenti
 - Barra di navigazione in mobile

@@ -32,7 +32,9 @@
 </template>
 
 <script>
-export default {
+import {defineComponent} from "@vue/composition-api";
+
+export default defineComponent({
   name: "PageHeader",
   props: {
     title: "",
@@ -45,7 +47,7 @@ export default {
       return this.$enums.UserRoles.get(this.$auth.user.role)?.id;
     }
   }
-};
+});
 </script>
 
 <style></style>

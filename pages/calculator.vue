@@ -7,7 +7,7 @@
         :icon="icon"
       ></page-header>
 
-      <!--      <page-toolbar :actions-list="actionsList"></page-toolbar>-->
+      <page-toolbar :actions-list="actionsList"></page-toolbar>
 
       <v-form @submit.prevent="onCalcUpdate">
         <v-tabs v-model="currentTab">
@@ -91,37 +91,36 @@
       </v-form>
 
       <data-table
+        id="quotationTable"
         tableKey="calculator"
         schema="calculatorSchema"
         :items="tableData"
         :items-per-page="25">
         <template v-slot:item.date="{item, value}">{{ $moment(value).format("MMMM YYYY") }}</template>
-        <template v-slot:item.depositAdded="{item, value}"><span class="green--text">{{ value | moneyFormatter }}</span>
+        <template v-slot:item.depositAdded="{item, value}"><span
+          class="green--text">{{ value | moneyFormatter(false, true) }}</span>
         </template>
         <template v-slot:item.depositCurrent="{item, value}">
-          <strong>
-            {{ value | moneyFormatter }}
-          </strong>
+          <strong>{{ value | moneyFormatter(false, true) }}</strong>
         </template>
-        <template v-slot:item.depositCollected="{item, value}"><span class="red--text">{{
-            value | moneyFormatter
-          }}</span></template>
-        <template v-slot:item.interestAmount="{item, value}">{{ value | moneyFormatter }}</template>
+        <template v-slot:item.depositCollected="{item, value}"><span class="red--text">
+          {{ value | moneyFormatter(false, true) }}</span></template>
+        <template v-slot:item.interestAmount="{item, value}">{{ value | moneyFormatter(false, true) }}</template>
         <template v-slot:item.interestRecapitalized="{item, value}"><span
-          class="lime--text text--darken-2">{{ value | moneyFormatter }}</span></template>
+          class="lime--text text--darken-2">{{ value | moneyFormatter(false, true) }}</span></template>
         <template v-slot:item.interestCollected="{item, value}"><span class="red--text">{{
-            value | moneyFormatter
+            value | moneyFormatter(false, true)
           }}</span></template>
         <template v-slot:item.brite="{item, value}"><span class="yellow--text text--darken-2">{{
-            value | moneyFormatter(true)
+            value | moneyFormatter(true, true)
           }}</span></template>
       </data-table>
     </v-flex>
   </v-layout>
 </template>
 
-<script>
-import {computed, reactive, ref} from "@vue/composition-api";
+<script lang="ts">
+import {computed, defineComponent, reactive, ref} from "@vue/composition-api";
 
 import PageHeader from "@/components/blocks/PageHeader";
 import PageToolbar from "@/components/blocks/PageToolbar";
@@ -129,153 +128,231 @@ import PageToolbar from "@/components/blocks/PageToolbar";
 import pageBasic from "~/functions/pageBasic";
 import calculatorFormSchema from "~/config/forms/calculatorSchema";
 
-export default {
-  name: 'calculator',
-  components: {PageHeader, PageToolbar},
-  setup(props, {root}) {
-    const {$moment, $enums, $i18n} = root
 
-    const currentTab = ref(0)
+import {ActionItem} from "~/@types/ActionItem";
+import {Movement, QuotationEntry} from "~/@types/Calculator";
 
-    const formDataDefault = {
-      initialDeposit: 3000,
-      interestPercentage: 4,
-      initialDate: root.$moment(),
-      finalDate: root.$moment().add(2, "years")
-    }
+import JsPDF from 'jspdf'
+import autoTable from 'jspdf-autotable'
+import ExcelJS from "exceljs"
 
-    const formData = ref({
-      ...formDataDefault
-    })
-    const tableData = ref([])
-    const movementsList = ref([])
-    const actionsList = [
-      {
-        text: "new-quotation",
-        tooltip: "new-quotation-tooltip"
+import JsDownload from "js-file-download"
+import {kebabCase} from "lodash"
+
+export default defineComponent({
+    name: 'calculator',
+    components: {PageHeader, PageToolbar},
+    setup(props, {root}) {
+      const {$moment, $enums, $i18n} = root
+      const currentTab = ref(0)
+      const formDataDefault = {
+        initialDeposit: 3000,
+        interestPercentage: 4,
+        initialDate: $moment(),
+        finalDate: $moment().add(2, "years")
       }
-    ]
-    const formSchema = computed(calculatorFormSchema)
-
-    const movementsSelectItems = computed(() => {
-      return $enums.MovementTypes.list.reduce(
-        (acc, curr) => {
-          if (!acc) {
-            acc = []
-          }
-
-          if ([2, 4, 5].includes(curr.value)) {
-            acc.push({
-              value: curr.value,
-              text: $i18n.t("enums.MovementTypes." + curr.text)
-            })
-          }
-
-          return acc;
-        }, [])
-    })
-
-    function onCalcUpdate() {
-      const months = $moment(formData.value.finalDate).diff($moment(formData.value.initialDate), "months", true)
-      /**
-       * @type {{
-           date: string
-           depositAdded: number
-           depositCurrent: number
-           depositCollected: number
-           interestAmount: number
-           interestRecapitalized: number
-           interestCollected: number
-       * }[]}
-       */
-      const newData = []
-
-      for (let i = 0; i < months; i++) {
-        const entry = {
-          date: $moment(formData.value.initialDate).add(i, "months"),
-          depositAdded: "",
-          depositCurrent: "",
-          depositCollected: "",
-          interestAmount: "",
-          interestRecapitalized: "",
-          interestCollected: "",
-          brite: ""
-        }
-        const currMonth = entry.date.month()
-
-        if (i === 0) {
-          entry.depositAdded = formData.value.initialDeposit
-        } else {
-          const lastMonth = newData[i - 1]
-
-          entry.interestRecapitalized = (+lastMonth.interestAmount) - (+lastMonth.interestCollected)
-          entry.depositCurrent = ((+lastMonth.depositAdded) + (+lastMonth.depositCurrent) + (+entry.interestRecapitalized)) - (+lastMonth.depositCollected)
-          entry.interestAmount = +entry.depositCurrent * (+formData.value.interestPercentage) / 100
-          entry.brite = entry.interestAmount
-
-          for (const movement of movementsList.value) {
-            if (!movement.date || !$moment(movement.date).isSame(entry.date, "month")) {
-              continue
-            }
-
-            if (movement.type === $enums.MovementTypes.DEPOSIT_ADDED) {
-              entry.depositAdded = movement.amount
-            }
-            if (movement.type === $enums.MovementTypes.DEPOSIT_COLLECTED) {
-              entry.depositCollected = movement.amount
-            }
-            if (movement.type === $enums.MovementTypes.INTEREST_COLLECTED) {
-              entry.interestCollected = movement.amount
-            }
-          }
-        }
-
-        newData.push(entry)
-      }
-
-      tableData.value = newData
-    }
-
-    function onNewQuotation() {
-      formData.value = {...formDataDefault}
-      tableData.value = []
-      movementsList.value = []
-      currentTab.value = 0
-    }
-
-    function onAddMovement() {
-      currentTab.value = 1
-
-      movementsList.value.push({
-        id: new Date().getTime(),
-        date: "",
-        type: "",
-        amount: 0
+      const formData = ref({
+        ...formDataDefault
       })
-    }
+      const tableData = ref<QuotationEntry[]>([])
+      const movementsList = ref<Movement[]>([])
+      const actionsList: ActionItem[] = [
+        {
+          text: "download-pdf",
+          tooltip: "download-pdf-tooltip",
+          position: "right",
+          icon: "mdi-file-pdf",
+          click: downloadPDF
+        }, {
+          text: "download-xls",
+          tooltip: "download-xls-tooltip",
+          position: "right",
+          icon: "mdi-file-excel",
+          click: downloadXLS
+        }
+      ]
+      const formSchema = computed(calculatorFormSchema)
 
-    function onRemoveMovement(movement) {
-      const index = movementsList.value.findIndex(el => el.id === movement.id)
+      const movementsSelectItems = computed(() => {
+        return $enums.MovementTypes.list.reduce(
+          (acc: any[], curr: { value: number, text: string }) => {
+            if (!acc) {
+              acc = []
+            }
 
-      movementsList.value.splice(index, 1)
-    }
+            if ([2, 4, 5].includes(curr.value)) {
+              acc.push({
+                value: curr.value,
+                text: $i18n.t("enums.MovementTypes." + curr.text)
+              })
+            }
 
-    return {
-      ...pageBasic(root, "calculator"),
-      currentTab,
-      tableData,
-      movementsList,
-      actionsList,
-      formSchema,
-      formData,
-      movementsSelectItems,
-      onCalcUpdate,
-      onNewQuotation,
-      onAddMovement,
-      onRemoveMovement
+            return acc;
+          }, [])
+      })
+
+      function onCalcUpdate() {
+        const months = $moment(formData.value.finalDate).diff($moment(formData.value.initialDate), "months", true)
+        const newData: QuotationEntry[] = []
+
+        for (let i = 0; i < months; i++) {
+          const entry: QuotationEntry = {
+            date: $moment(formData.value.initialDate).add(i, "months"),
+            depositAdded: 0,
+            depositCurrent: 0,
+            depositCollected: 0,
+            interestAmount: 0,
+            interestRecapitalized: 0,
+            interestCollected: 0,
+            brite: 0
+          }
+          const currMonth = entry.date.month()
+
+          if (i === 0) {
+            entry.depositAdded = formData.value.initialDeposit
+          } else {
+            const lastMonth = newData[i - 1]
+
+            entry.interestRecapitalized = (+lastMonth.interestAmount) - (+lastMonth.interestCollected)
+            entry.depositCurrent = ((+lastMonth.depositAdded) + (+lastMonth.depositCurrent) + (+entry.interestRecapitalized)) - (+lastMonth.depositCollected)
+            entry.interestAmount = +entry.depositCurrent * (+formData.value.interestPercentage) / 100
+            entry.brite = entry.interestAmount
+
+            for (const movement of movementsList.value) {
+              if (!movement.date || !$moment(movement.date).isSame(entry.date, "month")) {
+                continue
+              }
+
+              if (movement.type === $enums.MovementTypes.DEPOSIT_ADDED) {
+                entry.depositAdded = movement.amount
+              }
+              if (movement.type === $enums.MovementTypes.DEPOSIT_COLLECTED) {
+                entry.depositCollected = movement.amount
+              }
+              if (movement.type === $enums.MovementTypes.INTEREST_COLLECTED) {
+                entry.interestCollected = movement.amount
+              }
+            }
+          }
+
+          newData.push(entry)
+        }
+
+        tableData.value = newData
+      }
+
+      function onNewQuotation() {
+        formData.value = {...formDataDefault}
+        tableData.value = []
+        movementsList.value = []
+        currentTab.value = 0
+      }
+
+      function onAddMovement() {
+        currentTab.value = 1
+
+        movementsList.value.push({
+          id: new Date().getTime(),
+          date: $moment(),
+          type: -1,
+          amount: 0
+        })
+      }
+
+      function onRemoveMovement(movement: Movement) {
+        const index = movementsList.value.findIndex(el => el.id === movement.id)
+
+        movementsList.value.splice(index, 1)
+      }
+
+      function downloadPDF() {
+        const doc = new JsPDF()
+
+        autoTable(doc, {
+          startY: 20,
+          html: '#quotationTable table',
+          headStyles: {
+            valign: "bottom",
+            halign: "right"
+          },
+          bodyStyles: {
+            halign: "right",
+            valign: "top"
+          },
+          columnStyles: {
+            2: {
+              fontStyle: "bold",
+              valign: "top"
+            }
+          }
+        })
+
+        doc.text("GGC - Preventivo investimento", 14, 14)
+        doc.save('ggc_preventivo_investimento.pdf')
+      }
+
+      async function downloadXLS() {
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Preventivo');
+
+        worksheet.addTable({
+          name: 'MyTable',
+          ref: 'A1',
+          headerRow: true,
+          totalsRow: false,
+          style: {
+            // theme: 'TableStyleDark3',
+            showRowStripes: true,
+          },
+          columns: Object.keys(tableData.value[0]).reduce((acc, curr: string) => {
+            acc.push({
+              name: $i18n.t("tables.calc-" + kebabCase(curr))
+            })
+            return acc
+          }, []),
+          rows: tableData.value.reduce((acc, curr: QuotationEntry) => {
+            acc.push(Object.values(curr).map((val: number | $moment) => {
+              if (val instanceof $moment) {
+                return val.format("MMMM YYYY")
+              }
+
+              if (val instanceof Number) {
+                return val.toFixed(2)
+              }
+
+              return val
+            }))
+
+            return acc
+          }, []),
+        });
+
+        try {
+          const buffer = await workbook.xlsx.writeBuffer();
+
+          JsDownload(buffer, "test.xlsx")
+        } catch (er) {
+          console.error(er)
+        }
+      }
+
+      return {
+        ...pageBasic({$i18n}, "calculator"),
+        currentTab,
+        tableData,
+        movementsList,
+        actionsList,
+        formSchema,
+        formData,
+        movementsSelectItems,
+        onCalcUpdate,
+        onNewQuotation,
+        onAddMovement,
+        onRemoveMovement
+      }
     }
   }
-}
+)
 </script>
 
 <style lang="scss">

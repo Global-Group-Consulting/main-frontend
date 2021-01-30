@@ -67,7 +67,7 @@ export default {
     './plugins/alerts.js',
     './plugins/apiCalls.js',
     './plugins/filters.js',
-    './plugins/enums.js',
+    './plugins/enums.ts',
     './plugins/mixins.js',
     './plugins/global-components.js',
     './plugins/socket.js',
@@ -93,6 +93,7 @@ export default {
   ** Nuxt.js dev-modules
   */
   buildModules: [
+    ['@nuxt/typescript-build'],
     ['@nuxtjs/vuetify', nuxtVuetify],
     ['@nuxtjs/moment', nuxtMoment]
   ],

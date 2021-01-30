@@ -91,7 +91,7 @@ export function datePickerFormatter(value) {
   return moment(value).format('YYYY-MM-DD')
 }
 
-export function moneyFormatter(value, formatBrite = false) {
+export function moneyFormatter(value, formatBrite = false, avoidNull = false) {
   if (!["string", "number"].includes(typeof value)) {
     return ''
   }
@@ -121,6 +121,10 @@ export function moneyFormatter(value, formatBrite = false) {
 
   while (decimals.length < numeralFormatter.numeralDecimalScale) {
     decimals += '0'
+  }
+
+  if (formatted === "0" && avoidNull) {
+    return ""
   }
 
   return formatted.split(',')[0] + (decimals ? ',' + decimals : '')

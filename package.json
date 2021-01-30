@@ -26,10 +26,13 @@
     "chart.js": "^2.9.3",
     "cleave.js": "^1.6.0",
     "concurrently": "^5.3.0",
+    "exceljs": "^4.2.0",
     "express": "^4.17.1",
     "fuse.js": "^6.4.3",
     "js-file-download": "^0.4.12",
     "jsonwebtoken": "^8.5.1",
+    "jspdf": "^2.3.0",
+    "jspdf-autotable": "^3.5.13",
     "mark.js": "^8.11.1",
     "moment": "^2.28.0",
     "npm-force-resolutions": "^0.0.3",
@@ -41,6 +44,7 @@
     "tippy.js": "^6.2.7",
     "tiptap": "1.30.0",
     "tiptap-extensions": "^1.33.2",
+    "typescript-tslint-plugin": "^1.0.1",
     "v-currency-field": "^3.1.1",
     "vue": "^2.6.12",
     "vue-chartjs": "^3.5.1",
@@ -55,8 +59,10 @@
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
-    "@nuxt/types": "^2.14.5",
-    "@nuxtjs/vuetify": "^1.11.2"
+    "@nuxt/types": "^2.14.12",
+    "@nuxt/typescript-build": "^2.0.4",
+    "@nuxtjs/vuetify": "^1.11.2",
+    "@types/lodash": "^4.14.168"
   },
   "resolutions": {
     "tiptap/**/prosemirror-model": "1.11.0"
