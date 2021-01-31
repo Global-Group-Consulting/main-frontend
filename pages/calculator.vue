@@ -8,7 +8,6 @@
       ></page-header>
 
       <page-toolbar :actions-list="actionsList"></page-toolbar>
-      <mobile-menu-actions :actions-list="actionsList"></mobile-menu-actions>
 
       <v-form @submit.prevent="onCalcUpdate">
         <v-tabs v-model="currentTab">

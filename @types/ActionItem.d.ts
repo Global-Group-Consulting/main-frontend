@@ -12,6 +12,10 @@ export interface ActionItem {
   options?: ActionItemOptions
   disabled?: ComputedRef
   if?: ComputedRef
+  /**
+   * Indicated if this element must be shown only in the mobile menu
+   */
+  onlyInMobile?: Boolean
 
-  click(): void
+  click(event: any, action: ActionItem): void
 }
