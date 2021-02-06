@@ -54,4 +54,6 @@ export default {
   'calc-interest-recapitalized': "Int. Ricapitalizzato",
   'calc-interest-collected': "Int. Riscosso",
   'calc-brite': "Brite",
+  'calc-movement-type': "Tipo Movimento",
+  'calc-amount': "Valore",
 }

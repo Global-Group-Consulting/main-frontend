@@ -15,7 +15,11 @@ export default {
     sortable: false,
     align: "right",
   },
-  'interestCollected': {text: 'tables.calc-interest-collected', value: 'interestCollected', sortable: false},
-  'brite': {text: 'tables.calc-brite', value: 'brite', sortable: false},
-
+  'interestCollected': {
+    text: 'tables.calc-interest-collected',
+    value: 'interestCollected',
+    align: "right",
+    sortable: false
+  },
+  'brite': {text: 'tables.calc-brite', value: 'brite', align: "right", sortable: false},
 }

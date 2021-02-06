@@ -132,7 +132,6 @@
       @communicationAdded="onCommunicationAdded"
     ></communication-new-dialog>
 
-    <mobile-menu-actions :actions-list="actionsList"></mobile-menu-actions>
   </v-layout>
 </template>
 
@@ -433,13 +432,7 @@ export default {
       }
     }
 
-    onBeforeMount(async () => {
-      await _fetchAll();
-
-      onQueryChange($route)
-    });
-
-    onMounted(() => {
+    function onUrlQueryChange() {
       const query = $route.query;
 
       // if in the query we found "new" then open the corresponding dialog if any
@@ -463,8 +456,23 @@ export default {
 
             newWithdrawlRequest(type);
             break;
+          case "collect_gold":
+            newWithdrawlRequestGold()
+            break;
         }
+
+        onQueryChange($route)
       }
+    }
+
+    onBeforeMount(async () => {
+      await _fetchAll();
+
+      onQueryChange($route)
+    });
+
+    onMounted(() => {
+      onUrlQueryChange()
     });
 
     return {
@@ -488,9 +496,15 @@ export default {
       onRequestStartWorking,
       onCommunicationAdded,
       onQueryChange,
+      onUrlQueryChange,
       onDownloadReportClick,
       actionsList
     };
+  },
+  watch: {
+    '$route.query.new'() {
+      this.onUrlQueryChange()
+    }
   },
   beforeRouteUpdate(to, from, next) {
     this.onQueryChange(to)

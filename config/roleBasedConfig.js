@@ -74,6 +74,14 @@ const defaults = {
         "depositCollected",
         "brite",
       ]
+    },
+    calculatorMovements: {
+      columns: [
+        'date',
+        'movementType',
+        'amount',
+        'actions',
+      ]
     }
   }
 }
@@ -192,7 +200,8 @@ const cliente = {
         "movementType",
         "createdAt",
         "deposit",
-        "interestAmount"
+        "interestAmount",
+        "actions"
       ]
     },
     conversations: {
@@ -245,7 +254,8 @@ const agente = {
         "movementType",
         "createdAt",
         "deposit",
-        "interestAmount"
+        "interestAmount",
+        "actions"
       ]
     },
     commissions: {

@@ -10,6 +10,8 @@ import CurrencyType from '../enums/CurrencyType'
 import MessageTypes from '../enums/MessageTypes'
 import MovementTypes from '../enums/MovementTypes'
 
+import {Plugin} from "@nuxt/types";
+
 export const enums = {
   AccountStatuses,
   CurrencyType,
@@ -24,10 +26,34 @@ export const enums = {
   WalletTypes,
 }
 
-export default (context, inject) => {
-  inject('enums', enums)
-
-  if (!context.$enums) {
-    context.$enums = enums
+declare module 'vue/types/vue' {
+  // this.$myInjectedFunction inside Vue components
+  interface Vue {
+    $enums: typeof enums
   }
 }
+
+declare module '@nuxt/types' {
+  // nuxtContext.app.$myInjectedFunction inside asyncData, fetch, plugins, middleware, nuxtServerInit
+  interface NuxtAppOptions {
+    $enums: typeof enums
+  }
+
+  // nuxtContext.$myInjectedFunction
+  interface Context {
+    $enums: typeof enums
+  }
+}
+
+declare module 'vuex/types/index' {
+  // this.$myInjectedFunction inside Vuex stores
+  interface Store<S> {
+    $enums: typeof enums
+  }
+}
+
+const enumsPlugin: Plugin = (context, inject) => {
+  inject('enums', enums)
+}
+
+export default enumsPlugin

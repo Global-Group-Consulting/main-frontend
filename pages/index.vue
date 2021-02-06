@@ -9,7 +9,7 @@
 
     <component :is="userPage"/>
 
-    <mobile-menu-actions :actions-list="actionsList"></mobile-menu-actions>
+    <mobile-menu-actions></mobile-menu-actions>
   </div>
 </template>
 
@@ -27,18 +27,8 @@ export default {
   components: {PageHeader, Admin, Cliente, Agente, ServClienti, MobileMenuActions},
 
   setup(props, {root}) {
-    const actionsList = [
-      {
-        title: "Zao asdajhdgjashgdjasgdjh",
-      },
-      {
-        title: "Zao",
-      }
-    ]
-
     return {
       ...pageBasic(root, "dashboard"),
-      actionsList
     };
   },
   data() {

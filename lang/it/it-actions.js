@@ -1,4 +1,16 @@
 export default {
-  'new-quotation': "Nuovo preventivo",
-  'new-quotation-tooltip': "Cancella i dati attuali ed inizia un nuovo preventivo"
+  'download-pdf': "PDF",
+  'download-pdf-tooltip': "Scarica file .pdf",
+  'download-xls': "Excel",
+  'download-xls-tooltip': "Scarica file .xls",
+  "withdrawal": "Risc. Classic",
+  "withdrawalGold": "Risc. Gold",
+  "withdrawal-tooltip": "Crea una richiesta di Riscossione Classic",
+  "withdrawalGold-tooltip": "Crea una richiesta di Riscossione Gold",
+  "deposit": "Versamento",
+  "deposit-tooltip": "Versa nuova liquidità",
+  "users-add-cliente": "Nuovo Cliente",
+  "users-add-agente": "Nuovo Agente",
+  "users-add-servClienti": "Nuovo Serv. Clienti",
+  "users-add-admin": "Nuovo Amministrazione",
 }

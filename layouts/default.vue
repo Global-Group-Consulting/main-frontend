@@ -20,7 +20,7 @@
 import Drawer from "@/components/drawer/Drawer";
 import DynamicDialog from "@/components/DynamicDialog";
 import MainNavbar from "@/components/blocks/MainNavbar";
-import BottomDrawer from "@/components/blocks/BottomDrawer";
+import BottomDrawer from "@/components/drawer/BottomDrawer";
 
 export default {
   components: {BottomDrawer, MainNavbar, DynamicDialog, Drawer},

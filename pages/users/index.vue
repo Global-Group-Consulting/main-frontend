@@ -7,8 +7,7 @@
         :icon="icon"
       ></page-header>
 
-      <page-toolbar>
-
+      <page-toolbar always-visible :actions-list="actionsList">
         <template v-slot:right-block>
           <div class="d-flex">
             <v-text-field class="align-center" hide-details
@@ -32,7 +31,6 @@
           </div>
         </template>
       </page-toolbar>
-
 
       <v-tabs v-model="currentTab"
       >
@@ -305,15 +303,6 @@
                   )
                 }}</span>
             </v-tooltip>
-
-            <!-- <v-tooltip left>
-              <template v-slot:activator="{ on }">
-                <v-btn fab dark small color="indigo" v-on="on">
-                  <v-icon>mdi-filter</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t("pages.users.btn-filter-data") }}</span>
-            </v-tooltip> -->
           </v-speed-dial>
         </v-fab-transition>
       </v-row>
@@ -340,7 +329,7 @@ export default {
   components: {PageToolbar, SigningLogsPopup, DataTable, UsersCrudActions, PageHeader},
   middleware: ["pagesAuth"],
   setup(props, {root}) {
-    const {$enums, $auth} = root;
+    const {$enums, $auth, $i18n, $vuetify, $router} = root;
     const currentTab = ref(0);
     const lastTab = ref(0)
     const permissions = Permissions(root);
@@ -365,6 +354,22 @@ export default {
         }
       ].filter(_entry => _entry.if)
     );
+    const actionsList = computed(() => ([
+      ...newUserBtns.value.reduce((acc, curr) => {
+        acc.push({
+          text: "users-add-" + $enums.UserRoles.getIdName(curr.type),
+          if: curr.if && $vuetify.breakpoint.xsOnly,
+          icon: "mdi-account",
+          click: () => $router.push(`/users/new?type=${curr.type}`),
+          onlyInMobile: true,
+          options: {
+            color: $enums.UserRoles.get(curr.type).color
+          }
+        })
+
+        return acc
+      }, [])
+    ]))
 
     let markInstance = null;
 
@@ -478,6 +483,7 @@ export default {
       filteredData,
       filtersActive,
       filters,
+      actionsList,
       filtersClean
     };
   },

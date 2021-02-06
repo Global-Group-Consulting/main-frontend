@@ -31,21 +31,39 @@
   </v-sheet>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import {defineComponent, computed} from "@vue/composition-api";
+
+export default defineComponent({
   name: "PageHeader",
   props: {
-    title: "",
-    subtitle: "",
-    icon: "",
-    showUserRole: Boolean
-  },
-  computed: {
-    userRole() {
-      return this.$enums.UserRoles.get(this.$auth.user.role)?.id;
+    title: {
+      type: String,
+      default: ""
+    },
+    subtitle: {
+      type: String,
+      default: ""
+    },
+    icon: {
+      type: String,
+      default: ""
+    },
+    showUserRole: {
+      type: Boolean,
+      default: false
     }
-  }
-};
+  },
+  setup(props, {root}) {
+    const {$enums, $auth} = root
+
+    const userRole = computed(() => $enums.UserRoles.get($auth.user.role)?.id)
+
+    return {
+      userRole
+    }
+  },
+});
 </script>
 
 <style></style>
