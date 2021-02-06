@@ -200,7 +200,8 @@ const cliente = {
         "movementType",
         "createdAt",
         "deposit",
-        "interestAmount"
+        "interestAmount",
+        "actions"
       ]
     },
     conversations: {
@@ -253,7 +254,8 @@ const agente = {
         "movementType",
         "createdAt",
         "deposit",
-        "interestAmount"
+        "interestAmount",
+        "actions"
       ]
     },
     commissions: {

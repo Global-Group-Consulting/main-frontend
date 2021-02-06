@@ -13,7 +13,9 @@
             <movements-list-table
               :movements="movements"
               v-if="movements.list.value.length > 0"
-            ></movements-list-table>
+            >
+
+            </movements-list-table>
           </v-card>
         </v-col>
       </v-row>
