@@ -3,6 +3,7 @@
 ## v 1.6.3 - <small>TBA</small>
 ### Aggiunte
 - Pulsanti per scaricare il preventivo corrente
+- Menù per il download delle ricevute nell'elenco movimenti
 
 ## v 1.6.2 - <small>28/01/2020</small>
 ### Aggiunte

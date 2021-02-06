@@ -1310,7 +1310,7 @@
 
 "@nuxtjs/auth@^4.9.1":
   version "4.9.1"
-  resolved "https://registry.yarnpkg.com/@nuxtjs/auth/-/auth-4.9.1.tgz"
+  resolved "https://registry.yarnpkg.com/@nuxtjs/auth/-/auth-4.9.1.tgz#8827e4d23bf901711423434ad4a7073a8fc51603"
   integrity sha512-h5VZanq2+P47jq3t0EnsZv800cg/ufOPC6JqvcyeDFJM99p58jHSODAjDuePo3PrZxd8hovMk7zusU5lOHgjvQ==
   dependencies:
     "@nuxtjs/axios" "^5.9.5"
@@ -7611,9 +7611,9 @@ prosemirror-model@1.11.0, prosemirror-model@1.11.2, prosemirror-model@^1.0.0, pr
     orderedmap "^1.1.0"
 
 prosemirror-model@^1.11.2:
-  version "1.13.1"
-  resolved "https://registry.yarnpkg.com/prosemirror-model/-/prosemirror-model-1.13.1.tgz#fa3dc888cf6928bd3968620588ffe6458d201f9f"
-  integrity sha512-PNH+b5bilAJi1B5yJ8QzoNY3ZV+nlD0jKG3XCBk7PmE/YUTJomBkFBS005vfU+3M9yeVR8/6spAEDsfVFUhNeQ==
+  version "1.13.3"
+  resolved "https://registry.yarnpkg.com/prosemirror-model/-/prosemirror-model-1.13.3.tgz#3ccfde73b9c9e706933c72bdf7462906509ff1c9"
+  integrity sha512-wujIYYQEcxdkbKmIJiekVjqtylKxuoEcc+w2PnN7Itc58m/75J4rCUz2dibygVQJFi3gZrD2DNFLjOS6LP4w1g==
   dependencies:
     orderedmap "^1.1.0"
 

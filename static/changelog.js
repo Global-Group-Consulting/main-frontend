@@ -2,6 +2,7 @@ module.exports = `<h2 id="v163smalltbasmall">v 1.6.3 - <small>TBA</small></h2>
 <h3 id="aggiunte">Aggiunte</h3>
 <ul>
 <li>Pulsanti per scaricare il preventivo corrente</li>
+<li>Menù per il download delle ricevute nell'elenco movimenti</li>
 </ul>
 <h2 id="v162small28012020small">v 1.6.2 - <small>28/01/2020</small></h2>
 <h3 id="aggiunte-1">Aggiunte</h3>
