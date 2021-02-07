@@ -10,7 +10,7 @@
           {{ $auth.user.email }}<br/>
           {{
             $t(
-                "enums.UserRoles." + $enums.UserRoles.get($auth.user.role).id
+              "enums.UserRoles." + $enums.UserRoles.get($auth.user.role).id
             )
           }}
         </v-list-item-subtitle
@@ -34,10 +34,11 @@
   </v-menu>
 </template>
 
-<script>
+<script lang="ts">
 import accountMenuActions from "~/functions/accountMenuActions";
+import {defineComponent} from "@vue/composition-api";
 
-export default {
+export default defineComponent({
   name: "AccountMenu",
   props: {
     offsetY: {
@@ -46,11 +47,13 @@ export default {
     }
   },
   setup(props, {root}) {
+    const {$socket, $alerts, $i18n, $auth, $router} = root
+    $alerts
     return {
-      ...accountMenuActions(root)
+      ...accountMenuActions({$socket, $alerts, $i18n, $auth, $router})
     }
   },
-}
+})
 </script>
 
 <style scoped>

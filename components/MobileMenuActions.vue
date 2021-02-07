@@ -37,7 +37,7 @@ export default defineComponent({
     }
   },
   setup(props, {root}) {
-    const { $auth, $router } = root;
+    const {$auth, $router} = root;
 
     const defaultActions: ActionItem[] = [
       {
@@ -60,7 +60,11 @@ export default defineComponent({
       }
     ]
     const filteredActionsList = computed<ActionItem[]>(() => {
-      let list = props.actionsList?.length > 0 ? props.actionsList : defaultActions
+      let list: ActionItem[] = defaultActions
+
+      if (props.actionsList && props.actionsList.length > 0) {
+        list = props.actionsList
+      }
 
       return list.filter((item: ActionItem) => item.if ?? true)
     })
@@ -71,7 +75,7 @@ export default defineComponent({
       return newSettings ? Object.assign({}, defaults, newSettings) : defaults
     }
 
-    function onAction(action: ActionItem, event) {
+    function onAction(action: ActionItem, event:any) {
       if (action.click) {
         action.click(event, action)
       }

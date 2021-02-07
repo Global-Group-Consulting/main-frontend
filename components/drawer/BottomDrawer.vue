@@ -44,7 +44,7 @@
 </template>
 
 <script lang="ts">
-import AccountMenu from "@/components/elements/AccountMenu";
+import AccountMenu from "@/components/elements/AccountMenu.vue";
 import {defineComponent, computed} from "@vue/composition-api";
 
 export default defineComponent({
