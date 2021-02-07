@@ -128,6 +128,7 @@ import JsDownload from "js-file-download"
 
 import pageBasic from "~/functions/pageBasic";
 import calculatorFormSchema from "~/config/forms/calculatorSchema";
+import {Options} from "@nuxt/typescript-build";
 
 export default defineComponent({
     name: 'calculator',
@@ -145,25 +146,24 @@ export default defineComponent({
       })
       const tableData = ref<QuotationEntry[]>([])
       const movementsList = ref<Movement[]>([])
-      const actionsList = computed<ActionItem[]>(() => {
-          return [{
-            text: "download-pdf",
-            tooltip: "download-pdf-tooltip",
-            position: "right",
-            icon: "mdi-file-pdf",
-            disabled: tableData.value.length === 0,
-            click: downloadPDF
-          }, {
-            text: "download-xls",
-            tooltip: "download-xls-tooltip",
-            position: "right",
-            icon: "mdi-file-excel",
-            disabled: tableData.value.length === 0,
-            click: downloadXLS
-          }
-          ]
+      const actionsList = computed(() => ([{
+          text: "download-pdf",
+          tooltip: "download-pdf-tooltip",
+          position: "right",
+          icon: "mdi-file-pdf",
+          disabled: tableData.value.length === 0,
+          click: downloadPDF
+        }, {
+          text: "download-xls",
+          tooltip: "download-xls-tooltip",
+          position: "right",
+          icon: "mdi-file-excel",
+          disabled: tableData.value.length === 0,
+          click: downloadXLS
         }
+        ])
       )
+
       const formSchema = computed(() => calculatorFormSchema({formData}))
 
       const movementsSelectItems = computed(() => {

@@ -1,13 +1,41 @@
 import {BasicApiCall} from '../classes/BasicApiCall'
 
 import UserRoles from "../enums/UserRoles"
+import {Plugin} from "@nuxt/types";
+import {enums} from "~/plugins/enums";
+
+
+declare module 'vue/types/vue' {
+  // this.$myInjectedFunction inside Vue components
+  interface Vue {
+    $apiCalls: ApiCalls
+  }
+}
+
+declare module '@nuxt/types' {
+  // nuxtContext.app.$myInjectedFunction inside asyncData, fetch, plugins, middleware, nuxtServerInit
+  interface NuxtAppOptions {
+    $apiCalls: ApiCalls
+  }
+
+  // nuxtContext.$myInjectedFunction
+  interface Context {
+    $apiCalls: ApiCalls
+  }
+}
+
+declare module 'vuex/types/index' {
+  interface Store<S> {
+    $apiCalls: ApiCalls
+  }
+}
 
 export class ApiCalls extends BasicApiCall {
-  constructor(context) {
+  constructor(context: any) {
     super(context)
   }
 
-  async userCreate(data) {
+  async userCreate(data: any) {
     return await this._call({
       method: "POST",
       endPoint: `/api/users`,
@@ -16,7 +44,7 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async userUpdate(data) {
+  async userUpdate(data: any) {
     return await this._call({
       method: "PATCH",
       endPoint: `/api/users/${data.id}`,
@@ -25,21 +53,21 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async userDelete(userId) {
+  async userDelete(userId: string) {
     return await this._call({
       method: "DELETE",
       endPoint: `/api/users/${userId}`
     })
   }
 
-  async userApprove(userId) {
+  async userApprove(userId: string) {
     return await this._call({
       method: "PUT",
       endPoint: `/api/users/${userId}/approve`
     })
   }
 
-  async userSendEmailActivation(userId) {
+  async userSendEmailActivation(userId: string) {
     return await this.post({
       endPoint: `/api/users/${userId}/sendEmailActivation`
     })
@@ -48,7 +76,7 @@ export class ApiCalls extends BasicApiCall {
   /**
    * @param {{id: string, status: string}} data
    */
-  async userChangeStatus(data) {
+  async userChangeStatus(data: any) {
     return await this.post({
       endPoint: `/api/users/${data.id}/status`,
       body: {
@@ -57,13 +85,13 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async userConfirmDraft(userId) {
+  async userConfirmDraft(userId:string) {
     return await this.post({
       endPoint: `/api/users/${userId}/confirmDraft`
     })
   }
 
-  async userValidate(userId) {
+  async userValidate(userId:string) {
     return await this.post({
       endPoint: `/api/users/${userId}/validate`
     })
@@ -74,7 +102,7 @@ export class ApiCalls extends BasicApiCall {
    * @param {{userId: string, message: string, checkedFields: string[]}} data
    * @returns {Promise<void>}
    */
-  async userIncomplete(data) {
+  async userIncomplete(data: any) {
     return await this.post({
       endPoint: `/api/users/${data.userId}/incomplete`,
       body: data
@@ -93,20 +121,20 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async fetchUserDetails(_id) {
+  async fetchUserDetails(_id:string) {
     return (await this.get({
         endPoint: `/api/users/` + _id
       })
     )
   }
 
-  async fetchMovementsList(_id) {
+  async fetchMovementsList(_id:string) {
     return (await this.get({
       endPoint: `/api/movements` + (_id ? `/${_id}` : '')
     }))
   }
 
-  async importMovementsList(body) {
+  async importMovementsList(body: any) {
     return (await this._call({
       method: "POST",
       endPoint: `/api/movements/import`,
@@ -115,7 +143,7 @@ export class ApiCalls extends BasicApiCall {
     }))
   }
 
-  async importContract(body) {
+  async importContract(body: any) {
     return (await this._call({
       method: "POST",
       endPoint: `/api/users/${body.userId}/importContract`,
@@ -130,7 +158,7 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async authForgot(data) {
+  async authForgot(data: any) {
     return await this.post({
       endPoint: "/api/auth/forgot",
       body: data,
@@ -138,7 +166,7 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async authRecover(data) {
+  async authRecover(data: any) {
     return await this.post({
       endPoint: "/api/auth/resetPassword",
       body: data,
@@ -146,7 +174,7 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async authActivate(data) {
+  async authActivate(data: any) {
     return await this.post({
       endPoint: "/api/auth/activate",
       body: data,
@@ -154,14 +182,14 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async downloadFile(fileId) {
+  async downloadFile(fileId:string) {
     return await this.get({
       endPoint: `/api/files/${fileId}`,
       downloadMode: true
     })
   }
 
-  async deleteFile(fileId) {
+  async deleteFile(fileId:string) {
     return await this._call({
       method: "DELETE",
       endPoint: `/api/files/${fileId}`
@@ -175,7 +203,7 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async createRequest(data) {
+  async createRequest(data: any) {
     return await this.post({
       endPoint: `/api/requests`,
       body: data,
@@ -183,14 +211,14 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async deleteRequest(data) {
+  async deleteRequest(data: any) {
     return await this._call({
       method: "DELETE",
       endPoint: `/api/requests/${data.id}`,
     })
   }
 
-  async acceptRequest(data, paymentDocDate) {
+  async acceptRequest(data: any, paymentDocDate: any) {
     return await this._call({
       method: "PUT",
       endPoint: `/api/requests/${data.id}/approve`,
@@ -200,7 +228,7 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async rejectRequest(data) {
+  async rejectRequest(data: any) {
     return await this._call({
       method: "PUT",
       endPoint: `/api/requests/${data.id}/reject`,
@@ -208,7 +236,7 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async cancelRequest(data) {
+  async cancelRequest(data: any) {
     return await this._call({
       method: "PUT",
       endPoint: `/api/requests/${data.id}/cancel`,
@@ -216,7 +244,7 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async downloadRequestReceipt(reqId) {
+  async downloadRequestReceipt(reqId:string) {
     return await this._call({
       method: "GET",
       endPoint: `/api/docs/receipt/deposit?id=${reqId}`,
@@ -224,7 +252,7 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async downloadRequestsReport(months) {
+  async downloadRequestsReport(months:string) {
     return await this._call({
       method: "GET",
       endPoint: `/api/docs/reports/requests?m=${months}`,
@@ -239,13 +267,13 @@ export class ApiCalls extends BasicApiCall {
    *  interestPercentage: number
    * }}
    */
-  async fetchWalletStatus(data) {
+  async fetchWalletStatus(data: any) {
     return await this.get({
       endPoint: "/api/movements/status" + (data && data.userId ? `/${data.userId}` : ''),
     })
   }
 
-  async fetchCommissionsStatus(data) {
+  async fetchCommissionsStatus(data: any) {
     return await this.get({
       endPoint: "/api/commissions/status" + (data && data.userId ? `/${data.userId}` : ''),
     })
@@ -257,25 +285,25 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async communicationsFetch(type) {
+  async communicationsFetch(type:string) {
     return await this.get({
       endPoint: "/api/communications" + (type ? `?t=${type}` : "")
     })
   }
 
-  async communicationsFetchReceivers(messageType) {
+  async communicationsFetchReceivers(messageType:string) {
     return await this.get({
       endPoint: "/api/communications/receivers?m=" + messageType,
     })
   }
 
-  async conversationFetch(id) {
+  async conversationFetch(id:string) {
     return await this.get({
       endPoint: `/api/communications/conversations/${id}`
     })
   }
 
-  async communicationSend(body) {
+  async communicationSend(body: any) {
     return await this._call({
       method: "POST",
       endPoint: `/api/communications`,
@@ -284,7 +312,7 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async messagesSetAsRead(body) {
+  async messagesSetAsRead(body: any) {
     return await this._call({
       method: "PATCH",
       endPoint: `/api/communications/messages`,
@@ -293,12 +321,10 @@ export class ApiCalls extends BasicApiCall {
   }
 }
 
-export default (context, inject) => {
+const apiCallsPlugin: Plugin = (context, inject) => {
   const apiCalls = new ApiCalls(context)
 
   inject('apiCalls', apiCalls)
-
-  if (!context.$apiCalls) {
-    context.$apiCalls = apiCalls
-  }
 }
+
+export default apiCallsPlugin

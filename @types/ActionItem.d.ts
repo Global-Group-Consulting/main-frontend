@@ -17,5 +17,5 @@ export interface ActionItem {
    */
   onlyInMobile?: Boolean
 
-  click(event: any, action: ActionItem): void
+  click?(event: any, action: ActionItem): void
 }

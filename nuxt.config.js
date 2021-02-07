@@ -64,13 +64,13 @@ export default {
   */
   plugins: [
     './plugins/axios.js',
-    './plugins/alerts.js',
-    './plugins/apiCalls.js',
+    './plugins/alerts.ts',
+    './plugins/apiCalls.ts',
     './plugins/filters.js',
     './plugins/enums.ts',
     './plugins/mixins.js',
     './plugins/global-components.js',
-    './plugins/socket.js',
+    './plugins/socket.ts',
     './plugins/vue-composition-api.js',
     './plugins/vue-portal.js',
     {src: './plugins/vuex-persist', ssr: false}
