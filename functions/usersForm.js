@@ -18,8 +18,9 @@ import UserRoles from '../enums/UserRoles'
 import AccountStatuses from '../enums/AccountStatuses'
 
 import usersTabs from '../config/tabs/usersIdTabs'
-import usersDataSchema from '../config/forms/usersDataSchema'
+import usersDataSchema from '../config/forms/usersDataSchema.ts'
 import Permissions from './permissions'
+import AgentTeamType from "~/enums/AgentTeamType";
 
 export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $auth}, refs) {
   /**

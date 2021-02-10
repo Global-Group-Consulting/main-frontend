@@ -292,7 +292,7 @@
 import PageHeader from "@/components/blocks/PageHeader";
 import DynamicFieldset from "@/components/DynamicFieldset";
 import UserMessage from "../../components/dialogs/UserMessage";
-import FilePreviewer from "../..//components/dialogs/FilePreviewer";
+import FilePreviewer from "../../components/dialogs/FilePreviewer";
 import StatusChangeDialog from "../../components/dialogs/StatusChangeDialog";
 import MovementsListDialog from "../../components/dialogs/MovementsListDialog";
 

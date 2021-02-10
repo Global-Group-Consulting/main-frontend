@@ -10,7 +10,7 @@
     >
       <v-switch @change="toggle"
                 :name="item.name"
-                :hint="$t('forms.' + item.label + '-details')"
+                :hint="$t('forms.' + item.label + '-details', {percentage: item.value})"
                 persistent-hint
                 :input-value="selection.includes(item.name)"
                 :disabled="disabled">

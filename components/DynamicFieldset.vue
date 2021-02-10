@@ -187,6 +187,12 @@ export default {
     getValue(field, key) {
       let value = this.value[key];
 
+      if(!(key in this.value) && field.defaultValue){
+        debugger
+        value = field.defaultValue
+        this.value[key] = value
+      }
+
       if (field.formatter) {
         if (typeof field.formatter === "function") {
           value = field.formatter(value);

@@ -35,9 +35,17 @@ export interface UserDataSchema {
   contractPercentage: string
   contractIban: string
   contractBic: string
+  contractInitialPaymentMethod: string
   referenceAgent: string
   accountCreatedAt: string
   accountUpdatedAt: string
   accountActivatedAt: string
   accountVerifiedAt: string
+  contractSignedAt: string
+  signinLogs: any
+  contractFiles: any[]
+  account_status: string
+  files: any[]
+  gold: boolean
+  hasSubAgents: boolean
 }

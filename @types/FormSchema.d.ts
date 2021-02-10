@@ -10,13 +10,15 @@ export interface FormSchema {
     [key: string]: {
       component?: string,
       label?: string,
-      formatter?: Formatters,
+      formatter?: Formatters | Function,
       if?: any,
-      items?: [] | Function;
+      items?: Function | any;
       disabled?: boolean | Function;
       type?: string
-      files?: [],
+      files?: any[],
       clearable?: boolean,
+      max?: string | number,
+      min?: string | number,
       validations?: {
         [key: string]: {
           params?: any

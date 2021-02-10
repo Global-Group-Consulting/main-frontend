@@ -1,8 +1,8 @@
 import {BasicEnum} from "~/classes/BasicEnum";
 
 class AgentTeamType extends BasicEnum {
-  private GROUP_PERCENTAGE = "group_percentage"
-  private SUBJECT_PERCENTAGE = "subject_percentage"
+  public GROUP_PERCENTAGE = "group_percentage"
+  public SUBJECT_PERCENTAGE = "subject_percentage"
 
   constructor() {
     super('AgentTeamType')

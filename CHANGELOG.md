@@ -3,9 +3,12 @@
 ## v 1.6.4 - <small>TBA</small>
 ### Aggiunte
 - Campo "IBAN", "BIC" e "Note" nel report excel delle richieste
+- Aggiunto campo "Tipologia Provvigioni squadra" in caso di agente con subagenti
 
 ### Miglioramenti
 - Spostato impostazioni agente (anagrafica utente) in tab dedicata
+- Aggiunta colonna Brite Parziali nella calcolatrice
+- Ridotto durata animazione al cambio pagina
 
 ## v 1.6.3 - <small>06/02/2020</small>
 ### Aggiunte
