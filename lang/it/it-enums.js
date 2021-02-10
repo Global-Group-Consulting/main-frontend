@@ -139,6 +139,10 @@ export default {
     "basic": "Basic",
     "fast": "Fast",
     "premium": "Premium",
+  },
+  'AgentTeamType': {
+    "group_percentage": "Percentuale di gruppo",
+    "subject_percentage": "Percentuale soggettiva"
   }
 }
 

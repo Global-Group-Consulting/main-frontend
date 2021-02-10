@@ -2,6 +2,7 @@ import DocumentTypes from '@/enums/DocumentTypes'
 import PersonTypes from '@/enums/PersonTypes'
 import PaymentMethods from '@/enums/PaymentMethods'
 import UserRoles from '../../enums/UserRoles'
+import AgentTeamType from '../../enums/AgentTeamType'
 import AccountStatuses from '../../enums/AccountStatuses'
 import Genders from '@/enums/Genders'
 
@@ -274,6 +275,25 @@ export function contactsData(formContext) {
   ]
 }
 
+export function agentData(formContext) {
+  return [
+    {
+      legend: "agentCommissions",
+      cols: {
+        "agentTeamType": {
+          component: "v-select",
+          items: AgentTeamType
+        },
+
+        "commissionsAssigned": {
+          component: "agent-commissions-select",
+          disabled: !formContext.permissions.superAdmin,
+        },
+      }
+    }
+  ]
+}
+
 /**
  * This section won't be visible to admin users
  *
@@ -383,16 +403,7 @@ export function contractData(formContext) {
         },
       }
     },
-    {
-      if: formContext.formData.role === UserRoles.AGENTE,
-      legend: "agentCommissions",
-      cols: {
-        "commissionsAssigned": {
-          component: "agent-commissions-select",
-          disabled: !formContext.permissions.superAdmin,
-        },
-      }
-    }
+
   ]
 }
 
@@ -551,6 +562,7 @@ export default {
   addressData,
   contactsData,
   contractData,
+  agentData,
   clubData,
   extraData
 }

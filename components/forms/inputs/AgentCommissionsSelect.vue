@@ -54,8 +54,8 @@ export default {
       name: "newDeposit",
       label: "new-deposit",
       input: true,
-      defaultValue: 4,
-      value: 4
+      defaultValue: 5,
+      value: 5
     },
       {
         name: "totalDeposit",

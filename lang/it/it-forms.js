@@ -87,7 +87,7 @@ export default {
   'communication-message': "Messaggio",
   'communication-attachments': "Allegati",
   'agentCommissions': "Provvigioni Agente",
-  'new-deposit': "Provvigione sui versamenti",
+  'new-deposit': "Provvigione",
   'new-deposit-details': "Ad ogni nuovo versamento di un suo cliente, l'agente riceverà il {percentage} % in provvigioni.",
   'total-deposit': "Provvigione sul deposito mensile",
   'total-deposit-details': "Ad ogni ricapitalizzazione, per ogni suo cliente, l'agente riceverà x % calcolato sul capitale del cliente, in provvigioni.\n(X = 4 - la percentuale assegnata al cliente. Se quest'ultima è maggiore o uguale a 4, l'agente non riceverà nulla.)",
@@ -102,4 +102,5 @@ export default {
   'calc-interest-percentage': "Percentuale assegnata",
   'calc-initial-date': "Data inizio",
   'calc-final-date': "Data fine",
+  'agent-team-type': "Tipo provvigioni squadra"
 }

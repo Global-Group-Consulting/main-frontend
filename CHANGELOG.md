@@ -1,6 +1,13 @@
 [comment]: <> (## Non ancora rilasciato)
 
-## v 1.6.3 - <small>TBA</small>
+## v 1.6.4 - <small>TBA</small>
+### Aggiunte
+- Campo "IBAN", "BIC" e "Note" nel report excel delle richieste
+
+### Miglioramenti
+- Spostato impostazioni agente (anagrafica utente) in tab dedicata
+
+## v 1.6.3 - <small>06/02/2020</small>
 ### Aggiunte
 - Pulsanti per scaricare il preventivo corrente
 - Menù per il download delle ricevute nell'elenco movimenti
