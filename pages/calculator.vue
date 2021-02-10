@@ -107,7 +107,15 @@
           <span class="red--text">{{ value | moneyFormatter(false, true) }}</span>
         </template>
         <template v-slot:item.brite="{item, value}">
-          <span class="yellow--text text--darken-2">{{ value | moneyFormatter(true, true) }}</span>
+          <span class="yellow--text text--darken-3">{{ value | moneyFormatter(true, true) }}</span>
+        </template>
+        <template v-slot:item.britePartial="{item, value, header}">
+
+          <span :class="{
+            'yellow--text text--darken-3': ![5, 11].includes($moment(item.date).month()),
+            'font-weight-bold yellow darken-3 rounded px-1 py-1': [5, 11].includes($moment(item.date).month())}">
+            {{ value | moneyFormatter(true, true) }}
+          </span>
         </template>
       </data-table>
     </v-flex>
@@ -197,9 +205,9 @@ export default defineComponent({
             interestAmount: 0,
             interestRecapitalized: 0,
             interestCollected: 0,
-            brite: 0
+            brite: 0,
+            britePartial: 0
           }
-          const currMonth = entry.date.month()
 
           if (i === 0) {
             entry.depositAdded = formData.value.initialDeposit
@@ -209,7 +217,8 @@ export default defineComponent({
             entry.interestRecapitalized = (+lastMonth.interestAmount) - (+lastMonth.interestCollected)
             entry.depositCurrent = ((+lastMonth.depositAdded) + (+lastMonth.depositCurrent) + (+entry.interestRecapitalized)) - (+lastMonth.depositCollected)
             entry.interestAmount = +entry.depositCurrent * (+formData.value.interestPercentage) / 100
-            entry.brite = entry.interestAmount
+            entry.brite = Math.round(entry.interestAmount)
+            entry.britePartial = lastMonth.britePartial + entry.brite
 
             for (const movement of movementsList.value) {
               if (!movement.date || !$moment(movement.date).isSame(entry.date, "month")) {

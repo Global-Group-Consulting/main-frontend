@@ -16,4 +16,5 @@ export interface QuotationEntry {
   interestRecapitalized: number
   interestCollected: number
   brite: number
+  britePartial: number
 }

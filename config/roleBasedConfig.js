@@ -73,6 +73,7 @@ const defaults = {
         "interestCollected",
         "depositCollected",
         "brite",
+        "britePartial",
       ]
     },
     calculatorMovements: {
