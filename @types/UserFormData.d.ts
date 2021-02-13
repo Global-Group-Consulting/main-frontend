@@ -1,3 +1,5 @@
+import AgentTeamType from "~/enums/AgentTeamType";
+
 export interface UserDataSchema {
   id: string,
   role: number
@@ -37,6 +39,7 @@ export interface UserDataSchema {
   contractBic: string
   contractInitialPaymentMethod: string
   referenceAgent: string
+  referenceAgentData: string
   accountCreatedAt: string
   accountUpdatedAt: string
   accountActivatedAt: string
@@ -48,4 +51,5 @@ export interface UserDataSchema {
   files: any[]
   gold: boolean
   hasSubAgents: boolean
+  agentTeamType: typeof AgentTeamType
 }

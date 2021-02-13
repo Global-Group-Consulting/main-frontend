@@ -617,8 +617,11 @@ export default {
     // fetches user details
     onBeforeMount(async () => {
       const userId = $route.params.id;
+      const loggedUser = $auth.user
 
-      if (permissions.changeAgenteRif || (userForm.userIsNew.value && permissions.userRole !== $enums.UserRoles.AGENTE)) {
+      if (permissions.changeAgenteRif
+        || (loggedUser.hasSubAgents && userForm.formData.value.id !== loggedUser.id)
+        || (userForm.userIsNew.value && permissions.userRole !== $enums.UserRoles.AGENTE)) {
         $store.dispatch("fetchAgentsList", {$apiCalls, $auth});
       }
 

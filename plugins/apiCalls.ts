@@ -85,13 +85,13 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async userConfirmDraft(userId:string) {
+  async userConfirmDraft(userId: string) {
     return await this.post({
       endPoint: `/api/users/${userId}/confirmDraft`
     })
   }
 
-  async userValidate(userId:string) {
+  async userValidate(userId: string) {
     return await this.post({
       endPoint: `/api/users/${userId}/validate`
     })
@@ -121,14 +121,14 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async fetchUserDetails(_id:string) {
+  async fetchUserDetails(_id: string) {
     return (await this.get({
         endPoint: `/api/users/` + _id
       })
     )
   }
 
-  async fetchMovementsList(_id:string) {
+  async fetchMovementsList(_id: string) {
     return (await this.get({
       endPoint: `/api/movements` + (_id ? `/${_id}` : '')
     }))
@@ -182,14 +182,14 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async downloadFile(fileId:string) {
+  async downloadFile(fileId: string) {
     return await this.get({
       endPoint: `/api/files/${fileId}`,
       downloadMode: true
     })
   }
 
-  async deleteFile(fileId:string) {
+  async deleteFile(fileId: string) {
     return await this._call({
       method: "DELETE",
       endPoint: `/api/files/${fileId}`
@@ -244,7 +244,7 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async downloadRequestReceipt(reqId:string) {
+  async downloadRequestReceipt(reqId: string) {
     return await this._call({
       method: "GET",
       endPoint: `/api/docs/receipt/deposit?id=${reqId}`,
@@ -252,7 +252,7 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async downloadRequestsReport(months:string) {
+  async downloadRequestsReport(months: string) {
     return await this._call({
       method: "GET",
       endPoint: `/api/docs/reports/requests?m=${months}`,
@@ -285,19 +285,19 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async communicationsFetch(type:string) {
+  async communicationsFetch(type: string) {
     return await this.get({
       endPoint: "/api/communications" + (type ? `?t=${type}` : "")
     })
   }
 
-  async communicationsFetchReceivers(messageType:string) {
+  async communicationsFetchReceivers(messageType: string) {
     return await this.get({
       endPoint: "/api/communications/receivers?m=" + messageType,
     })
   }
 
-  async conversationFetch(id:string) {
+  async conversationFetch(id: string) {
     return await this.get({
       endPoint: `/api/communications/conversations/${id}`
     })
@@ -317,6 +317,12 @@ export class ApiCalls extends BasicApiCall {
       method: "PATCH",
       endPoint: `/api/communications/messages`,
       body,
+    })
+  }
+
+  async getClientsList(userId: string) {
+    return await this.get({
+      endPoint: `/api/users/${userId}/clientsList`
     })
   }
 }

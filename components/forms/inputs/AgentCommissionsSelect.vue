@@ -23,10 +23,15 @@
                           v-model="item.value"
                           class="text-right ml-3"
                           append-icon="mdi-percent"
-                          style="max-width: 70px"
+                          :style="`max-width: ${!item.maxValue ? 70 : 140}px`"
                           :disabled="!selection.includes(item.name) || disabled"
                           @click.stop=""
                           @input="onChange">
+              <template v-slot:append-outer v-if="item.maxValue">
+                <small class="text-no-wrap" style="line-height: 1.4em">
+                  (Max {{ item.maxValue }}%)
+                </small>
+              </template>
 
             </v-text-field>
           </v-layout>
@@ -46,6 +51,7 @@ export default {
       type: Array,
       default: () => ([])
     },
+    refAgent: Object,
     disabled: Boolean
   },
   setup(props, {root, emit}) {
@@ -55,7 +61,8 @@ export default {
       label: "new-deposit",
       input: true,
       defaultValue: 5,
-      value: 5
+      value: 5,
+      maxValue: getRefAgentPercentage()
     },
       {
         name: "totalDeposit",
@@ -68,6 +75,12 @@ export default {
         defaultValue: 6,
         value: 6
       }])
+
+    function getRefAgentPercentage() {
+      const rightCommission = props.refAgent?.commissionsAssigned.find(_comm => _comm.name === root.$enums.CommissionType.NEW_DEPOSIT)
+
+      return rightCommission ? rightCommission.percent : 0
+    }
 
     function onChange() {
       emit("change", selection.value.reduce((acc, curr) => {

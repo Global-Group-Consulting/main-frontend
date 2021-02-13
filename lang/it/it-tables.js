@@ -44,6 +44,7 @@ export default {
   'sign-logs-event': "Evento",
   'sign-logs-date': "Data",
   'commission-type': "Tipologia Provvigione",
+  'commissions-assigned': "Provvigioni attive",
   'curr-month-commissions': "Provvigioni attuali",
   'commission-percentage': "Percentuale applicata",
   'calc-date': "Data",
@@ -57,4 +58,5 @@ export default {
   'calc-brite-partial': "Brite Parziali",
   'calc-movement-type': "Tipo Movimento",
   'calc-amount': "Valore",
+  'clients-number': "Clienti"
 }

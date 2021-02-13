@@ -1,5 +1,6 @@
 import AccountStatuses from '../enums/AccountStatuses'
 import AgentTeamType from '../enums/AgentTeamType'
+import CommissionType from '../enums/CommissionType'
 import PersonTypes from '../enums/PersonTypes'
 import UserRoles from '../enums/UserRoles'
 import Genders from '../enums/Genders'
@@ -16,6 +17,7 @@ import {Plugin} from "@nuxt/types";
 export const enums = {
   AccountStatuses,
   AgentTeamType,
+  CommissionType,
   CurrencyType,
   DocumentTypes,
   Genders,

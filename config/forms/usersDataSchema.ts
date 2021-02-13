@@ -193,6 +193,10 @@ export function basicData(formContext: FormContext): FormSchema[] {
 
 export function agentData(formContext: FormContext) {
   const hasSubAgents = computed(() => formContext.formData.hasSubAgents)
+  const isTeamLeader = computed(() => formContext.formData.hasSubAgents && !formContext.formData.referenceAgent)
+  const canChangeCommissions = computed(() => {
+    return formContext.permissions.superAdmin || formContext.$auth.user.hasSubAgents
+  })
 
   return [
     {
@@ -201,7 +205,7 @@ export function agentData(formContext: FormContext) {
         "agentTeamType": {
           component: "v-select",
           items: AgentTeamType,
-          if: hasSubAgents.value,
+          if: isTeamLeader.value,
           defaultValue: AgentTeamType.SUBJECT_PERCENTAGE,
           disabled: !formContext.permissions.superAdmin,
         },
@@ -211,7 +215,8 @@ export function agentData(formContext: FormContext) {
       cols: {
         "commissionsAssigned": {
           component: "agent-commissions-select",
-          disabled: !formContext.permissions.superAdmin,
+          disabled: !canChangeCommissions.value,
+          refAgent: formContext.formData.referenceAgentData
         },
       }
     }
@@ -373,9 +378,11 @@ export function clubData(formContext: FormContext) {
  */
 export function extraData(formContext: FormContext) {
   const {changeRole, changeAgenteRif, userRole} = formContext.permissions
+  const loggedUser = formContext.$auth.user
   const canChangeAgenteRif = computed(() => {
-    return (formContext.userIsNew && userRole !== UserRoles.AGENTE) ||
-      changeAgenteRif
+    return (formContext.userIsNew && userRole !== UserRoles.AGENTE)
+      || (loggedUser.hasSubAgents && formContext.formData.id !== loggedUser.id)
+      || changeAgenteRif
   })
 
   return [
