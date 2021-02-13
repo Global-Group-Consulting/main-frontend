@@ -3,6 +3,8 @@ module.exports = `<h2 id="v164smalltbasmall">v 1.6.4 - <small>TBA</small></h2>
 <ul>
 <li>Campo "IBAN", "BIC" e "Note" nel report excel delle richieste</li>
 <li>Aggiunto campo "Tipologia Provvigioni squadra" in caso di agente con subagenti</li>
+<li>Raggruppamento delle notifiche per tipologia</li>
+<li>Possibilità di cancellazione di tutte le notifiche o di una intera categoria</li>
 </ul>
 <h3 id="miglioramenti">Miglioramenti</h3>
 <ul>

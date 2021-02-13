@@ -4,6 +4,10 @@
 ### Aggiunte
 - Campo "IBAN", "BIC" e "Note" nel report excel delle richieste
 - Aggiunto campo "Tipologia Provvigioni squadra" in caso di agente con subagenti
+- Raggruppamento delle notifiche per tipologia
+- Possibilità di cancellazione di tutte le notifiche o di una intera categoria
+- Aggiunto modale per visualizzare i clienti di un subagente
+- Aggiunto colonna che mostra provvigioni attive per gli agenti
 
 ### Miglioramenti
 - Spostato impostazioni agente (anagrafica utente) in tab dedicata
