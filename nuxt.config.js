@@ -133,7 +133,7 @@ export default {
   pageTransition: {
     name: 'fade',
     mode: 'out-in',
-    duration: 500
+    duration: 100
   },
 
   env: {
