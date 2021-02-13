@@ -86,7 +86,9 @@
                   <v-icon small class="mr-2">mdi-open-in-new</v-icon>
                   {{ item.referenceAgentData.firstName }} {{ item.referenceAgentData.lastName }}
                 </v-btn>
-                <div v-else-if="item.referenceAgentData">Tu</div>
+                <div v-else-if="item.referenceAgentData">
+                  <v-btn text disabled small>Tu</v-btn>
+                </div>
               </template>
 
               <template v-slot:item.account_status="{ item }">
@@ -167,15 +169,18 @@
               <template v-slot:item.clientsCount="{item, value}">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
-                    <v-btn icon @click="showClientsList(item)"
+                    <v-btn text
+                           @click="showClientsList(item)"
                            :disabled="!+value"
-                           v-on="on">
+                           v-on="on"
+                           small
+                           color="primary">
+                      <v-icon small class="mr-2">mdi-dock-window</v-icon>
                       {{ +value || 0 }}
                     </v-btn>
                   </template>
                   Mostra lista clienti
                 </v-tooltip>
-
               </template>
             </data-table>
           </v-tab-item>
@@ -509,7 +514,8 @@ export default {
             cancelBtn: "dialogs.clientsList.btn-cancel"
           },
           data: {
-            usersList
+            usersList,
+            agent: user
           }
         });
       } catch (e) {
