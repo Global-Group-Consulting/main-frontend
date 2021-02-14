@@ -434,14 +434,29 @@ export function extraData(formContext: FormContext) {
 
           } : null,
           items: !canChangeAgenteRif.value ? null : formContext.$store.getters.agentsList
-            .reduce((acc: { text: string, value: string }[], curr: UserDataSchema) => {
+            .reduce((acc: { text: string, value: string }[], curr: UserDataSchema, i: number, arr: UserDataSchema[]) => {
               if (+formContext.formData.role === UserRoles.AGENTE
                 && curr.id === formContext.formData.id) {
                 return acc
               }
 
+              // Must add indentation based on subAgents structure
+              let indentation = ""
+
+              if (curr.referenceAgent) {
+                let parent = arr.find((_el: UserDataSchema) => _el.id === curr.referenceAgent)
+
+                indentation += "- "
+
+                while (parent && parent.referenceAgent) {
+                  indentation = "- " + indentation
+                  // @ts-ignore
+                  parent = arr.find((_el: UserDataSchema) => _el.id === parent.referenceAgent)
+                }
+              }
+
               acc.push({
-                text: curr.firstName + " " + curr.lastName,
+                text: indentation + " " + curr.firstName + " " + curr.lastName,
                 value: curr.id,
               })
 
