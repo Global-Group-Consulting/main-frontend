@@ -14,6 +14,18 @@ const defaults = {
         'lastName',
         'email',
         'accountStatus',
+        'commissionsAssigned',
+        'actions'
+      ]
+    },
+    clients: {
+      columns: [
+        'contractNumber',
+        'firstName',
+        'lastName',
+        'email',
+        'role',
+        'clientsNumber',
         'actions'
       ]
     },
@@ -73,6 +85,7 @@ const defaults = {
         "interestCollected",
         "depositCollected",
         "brite",
+        "britePartial",
       ]
     },
     calculatorMovements: {
@@ -96,6 +109,7 @@ const admin = {
         'lastName',
         'email',
         ['referenceAgent', [UserRoles.AGENTE, UserRoles.CLIENTE]],
+        ['commissionsAssigned', [UserRoles.AGENTE]],
         ['contractStatus', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         'accountStatus',
         'actions'
@@ -145,6 +159,7 @@ const servClienti = {
         'lastName',
         'email',
         ['referenceAgent', [UserRoles.AGENTE, UserRoles.CLIENTE]],
+        ['commissionsAssigned', [UserRoles.AGENTE]],
         ['contractStatus', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         'accountStatus',
         'actions'
@@ -234,6 +249,9 @@ const agente = {
         'lastName',
         'email',
         'accountStatus',
+        ['referenceAgent', [UserRoles.AGENTE]],
+        ['clientsNumber', [UserRoles.AGENTE]],
+        ['commissionsAssigned', [UserRoles.AGENTE]],
         'actions'
       ]
     },

@@ -6,36 +6,36 @@ import AgentTeamType from '../../enums/AgentTeamType'
 import AccountStatuses from '../../enums/AccountStatuses'
 import Genders from '@/enums/Genders'
 
-import axios from "@nuxtjs/axios"
-import {required, requiredIf} from 'vuelidate/lib/validators'
-
 import {computed} from '@vue/composition-api'
 import moment from 'moment'
-import permissions from "@/functions/permissions";
+
 import ClubPacks from "@/enums/ClubPacks";
+import {FormSchema} from "~/@types/FormSchema";
+import {UserDataSchema} from "~/@types/UserFormData";
+import {Permissions} from "~/@types/Permissions";
 
-/**
- * @typedef {import('../../@types/UserFormSchemaContext').UserFormSchemaContext} FormContext
- */
+interface FormContext extends Vue {
+  userIsPersonaGiuridica: boolean,
+  userBusinessItaly: boolean,
+  userBirthItaly: boolean,
+  userLegalReprItaly: boolean,
+  userIsNew: boolean,
+  userRole: number
+  showReferenceAgent: boolean
+  permissions: Permissions
+  formData: UserDataSchema
+}
 
-/**
- * @typedef {import('../../@types/FormSchema').FormSchema} FormSchema
- */
-
-
-/**
- *
- * @param {FormContext} formContext
- */
-export function basicData(formContext) {
-  const userIsAdmin = computed(() => [UserRoles.ADMIN || UserRoles.SERV_CLIENTI].includes(+formContext.formData.role))
+export function basicData(formContext: FormContext): FormSchema[] {
+  const userIsAdmin = computed(() => [UserRoles.ADMIN || UserRoles.SERV_CLIENTI]
+    .includes(+formContext.formData.role))
 
   return [
     {
       cols: {
         'personType': {
           component: userIsAdmin.value ? '' : 'v-select',
-          formatter: userIsAdmin.value ? (value) => {
+          formatter: userIsAdmin.value ? (value: any) => {
             return formContext.$i18n.t("enums.PersonTypes." + PersonTypes.getIdName(value))
           } : 'numberCasting',
           items: PersonTypes,
@@ -191,103 +191,32 @@ export function basicData(formContext) {
   ]
 }
 
-/**
- * @param {FormContext} formContext
- */
-export function addressData(formContext) {
-  return [
-    {
-      if: formContext.userIsPersonaGiuridica,
-      legend: `business-residence`,
-      cols: {
-        'businessCountry': {
-          component: 'v-select',
-          items: 'enums.countriesList'
-        },
-        'businessRegion': {
-          component: 'v-select',
-          items: 'enums.regionsList',
-          if: formContext.userBusinessItaly
-        },
-        'businessProvince': {
-          component: 'v-select',
-          items: 'enums.provincesList',
-          if: formContext.userBusinessItaly
-        },
-        'businessCity': {},
-        'businessZip': {},
-        'businessAddress': {}
-      }
-    },
-    {
-      legend: (formContext.userIsPersonaGiuridica ? `${formContext.userIsPersonaGiuridica ? 'legal-representative-' : ''}` : '') + 'residence',
-      cols: {
-        'legalRepresentativeCountry': {
-          component: 'v-select',
-          items: 'enums.countriesList'
-        },
-        'legalRepresentativeRegion': {
-          component: 'v-select',
-          items: 'enums.regionsList',
-          if: formContext.userLegalReprItaly
-        },
-        'legalRepresentativeProvince': {
-          component: 'v-select',
-          items: 'enums.provincesList',
-          if: formContext.userLegalReprItaly
-        },
-        'legalRepresentativeCity': {},
-        'legalRepresentativeZip': {},
-        'legalRepresentativeAddress': {}
-      }
-    }
-  ]
-}
+export function agentData(formContext: FormContext) {
+  const hasSubAgents = computed(() => formContext.formData.hasSubAgents)
+  const isTeamLeader = computed(() => formContext.formData.hasSubAgents && !formContext.formData.referenceAgent)
+  const canChangeCommissions = computed(() => {
+    return formContext.permissions.superAdmin || formContext.$auth.user.hasSubAgents
+  })
 
-/**
- * @param {FormContext} formContext
- */
-export function contactsData(formContext) {
   return [
     {
-      legend: 'contacts',
-      cols: {
-        'email': {
-          disabled: !formContext.userIsNew,
-          validations: {
-            required: {},
-            email: {}
-          }
-        },
-        'mobile': {
-          validations: {
-            required: {},
-            phoneNumber: {}
-          }
-        },
-        'phone': {
-          validations: {
-            phoneNumber: {}
-          }
-        }
-      }
-    }
-  ]
-}
-
-export function agentData(formContext) {
-  return [
-    {
-      legend: "agentCommissions",
+      // legend: "agentCommissions",
       cols: {
         "agentTeamType": {
           component: "v-select",
-          items: AgentTeamType
+          items: AgentTeamType,
+          if: isTeamLeader.value,
+          defaultValue: AgentTeamType.SUBJECT_PERCENTAGE,
+          disabled: !formContext.permissions.superAdmin,
         },
-
+      }
+    },
+    {
+      cols: {
         "commissionsAssigned": {
           component: "agent-commissions-select",
-          disabled: !formContext.permissions.superAdmin,
+          disabled: !canChangeCommissions.value,
+          refAgent: formContext.formData.referenceAgentData
         },
       }
     }
@@ -300,8 +229,8 @@ export function agentData(formContext) {
  * @param {FormContext} formContext
  * @returns {FormSchema[]}
  */
-export function contractData(formContext) {
-  const {changeRole, changeAgenteRif, userRole, userType} = formContext.permissions
+export function contractData(formContext: FormContext) {
+  const {userType} = formContext.permissions
 
   return [
     {
@@ -363,7 +292,8 @@ export function contractData(formContext) {
       legend: "initial-investment-legend",
       cols: {
         'contractInitialInvestment': {
-          disabled: [AccountStatuses.APPROVED, AccountStatuses.ACTIVE, AccountStatuses.VALIDATED].includes(formContext.formData.account_status),
+          disabled: [AccountStatuses.APPROVED, AccountStatuses.ACTIVE, AccountStatuses.VALIDATED]
+            .includes(formContext.formData.account_status),
           // formatter: "moneyFormatter"
           component: "money-input",
           validations: {
@@ -374,7 +304,8 @@ export function contractData(formContext) {
           }
         },
         'contractInitialInvestmentGold': {
-          disabled: [AccountStatuses.APPROVED, AccountStatuses.ACTIVE, AccountStatuses.VALIDATED].includes(formContext.formData.account_status),
+          disabled: [AccountStatuses.APPROVED, AccountStatuses.ACTIVE, AccountStatuses.VALIDATED]
+            .includes(formContext.formData.account_status),
           type: "number",
           prefix: "gr.",
           validations: {
@@ -411,7 +342,7 @@ export function contractData(formContext) {
  * @param {FormContext} formContext
  * @returns {FormSchema[]}
  */
-export function clubData(formContext) {
+export function clubData(formContext: FormContext) {
   const gold = formContext.formData.gold
   const canChange = formContext.$auth.user.role === UserRoles.ADMIN
 
@@ -445,11 +376,13 @@ export function clubData(formContext) {
  * @param {FormContext} formContext
  * @returns {FormSchema[]}
  */
-export function extraData(formContext) {
+export function extraData(formContext: FormContext) {
   const {changeRole, changeAgenteRif, userRole} = formContext.permissions
+  const loggedUser = formContext.$auth.user
   const canChangeAgenteRif = computed(() => {
-    return (formContext.userIsNew && userRole !== UserRoles.AGENTE) ||
-      changeAgenteRif
+    return (formContext.userIsNew && userRole !== UserRoles.AGENTE)
+      || (loggedUser.hasSubAgents && formContext.formData.id !== loggedUser.id)
+      || changeAgenteRif
   })
 
   return [
@@ -459,7 +392,7 @@ export function extraData(formContext) {
         'role': {
           component: changeRole ? 'v-select' : '',
           formatter: changeRole ? 'numberCasting' :
-            (value) => formContext.$i18n.t("enums.UserRoles." + UserRoles.getIdName(value)),
+            (value: string) => formContext.$i18n.t("enums.UserRoles." + UserRoles.getIdName(value)),
           items: changeRole ? formContext.userIsNew ? UserRoles : UserRoles.list.filter(_role => {
             const roleId = +UserRoles.get(_role.text).index
             const adminRoles = [UserRoles.ADMIN, UserRoles.SERV_CLIENTI]
@@ -469,12 +402,13 @@ export function extraData(formContext) {
             } else {
               return !adminRoles.includes(roleId)
             }
-          }).map(entry => {
-            entry.text = formContext.$i18n.t("enums.UserRoles." + entry.text)
+          })
+            .map(entry => {
+              entry.text = formContext.$i18n.t("enums.UserRoles." + entry.text) as string
 
-            return entry
-          }) : null,
-          disabled: formContext.$auth.user.id === this.formData.id || !changeRole,
+              return entry
+            }) : null,
+          disabled: formContext.$auth.user.id === formContext.formData.id || !changeRole,
           validations: {
             required: {}
           }
@@ -484,12 +418,13 @@ export function extraData(formContext) {
           component: canChangeAgenteRif.value ? 'v-select' : null,
           disabled: !canChangeAgenteRif.value,
           clearable: true,
-          formatter: !canChangeAgenteRif.value ? (value) => {
+          formatter: !canChangeAgenteRif.value ? (value: string) => {
             if (!value) {
               return
             }
 
-            const foundedUser = formContext.$store.getters.agentsList.find(_user => _user.id.toString() === value.toString())
+            const foundedUser = formContext.$store.getters.agentsList
+              .find((_user: UserDataSchema) => _user.id.toString() === value.toString())
 
             if (!foundedUser) {
               return
@@ -499,14 +434,29 @@ export function extraData(formContext) {
 
           } : null,
           items: !canChangeAgenteRif.value ? null : formContext.$store.getters.agentsList
-            .reduce((acc, curr) => {
+            .reduce((acc: { text: string, value: string }[], curr: UserDataSchema, i: number, arr: UserDataSchema[]) => {
               if (+formContext.formData.role === UserRoles.AGENTE
                 && curr.id === formContext.formData.id) {
                 return acc
               }
 
+              // Must add indentation based on subAgents structure
+              let indentation = ""
+
+              if (curr.referenceAgent) {
+                let parent = arr.find((_el: UserDataSchema) => _el.id === curr.referenceAgent)
+
+                indentation += "- "
+
+                while (parent && parent.referenceAgent) {
+                  indentation = "- " + indentation
+                  // @ts-ignore
+                  parent = arr.find((_el: UserDataSchema) => _el.id === parent.referenceAgent)
+                }
+              }
+
               acc.push({
-                text: curr.firstName + " " + curr.lastName,
+                text: indentation + " " + curr.firstName + " " + curr.lastName,
                 value: curr.id,
               })
 
@@ -516,7 +466,7 @@ export function extraData(formContext) {
         'referenceAgentData': {
           if: formContext.showReferenceAgent && !canChangeAgenteRif.value,
           disabled: true,
-          formatter: (value) => {
+          formatter: (value: UserDataSchema) => {
             if (!value) {
               return
             }
@@ -559,8 +509,6 @@ export function extraData(formContext) {
  */
 export default {
   basicData,
-  addressData,
-  contactsData,
   contractData,
   agentData,
   clubData,

@@ -7,7 +7,13 @@ export default {
   'referenceAgent': {text: 'tables.reference-agent', value: 'referenceAgent'},
   'validatedAt': {text: 'tables.validated-at', value: 'validated_at'},
   'contractStatus': {text: 'tables.contract-status', value: 'contractSignedAt'},
-  'role': {text: 'tables.role', value: 'role'},
+  'role': {text: 'tables.role', value: 'role', align: "center"},
+  'clientsNumber': {text: 'tables.clients-number', value: 'clientsCount', align: 'center'},
+  'commissionsAssigned': {
+    text: 'tables.commissions-assigned',
+    value: 'commissionsAssigned', align: 'center',
+    sortable: false
+  },
   'superAdmin': {
     value: 'superAdmin',
     sortable: false,

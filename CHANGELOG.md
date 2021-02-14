@@ -1,6 +1,20 @@
 [comment]: <> (## Non ancora rilasciato)
 
-## v 1.6.3 - <small>TBA</small>
+## v 1.6.4 - <small>TBA</small>
+### Aggiunte
+- Campo "IBAN", "BIC" e "Note" nel report excel delle richieste
+- Aggiunto campo "Tipologia Provvigioni squadra" in caso di agente con subagenti
+- Possibilità di cancellazione di tutte le notifiche o di una intera categoria
+- Aggiunto modale per visualizzare i clienti di un subagente
+- Aggiunto colonna che mostra provvigioni attive per gli agenti
+
+### Miglioramenti
+- Spostato impostazioni agente (anagrafica utente) in tab dedicata
+- Aggiunta colonna Brite Parziali nella calcolatrice
+- Ridotto durata animazione al cambio pagina
+- Modale che mostra i clienti permette di vedere anche i sottoclienti di un subagente
+
+## v 1.6.3 - <small>06/02/2020</small>
 ### Aggiunte
 - Pulsanti per scaricare il preventivo corrente
 - Menù per il download delle ricevute nell'elenco movimenti

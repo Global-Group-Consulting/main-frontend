@@ -6,9 +6,14 @@ export default {
     text: 'tables.calc-deposit-collected',
     value: 'depositCollected',
     align: "right",
-    sortable: false
+    sortable: false,
+    divider: true
   },
-  'interestAmount': {text: 'tables.calc-interest-amount', value: 'interestAmount', align: "right", sortable: false},
+  'interestAmount': {
+    text: 'tables.calc-interest-amount',
+    value: 'interestAmount', align: "right", sortable: false,
+    divider: true
+  },
   'interestRecapitalized': {
     text: 'tables.calc-interest-recapitalized',
     value: 'interestRecapitalized',
@@ -19,7 +24,18 @@ export default {
     text: 'tables.calc-interest-collected',
     value: 'interestCollected',
     align: "right",
-    sortable: false
+    sortable: false,
   },
-  'brite': {text: 'tables.calc-brite', value: 'brite', align: "right", sortable: false},
+  'brite': {
+    text: 'tables.calc-brite',
+    value: 'brite',
+    align: "right",
+    sortable: false,
+  },
+  'britePartial': {
+    text: 'tables.calc-brite-partial',
+    value: 'britePartial', align: "right",
+    sortable: false,
+    cellClass: "red"
+  },
 }

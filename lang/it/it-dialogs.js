@@ -75,5 +75,10 @@ export default {
   },
   changelog: {
     title: "Dettaglio degli Aggiornamenti"
+  },
+  clientsList: {
+    'title': 'Elenco clienti dell\'agente',
+    'btn-cancel': "Chiudi",
+    'btn-open-user': "Apri"
   }
 }

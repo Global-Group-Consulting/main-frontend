@@ -32,8 +32,7 @@
         </template>
       </page-toolbar>
 
-      <v-tabs v-model="currentTab"
-      >
+      <v-tabs v-model="currentTab">
         <transition-group name="fadeRight" tag="div" class="d-flex">
           <v-tab v-for="group of usersList" :key="group.id">
             {{ $t(`enums.UserRoles.${$enums.UserRoles.getIdName(group.id)}_plural`) }}
@@ -77,7 +76,9 @@
               </template>
 
               <template v-slot:item.referenceAgent="{item}">
-                <v-btn text v-if="item.referenceAgentData" small
+                <v-btn text
+                       v-if="item.referenceAgentData && item.referenceAgent !== $auth.user.id"
+                       small
                        target="_blank"
                        class="text-capitalize"
                        color="primary"
@@ -85,6 +86,9 @@
                   <v-icon small class="mr-2">mdi-open-in-new</v-icon>
                   {{ item.referenceAgentData.firstName }} {{ item.referenceAgentData.lastName }}
                 </v-btn>
+                <div v-else-if="item.referenceAgentData">
+                  <v-btn text disabled small>Tu</v-btn>
+                </div>
               </template>
 
               <template v-slot:item.account_status="{ item }">
@@ -141,6 +145,42 @@
                 <div v-else class="red--text">
                   {{ $t("tables.contract-not-signed") }}
                 </div>
+              </template>
+
+              <template v-slot:item.commissionsAssigned="{item, value}">
+                <div class="mx-n1">
+                  <v-tooltip bottom v-for="(comm, i) of value" :key="i">
+                    <template v-slot:activator="{ on }">
+                      <v-chip x-small
+                              class="mx-1"
+                              v-on="on">
+                        {{ getInitials($t("enums.CommissionType." + comm.name)) }}
+                        <template v-if="comm.percent">
+                          &nbsp;{{ comm.percent }} %
+                        </template>
+                      </v-chip>
+                    </template>
+                    {{ $t("enums.CommissionType." + comm.name) }}
+                  </v-tooltip>
+
+                </div>
+              </template>
+
+              <template v-slot:item.clientsCount="{item, value}">
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-btn text
+                           @click="showClientsList(item)"
+                           :disabled="!+value"
+                           v-on="on"
+                           small
+                           color="primary">
+                      <v-icon small class="mr-2">mdi-dock-window</v-icon>
+                      {{ +value || 0 }}
+                    </v-btn>
+                  </template>
+                  Mostra lista clienti
+                </v-tooltip>
               </template>
             </data-table>
           </v-tab-item>
@@ -306,6 +346,10 @@
           </v-speed-dial>
         </v-fab-transition>
       </v-row>
+
+      <clients-list-dialog
+        v-if="$store.getters['dialog/dialogId'] === 'ClientsListDialog'"
+      ></clients-list-dialog>
     </v-flex>
   </v-layout>
 </template>
@@ -323,13 +367,14 @@ import SigningLogsPopup from "@/components/elements/SigningLogsPopup";
 import PageToolbar from "@/components/blocks/PageToolbar";
 
 import Mark from "mark.js"
+import ClientsListDialog from "../../components/dialogs/ClientsListDialog";
 
 export default {
   name: "index",
-  components: {PageToolbar, SigningLogsPopup, DataTable, UsersCrudActions, PageHeader},
+  components: {ClientsListDialog, PageToolbar, SigningLogsPopup, DataTable, UsersCrudActions, PageHeader},
   middleware: ["pagesAuth"],
   setup(props, {root}) {
-    const {$enums, $auth, $i18n, $vuetify, $router} = root;
+    const {$enums, $i18n, $apiCalls, $vuetify, $router, $store, $alerts} = root;
     const currentTab = ref(0);
     const lastTab = ref(0)
     const permissions = Permissions(root);
@@ -415,7 +460,6 @@ export default {
 
       return result
     })
-
     const filtersActive = computed(() => {
       return Object.keys(filters).reduce((acc, key) => {
         const value = filters[key]
@@ -426,6 +470,11 @@ export default {
 
         return acc
       }, [])
+    })
+    const getTabColor = computed(() => {
+      const selectedTable = usersPageData.usersList.value[currentTab.value]
+
+      return selectedTable ? $enums.UserRoles.get(selectedTable.id).color : ""
     })
 
     function filtersClean() {
@@ -445,6 +494,44 @@ export default {
           });
         }, 300)
       }*/
+    }
+
+    /**
+     * @param {import("../../@types/UserFormData").UserDataSchema} user
+     */
+    async function showClientsList(user) {
+      try {
+        // Fetch the users list
+        const usersList = await $apiCalls.getClientsList(user.id)
+
+        $store.dispatch("dialog/updateStatus", {
+          title: $i18n.t("dialogs.clientsList.title"),
+          id: "ClientsListDialog",
+          fullscreen: false,
+          large: true,
+          readonly: true,
+          texts: {
+            cancelBtn: "dialogs.clientsList.btn-cancel"
+          },
+          data: {
+            usersList,
+            agent: user
+          }
+        });
+      } catch (e) {
+        $alerts.error(e)
+      }
+    }
+
+    /**
+     *
+     * @param {string} str
+     * @returns {string}
+     */
+    function getInitials(str) {
+      return str.split(" ")
+        .map(_str => _str.slice(0, 1))
+        .join("").toUpperCase()
     }
 
     watch(filtersActive, (value) => {
@@ -467,12 +554,6 @@ export default {
 
     })
 
-    const getTabColor = computed(() => {
-      const selectedTable = usersPageData.usersList.value[currentTab.value]
-
-      return selectedTable ? $enums.UserRoles.get(selectedTable.id).color : ""
-    })
-
     return {
       ...usersPageData,
       ...pageBasic(root, "users"),
@@ -484,7 +565,9 @@ export default {
       filtersActive,
       filters,
       actionsList,
-      filtersClean
+      filtersClean,
+      showClientsList,
+      getInitials
     };
   },
   data() {

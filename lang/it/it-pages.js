@@ -95,6 +95,7 @@ export default {
       'user-legal-residence': 'Sede legale / Residenza',
       'contacts': 'Contatti',
       'contract': 'Contratto',
+      'agent': 'Impostazioni Agente',
       'club': 'Gold / Global Club',
       'other': 'Ruolo / Varie'
     }

@@ -130,7 +130,11 @@ export default {
     // {path: '/api', handler: '~/server/index.js' }
   ],
 
-  pageTransition: 'fade',
+  pageTransition: {
+    name: 'fade',
+    mode: 'out-in',
+    duration: 100
+  },
 
   env: {
     version: require('./package.json').version,
