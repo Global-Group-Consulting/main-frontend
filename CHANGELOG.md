@@ -4,7 +4,6 @@
 ### Aggiunte
 - Campo "IBAN", "BIC" e "Note" nel report excel delle richieste
 - Aggiunto campo "Tipologia Provvigioni squadra" in caso di agente con subagenti
-- Raggruppamento delle notifiche per tipologia
 - Possibilità di cancellazione di tutte le notifiche o di una intera categoria
 - Aggiunto modale per visualizzare i clienti di un subagente
 - Aggiunto colonna che mostra provvigioni attive per gli agenti
@@ -13,6 +12,7 @@
 - Spostato impostazioni agente (anagrafica utente) in tab dedicata
 - Aggiunta colonna Brite Parziali nella calcolatrice
 - Ridotto durata animazione al cambio pagina
+- Modale che mostra i clienti permette di vedere anche i sottoclienti di un subagente
 
 ## v 1.6.3 - <small>06/02/2020</small>
 ### Aggiunte

@@ -3,14 +3,16 @@ module.exports = `<h2 id="v164smalltbasmall">v 1.6.4 - <small>TBA</small></h2>
 <ul>
 <li>Campo "IBAN", "BIC" e "Note" nel report excel delle richieste</li>
 <li>Aggiunto campo "Tipologia Provvigioni squadra" in caso di agente con subagenti</li>
-<li>Raggruppamento delle notifiche per tipologia</li>
 <li>Possibilità di cancellazione di tutte le notifiche o di una intera categoria</li>
+<li>Aggiunto modale per visualizzare i clienti di un subagente</li>
+<li>Aggiunto colonna che mostra provvigioni attive per gli agenti</li>
 </ul>
 <h3 id="miglioramenti">Miglioramenti</h3>
 <ul>
 <li>Spostato impostazioni agente (anagrafica utente) in tab dedicata</li>
 <li>Aggiunta colonna Brite Parziali nella calcolatrice</li>
 <li>Ridotto durata animazione al cambio pagina</li>
+<li>Modale che mostra i clienti permette di vedere anche i sottoclienti di un subagente</li>
 </ul>
 <h2 id="v163small06022020small">v 1.6.3 - <small>06/02/2020</small></h2>
 <h3 id="aggiunte-1">Aggiunte</h3>
