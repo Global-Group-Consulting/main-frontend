@@ -9,7 +9,7 @@ import jsFileDownload from "js-file-download";
  * @param {{}} param1
  * @param {import("../@types/AlertsPlugin").AlertsPlugin} param1.$alerts
  */
-export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n}, emit) {
+export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n, $moment}, emit) {
   async function deleteFn() {
     const currentRequest = request.value ?? request
 
@@ -53,6 +53,7 @@ export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n},
         },
         settings: {
           input: "text",
+          inputValue: $moment().format("DD/MM/YYYY"),
           inputPlaceholder: $i18n.t("forms.payment-doc-date"),
           inputValidator: (value) => {
             if (!value) {
