@@ -4,7 +4,7 @@
 /**
  * @typedef {import("../@types/ApiCallsPlugin").ApiCallsSettings} ApiCallsSettings
  */
-import { formDataFromObject } from "../plugins/utilities"
+import {formDataFromObject} from "../plugins/utilities"
 
 export class BasicApiCall {
   constructor(context) {
@@ -103,7 +103,7 @@ export class BasicApiCall {
   /**
    *
    * @param {ApiCallsParams | String | {}} params
-   * @returns {Promise<void>}
+   * @returns {Promise<any>}
    * @protected
    */
   async get(params) {

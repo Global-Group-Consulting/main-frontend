@@ -115,7 +115,7 @@ export default defineComponent({
       }
 
       try {
-        const usersList = await $apiCalls.getClientsList(agent.id)
+        const usersList:UserDataSchema[] = await $apiCalls.getClientsList(agent.id)
 
         if (existingRefAgentIndex >= 0) {
           tabsList.value = tabsList.value.slice(0, existingRefAgentIndex + 1)
