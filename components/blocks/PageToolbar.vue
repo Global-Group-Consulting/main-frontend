@@ -13,7 +13,7 @@
                        :tooltip="$t(`actions.${action.tooltip}`)"
                        v-bind="prepareOptions(action.options)"
                        :icon-name="action.icon"
-                       @click="action.click"
+                       @click="onClick(action, $event)"
                        :disabled="action.disabled"
                        v-if="('if' in action ? action.if : true)"
           >
@@ -28,7 +28,7 @@
                        :tooltip="$t(`actions.${action.tooltip}`)"
                        v-bind="prepareOptions(action.options)"
                        :icon-name="action.icon"
-                       @click="action.click"
+                       @click="onClick(action, $event)"
                        :disabled="action.disabled"
                        v-if="('if' in action ? action.if : true)"
           >
@@ -43,7 +43,7 @@
                        :tooltip="$t(`actions.${action.tooltip}`)"
                        v-bind="prepareOptions(action.options)"
                        :icon-name="action.icon"
-                       @click="action.click"
+                       @click="onClick(action, $event)"
                        :disabled="action.disabled"
                        v-if="('if' in action ? action.if : true)"
           >
@@ -97,11 +97,18 @@ export default defineComponent({
       return newSettings ? Object.assign({}, defaults, newSettings) : defaults
     }
 
+    function onClick(item: ActionItem, $event: any) {
+      if (item.click) {
+        item.click($event, item)
+      }
+    }
+
     return {
       prepareOptions,
       leftActionsList,
       centerActionsList,
-      rightActionsList
+      rightActionsList,
+      onClick
     }
   }
 })
