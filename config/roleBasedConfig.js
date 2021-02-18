@@ -95,6 +95,30 @@ const defaults = {
         'amount',
         'actions',
       ]
+    },
+    aclUsers: {
+      columns: [
+        'firstName',
+        'lastName',
+        'email',
+        'roles',
+        'permissions',
+      ]
+    },
+    aclRoles: {
+      columns: [
+        'code',
+        'description',
+        'permissions',
+        'actions',
+      ]
+    },
+    aclPermissions: {
+      columns: [
+        'code',
+        'description',
+        'actions',
+      ]
     }
   }
 }

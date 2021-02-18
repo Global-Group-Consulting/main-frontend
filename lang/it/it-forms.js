@@ -102,5 +102,8 @@ export default {
   'calc-interest-percentage': "Percentuale assegnata",
   'calc-initial-date': "Data inizio",
   'calc-final-date': "Data fine",
-  'agent-team-type': "Tipo provvigioni squadra"
+  'agent-team-type': "Tipo provvigioni squadra",
+  'acl-code': "Codice",
+  'acl-description': "Descrizione",
+  'acl-permissions': "Permessi",
 }

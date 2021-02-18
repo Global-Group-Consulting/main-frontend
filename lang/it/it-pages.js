@@ -145,5 +145,8 @@ export default {
   },
   calculator: {
     title: "Preventivi"
+  },
+  acl: {
+    title: "Ruoli e permessi"
   }
 }

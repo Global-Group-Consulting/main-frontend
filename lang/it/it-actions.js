@@ -13,4 +13,6 @@ export default {
   "users-add-agente": "Nuovo Agente",
   "users-add-servClienti": "Nuovo Serv. Clienti",
   "users-add-admin": "Nuovo Amministrazione",
+  "add-role": "Aggiungi Ruolo",
+  "add-permission": "Aggiungi Permesso",
 }

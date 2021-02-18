@@ -121,4 +121,12 @@ export default {
   "incomplete-user-cancelBtnText": "Annulla",
   "incomplete-user-success": "Segnalazione inviata correttamente!",
 
+  "acl-update-success": "Aggiornamento eseguito correttamente.",
+  "acl-create-success": "Creazione eseguita correttamente.",
+
+  "acl-delete-title": "",
+  "acl-delete-text": "Sei sicuro di voler eliminare l\'elemento <strong>{element}</strong>?",
+  "acl-delete-confirmBtnText": "Si, elimina",
+  "acl-delete-cancelBtnText": "Annulla",
+  "acl-delete-success": "Elemento eliminata correttamente!",
 }

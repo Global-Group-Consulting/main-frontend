@@ -154,10 +154,10 @@
                       <v-chip x-small
                               class="mx-1"
                               v-on="on">
-                        {{ getInitials($t("enums.CommissionType." + comm.name)) }}
-                        <template v-if="comm.percent">
-                          &nbsp;{{ comm.percent }} %
-                        </template>
+                        {{ getInitials($t("enums.CommissionType." + comm.name), comm) }}
+                        <!--                        <template v-if="comm.percent">
+                                                  &nbsp;{{ comm.percent }} %
+                                                </template>-->
                       </v-chip>
                     </template>
                     {{ $t("enums.CommissionType." + comm.name) }}
@@ -175,7 +175,8 @@
                            v-on="on"
                            small
                            color="primary">
-                      <v-icon small class="mr-2">mdi-dock-window</v-icon>
+                      <v-icon small class="mr-2" v-if="+value === 1">mdi-account</v-icon>
+                      <v-icon small class="mr-2" v-else>mdi-account-multiple</v-icon>
                       {{ +value || 0 }}
                     </v-btn>
                   </template>
@@ -528,10 +529,22 @@ export default {
      * @param {string} str
      * @returns {string}
      */
-    function getInitials(str) {
-      return str.split(" ")
-        .map(_str => _str.slice(0, 1))
-        .join("").toUpperCase()
+    function getInitials(str, item) {
+      switch (item.name) {
+        case $enums.CommissionType.NEW_DEPOSIT:
+
+          return item.percent + "%";
+        case $enums.CommissionType.TOTAL_DEPOSIT:
+
+          return "% / mese";
+        case $enums.CommissionType.ANNUAL_DEPOSIT:
+
+          return item.percent + "% / anno"
+      }
+
+      /* return str.split(" ")
+         .map(_str => _str.slice(0, 1))
+         .join("").toUpperCase()*/
     }
 
     watch(filtersActive, (value) => {

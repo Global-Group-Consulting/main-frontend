@@ -1,10 +1,11 @@
 <template>
-  <v-tooltip bottom>
+  <v-tooltip bottom :disabled="!tooltip">
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" v-bind="$attrs" @click="$emit('click')">
         <v-icon v-if="iconName" :class="`mr-${breakpoint}-2`">{{
-          iconName
-        }}</v-icon>
+            iconName
+          }}
+        </v-icon>
         <span :class="`d-none d-${breakpoint}-inline-block`">
           <slot></slot>
         </span>

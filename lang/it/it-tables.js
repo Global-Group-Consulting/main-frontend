@@ -14,6 +14,8 @@ export default {
   'reference-agent': 'Agente di riferimento',
   'actions': ' ',
   'role': 'Ruolo',
+  'roles': 'Ruoli',
+  'directPermissions': 'Permessi diretti',
   'request-type': 'Tipologia richiesta',
   'request-amount': 'Importo',
   'request-currency': 'Valuta della richiesta',
@@ -58,5 +60,10 @@ export default {
   'calc-brite-partial': "Brite Parziali",
   'calc-movement-type': "Tipo Movimento",
   'calc-amount': "Valore",
-  'clients-number': "Clienti"
+  'clients-number': "Clienti",
+  acl: {
+    code: "Codice",
+    description: "Descrizione",
+    permissions: "Permessi"
+  }
 }
