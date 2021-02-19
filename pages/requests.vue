@@ -158,6 +158,7 @@ import permissionsFn from "../functions/permissions";
 import RequestTypes from "../enums/RequestTypes";
 import PageToolbar from "@/components/blocks/PageToolbar";
 import RequestDialogGold from "@/components/dialogs/RequestGoldDialog";
+import {RequestsPermissions} from "../functions/acl/enums/requests.permissions";
 
 export default {
   components: {
@@ -168,6 +169,9 @@ export default {
     RequestsCrudActions,
     RequestsListTable,
     CommunicationNewDialog
+  },
+  meta: {
+    permissions: [RequestsPermissions.ACL_REQUESTS_ALL_READ, RequestsPermissions.ACL_REQUESTS_SELF_READ]
   },
   setup(props, {root}) {
     const {

@@ -31,7 +31,7 @@
         </template>
       </page-toolbar>
 
-      <v-tabs v-model="currentTab" >
+      <v-tabs v-model="currentTab">
         <v-tab v-for="tab of communicationsTabs" :key="tab.key">
           <v-badge :content="tab.unreadCounter"
                    :value="tab.unreadCounter"
@@ -136,10 +136,14 @@ import CommunicationsTabs from "@/config/tabs/communicationsTabs";
 import DataTable from "@/components/table/DataTable";
 import PageHeader from "@/components/blocks/PageHeader";
 import PageToolbar from "@/components/blocks/PageToolbar";
+import {CommunicationsPermissions} from "../functions/acl/enums/communications.permissions";
 
 export default {
   name: "index",
   components: {PageToolbar, PageHeader, DataTable, ComunicationDetailsDialog, CommunicationNewDialog},
+  /* meta: {
+     permissions: [CommunicationsPermissions.ACL_COMMUNICATIONS_ALL_READ, CommunicationsPermissions.ACL_COMMUNICATIONS_SELF_READ]
+   },*/
   props: {
     receiversShowLimit: {
       type: Number,

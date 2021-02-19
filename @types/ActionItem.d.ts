@@ -11,7 +11,7 @@ export interface ActionItem {
   icon?: string
   options?: ActionItemOptions
   disabled?: ComputedRef
-  if?: ComputedRef
+  if?: ComputedRef| boolean
   /**
    * Indicated if this element must be shown only in the mobile menu
    */

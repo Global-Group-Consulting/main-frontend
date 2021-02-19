@@ -37,6 +37,7 @@ export default function (context: FormContext): FormSchema[] {
           component: "v-autocomplete",
           label: "acl-permissions",
           multiple: true,
+          clearable: true,
           items: context.dialogData.data.permissionsListSelect
         }
       }

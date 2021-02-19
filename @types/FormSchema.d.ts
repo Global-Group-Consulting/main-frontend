@@ -17,6 +17,7 @@ export interface FormSchema {
       type?: string
       files?: any[],
       clearable?: boolean,
+      multiple?: boolean,
       max?: string | number,
       min?: string | number,
       validations?: {

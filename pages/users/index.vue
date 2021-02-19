@@ -369,11 +369,14 @@ import PageToolbar from "@/components/blocks/PageToolbar";
 
 import Mark from "mark.js"
 import ClientsListDialog from "../../components/dialogs/ClientsListDialog";
+import {UsersPermissions} from "../../functions/acl/enums/users.permissions";
 
 export default {
   name: "index",
   components: {ClientsListDialog, PageToolbar, SigningLogsPopup, DataTable, UsersCrudActions, PageHeader},
-  middleware: ["pagesAuth"],
+  meta: {
+    permissions: [UsersPermissions.ACL_USERS_GROUP_READ, UsersPermissions.ACL_USERS_ALL_READ]
+  },
   setup(props, {root}) {
     const {$enums, $i18n, $apiCalls, $vuetify, $router, $store, $alerts} = root;
     const currentTab = ref(0);

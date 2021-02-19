@@ -17,10 +17,10 @@
 </template>
 
 <script>
-import Drawer from "@/components/drawer/Drawer";
-import DynamicDialog from "@/components/DynamicDialog";
-import MainNavbar from "@/components/blocks/MainNavbar";
-import BottomDrawer from "@/components/drawer/BottomDrawer";
+import Drawer from "~/components/drawer/Drawer";
+import DynamicDialog from "@/components/DynamicDialog.vue";
+import MainNavbar from "@/components/blocks/MainNavbar.vue";
+import BottomDrawer from "@/components/drawer/BottomDrawer.vue";
 
 export default {
   components: {BottomDrawer, MainNavbar, DynamicDialog, Drawer},

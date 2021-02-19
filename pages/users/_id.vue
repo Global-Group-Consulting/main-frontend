@@ -307,6 +307,7 @@ import usersForm from "../../functions/usersForm";
 import Permissions from "@/functions/permissions";
 import SigningLogsPopup from "@/components/elements/SigningLogsPopup";
 import PageToolbar from "@/components/blocks/PageToolbar";
+import {UsersPermissions} from "../../functions/acl/enums/users.permissions";
 
 export default {
   name: "_id",
@@ -320,7 +321,9 @@ export default {
     StatusChangeDialog,
     MovementsListDialog
   },
-  middleware: ["pagesAuth"],
+  meta: {
+    permissions: [UsersPermissions.ACL_USERS_GROUP_READ, UsersPermissions.ACL_USERS_ALL_READ, UsersPermissions.ACL_USERS_SELF_READ]
+  },
   setup(props, {root, refs}) {
     const {
       $apiCalls,
@@ -618,6 +621,8 @@ export default {
     onBeforeMount(async () => {
       const userId = $route.params.id;
       const loggedUser = $auth.user
+
+      // TODO:: Must check if the user can see others account.
 
       if (permissions.changeAgenteRif
         || (loggedUser.hasSubAgents && userForm.formData.value.id !== loggedUser.id)

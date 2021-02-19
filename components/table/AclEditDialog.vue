@@ -37,6 +37,7 @@
         multiple
         v-model="localValue"
         :items="selectData"
+        clearable
         :label="$t('dialogs.aclEditDialog.select.label.' + field)"
       >
         <template v-slot:selection="{item, index}">

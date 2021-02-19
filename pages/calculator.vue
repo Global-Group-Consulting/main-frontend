@@ -137,6 +137,7 @@ import JsDownload from "js-file-download"
 import pageBasic from "~/functions/pageBasic";
 import calculatorFormSchema from "~/config/forms/calculatorSchema";
 import {Options} from "@nuxt/typescript-build";
+import {AclPermissions} from "~/functions/acl/enums/acl.permissions";
 
 export default defineComponent({
     name: 'calculator',

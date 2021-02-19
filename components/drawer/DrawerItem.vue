@@ -4,22 +4,23 @@
     :to="data.link"
     :ripple="false"
     :color="'grey lighten-3'"
+    v-if="$acl.checkPermissions(data.permissions)"
   >
     <v-list-item-action>
       <v-icon>{{ data.icon }}</v-icon>
     </v-list-item-action>
 
     <v-list-item-content>
-      <v-list-item-title>{{ data.text }}</v-list-item-title>
+      <v-list-item-title>{{ $t("drawer." + data.text) }}</v-list-item-title>
     </v-list-item-content>
   </v-list-item>
 </template>
 
-<script>
-import { mapGetters } from "vuex";
+<script lang="ts">
+import {mapGetters} from "vuex";
 
 export default {
-  name: "drawer-item",
+  name: "DrawerItem",
   props: {
     data: {}
   },
@@ -27,7 +28,8 @@ export default {
     ...mapGetters({
       userMustActivate: "user/mustActivate"
     })
-  }
+  },
+
 };
 </script>
 

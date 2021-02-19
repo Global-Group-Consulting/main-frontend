@@ -9,6 +9,7 @@ export default {
   'utilities': 'Utilità',
   'calculator': 'Preventivi',
   'comunications': 'Comunicazioni',
+  'acl': 'Ruoli e permessi',
   'advanced': "Avanzate",
   'translations': "Traduzioni",
   'developer': "Sviluppatore",

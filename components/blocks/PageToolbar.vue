@@ -25,7 +25,7 @@
 
         <slot name="center-block">
           <tooltip-btn v-for="(action, i) of centerActionsList" :key="`c-${i}`"
-                       :tooltip="$t(`actions.${action.tooltip}`)"
+                       :tooltip="action.tooltip ? $t(`actions.${action.tooltip}`) : ''"
                        v-bind="prepareOptions(action.options)"
                        :icon-name="action.icon"
                        @click="onClick(action, $event)"

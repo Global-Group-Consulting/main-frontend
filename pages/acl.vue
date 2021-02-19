@@ -75,10 +75,14 @@ import {AclPermission} from "~/@types/Acl/Permissions";
 import {DynamicTab} from "~/@types/components/DynamicTab";
 
 import arraySort from "array-sort";
+import {AclPermissions} from "~/functions/acl/enums/acl.permissions";
 
 
 @Component({
-  components: {AclEditDialog, AclAddDialog, DataTable, DynamicTabs, PageToolbar, PageHeader}
+  components: {AclEditDialog, AclAddDialog, DataTable, DynamicTabs, PageToolbar, PageHeader},
+  meta: {
+    permissions: [AclPermissions.ACL_ACL_READ]
+  }
 })
 export default class Acl extends Vue {
   public pageHeaderData = pageBasicFn({$i18n: this.$i18n}, "acl")
@@ -116,7 +120,7 @@ export default class Acl extends Vue {
         id: "users",
         title: "Utenti",
         data: this.usersList,
-        updateMethod: "userUpdate"
+        updateMethod: "aclUpdateUsers"
       }, {
         id: "roles",
         title: "Ruoli",

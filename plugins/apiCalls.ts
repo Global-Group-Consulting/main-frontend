@@ -345,6 +345,11 @@ export class ApiCalls extends BasicApiCall {
     return await this._call({endPoint: `/api/acl/permissions/${data.id}`, body: data, method: "PUT"})
   }
 
+  async aclUpdateUsers(data: Partial<AclPermission>) {
+    return await this._call({endPoint: `/api/users/${data.id}`, body: data, method: "PATCH"})
+  }
+
+
   async aclDeletePermissions(id: string) {
     return await this._call({endPoint: `/api/acl/permissions/${id}`, method: "DELETE"})
   }
