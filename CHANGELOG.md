@@ -1,6 +1,6 @@
 [comment]: <> (## Non ancora rilasciato)
 
-## v 1.6.4 - <small>23/02/2020</small>
+## v 1.7.0 - <small>23/02/2020</small>
 ### Aggiunte
 - Campo "IBAN", "BIC" e "Note" nel report excel delle richieste
 - Aggiunto campo "Tipologia Provvigioni squadra" in caso di agente con subagenti

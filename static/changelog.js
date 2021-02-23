@@ -1,4 +1,4 @@
-module.exports = `<h2 id="v164small23022020small">v 1.6.4 - <small>23/02/2020</small></h2>
+module.exports = `<h2 id="v170small23022020small">v 1.7.0 - <small>23/02/2020</small></h2>
 <h3 id="aggiunte">Aggiunte</h3>
 <ul>
 <li>Campo "IBAN", "BIC" e "Note" nel report excel delle richieste</li>
