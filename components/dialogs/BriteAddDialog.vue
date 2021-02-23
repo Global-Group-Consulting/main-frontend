@@ -43,7 +43,7 @@ export default class BriteAddDialog extends Vue {
     dialogForm: any
   }
 
-  get dialogData():DialogData {
+  get dialogData() {
     return this.$store.getters["dialog/dialogData"]
   }
 
