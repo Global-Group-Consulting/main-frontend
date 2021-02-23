@@ -12,15 +12,15 @@ class ClubPacks extends BasicEnum {
     this.data = {
       [this.BASIC]: {
         id: "basic",
-        color: "#4eff26",
+        color: "#F9FBE7",
       },
       [this.FAST]: {
         id: "fast",
-        color: "#e9ff26",
+        color: "#FFF176",
       },
       [this.PREMIUM]: {
         id: "premium",
-        color: "#FFA726",
+        color: "#F9A825",
       }
     }
   }

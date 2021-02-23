@@ -195,7 +195,7 @@ export function agentData(formContext: FormContext) {
   const hasSubAgents = computed(() => formContext.formData.hasSubAgents)
   const isTeamLeader = computed(() => formContext.formData.hasSubAgents && !formContext.formData.referenceAgent)
   const canChangeCommissions = computed(() => {
-    return formContext.permissions.superAdmin || formContext.$auth.user.hasSubAgents
+    return formContext.permissions.superAdmin // deve essere modificabile solo dal superAdmin || formContext.$auth.user.hasSubAgents
   })
 
   return [

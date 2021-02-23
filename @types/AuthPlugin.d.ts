@@ -1,10 +1,13 @@
 import {UserDataSchema} from "./UserFormData";
 
+
 export interface AuthPlugin {
   busy: boolean,
   loggedIn: boolean,
   strategy: string
-  user: UserDataSchema
+  user: UserDataSchema,
+
+  fetchUser(): void
 }
 
 declare module 'vue/types/vue' {

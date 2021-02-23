@@ -3,30 +3,36 @@ import {BasicApiCall} from '../classes/BasicApiCall'
 import UserRoles from "../enums/UserRoles"
 import {Plugin} from "@nuxt/types";
 import {enums} from "~/plugins/enums";
+import {AclPermission} from "~/@types/Acl/Permissions";
+import {AclRole} from "~/@types/Acl/Roles";
 
+
+interface IApiCalls extends ApiCalls {
+  [key: string]: any
+}
 
 declare module 'vue/types/vue' {
   // this.$myInjectedFunction inside Vue components
   interface Vue {
-    $apiCalls: ApiCalls
+    $apiCalls: IApiCalls
   }
 }
 
 declare module '@nuxt/types' {
   // nuxtContext.app.$myInjectedFunction inside asyncData, fetch, plugins, middleware, nuxtServerInit
   interface NuxtAppOptions {
-    $apiCalls: ApiCalls
+    $apiCalls: IApiCalls
   }
 
   // nuxtContext.$myInjectedFunction
   interface Context {
-    $apiCalls: ApiCalls
+    $apiCalls: IApiCalls
   }
 }
 
 declare module 'vuex/types/index' {
   interface Store<S> {
-    $apiCalls: ApiCalls
+    $apiCalls: IApiCalls
   }
 }
 
@@ -323,6 +329,77 @@ export class ApiCalls extends BasicApiCall {
   async getClientsList(userId: string) {
     return await this.get({
       endPoint: `/api/users/${userId}/clientsList`
+    })
+  }
+
+
+  async aclReadPermissions() {
+    return await this.get({endPoint: `/api/acl/permissions`})
+  }
+
+  async aclCreatePermissions(data: Partial<AclPermission>) {
+    return await this._call({endPoint: `/api/acl/permissions`, body: data, method: "POST"})
+  }
+
+  async aclUpdatePermissions(data: Partial<AclPermission>) {
+    return await this._call({endPoint: `/api/acl/permissions/${data.id}`, body: data, method: "PUT"})
+  }
+
+  async aclUpdateUsers(data: Partial<AclPermission>) {
+    return await this._call({endPoint: `/api/users/${data.id}`, body: data, method: "PATCH"})
+  }
+
+
+  async aclDeletePermissions(id: string) {
+    return await this._call({endPoint: `/api/acl/permissions/${id}`, method: "DELETE"})
+  }
+
+  async aclReadRoles() {
+    return await this.get({endPoint: `/api/acl/roles`})
+  }
+
+  async aclCreateRoles(data: Partial<AclRole>) {
+    return await this._call({endPoint: `/api/acl/roles`, body: data, method: "POST"})
+  }
+
+  async aclUpdateRoles(data: Partial<AclRole>) {
+    return await this._call({endPoint: `/api/acl/roles/${data.id}`, body: data, method: "PUT"})
+  }
+
+  async aclDeleteRoles(id: string) {
+    return await this._call({endPoint: `/api/acl/roles/${id}`, method: "DELETE"})
+  }
+
+
+  async fetchClubUsers() {
+    return await this.get({
+      endPoint: `/api/club/users`
+    })
+  }
+
+  async clubFetchBrites(userId: string) {
+    return await this.get({
+      endPoint: `/api/club/${userId}`,
+    })
+  }
+
+  async clubFetchBlocks(userId: string) {
+    return await this.get({
+      endPoint: `/api/club/${userId}/blocks`,
+    })
+  }
+
+  async clubAddBrites(userId: string, data: any) {
+    return await this.post({
+      endPoint: `/api/club/${userId}`,
+      body: data
+    })
+  }
+
+  async clubUseBrites(userId: string, data: any) {
+    return await this.post({
+      endPoint: `/api/club/${userId}/use`,
+      body: data
     })
   }
 }

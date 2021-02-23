@@ -1,12 +1,15 @@
 [comment]: <> (## Non ancora rilasciato)
 
-## v 1.6.4 - <small>TBA</small>
+## v 1.7.0 - <small>23/02/2020</small>
 ### Aggiunte
 - Campo "IBAN", "BIC" e "Note" nel report excel delle richieste
 - Aggiunto campo "Tipologia Provvigioni squadra" in caso di agente con subagenti
-- Possibilità di cancellazione di tutte le notifiche o di una intera categoria
 - Aggiunto modale per visualizzare i clienti di un subagente
 - Aggiunto colonna che mostra provvigioni attive per gli agenti
+- Aggiunta sezione dedicata al Club
+- Aggiunta sezione dedicata ai movimenti Brite
+- Aggiunta sezione dedicata ai ruoli e permessi di tutti gli utenti
+- Comunicazioni - Aggiunta tab dedicata al Global Club
 
 ### Miglioramenti
 - Spostato impostazioni agente (anagrafica utente) in tab dedicata

@@ -1,17 +1,17 @@
 <template>
   <v-navigation-drawer
-      class="drawer"
-      :temporary="!permanentDrawer"
-      :absolute="!permanentDrawer"
-      :right="!permanentDrawer"
-      :dark="permanentDrawer"
-      :permanent="permanentDrawer"
-      :mini-variant="permanentDrawer"
-      :expand-on-hover="permanentDrawer"
-      mini-variant-width="80"
-      app
-      v-model="drawerOpen"
-      touchless
+    class="drawer"
+    :temporary="!permanentDrawer"
+    :absolute="!permanentDrawer"
+    :right="!permanentDrawer"
+    :dark="permanentDrawer"
+    :permanent="permanentDrawer"
+    :mini-variant="permanentDrawer"
+    :expand-on-hover="permanentDrawer"
+    mini-variant-width="80"
+    app
+    v-model="drawerOpen"
+    touchless
 
   >
 
@@ -113,19 +113,20 @@
     </div>
 
     <changelog-dialog
-        v-if="$store.getters['dialog/dialogId'] === 'ChangelogDialog'"
+      v-if="$store.getters['dialog/dialogId'] === 'ChangelogDialog'"
     ></changelog-dialog>
 
   </v-navigation-drawer>
 </template>
 
 <script>
-import drawerItems from "@/config/drawerEntries";
-import DrawerItem from "@/components/drawer/DrawerItem";
-import DrawerGroup from "~/components/drawer/DrawerGroup";
 import {mapGetters, mapState} from "vuex";
-import ChangelogDialog from "@/components/dialogs/ChangelogDialog";
+import drawerItems from "~/config/drawerEntries";
+import DrawerItem from "~/components/drawer/DrawerItem.vue";
+import DrawerGroup from "~/components/drawer/DrawerGroup.vue";
+import ChangelogDialog from "~/components/dialogs/ChangelogDialog.vue";
 import accountMenuActions from "~/functions/accountMenuActions";
+import {SetupContext} from "@vue/composition-api";
 
 export default {
   name: "Drawer",

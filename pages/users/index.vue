@@ -1,11 +1,7 @@
 <template>
   <v-layout>
     <v-flex>
-      <page-header
-        :title="title"
-        :subtitle="subtitle"
-        :icon="icon"
-      ></page-header>
+      <page-header page-name="users"></page-header>
 
       <page-toolbar always-visible :actions-list="actionsList">
         <template v-slot:right-block>
@@ -154,10 +150,10 @@
                       <v-chip x-small
                               class="mx-1"
                               v-on="on">
-                        {{ getInitials($t("enums.CommissionType." + comm.name)) }}
-                        <template v-if="comm.percent">
-                          &nbsp;{{ comm.percent }} %
-                        </template>
+                        {{ getInitials($t("enums.CommissionType." + comm.name), comm) }}
+                        <!--                        <template v-if="comm.percent">
+                                                  &nbsp;{{ comm.percent }} %
+                                                </template>-->
                       </v-chip>
                     </template>
                     {{ $t("enums.CommissionType." + comm.name) }}
@@ -175,7 +171,8 @@
                            v-on="on"
                            small
                            color="primary">
-                      <v-icon small class="mr-2">mdi-dock-window</v-icon>
+                      <v-icon small class="mr-2" v-if="+value === 1">mdi-account</v-icon>
+                      <v-icon small class="mr-2" v-else>mdi-account-multiple</v-icon>
                       {{ +value || 0 }}
                     </v-btn>
                   </template>
@@ -368,11 +365,14 @@ import PageToolbar from "@/components/blocks/PageToolbar";
 
 import Mark from "mark.js"
 import ClientsListDialog from "../../components/dialogs/ClientsListDialog";
+import {UsersPermissions} from "../../functions/acl/enums/users.permissions";
 
 export default {
   name: "index",
   components: {ClientsListDialog, PageToolbar, SigningLogsPopup, DataTable, UsersCrudActions, PageHeader},
-  middleware: ["pagesAuth"],
+  meta: {
+    permissions: [UsersPermissions.ACL_USERS_GROUP_READ, UsersPermissions.ACL_USERS_ALL_READ]
+  },
   setup(props, {root}) {
     const {$enums, $i18n, $apiCalls, $vuetify, $router, $store, $alerts} = root;
     const currentTab = ref(0);
@@ -528,10 +528,22 @@ export default {
      * @param {string} str
      * @returns {string}
      */
-    function getInitials(str) {
-      return str.split(" ")
-        .map(_str => _str.slice(0, 1))
-        .join("").toUpperCase()
+    function getInitials(str, item) {
+      switch (item.name) {
+        case $enums.CommissionType.NEW_DEPOSIT:
+
+          return item.percent + "%";
+        case $enums.CommissionType.TOTAL_DEPOSIT:
+
+          return "% / mese";
+        case $enums.CommissionType.ANNUAL_DEPOSIT:
+
+          return item.percent + "% / anno"
+      }
+
+      /* return str.split(" ")
+         .map(_str => _str.slice(0, 1))
+         .join("").toUpperCase()*/
     }
 
     watch(filtersActive, (value) => {

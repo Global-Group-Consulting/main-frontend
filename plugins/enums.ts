@@ -11,6 +11,8 @@ import WalletTypes from '../enums/WalletTypes'
 import CurrencyType from '../enums/CurrencyType'
 import MessageTypes from '../enums/MessageTypes'
 import MovementTypes from '../enums/MovementTypes'
+import ClubPacks from '../enums/ClubPacks'
+import ClubMovementTypes from '../enums/ClubMovementTypes'
 
 import {Plugin} from "@nuxt/types";
 
@@ -19,6 +21,8 @@ export const enums = {
   AgentTeamType,
   CommissionType,
   CurrencyType,
+  ClubPacks,
+  ClubMovementTypes,
   DocumentTypes,
   Genders,
   MessageTypes,
