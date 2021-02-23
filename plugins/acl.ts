@@ -80,7 +80,7 @@ class Acl {
     }
 
     /*
-    If the user has no permissions, but at least one i required, return false
+    If the user has no permissions, but at least one is required, return false
      */
     if (!this.userPermissions) {
       return toReturn
@@ -100,15 +100,24 @@ class Acl {
         Because the "type" does not always exists, if the permission has it and the user's one is different
         and the user has no wildcard, skip this userPermission, because is not valid
          */
-        if (parts.type && userParts.type !== parts.type && userParts.access !== "*") {
+
+        if ((parts.type && userParts.type !== parts.type && userParts.type !== "*")
+          || (parts.access && userParts.access !== parts.access && userParts.access !== "*")) {
           continue
         }
+
+        /*
+        La soluzione migliore sarebbe prevedere una wildcard sia peril type che per l'access.
+         */
+
 
         /*
          If the section matches and the access matches of the user has access *, return true
          and stop all the cycles.
          */
-        if (parts.section === userParts.section && (parts.access === userParts.access || userParts.access === "*")) {
+        if (parts.section === userParts.section &&
+          (userParts.type === parts.type || userParts.type === "*") &&
+          (userParts.access === parts.access || userParts.access === "*")) {
           toReturn = true
 
           // Once i found a valid match, stop all the cycles

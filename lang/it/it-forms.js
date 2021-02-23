@@ -106,4 +106,6 @@ export default {
   'acl-code': "Codice",
   'acl-description': "Descrizione",
   'acl-permissions': "Permessi",
+  'amount-change': "Importo da aggiungere",
+  'brite-add-notes': "Motivazione"
 }

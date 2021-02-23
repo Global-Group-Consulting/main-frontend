@@ -2,6 +2,7 @@ import {PortfolioPermissions} from "~/functions/acl/enums/portfolio.permissions"
 import {UsersPermissions} from "~/functions/acl/enums/users.permissions";
 import {RequestsPermissions} from "~/functions/acl/enums/requests.permissions";
 import {AclPermissions} from "~/functions/acl/enums/acl.permissions";
+import {ClubPermissions} from "~/functions/acl/enums/club.permissions";
 
 interface DrawerEntry {
   id?: string
@@ -9,6 +10,7 @@ interface DrawerEntry {
   icon?: string
   link?: string
   permissions?: string[]
+  if?: boolean
   type?: "group"
   childs?: DrawerEntry[]
 }
@@ -25,19 +27,20 @@ export default function (context: Vue): DrawerEntry[] {
     {
       type: 'group',
       text: 'portfolio',
-      permissions: [PortfolioPermissions.ACL_PORTFOLIO_SELF_READ],
       childs: [
         {
           id: 'users',
           text: 'clients',
           icon: 'mdi-account-group',
           link: '/users',
+          permissions: [UsersPermissions.ACL_USERS_GROUP_READ]
         },
         {
           id: 'wallet',
           text: "wallet",
           icon: 'mdi-wallet',
           link: '/wallet',
+          permissions: [PortfolioPermissions.ACL_PORTFOLIO_SELF_READ],
         }
       ]
     },
@@ -54,7 +57,7 @@ export default function (context: Vue): DrawerEntry[] {
           text: 'users',
           icon: 'mdi-account-group',
           link: '/users',
-          permissions: [UsersPermissions.ACL_USERS_ALL_READ, UsersPermissions.ACL_USERS_GROUP_READ],
+          permissions: [UsersPermissions.ACL_USERS_ALL_READ],
         },
         {
           id: 'movements',
@@ -70,6 +73,26 @@ export default function (context: Vue): DrawerEntry[] {
           link: '/requests',
           permissions: [RequestsPermissions.ACL_REQUESTS_SELF_READ, RequestsPermissions.ACL_REQUESTS_ALL_READ]
         },
+      ]
+    },
+    {
+      type: 'group',
+      text: 'club',
+      childs: [
+        {
+          id: 'club',
+          text: 'club',
+          icon: 'mdi-diamond-stone',
+          link: '/club',
+          permissions: [ClubPermissions.BRITES_ALL_READ]
+        }, {
+          id: 'club',
+          text: 'club',
+          icon: 'mdi-diamond-stone',
+          link: '/club/' + context.$auth.user.id,
+          permissions: [ClubPermissions.BRITES_SELF_READ],
+          if: context.$auth.user.gold
+        }
       ]
     },
     {

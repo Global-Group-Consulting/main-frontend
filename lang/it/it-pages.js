@@ -148,5 +148,28 @@ export default {
   },
   acl: {
     title: "Ruoli e permessi"
+  },
+  club: {
+    title: "Global Club",
+
+    brite: {
+      title: "Movimenti Brite",
+      activePack: "Pacchetto attivo: <strong>{pack}</strong>",
+      changeActivePack: "Cambia il pacchetto attivo",
+      totalUsableBrite: "Totale brite utilizzabili",
+      totalExpiresAt: "<strong>{amount}</strong> scadono il {expiresAt}",
+
+      tabs: {
+        archive: "Archivio",
+        briteTotal: "Totale Brite accumulati",
+        briteUsed: "Brite Utilizzati",
+        briteAvailable: "Brite Disponibili",
+        usableFrom: "<strong>Utilizzabili dal</strong> {date}",
+        expiresAt: "<strong>Scadenza</strong> {date}",
+        movements: "Elenco movimenti",
+        use: "Utilizza",
+        addBrite: "Aggiungi",
+      },
+    }
   }
 }

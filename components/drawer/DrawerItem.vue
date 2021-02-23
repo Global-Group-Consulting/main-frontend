@@ -4,7 +4,7 @@
     :to="data.link"
     :ripple="false"
     :color="'grey lighten-3'"
-    v-if="$acl.checkPermissions(data.permissions)"
+    v-if="showItem"
   >
     <v-list-item-action>
       <v-icon>{{ data.icon }}</v-icon>
@@ -17,20 +17,23 @@
 </template>
 
 <script lang="ts">
-import {mapGetters} from "vuex";
+import {Component, Vue, Prop} from "vue-property-decorator";
 
-export default {
-  name: "DrawerItem",
-  props: {
-    data: {}
-  },
-  computed: {
-    ...mapGetters({
-      userMustActivate: "user/mustActivate"
-    })
-  },
+@Component
+export default class DrawerItem extends Vue {
+  @Prop({})
+  public data!: any
 
-};
+  get showItem(): boolean {
+    const aclPermission = this.$acl.checkPermissions(this.data.permissions)
+
+    if ('if' in this.data) {
+      return aclPermission && this.data.if
+    }
+
+    return aclPermission
+  }
+}
 </script>
 
 <style scoped></style>

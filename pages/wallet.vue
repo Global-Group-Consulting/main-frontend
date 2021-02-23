@@ -1,9 +1,7 @@
 <template>
   <v-flex>
     <page-header
-      :title="title"
-      :subtitle="subtitle"
-      :icon="icon"
+      page-name="wallet"
     ></page-header>
 
     <dashboard-blocks :dashboard-data="dashboardData"

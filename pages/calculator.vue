@@ -1,11 +1,7 @@
 <template>
   <v-layout>
     <v-flex>
-      <page-header
-        :title="title"
-        :subtitle="subtitle"
-        :icon="icon"
-      ></page-header>
+      <page-header page-name="calculator"></page-header>
 
       <page-toolbar :actions-list="actionsList"></page-toolbar>
 
@@ -138,9 +134,12 @@ import pageBasic from "~/functions/pageBasic";
 import calculatorFormSchema from "~/config/forms/calculatorSchema";
 import {Options} from "@nuxt/typescript-build";
 import {AclPermissions} from "~/functions/acl/enums/acl.permissions";
+import PageHeader from "~/components/blocks/PageHeader.vue";
+import PageToolbar from "~/components/blocks/PageToolbar.vue";
 
 export default defineComponent({
     name: 'calculator',
+    components: {PageToolbar, PageHeader},
     setup(props, {root}) {
       const {$moment, $enums, $i18n} = root
       const currentTab = ref(0)

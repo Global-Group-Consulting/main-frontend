@@ -2,9 +2,7 @@
   <v-layout>
     <v-flex>
       <page-header
-        :title="title"
-        :subtitle="subtitle"
-        :icon="icon"
+        page-name="requests"
       ></page-header>
 
       <page-toolbar>

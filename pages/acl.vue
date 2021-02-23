@@ -1,11 +1,7 @@
 <template>
   <v-layout>
     <v-flex>
-      <page-header
-        :title="pageHeaderData.title.value"
-        :subtitle="pageHeaderData.subtitle.value"
-        :icon="pageHeaderData.icon.value"
-      ></page-header>
+      <page-header page-name="acl"></page-header>
 
       <page-toolbar :actions-list="actionsList"></page-toolbar>
 
@@ -42,7 +38,8 @@
             </template>
 
             <template v-slot:item.actions="{item}">
-              <v-btn icon @click="onDelete(item, tab.id)" color="red">
+              <v-btn icon @click="onDelete(item, tab.id)" color="red"
+                     v-if="!['admin', 'agent', 'client', 'clients_service', 'super_admin'].includes(item.code)">
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </template>
@@ -85,7 +82,6 @@ import {AclPermissions} from "~/functions/acl/enums/acl.permissions";
   }
 })
 export default class Acl extends Vue {
-  public pageHeaderData = pageBasicFn({$i18n: this.$i18n}, "acl")
 
   public rolesList: AclRole[] = []
   public permissionsList: AclPermission[] = []
@@ -178,6 +174,10 @@ export default class Acl extends Vue {
   }
 
   async onEditSave(field: string, newValue: string | string[], tab: DynamicTab, item: any) {
+    if (!tab.updateMethod) {
+      return
+    }
+
     try {
       await this.$apiCalls[tab.updateMethod]({
         id: item.id,

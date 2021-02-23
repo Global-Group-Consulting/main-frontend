@@ -119,6 +119,30 @@ const defaults = {
         'description',
         'actions',
       ]
+    },
+    club: {
+      columns: [
+        'clubCardNumber',
+        'firstName',
+        'lastName',
+        'email',
+        'clubPack',
+        // 'role',
+        'briteTotal',
+        'briteUsed',
+        'briteAvailable',
+        'actions'
+      ]
+    },
+    brite: {
+      columns: [
+        'amountChange',
+        'createdAt',
+        'movementType',
+        'deposit',
+        'depositOld',
+        'notes',
+      ]
     }
   }
 }

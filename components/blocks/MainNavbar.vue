@@ -89,19 +89,19 @@
     </div>
 
     <communication-new-dialog
-        v-if="$store.getters['dialog/dialogId'] === 'CommunicationNewDialog'"
-        @communicationAdded="onBugReported"
+      v-if="$store.getters['dialog/dialogId'] === 'CommunicationNewDialog'"
+      @communicationAdded="onBugReported"
     ></communication-new-dialog>
 
   </v-app-bar>
 </template>
 
 <script>
-import socketNotificationsFn from "@/functions/socket/notifications";
+import socketNotificationsFn from "~/functions/socket/notifications";
+import socketAccountFn from "~/functions/socket/account";
 import {computed, onMounted, ref} from "@vue/composition-api";
-import {moneyFormatter} from "@/plugins/filters";
-import CommunicationNewDialog from "@/components/dialogs/CommunicationNewDialog";
-import AccountMenu from "@/components/elements/AccountMenu";
+import CommunicationNewDialog from "~/components/dialogs/CommunicationNewDialog";
+import AccountMenu from "~/components/elements/AccountMenu";
 
 export default {
   name: "MainNavbar",
@@ -151,7 +151,8 @@ export default {
       openBugReport,
       onBugReported,
       dynamicClasses,
-      ...socketNotificationsFn(root)
+      // ...socketAccountFn(root),
+      ...socketNotificationsFn(root),
     }
   },
 }

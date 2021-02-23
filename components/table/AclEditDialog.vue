@@ -9,7 +9,7 @@
     @open="onOpen"
     @close="onClose"
   >
-    <div v-if="value" class="mx-n1">
+    <div v-if="value && value.length > 0" class="mx-n1">
       <div v-if="!textInput">
         <v-chip
           v-for="entry of value" :key="entry"

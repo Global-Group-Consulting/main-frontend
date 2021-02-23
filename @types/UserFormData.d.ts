@@ -54,6 +54,8 @@ export interface User {
   agentTeamType: typeof AgentTeamType,
   permissions: string[],
   superAdmin: boolean
+  clubCardNumber: string
+  clubPack: string
 }
 
 export interface UserDataSchema extends User {

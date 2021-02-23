@@ -369,6 +369,32 @@ export class ApiCalls extends BasicApiCall {
   async aclDeleteRoles(id: string) {
     return await this._call({endPoint: `/api/acl/roles/${id}`, method: "DELETE"})
   }
+
+
+  async fetchClubUsers() {
+    return await this.get({
+      endPoint: `/api/club/users`
+    })
+  }
+
+  async clubFetchBrites(userId: string) {
+    return await this.get({
+      endPoint: `/api/club/${userId}`,
+    })
+  }
+
+  async clubFetchBlocks(userId: string) {
+    return await this.get({
+      endPoint: `/api/club/${userId}/blocks`,
+    })
+  }
+
+  async clubAddBrites(userId: string, data: any) {
+    return await this.post({
+      endPoint: `/api/club/${userId}`,
+      body: data
+    })
+  }
 }
 
 const apiCallsPlugin: Plugin = (context, inject) => {

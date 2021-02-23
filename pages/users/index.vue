@@ -1,11 +1,7 @@
 <template>
   <v-layout>
     <v-flex>
-      <page-header
-        :title="title"
-        :subtitle="subtitle"
-        :icon="icon"
-      ></page-header>
+      <page-header page-name="users"></page-header>
 
       <page-toolbar always-visible :actions-list="actionsList">
         <template v-slot:right-block>

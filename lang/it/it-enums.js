@@ -140,6 +140,12 @@ export default {
     "fast": "Fast",
     "premium": "Premium",
   },
+  'ClubMovementTypes': {
+    "interest_recapitalized": "Ricapitalizzazione interessi",
+    "deposit_added": "Aggiunta manuale",
+    "deposit_transferred": "Trasferimento tra utenti",
+    "deposit_collected": "Utilizzo brite",
+  },
   'AgentTeamType': {
     "group_percentage": "Percentuale di gruppo",
     "subject_percentage": "Percentuale soggettiva"

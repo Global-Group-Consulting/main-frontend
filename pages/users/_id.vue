@@ -2,76 +2,78 @@
   <v-layout>
     <v-flex>
       <page-header
-        :title="pageData.title.value"
-        :subtitle="!userIsNew ? pageData.subtitle.value : ''"
-        :icon="pageData.icon.value"
+        page-name="usersId"
+        :title="pageTitle"
+        :sub-title="!userIsNew ? pageSubTitle : false "
       >
-        <template v-slot:subtitle v-if="!userIsNew">
-          <div v-html="pageData.subtitle.value" class="d-inline-block"></div>
+        <template v-slot:subtitle>
+          <div v-if="!userIsNew">
+            <div v-html="pageSubTitle" class="d-inline-block"></div>
 
-          <!-- <v-tooltip bottom v-if="canChangeStatus">
-            <template v-slot:activator="{ on }">
-              <v-btn icon dark @click="openChangeStatusDialog" v-on="on">
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
-            </template>
+            <!-- <v-tooltip bottom v-if="canChangeStatus">
+              <template v-slot:activator="{ on }">
+                <v-btn icon dark @click="openChangeStatusDialog" v-on="on">
+                  <v-icon>mdi-pencil</v-icon>
+                </v-btn>
+              </template>
 
-            <span>Modifica stato</span>
-          </v-tooltip> -->
+              <span>Modifica stato</span>
+            </v-tooltip> -->
 
-          <!-- Incomplete data info -->
-          <v-menu offset-y open-on-hover bottom
-                  v-if="showIncompleteDataInfo"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn icon v-on="on" v-bind="attrs">
-                <v-icon>mdi-information</v-icon>
-              </v-btn>
-            </template>
+            <!-- Incomplete data info -->
+            <v-menu offset-y open-on-hover bottom
+                    v-if="showIncompleteDataInfo"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon v-on="on" v-bind="attrs">
+                  <v-icon>mdi-information</v-icon>
+                </v-btn>
+              </template>
 
-            <v-card color="white" max-width="400px" flat>
-              <v-card-text>
-                {{ $t("pages.usersId.info-incomplete-data") }}
+              <v-card color="white" max-width="400px" flat>
+                <v-card-text>
+                  {{ $t("pages.usersId.info-incomplete-data") }}
 
-                <template v-if="formData.incompleteData && formData.incompleteData.message">
-                  <v-layout align-items-start class="mt-2">
-                    <strong>
-                      {{ $t('pages.usersId.info-incomplete-data-message') }}
-                    </strong>
-                    <div class="ml-2">
-                      {{ formData.incompleteData.message }}
-                    </div>
-                  </v-layout>
-                </template>
-
-                <template
-                  v-if="formData.incompleteData && formData.incompleteData.checkedFields && formData.incompleteData.checkedFields.length > 0">
-                  <v-layout align-items-start class="mt-2">
-                    <strong>
-                      {{ $t('pages.usersId.info-incomplete-data-fields') }}
-                    </strong>
-                    <div class="ml-2">
-                      <div v-for="field of formData.incompleteData.checkedFields">
-                        {{ $t(`forms.${$options.filters.formFieldNameFormatter(field)}`) }}
+                  <template v-if="formData.incompleteData && formData.incompleteData.message">
+                    <v-layout align-items-start class="mt-2">
+                      <strong>
+                        {{ $t('pages.usersId.info-incomplete-data-message') }}
+                      </strong>
+                      <div class="ml-2">
+                        {{ formData.incompleteData.message }}
                       </div>
-                    </div>
-                  </v-layout>
-                </template>
-              </v-card-text>
-            </v-card>
-          </v-menu>
+                    </v-layout>
+                  </template>
 
-          <!-- Contract status -->
-          <v-menu offset-y open-on-hover bottom
-                  v-if="formData.account_status === $enums.AccountStatuses.VALIDATED">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn icon v-on="on" v-bind="attrs">
-                <v-icon>mdi-information</v-icon>
-              </v-btn>
-            </template>
+                  <template
+                    v-if="formData.incompleteData && formData.incompleteData.checkedFields && formData.incompleteData.checkedFields.length > 0">
+                    <v-layout align-items-start class="mt-2">
+                      <strong>
+                        {{ $t('pages.usersId.info-incomplete-data-fields') }}
+                      </strong>
+                      <div class="ml-2">
+                        <div v-for="field of formData.incompleteData.checkedFields">
+                          {{ $t(`forms.${$options.filters.formFieldNameFormatter(field)}`) }}
+                        </div>
+                      </div>
+                    </v-layout>
+                  </template>
+                </v-card-text>
+              </v-card>
+            </v-menu>
 
-            <signing-logs-popup :value="formData.signinLogs"></signing-logs-popup>
-          </v-menu>
+            <!-- Contract status -->
+            <v-menu offset-y open-on-hover bottom
+                    v-if="formData.account_status === $enums.AccountStatuses.VALIDATED">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon v-on="on" v-bind="attrs">
+                  <v-icon>mdi-information</v-icon>
+                </v-btn>
+              </template>
+
+              <signing-logs-popup :value="formData.signinLogs"></signing-logs-popup>
+            </v-menu>
+          </div>
         </template>
       </page-header>
 
@@ -594,7 +596,7 @@ export default {
       }
     }
 
-    pageData.title = computed(() => {
+    const pageTitle = computed(() => {
       if (userForm.userIsNew.value) {
         return $i18n.t(`pages.usersId.title-new-with-role`, {
           role: $i18n.t(
@@ -607,7 +609,7 @@ export default {
       return $i18n.t(`pages.usersId.title`);
     });
 
-    pageData.subtitle = computed(() => {
+    const pageSubTitle = computed(() => {
       return $i18n.t("pages.usersId.subtitle", {
         accountState: $i18n.t(
           `enums.AccountStatuses.${
@@ -657,7 +659,8 @@ export default {
       getFormSchema,
       ...userForm,
       ...userDetails(root),
-      pageData,
+      pageTitle,
+      pageSubTitle,
       communicationsList,
       accentColor,
       canApprove,

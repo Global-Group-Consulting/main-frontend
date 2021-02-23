@@ -65,5 +65,18 @@ export default {
     code: "Codice",
     description: "Descrizione",
     permissions: "Permessi"
+  },
+  club: {
+    'cardNumber': "N° Tessera",
+    'clubPack': "Pacchetto attivo",
+    'briteTotal': "Brite Totali",
+    'briteUsed': "Brite Usati",
+    'briteAvailable': "Brite Disponibili",
+    'amountChange': "Importo",
+    'deposit': "Deposito",
+    'depositOld': "Deposito precedente",
+    'createdAt': "Data movimento",
+    'notes': "Note",
+    'movementType': "Tipologia Movimento",
   }
 }

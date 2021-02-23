@@ -103,5 +103,10 @@ export default {
     titlePermissions: "Aggiungi Permesso",
     "btn-cancel": "Annulla",
     "btn-save": "Salva e Crea"
+  },
+  briteAddDialog: {
+    title: "Aggiungi Brite",
+    "btn-cancel": "Annulla",
+    "btn-save": "Aggiungi"
   }
 }

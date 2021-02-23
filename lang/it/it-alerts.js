@@ -129,4 +129,10 @@ export default {
   "acl-delete-confirmBtnText": "Si, elimina",
   "acl-delete-cancelBtnText": "Annulla",
   "acl-delete-success": "Elemento eliminata correttamente!",
+
+  "brite-add-title": "",
+  "brite-add-text": "Sei sicuro di voler aggiungere <strong>{amount}</strong> brite?",
+  "brite-add-confirmBtnText": "Si, aggiungi",
+  "brite-add-cancelBtnText": "Annulla",
+  "brite-add-success": "Brite aggiunti correttamente!",
 }

@@ -8,6 +8,7 @@ export default {
   'requests': 'Richieste',
   'utilities': 'Utilità',
   'calculator': 'Preventivi',
+  'club': 'Global Club',
   'comunications': 'Comunicazioni',
   'acl': 'Ruoli e permessi',
   'advanced': "Avanzate",

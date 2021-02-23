@@ -1,11 +1,7 @@
 <template>
   <v-layout>
     <v-flex>
-      <page-header
-        :title="title"
-        :subtitle="subtitle"
-        :icon="icon"
-      ></page-header>
+      <page-header page-name="communications"></page-header>
 
       <page-toolbar v-if="permissions.seeToolbar.value">
         <template slot="center-block">

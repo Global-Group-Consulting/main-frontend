@@ -1,4 +1,5 @@
 import {Formatters} from "./Formatters";
+import CurrencyType from "~/enums/CurrencyType";
 
 export interface FormSchema {
   if?: boolean | Function,
@@ -8,7 +9,9 @@ export interface FormSchema {
   maxCols?: number,
   cols: {
     [key: string]: {
-      component?: string,
+      component?: "v-select" | "date-picker" | "file-uploader"
+        | "agent-commissions-select" | "contract-doc" | "money-input"
+        | "v-switch" | "v-autocomplete" | "v-textarea" | "",
       label?: string,
       formatter?: Formatters | Function,
       if?: any,
@@ -20,6 +23,11 @@ export interface FormSchema {
       multiple?: boolean,
       max?: string | number,
       min?: string | number,
+      showBrite?: boolean,
+      onlyBrite?: boolean,
+      currency?: number,
+      autoGrow?: boolean,
+      rows?: number,
       validations?: {
         [key: string]: {
           params?: any
