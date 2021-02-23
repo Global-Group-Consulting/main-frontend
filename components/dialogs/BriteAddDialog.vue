@@ -30,6 +30,8 @@
 import {Component, Vue} from "vue-property-decorator";
 import DynamicFieldset from "~/components/DynamicFieldset.vue";
 import briteAddSchema from "~/config/forms/briteAddSchema"
+import {CardBlockI} from "~/@types/components/CardBlock";
+import {Moment} from "moment";
 
 @Component({
   components: {DynamicFieldset}
@@ -41,7 +43,7 @@ export default class BriteAddDialog extends Vue {
     dialogForm: any
   }
 
-  get dialogData() {
+  get dialogData():DialogData {
     return this.$store.getters["dialog/dialogData"]
   }
 

@@ -108,5 +108,10 @@ export default {
     title: "Aggiungi Brite",
     "btn-cancel": "Annulla",
     "btn-save": "Aggiungi"
+  },
+  briteUseDialog: {
+    title: "Richiesta utilizzo brite",
+    "btn-send": "Invia richiesta",
+    "btn-cancel": "Annulla"
   }
 }

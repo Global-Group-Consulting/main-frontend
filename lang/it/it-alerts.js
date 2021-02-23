@@ -135,4 +135,10 @@ export default {
   "brite-add-confirmBtnText": "Si, aggiungi",
   "brite-add-cancelBtnText": "Annulla",
   "brite-add-success": "Brite aggiunti correttamente!",
+
+  "brite-use-title": "",
+  "brite-use-text": "Sei sicuro di voler richiedere l'utilizzo di <strong>{amount}</strong> brite?",
+  "brite-use-confirmBtnText": "Si, richiedi",
+  "brite-use-cancelBtnText": "Annulla",
+  "brite-use-success": "Richiesta inoltrata correttamente!",
 }

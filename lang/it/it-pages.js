@@ -107,6 +107,7 @@ export default {
     tickets: "Chat",
     communications: "Comunicazioni",
     messagesSent: "Comunicazioni Inviate",
+    clubConversations: "Global Club",
     me: "Me",
     "btn-new-conversation": "Nuova chat",
     "btn-new-message": "Nuova comunicazione"

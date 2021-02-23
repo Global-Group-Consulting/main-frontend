@@ -8,6 +8,7 @@
               <span v-html="pageSubTitle"></span>
 
               <tooltip-btn icon-name="mdi-archive-arrow-up" color="primary"
+                           disabled
                            icon
                            :tooltip="$t('pages.club.brite.changeActivePack')"></tooltip-btn>
             </v-col>
@@ -24,11 +25,8 @@
               </ul>
             </v-col>
           </v-row>
-
-
         </template>
       </page-header>
-
 
       <dynamic-tabs :tabs-list="tabsList" color="transparent"
                     card-text-class="px-0 py-0"
@@ -83,6 +81,9 @@
 
       <brite-add-dialog v-if="$store.getters['dialog/dialogId'] === 'BriteAddDialog'"
                         @briteAdded="onBriteAdded"></brite-add-dialog>
+
+      <brite-use-dialog v-if="$store.getters['dialog/dialogId'] === 'BriteUseDialog'"
+      ></brite-use-dialog>
     </v-flex>
   </v-layout>
 </template>
@@ -100,6 +101,7 @@ import BriteAddDialog from "~/components/dialogs/BriteAddDialog.vue";
 import {User} from "~/@types/UserFormData";
 import {ClubMovement} from "~/@types/club/ClubMovement";
 import {ClubPermissions} from "~/functions/acl/enums/club.permissions";
+import BriteUseDialog from "~/components/dialogs/BriteUseDialog.vue";
 
 interface BlockData {
   briteTotal: number
@@ -113,7 +115,7 @@ interface TotalReport {
 }
 
 @Component({
-  components: {BriteAddDialog, CardBlock, DynamicTabs, DataTable, PageHeader},
+  components: {BriteUseDialog, BriteAddDialog, CardBlock, DynamicTabs, DataTable, PageHeader},
   meta: {
     permissions: [ClubPermissions.BRITES_ALL_READ, ClubPermissions.BRITES_SELF_READ]
   }
@@ -192,7 +194,7 @@ export default class Brite extends Vue {
    * Getter that returns a report of all available data, that will be used
    * for the report in the top right of the screen.
    */
-  get totalReport() {
+  get totalReport(): TotalReport {
     const toReturn: TotalReport = {
       totalAmount: 0,
       expirations: []
@@ -221,7 +223,7 @@ export default class Brite extends Vue {
     const canAdd = this.$acl.checkPermissions([ClubPermissions.BRITES_ALL_ADD])
       && tab.id === this.currentSemester
     const permissionToUse = this.$acl.checkPermissions([ClubPermissions.BRITES_SELF_USE])
-    const canUse = permissionToUse && this.$moment().isAfter(tab.useFrom) && this.$moment().isBefore(tab.expiresAt)
+    const canUse = false //permissionToUse && this.$moment().isAfter(tab.useFrom) && this.$moment().isBefore(tab.expiresAt)
 
     const toReturn: CardBlockI[] = [{
       id: "briteTotal",
@@ -349,7 +351,16 @@ export default class Brite extends Vue {
   }
 
   onUseBrite(card: CardBlockI) {
-
+    this.$store.dispatch("dialog/updateStatus", {
+      id: "BriteUseDialog",
+      title: this.$t(`dialogs.briteUseDialog.title`),
+      fullscreen: false,
+      readonly: false,
+      data: {
+        card,
+        totalReport: this.totalReport
+      }
+    });
   }
 
   onBriteAdded(newValue: any) {

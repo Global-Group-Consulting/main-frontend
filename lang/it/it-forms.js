@@ -107,5 +107,7 @@ export default {
   'acl-description': "Descrizione",
   'acl-permissions': "Permessi",
   'amount-change': "Importo da aggiungere",
-  'brite-add-notes': "Motivazione"
+  'brite-add-notes': "Motivazione",
+  'brite-use-amount': "Importo da usare",
+  'brite-use-notes': "Motivo della richiesta",
 }

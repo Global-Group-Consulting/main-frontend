@@ -75,6 +75,15 @@ const defaults = {
         "unreadMessages",
       ]
     },
+    clubConversations: {
+      columns: [
+        "subject",
+        "createdAt",
+        "creator",
+        "updatedAt",
+        "unreadMessages",
+      ]
+    },
     calculator: {
       columns: [
         "date",
@@ -268,6 +277,14 @@ const cliente = {
       ]
     },
     conversations: {
+      columns: [
+        "subject",
+        "createdAt",
+        "updatedAt",
+        "unreadMessages",
+      ]
+    },
+    clubConversations: {
       columns: [
         "subject",
         "createdAt",

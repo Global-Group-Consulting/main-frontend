@@ -395,6 +395,13 @@ export class ApiCalls extends BasicApiCall {
       body: data
     })
   }
+
+  async clubUseBrites(userId: string, data: any) {
+    return await this.post({
+      endPoint: `/api/club/${userId}/use`,
+      body: data
+    })
+  }
 }
 
 const apiCallsPlugin: Plugin = (context, inject) => {
