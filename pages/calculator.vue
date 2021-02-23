@@ -26,12 +26,13 @@
                             :items-per-page="25">
                   <template v-slot:item.date="{item}">
                     <date-picker
-                      :value="item.date" dense hi>de-details
+                      :hide-details="true"
+                      :value="item.date" dense
                       @change="item.date = $event"
                       prepend-icon=""
                       :min="$moment(formData.initialDate).toISOString()"
                       :max="$moment(formData.finalDate).toISOString()"
-                      >
+                    >
                     </date-picker>
                   </template>
                   <template v-slot:item.type="{item}">
@@ -136,10 +137,11 @@ import {Options} from "@nuxt/typescript-build";
 import {AclPermissions} from "~/functions/acl/enums/acl.permissions";
 import PageHeader from "~/components/blocks/PageHeader.vue";
 import PageToolbar from "~/components/blocks/PageToolbar.vue";
+import DatePicker from "~/components/forms/inputs/DatePicker.vue";
 
 export default defineComponent({
     name: 'calculator',
-    components: {PageToolbar, PageHeader},
+    components: {DatePicker, PageToolbar, PageHeader},
     setup(props, {root}) {
       const {$moment, $enums, $i18n} = root
       const currentTab = ref(0)
