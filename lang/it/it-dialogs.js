@@ -80,5 +80,38 @@ export default {
     'title': 'Elenco clienti dell\'agente',
     'btn-cancel': "Chiudi",
     'btn-open-user': "Apri"
+  },
+  aclEditDialog: {
+    titleRoles: "Modifica Ruoli",
+    titlePermissions: "Modifica Permessi",
+    titleDirectPermissions: "Modifica Permessi Diretti",
+    titleDescription: "Modifica Descrizione",
+    cancelText: "Annulla",
+    saveText: "Salva",
+    addText: "Aggiungi...",
+    select: {
+      label: {
+        roles: "",
+        permissions: "",
+        directPermissions: ""
+      },
+      selection: "{count} selezionati"
+    }
+  },
+  addAclDialog: {
+    titleRoles: "Aggiungi Ruolo",
+    titlePermissions: "Aggiungi Permesso",
+    "btn-cancel": "Annulla",
+    "btn-save": "Salva e Crea"
+  },
+  briteAddDialog: {
+    title: "Aggiungi Brite",
+    "btn-cancel": "Annulla",
+    "btn-save": "Aggiungi"
+  },
+  briteUseDialog: {
+    title: "Richiesta utilizzo brite",
+    "btn-send": "Invia richiesta",
+    "btn-cancel": "Annulla"
   }
 }

@@ -107,6 +107,7 @@ export default {
     tickets: "Chat",
     communications: "Comunicazioni",
     messagesSent: "Comunicazioni Inviate",
+    clubConversations: "Global Club",
     me: "Me",
     "btn-new-conversation": "Nuova chat",
     "btn-new-message": "Nuova comunicazione"
@@ -145,5 +146,31 @@ export default {
   },
   calculator: {
     title: "Preventivi"
+  },
+  acl: {
+    title: "Ruoli e permessi"
+  },
+  club: {
+    title: "Global Club",
+
+    brite: {
+      title: "Movimenti Brite",
+      activePack: "Pacchetto attivo: <strong>{pack}</strong>",
+      changeActivePack: "Cambia il pacchetto attivo",
+      totalUsableBrite: "Totale brite utilizzabili",
+      totalExpiresAt: "<strong>{amount}</strong> scadono il {expiresAt}",
+
+      tabs: {
+        archive: "Archivio",
+        briteTotal: "Totale Brite accumulati",
+        briteUsed: "Brite Utilizzati",
+        briteAvailable: "Brite Disponibili",
+        usableFrom: "<strong>Utilizzabili dal</strong> {date}",
+        expiresAt: "<strong>Scadenza</strong> {date}",
+        movements: "Elenco movimenti",
+        use: "Utilizza",
+        addBrite: "Aggiungi",
+      },
+    }
   }
 }

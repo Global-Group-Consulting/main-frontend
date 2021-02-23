@@ -1,6 +1,6 @@
 import AgentTeamType from "~/enums/AgentTeamType";
 
-export interface UserDataSchema {
+export interface User {
   id: string,
   role: number
   personType: string
@@ -51,5 +51,12 @@ export interface UserDataSchema {
   files: any[]
   gold: boolean
   hasSubAgents: boolean
-  agentTeamType: typeof AgentTeamType
+  agentTeamType: typeof AgentTeamType,
+  permissions: string[],
+  superAdmin: boolean
+  clubCardNumber: string
+  clubPack: string
+}
+
+export interface UserDataSchema extends User {
 }

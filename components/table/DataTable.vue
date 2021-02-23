@@ -68,10 +68,18 @@ export default {
       type: Array,
       required: true
     },
+    /**
+     * @example
+     * tableKey="calculator"
+     */
     tableKey: {
       type: String,
       required: true
     },
+    /**
+     * @example
+     * schema="calculatorSchema"
+     */
     schema: {
       type: String,
       required: true

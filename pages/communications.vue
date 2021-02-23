@@ -1,11 +1,7 @@
 <template>
   <v-layout>
     <v-flex>
-      <page-header
-        :title="title"
-        :subtitle="subtitle"
-        :icon="icon"
-      ></page-header>
+      <page-header page-name="communications"></page-header>
 
       <page-toolbar v-if="permissions.seeToolbar.value">
         <template slot="center-block">
@@ -31,7 +27,7 @@
         </template>
       </page-toolbar>
 
-      <v-tabs v-model="currentTab" >
+      <v-tabs v-model="currentTab">
         <v-tab v-for="tab of communicationsTabs" :key="tab.key">
           <v-badge :content="tab.unreadCounter"
                    :value="tab.unreadCounter"
@@ -124,22 +120,25 @@
 </template>
 
 <script>
-import {reactive, onBeforeMount, ref, computed} from "@vue/composition-api";
+import {computed, onBeforeMount, reactive, ref} from "@vue/composition-api";
 
 import ComunicationDetailsDialog from "@/components/dialogs/ComunicationDetailsDialog";
 import CommunicationNewDialog from "@/components/dialogs/CommunicationNewDialog";
 
 import pageBasic from "@/functions/pageBasic";
-import requestsCrudActions from "@/functions/requestsCrudActions.js";
 
 import CommunicationsTabs from "@/config/tabs/communicationsTabs";
 import DataTable from "@/components/table/DataTable";
 import PageHeader from "@/components/blocks/PageHeader";
 import PageToolbar from "@/components/blocks/PageToolbar";
+import {ClubPermissions} from "../functions/acl/enums/club.permissions";
 
 export default {
   name: "index",
   components: {PageToolbar, PageHeader, DataTable, ComunicationDetailsDialog, CommunicationNewDialog},
+  /* meta: {
+     permissions: [CommunicationsPermissions.ACL_COMMUNICATIONS_ALL_READ, CommunicationsPermissions.ACL_COMMUNICATIONS_SELF_READ]
+   },*/
   props: {
     receiversShowLimit: {
       type: Number,
@@ -147,27 +146,33 @@ export default {
     }
   },
   setup(props, {root}) {
-    const {$apiCalls, $alerts, $enums, $auth, $route} = root;
+    const {$apiCalls, $alerts, $enums, $auth, $route, $acl} = root;
 
     let dataRefreshTimer = null;
     const currentTab = ref(0);
     const communicationsList = reactive({
       messages: [],
       messagesSent: [],
-      conversations: []
+      conversations: [],
+      clubConversations: []
     });
     const rawList = [];
     const communicationsTabs = computed(() => {
         const tabs = CommunicationsTabs.filter(_tab => {
-          return _tab.key === "messagesSent"
-            ? $enums.UserRoles.ADMIN === $auth.user.role : true;
+          if (_tab.key === "messagesSent") {
+            return $enums.UserRoles.ADMIN === $auth.user.role
+          } else if (_tab.key === "clubConversations") {
+            return $acl.checkPermissions([ClubPermissions.BRITES_SELF_USE, ClubPermissions.CLUB_APPROVE])
+          }
+
+          return true
         })
 
         return tabs.map(tab => {
           const dataList = communicationsList[tab.key]
           let counter = 0
 
-          if (tab.key === "conversations") {
+          if (["conversations", "clubConversations"].includes(tab.key)) {
             counter = dataList.reduce((acc, curr) => curr.unreadMessages > 0 ? acc + 1 : acc, 0)
           } else if (tab.key === "messages") {
             counter = dataList.reduce((acc, curr) => !curr.read_at ? acc + 1 : acc, 0)
@@ -211,6 +216,7 @@ export default {
         }));
         root.$set(communicationsList, "messagesSent", result.messagesSent);
         root.$set(communicationsList, "conversations", result.conversations);
+        root.$set(communicationsList, "clubConversations", result.clubConversations);
       } catch (er) {
         $alerts.error(er);
       } finally {

@@ -63,6 +63,7 @@ export default {
   ** https://nuxtjs.org/guide/plugins
   */
   plugins: [
+    './plugins/acl.ts',
     './plugins/axios.js',
     './plugins/alerts.ts',
     './plugins/apiCalls.ts',
@@ -123,7 +124,7 @@ export default {
   },
 
   router: {
-    middleware: ['storeFetch', 'auth', 'authJWT']
+    middleware: ['storeFetch', 'auth', 'authJWT', 'aclAuth']
   },
 
   serverMiddleware: [

@@ -33,7 +33,7 @@ declare module 'vuex/types/index' {
 class Socket {
   private ws
   private isConnected: Ref<boolean>
-  private mustRetry: boolean
+  public mustRetry: boolean
   private topics: any
   private connections: any[]
   private pendingConnections: any[]
@@ -133,6 +133,15 @@ class Socket {
 
   async notifications() {
     const topic = "notifications"
+    if (!this.topics[topic] || !this.topics[topic].connected) {
+      this.topics[topic] = await this._subscribe(topic)
+    }
+
+    return this.topics[topic]
+  }
+
+  async account() {
+    const topic = "account"
     if (!this.topics[topic] || !this.topics[topic].connected) {
       this.topics[topic] = await this._subscribe(topic)
     }

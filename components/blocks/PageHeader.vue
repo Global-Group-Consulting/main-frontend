@@ -17,53 +17,61 @@
         'display-3': $vuetify.breakpoint.mdAndUp,
         'display-2': $vuetify.breakpoint.smOnly,
         'display-1': $vuetify.breakpoint.xsOnly
-        }">{{ title }}</h1>
+        }">{{ pageTitle }}</h1>
     </div>
     <h3
-      v-if="subtitle"
+      v-if="pageSubtitle"
       class="display-1 font-weight-light"
       style="opacity: 0.5"
     >
       <slot name="subtitle">
-        <div v-html="subtitle"></div>
+        <div v-html="pageSubtitle"></div>
       </slot>
     </h3>
   </v-sheet>
 </template>
 
 <script lang="ts">
-import {defineComponent, computed} from "@vue/composition-api";
+import {Component, Prop, Vue} from "vue-property-decorator"
+// import pages from "~/config/pages";
 
-export default defineComponent({
-  name: "PageHeader",
-  props: {
-    title: {
-      type: String,
-      default: ""
-    },
-    subtitle: {
-      type: String,
-      default: ""
-    },
-    icon: {
-      type: String,
-      default: ""
-    },
-    showUserRole: {
-      type: Boolean,
-      default: false
+@Component
+export default class PageHeader extends Vue {
+  @Prop({type: String, required: true})
+  public pageName!: string
+
+  @Prop({type: String})
+  public title!: string
+
+  @Prop({type: [Boolean, String]})
+  public subTitle!: string | any
+
+  get userRole() {
+    return this.$enums.UserRoles.get(this.$auth.user.role)?.id
+  }
+
+  get titlePath() {
+    return `pages.${this.pageName}.title`
+  }
+
+  get subtitlePath() {
+    return `pages.${this.pageName}.subtitle`
+  }
+
+  get pageTitle() {
+    return this.title ? this.title : this.$t(this.titlePath)
+  }
+
+  get pageSubtitle() {
+    if (typeof this.subTitle === "boolean" && !this.subTitle) {
+      return ""
     }
-  },
-  setup(props, {root}) {
-    const {$enums, $auth} = root
 
-    const userRole = computed(() => $enums.UserRoles.get($auth.user.role)?.id)
+    return this.subTitle ? this.subTitle : this.$te(this.subtitlePath) ? this.$t(this.subtitlePath) : ""
+  }
 
-    return {
-      userRole
-    }
-  },
-});
+  /*get icon() {
+    return pages[this.pageName] && pages[this.pageName].icon ? pages[this.pageName].icon : ''
+  }*/
+}
 </script>
-
-<style></style>

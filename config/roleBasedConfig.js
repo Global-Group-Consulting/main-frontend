@@ -75,6 +75,15 @@ const defaults = {
         "unreadMessages",
       ]
     },
+    clubConversations: {
+      columns: [
+        "subject",
+        "createdAt",
+        "creator",
+        "updatedAt",
+        "unreadMessages",
+      ]
+    },
     calculator: {
       columns: [
         "date",
@@ -94,6 +103,54 @@ const defaults = {
         'movementType',
         'amount',
         'actions',
+      ]
+    },
+    aclUsers: {
+      columns: [
+        'firstName',
+        'lastName',
+        'email',
+        'roles',
+        'permissions',
+      ]
+    },
+    aclRoles: {
+      columns: [
+        'code',
+        'description',
+        'permissions',
+        'actions',
+      ]
+    },
+    aclPermissions: {
+      columns: [
+        'code',
+        'description',
+        'actions',
+      ]
+    },
+    club: {
+      columns: [
+        'clubCardNumber',
+        'firstName',
+        'lastName',
+        'email',
+        'clubPack',
+        // 'role',
+        'briteTotal',
+        'briteUsed',
+        'briteAvailable',
+        'actions'
+      ]
+    },
+    brite: {
+      columns: [
+        'amountChange',
+        'createdAt',
+        'movementType',
+        'deposit',
+        'depositOld',
+        'notes',
       ]
     }
   }
@@ -220,6 +277,14 @@ const cliente = {
       ]
     },
     conversations: {
+      columns: [
+        "subject",
+        "createdAt",
+        "updatedAt",
+        "unreadMessages",
+      ]
+    },
+    clubConversations: {
       columns: [
         "subject",
         "createdAt",

@@ -45,7 +45,8 @@
                        v-on="on"
                        small
                        color="primary">
-                  <v-icon small class="mr-2">mdi-dock-window</v-icon>
+                  <v-icon small class="mr-2" v-if="+value === 1">mdi-account</v-icon>
+                  <v-icon small class="mr-2" v-else>mdi-account-multiple</v-icon>
                   {{ +value || 0 }}
                 </v-btn>
               </template>

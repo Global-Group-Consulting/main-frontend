@@ -23,6 +23,7 @@
     "@nuxtjs/proxy": "^2.0.1",
     "@vue/composition-api": "^1.0.0-beta.14",
     "animate.css": "^4.1.1",
+    "array-sort": "^1.0.0",
     "body-parser": "^1.19.0",
     "chart.js": "^2.9.3",
     "cleave.js": "^1.6.0",
@@ -49,6 +50,8 @@
     "v-currency-field": "^3.1.1",
     "vue": "^2.6.12",
     "vue-chartjs": "^3.5.1",
+    "vue-class-component": "^7.2.6",
+    "vue-property-decorator": "^9.1.2",
     "vue-scrollto": "^2.20.0",
     "vue-server-renderer": "^2.6.12",
     "vue-sweetalert2": "^4.0.0",
@@ -63,6 +66,7 @@
     "@nuxt/types": "^2.14.12",
     "@nuxt/typescript-build": "^2.0.4",
     "@nuxtjs/vuetify": "^1.11.2",
+    "@types/array-sort": "^1.0.0",
     "@types/lodash": "^4.14.168"
   },
   "resolutions": {

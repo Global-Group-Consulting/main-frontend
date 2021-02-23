@@ -2,10 +2,7 @@
   <v-layout>
     <v-flex>
       <page-header
-        :title="title"
-        :subtitle="subtitle"
-        :icon="icon"
-      ></page-header>
+        page-name="movements"></page-header>
 
       <v-row>
         <v-col cols="12">
@@ -35,12 +32,16 @@ import MovementsFn from "@/functions/movementsFn.js";
 import pageBasicFn from "../functions/pageBasic";
 import PageHeader from "@/components/blocks/PageHeader";
 import MovementsListTable from "@/components/table/MovementsListTable";
+import {MovementsPermissions} from "../functions/acl/enums/movements.permissions";
 
 export default {
   components: {
     PageHeader,
     MovementsListTable,
     DataTable
+  },
+  meta: {
+    permissions: [MovementsPermissions.ACL_MOVEMENTS_SELF_READ]
   },
   setup(props, {root}) {
     const {$apiCalls, $set, $options, $i18n} = root;

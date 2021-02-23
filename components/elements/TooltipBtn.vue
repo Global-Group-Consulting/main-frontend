@@ -1,11 +1,12 @@
 <template>
-  <v-tooltip bottom>
+  <v-tooltip bottom :disabled="!tooltip">
     <template v-slot:activator="{ on }">
-      <v-btn v-on="on" v-bind="$attrs" @click="$emit('click')">
-        <v-icon v-if="iconName" :class="`mr-${breakpoint}-2`">{{
-          iconName
-        }}</v-icon>
-        <span :class="`d-none d-${breakpoint}-inline-block`">
+      <v-btn v-on="on" v-bind="$attrs" @click="$emit('click')"
+             :icon="icon">
+        <v-icon v-if="iconName" :class="{[`mr-${breakpoint}-2`]: !icon}">
+          {{ iconName }}
+        </v-icon>
+        <span :class="{[`d-none d-${breakpoint}-inline-block`]: !icon}">
           <slot></slot>
         </span>
       </v-btn>
@@ -20,6 +21,7 @@ export default {
   props: {
     tooltip: String,
     iconName: String,
+    icon: Boolean,
     breakpoint: {
       type: String,
       default: "sm"

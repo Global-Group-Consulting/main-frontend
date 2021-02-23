@@ -36,111 +36,129 @@
 </template>
 
 <script>
-  export default {
-    name: "MoneyInput",
-    data() {
-      return {
-        numericValue: 0,
-        hasFocus: false,
-      };
+import CurrencyType from "~/enums/CurrencyType";
+
+export default {
+  name: "MoneyInput",
+  data() {
+    return {
+      numericValue: 0,
+      hasFocus: false,
+    };
+  },
+  props: {
+    value: Number | String,
+    currency: {
+      type: Number,
+      default: 1,
     },
-    props: {
-      value: Number | String,
-      currency: {
-        type: Number,
-        default: 1,
-      },
-      showBrite: {
-        type: Boolean,
-        default: true
-      },
-      showMax: Boolean,
-      maxValue: Number,
+    showBrite: {
+      type: Boolean,
+      default: true
     },
-    computed: {
-      prefix() {
-        return this.$enums.CurrencyType.get(this.activeCurrency)?.symbol;
-      },
-      suffix() {
-        if (!this.showBrite){
-          return ""
-        }
+    onlyBrite: {
+      type: Boolean,
+      default: false
+    },
+    showMax: Boolean,
+    maxValue: Number,
+  },
+  computed: {
+    prefix() {
+      return this.$enums.CurrencyType.get(this.activeCurrency)?.symbol;
+    },
+    suffix() {
+      if (!this.showBrite || this.value === null) {
+        return ""
+      }
 
-        const value =
-          this.activeCurrency === 1 ? this.briteValue : this.numericValue;
-        const prefixCurrency = this.activeCurrency === 1 ? 2 : 1;
-        const currency = this.$enums.CurrencyType.get(prefixCurrency)?.symbol;
-        const formatted = this.$options.filters.moneyFormatter(
-          value,
-          prefixCurrency === 2
-        );
+      const value =
+        this.activeCurrency === 1 ? this.briteValue : this.numericValue;
+      const prefixCurrency = this.activeCurrency === 1 ? 2 : 1;
+      const currency = this.$enums.CurrencyType.get(prefixCurrency)?.symbol;
+      const formatted = this.$options.filters.moneyFormatter(
+        this.onlyBrite ? (value / 2) : value,
+        prefixCurrency === 2
+      );
 
-        if (!formatted) {
-          return "";
-        }
+      if (!formatted) {
+        return "";
+      }
 
-        return `(${currency} ${formatted})`;
-      },
-      activeCurrency() {
-        return this.hasFocus ? 1 : this.currency;
-      },
-      briteValue() {
-        return this.numericValue * 2;
-      },
-      formattedValue() {
-        const value =
-          this.activeCurrency === 1 ? this.numericValue : this.briteValue;
+      return `(${currency} ${formatted})`;
+    },
+    activeCurrency() {
+      if (this.onlyBrite) {
+        return this.currency
+      }
 
-        const newValue = this.$options.filters.moneyFormatter(
-          value,
-          this.activeCurrency === 2
-        );
+      return this.hasFocus ? 1 : this.currency;
+    },
+    briteValue() {
+      if (this.onlyBrite) {
+        return this.numericValue
+      }
 
-        this.$refs.textInput && (this.$refs.textInput.$data.lazyValue = newValue);
+      return this.numericValue * 2;
+    },
+    formattedValue() {
+      const value =
+        this.activeCurrency === 1 ? this.numericValue : this.briteValue;
 
-        return newValue;
+      if (this.value === null) {
+        return ""
+      }
+
+      const newValue = this.$options.filters.moneyFormatter(
+        value,
+        this.activeCurrency === 2
+      );
+
+      this.$refs.textInput && (this.$refs.textInput.$data.lazyValue = newValue);
+
+      return newValue;
+    },
+  },
+  methods: {
+    formatForEmit(value) {
+      const formattedValue = this.$options.filters.moneyFormatter(value)
+
+      let toEmit = formattedValue.toString();
+
+      if (toEmit) {
+        toEmit = +toEmit.replace(/\./g, "").replace(",", ".");
+      }
+
+      return isNaN(toEmit) ? null : toEmit;
+    },
+    onChange(value) {
+      this.$emit("change", this.formatForEmit(value));
+    },
+    onInput(value) {
+      this.$emit("input", this.formatForEmit(value));
+    },
+    onFocus() {
+      this.hasFocus = true;
+    },
+    onBlur() {
+      this.hasFocus = false;
+    },
+    onMaxClick() {
+      const value = this.maxValue;
+
+      this.$emit("input", this.formatForEmit(value));
+      this.$emit("change", this.formatForEmit(value));
+    },
+  },
+  watch: {
+    value: {
+      immediate: true,
+      handler(val) {
+        this.numericValue = +val;
       },
     },
-    methods: {
-      formatForEmit(value) {
-        const formattedValue = this.$options.filters.moneyFormatter(value)
-
-        let toEmit = formattedValue.toString();
-
-        if (toEmit) {
-          toEmit = +toEmit.replace(/\./g, "").replace(",", ".");
-        }
-
-        return isNaN(toEmit) ? null : toEmit;
-      },
-      onChange(value) {
-        this.$emit("change", this.formatForEmit(value));
-      },
-      onInput(value) {
-        this.$emit("input", this.formatForEmit(value));
-      },
-      onFocus() {
-        this.hasFocus = true;
-      },
-      onBlur() {
-        this.hasFocus = false;
-      },
-      onMaxClick() {
-        const value = this.maxValue;
-
-        this.$emit("input", this.formatForEmit(value));
-        this.$emit("change", this.formatForEmit(value));
-      },
-    },
-    watch: {
-      value: {
-        immediate: true,
-        handler(val) {
-          this.numericValue = +val;
-        },
-      },
-    },
-  };
+  },
+};
 </script>
 
 <style scoped>

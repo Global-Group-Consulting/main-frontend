@@ -17,5 +17,7 @@ export default {
   "downloadReceipt": "Scarica integrazione",
   "lastMonth": "Ultimo mese",
   "last2Month": "Ultimi 2 mese",
-  "last3Month": "Ultimi 3 mesi"
+  "last3Month": "Ultimi 3 mesi",
+  "show-brite-account": "Visualizza Brite",
+  "show-user-account": "Visualizza Profilo Utente"
 }

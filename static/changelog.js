@@ -1,11 +1,14 @@
-module.exports = `<h2 id="v164smalltbasmall">v 1.6.4 - <small>TBA</small></h2>
+module.exports = `<h2 id="v164small23022020small">v 1.6.4 - <small>23/02/2020</small></h2>
 <h3 id="aggiunte">Aggiunte</h3>
 <ul>
 <li>Campo "IBAN", "BIC" e "Note" nel report excel delle richieste</li>
 <li>Aggiunto campo "Tipologia Provvigioni squadra" in caso di agente con subagenti</li>
-<li>Possibilità di cancellazione di tutte le notifiche o di una intera categoria</li>
 <li>Aggiunto modale per visualizzare i clienti di un subagente</li>
 <li>Aggiunto colonna che mostra provvigioni attive per gli agenti</li>
+<li>Aggiunta sezione dedicata al Club</li>
+<li>Aggiunta sezione dedicata ai movimenti Brite</li>
+<li>Aggiunta sezione dedicata ai ruoli e permessi di tutti gli utenti</li>
+<li>Comunicazioni - Aggiunta tab dedicata al Global Club</li>
 </ul>
 <h3 id="miglioramenti">Miglioramenti</h3>
 <ul>
