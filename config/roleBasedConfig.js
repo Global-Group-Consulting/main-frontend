@@ -153,6 +153,16 @@ const defaults = {
         'notes',
       ]
     }
+  },
+  blocks: {
+    dashboard: {
+      blocks: [
+        "deposit",
+        "interestAmount",
+        "interestsCollected",
+        "depositCollected",
+      ]
+    },
   }
 }
 
@@ -204,6 +214,16 @@ const admin = {
         "interestAmount"
       ]
     }
+  },
+  blocks: {
+    dashboard: {
+      blocks: [
+        "deposit",
+        "interestAmount",
+        "interestsCollected",
+        "depositCollected",
+      ]
+    },
   }
 }
 
@@ -248,6 +268,16 @@ const servClienti = {
         "firstName",
         "lastName",
         "email",
+      ]
+    },
+  },
+  blocks: {
+    dashboard: {
+      blocks: [
+        "deposit",
+        "interestAmount",
+        "interestsCollected",
+        "depositCollected",
       ]
     },
   }

@@ -77,6 +77,11 @@
         </template>
       </page-header>
 
+      <dashboard-blocks :dashboard-data="dashboardData"
+                        class="mb-6"
+                        readonly
+                        ></dashboard-blocks>
+
       <page-toolbar>
         <template slot="left-block">
           <tooltip-btn
@@ -310,10 +315,12 @@ import Permissions from "@/functions/permissions";
 import SigningLogsPopup from "@/components/elements/SigningLogsPopup";
 import PageToolbar from "@/components/blocks/PageToolbar";
 import {UsersPermissions} from "../../functions/acl/enums/users.permissions";
+import DashboardBlocks from "../../components/DashboardBlocks";
 
 export default {
   name: "_id",
   components: {
+    DashboardBlocks,
     PageToolbar,
     SigningLogsPopup,
     UserMessage,
@@ -340,8 +347,15 @@ export default {
     const currentTab = ref(0);
     const checkedFields = ref([])
     const permissions = Permissions(root);
-
     const userForm = usersForm(root, refs);
+    const dashboardData = reactive({
+      blocks: {
+        deposit: 0,
+        interestAmount: 0,
+        depositCollected: 0,
+        interestsCollected: 0
+      }
+    });
 
     const editMode = computed(() =>
       !userForm.userIsNew.value &&
@@ -648,6 +662,12 @@ export default {
         userForm.formData.value = await $apiCalls.fetchUserDetails(
           $route.params.id
         );
+
+        if (userId !== "new" && [$enums.UserRoles.AGENTE, $enums.UserRoles.CLIENTE].includes(+userForm.formData.value.role)) {
+          const result = await $apiCalls.dashboardFetch(userForm.formData.value.id);
+
+          $set(dashboardData, "blocks", result.blocks);
+        }
       } catch (er) {
         $alerts.error(er);
       }
@@ -668,6 +688,7 @@ export default {
       canSeeMovementsList,
       canConfirmDraftUser,
       canValidateUser,
+      dashboardData,
       showIncompleteDataInfo,
       permissions,
       openChangeStatusDialog,
