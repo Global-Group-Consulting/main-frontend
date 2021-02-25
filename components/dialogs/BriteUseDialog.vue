@@ -38,7 +38,10 @@ interface DialogData {
 
 
 @Component({
-  components: {DynamicFieldset}
+  components:
+    {
+
+    }
 })
 export default class BriteUseDialog extends Vue {
   public formData: any = {

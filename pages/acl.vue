@@ -63,7 +63,7 @@ import PageToolbar from "~/components/blocks/PageToolbar.vue";
 import DataTable from "~/components/table/DataTable.vue";
 import DynamicTabs from "~/components/DynamicTabs.vue";
 import AclAddDialog from "~/components/dialogs/AclAddDialog.vue";
-import AclEditDialog from "~/components/table/AclEditDialog.vue";
+import AclEditDialog from "~/components/dialogs/EditDialogs/AclEditDialog.vue";
 
 import {User} from "~/@types/UserFormData";
 import {AclRole} from "~/@types/Acl/Roles";

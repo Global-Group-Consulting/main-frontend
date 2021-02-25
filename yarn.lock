@@ -1678,6 +1678,13 @@
   dependencies:
     source-map "^0.6.1"
 
+"@types/vuelidate@^0.7.13":
+  version "0.7.13"
+  resolved "https://registry.yarnpkg.com/@types/vuelidate/-/vuelidate-0.7.13.tgz#6e7249e1d6b72b3aed14f4439a082e14662c485e"
+  integrity sha512-CFyaS5yov3HjwoZrQyehiE1cNkyuN0/EDQfpeneWQFC9onJ0ieQL6dgFxN6zzPMHDZ87If3UH9WcgkPB4vbcoQ==
+  dependencies:
+    vue "^2.6.11"
+
 "@types/webpack-bundle-analyzer@^3.9.0":
   version "3.9.0"
   resolved "https://registry.yarnpkg.com/@types/webpack-bundle-analyzer/-/webpack-bundle-analyzer-3.9.0.tgz#bf2f3fd7f1fe6a71dff8968afeb12785d1ce737b"
@@ -9529,7 +9536,7 @@ vue2-animate@^2.1.4:
   resolved "https://registry.yarnpkg.com/vue2-animate/-/vue2-animate-2.1.4.tgz#7a241b8a0f839d97b9df63d4551fbe666354175e"
   integrity sha512-tIFHLxLYXwti0E3rJ7OeIUxTl+uVC8t9SYlD4aQ+gfgcheSu9yDbXklBNRIFxBmfNWDVpKQLMvGLxRrrCn3alw==
 
-vue@^2.6.12:
+vue@^2.6.11, vue@^2.6.12:
   version "2.6.12"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.12.tgz"
   integrity sha512-uhmLFETqPPNyuLLbsKz6ioJ4q7AZHzD8ZVFNATNyICSZouqP2Sz0rotWQC8UNBF6VGSCs5abnKJoStA6JbCbfg==

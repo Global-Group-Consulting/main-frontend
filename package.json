@@ -67,7 +67,8 @@
     "@nuxt/typescript-build": "^2.0.4",
     "@nuxtjs/vuetify": "^1.11.2",
     "@types/array-sort": "^1.0.0",
-    "@types/lodash": "^4.14.168"
+    "@types/lodash": "^4.14.168",
+    "@types/vuelidate": "^0.7.13"
   },
   "resolutions": {
     "tiptap/**/prosemirror-model": "1.11.0"

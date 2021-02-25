@@ -31,7 +31,7 @@ import DynamicFieldset from "~/components/DynamicFieldset.vue";
 import AclCreateSchema from "~/config/forms/aclCreateSchema"
 
 @Component({
-  components: {DynamicFieldset}
+  components: {}
 })
 export default class AclAddDialog extends Vue {
   public formData: any = {}

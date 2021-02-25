@@ -34,7 +34,7 @@ import {CardBlockI} from "~/@types/components/CardBlock";
 import {Moment} from "moment";
 
 @Component({
-  components: {DynamicFieldset}
+  components: {}
 })
 export default class BriteAddDialog extends Vue {
   public formData = {amountChange: null, notes: ""}
