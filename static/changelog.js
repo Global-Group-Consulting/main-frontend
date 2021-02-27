@@ -1,9 +1,10 @@
-module.exports = `<h2 id="v170smalltbasmall">v 1.7.0 - <small>TBA</small></h2>
+module.exports = `<h2 id="v173smalltbasmall">v 1.7.3 - <small>TBA</small></h2>
 <h3 id="miglioramenti">Miglioramenti</h3>
 <ul>
 <li>Risolti problemi richieste di riscossione in mobile</li>
 <li>Sistemato menu inferiore su iPhone lasciando spazio per la home line</li>
 <li>Menu "altro" in mobile, non mostra più gli elementi già visibili nella barra inferiore</li>
+<li>Calcolatrice spostato aggiunta movimenti direttamente nella tabella</li>
 </ul>
 <h2 id="v170small23022020small">v 1.7.0 - <small>23/02/2020</small></h2>
 <h3 id="aggiunte">Aggiunte</h3>
