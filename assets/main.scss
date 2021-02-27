@@ -6,6 +6,13 @@
 @import "../node_modules/animate.css/animate.min.css";
 @import "../node_modules/vue2-animate/src/sass/vue2-animate.scss";
 
+:root {
+  --sat: env(safe-area-inset-top);
+  --sar: env(safe-area-inset-right);
+  --sab: env(safe-area-inset-bottom, 32px); /* THIS ONE GETS US THE HOME BAR HEIGHT */
+  --sal: env(safe-area-inset-left);
+}
+
 html {
   overflow-y: auto !important;
 }

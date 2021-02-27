@@ -75,7 +75,7 @@ class Acl {
     /*
     If no permission in required, return true
      */
-    if (!requiredPermissions) {
+    if (!requiredPermissions || requiredPermissions.length === 0) {
       return true
     }
 

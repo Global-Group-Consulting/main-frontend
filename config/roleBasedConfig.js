@@ -182,7 +182,6 @@ const admin = {
         'actions'
       ]
     },
-
     requests: {
       columns: [
         'contractNumber',
@@ -197,6 +196,15 @@ const admin = {
       ]
     },
     pendingUsers: {
+      columns: [
+        "contractNumber",
+        "firstName",
+        "lastName",
+        "email",
+        "validatedAt"
+      ]
+    },
+    pendingSignatures: {
       columns: [
         "contractNumber",
         "firstName",

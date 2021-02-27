@@ -18,17 +18,23 @@
 
 <script lang="ts">
 import {Component, Vue, Prop} from "vue-property-decorator";
+import {DrawerEntry} from "~/config/drawerEntries";
 
 @Component
 export default class DrawerItem extends Vue {
   @Prop({})
-  public data!: any
+  public data!: DrawerEntry
 
   get showItem(): boolean {
-    const aclPermission = this.$acl.checkPermissions(this.data.permissions)
+    const aclPermission = this.$acl.checkPermissions(this.data.permissions || [])
+
+    // Avoid showing some menu entries in the mobile drawer because already visible in the bottom drawer
+    if (this.$vuetify.breakpoint.xsOnly && this.data.hideInMobile) {
+      return false
+    }
 
     if ('if' in this.data) {
-      return aclPermission && this.data.if
+      return aclPermission && (this.data.if ?? true)
     }
 
     return aclPermission

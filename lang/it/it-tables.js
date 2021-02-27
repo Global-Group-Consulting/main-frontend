@@ -22,6 +22,7 @@ export default {
   'pending-users-table': 'Utenti in attesa di approvazione',
   'pending-verify-users-table': 'Utenti in attesa di validazione',
   'pending-requests-table': 'Richieste da evadere',
+  'pending-contract-signature': "Contratti in attesa di firma",
   'updated-at': 'Ultimo aggiornamento',
   'completed-at': 'Data completamento',
   'created-at': 'Data creazione',

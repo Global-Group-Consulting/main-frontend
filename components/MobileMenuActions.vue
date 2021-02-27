@@ -44,19 +44,19 @@ export default defineComponent({
         text: "withdrawal",
         tooltip: "withdrawal-tooltip",
         icon: "mdi-cash-minus",
-        click: () => $router.push("/requests?new=collect_interests")
+        click: () => $router.replace("/requests?new=collect_interests")
       },
       {
         text: "withdrawalGold",
         tooltip: "withdrawalGold-tooltip",
         icon: "mdi-bank-minus",
-        click: () => $router.push("/requests?new=collect_gold")
+        click: () => $router.replace("/requests?new=collect_gold")
       },
       {
         text: "deposit",
         tooltip: "deposit-tooltip",
         icon: "mdi-cash-plus",
-        click: () => $router.push("/requests?new=add_deposit")
+        click: () => $router.replace("/requests?new=add_deposit")
       }
     ]
     const filteredActionsList = computed<ActionItem[]>(() => {

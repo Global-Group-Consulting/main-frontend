@@ -4,12 +4,13 @@ import {RequestsPermissions} from "~/functions/acl/enums/requests.permissions";
 import {AclPermissions} from "~/functions/acl/enums/acl.permissions";
 import {ClubPermissions} from "~/functions/acl/enums/club.permissions";
 
-interface DrawerEntry {
+export interface DrawerEntry {
   id?: string
   text: string
   icon?: string
   link?: string
   permissions?: string[]
+  hideInMobile?: boolean
   if?: boolean
   type?: "group"
   childs?: DrawerEntry[]
@@ -22,7 +23,8 @@ export default function (context: Vue): DrawerEntry[] {
       id: 'dashboard',
       text: 'dashboard',
       icon: 'mdi-home',
-      link: '/'
+      link: '/',
+      hideInMobile: true
     },
     {
       type: 'group',
@@ -33,7 +35,8 @@ export default function (context: Vue): DrawerEntry[] {
           text: 'clients',
           icon: 'mdi-account-group',
           link: '/users',
-          permissions: [UsersPermissions.ACL_USERS_GROUP_READ]
+          permissions: [UsersPermissions.ACL_USERS_GROUP_READ],
+          hideInMobile: true
         },
         {
           id: 'wallet',
@@ -58,20 +61,23 @@ export default function (context: Vue): DrawerEntry[] {
           icon: 'mdi-account-group',
           link: '/users',
           permissions: [UsersPermissions.ACL_USERS_ALL_READ],
+          hideInMobile: true
         },
         {
           id: 'movements',
           text: 'movements',
           icon: 'mdi-swap-horizontal-bold',
           link: '/movements',
-          permissions: ["movements.self:read"]
+          permissions: ["movements.self:read"],
+          hideInMobile: true
         },
         {
           id: 'requests',
           text: 'requests',
           icon: 'mdi-list-status',
           link: '/requests',
-          permissions: [RequestsPermissions.ACL_REQUESTS_SELF_READ, RequestsPermissions.ACL_REQUESTS_ALL_READ]
+          permissions: [RequestsPermissions.ACL_REQUESTS_SELF_READ, RequestsPermissions.ACL_REQUESTS_ALL_READ],
+          hideInMobile: true
         },
       ]
     },

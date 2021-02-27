@@ -33,6 +33,7 @@
              depressed
              nuxt
              :to="btn.link"
+             :ripple="false"
              v-if="!btn.component && !btn.actions"
              @click="btn.click ? btn.click() : null"
       >
@@ -45,68 +46,69 @@
 
 <script lang="ts">
 import AccountMenu from "@/components/elements/AccountMenu.vue";
-import {defineComponent, computed} from "@vue/composition-api";
 
-export default defineComponent({
-  name: "BottomDrawer",
+import {Vue, Component} from "vue-property-decorator"
+import * as Bowser from "bowser";
+
+@Component({
   components: {AccountMenu},
-  setup(props, {root}) {
-    const {$enums, $auth, $store} = root
-    const btnsConfig = computed(() => {
-      const adminRoles = [$enums.UserRoles.ADMIN, $enums.UserRoles.SERV_CLIENTI]
-      const userRole = $auth.user.role
-
-      const items = [
-        {
-          id: "home",
-          text: "bottom-home",
-          icon: "mdi-home",
-          link: "/"
-        },
-        {
-          id: "movements",
-          text: "bottom-movements",
-          icon: "mdi-swap-horizontal-bold",
-          link: "/movements",
-          if: !adminRoles.includes(userRole)
-        },
-        {
-          id: "users",
-          text: "bottom-users",
-          icon: "mdi-account-group-outline",
-          link: "/users",
-          if: adminRoles.includes(userRole)
-        },
-        {
-          id: "actions",
-          text: "",
-          icon: "",
-          actions: true
-        }, {
-          id: "requests",
-          text: "bottom-requests",
-          icon: "mdi-list-status",
-          link: "/requests"
-        }, {
-          id: "other",
-          text: "bottom-other",
-          icon: "mdi-dots-horizontal",
-          click: () => $store.dispatch('toggleMobileDrawer', true),
-          // component: "fullDrawer"
-        }
-      ]
-
-      return items.filter((_item) => !("if" in _item) || (_item.if))
-    })
-
-    return {
-      btnsConfig
-    }
-  }
 })
+export default class BottomDrawer extends Vue {
+
+  get btnsConfig() {
+    const adminRoles = [this.$enums.UserRoles.ADMIN, this.$enums.UserRoles.SERV_CLIENTI]
+    const userRole = this.$auth.user.role
+
+    const items = [
+      {
+        id: "home",
+        text: "bottom-home",
+        icon: "mdi-home",
+        link: "/"
+      },
+      {
+        id: "movements",
+        text: "bottom-movements",
+        icon: "mdi-swap-horizontal-bold",
+        link: "/movements",
+        if: !adminRoles.includes(userRole)
+      },
+      {
+        id: "users",
+        text: "bottom-users",
+        icon: "mdi-account-group-outline",
+        link: "/users",
+        if: adminRoles.includes(userRole)
+      },
+      {
+        id: "actions",
+        text: "",
+        icon: "",
+        actions: true
+      }, {
+        id: "requests",
+        text: "bottom-requests",
+        icon: "mdi-list-status",
+        link: "/requests",
+        hideInMobile: true
+      }, {
+        id: "other",
+        text: "bottom-other",
+        icon: "mdi-dots-horizontal",
+        click: () => this.$store.dispatch('toggleMobileDrawer', true),
+        // component: "fullDrawer"
+      }
+    ]
+
+    return items.filter((_item) => !("if" in _item) || (_item.if))
+  }
+
+}
 </script>
 
 <style lang="scss" scoped>
+
+
 #bottom-drawer::v-deep {
   //position: fixed;
   bottom: 0;
@@ -114,7 +116,7 @@ export default defineComponent({
   right: 0;
   display: flex;
   background-color: white;
-  height: 60px;
+  height: calc(60px + env(safe-area-inset-bottom, 0));
   min-height: 60px;
   z-index: 4;
   justify-content: center;
@@ -122,6 +124,7 @@ export default defineComponent({
   box-shadow: 0 2px 4px -1px rgba(0, 0, 0, .2), 0 4px 5px 0 rgba(0, 0, 0, .14), 0 1px 10px 0 rgba(0, 0, 0, .12);
   border-top-left-radius: 14px;
   border-top-right-radius: 14px;
+  padding-bottom: env(safe-area-inset-bottom, 32px);
 
   .btn-wrapper {
     flex: 1;
@@ -148,7 +151,11 @@ export default defineComponent({
       }
 
       &.v-btn--active {
-        color: #071D2A;
+        color: #0088FF;
+
+        &:before {
+          opacity: 0
+        }
       }
     }
 

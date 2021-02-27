@@ -34,7 +34,7 @@ export default {
     title: 'Web App',
     meta: [
       {charset: 'utf-8'},
-      {name: 'viewport', content: 'width=device-width, initial-scale=1'},
+      {name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover'},
       {hid: 'description', name: 'description', content: "Private area for Global Group Consulting"},
       {name: "apple-mobile-web-app-title", content: `${APP_NAME}`},
       {name: "application-name", content: `${APP_NAME}`},
