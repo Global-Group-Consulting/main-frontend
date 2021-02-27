@@ -37,12 +37,7 @@ interface DialogData {
 }
 
 
-@Component({
-  components:
-    {
-
-    }
-})
+@Component({})
 export default class BriteUseDialog extends Vue {
   public formData: any = {
     availableAmount: this.availableAmount,
