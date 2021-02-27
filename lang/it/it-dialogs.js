@@ -113,5 +113,10 @@ export default {
     title: "Richiesta utilizzo brite",
     "btn-send": "Invia richiesta",
     "btn-cancel": "Annulla"
+  },
+  calculatorMovementsDialog: {
+    titleDepositCollected: "Riscossione deposito",
+    titleDepositAdded: "Versamento nuova liquidità",
+    titleInterestCollected: "Riscossione interessi"
   }
 }

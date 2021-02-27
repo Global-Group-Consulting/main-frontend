@@ -402,7 +402,7 @@ export default {
     }
 
     function onQueryChange(route) {
-      const query = route.query;
+      const query = window.location.search;
 
       if (query.open) {
         const idToOpen = query.open;
@@ -435,11 +435,13 @@ export default {
     }
 
     function onUrlQueryChange() {
-      const query = $route.query;
+      const query = new URLSearchParams(window.location.search);
+
+      const queryNew = query.get("new")
 
       // if in the query we found "new" then open the corresponding dialog if any
-      if (query.new) {
-        switch (query.new) {
+      if (queryNew) {
+        switch (queryNew) {
           case "add_deposit":
             newDepositRequest();
             break;
@@ -448,11 +450,11 @@ export default {
           case "collect_commissions":
             let type;
 
-            if (query.new === "collect_deposit") {
+            if (queryNew === "collect_deposit") {
               type = RequestTypes.RISC_CAPITALE;
-            } else if (query.new === "collect_interests") {
+            } else if (queryNew === "collect_interests") {
               type = RequestTypes.RISC_INTERESSI;
-            } else if (query.new === "collect_commissions") {
+            } else if (queryNew === "collect_commissions") {
               type = RequestTypes.RISC_PROVVIGIONI;
             }
 
@@ -476,6 +478,12 @@ export default {
     onMounted(() => {
       onUrlQueryChange()
     });
+
+    watch(() => $store.getters["dialog/dialogState"], (value) => {
+      if (!value) {
+        $router.push({path: $route.path, query: {new: ""}})
+      }
+    })
 
     return {
       ...pageBasicFn(root, "requests"),
@@ -505,8 +513,12 @@ export default {
   },
   watch: {
     '$route.query.new'() {
-      this.onUrlQueryChange()
-    }
+      setTimeout(() => {
+
+        this.onUrlQueryChange()
+      }, 300)
+    },
+
   },
   beforeRouteUpdate(to, from, next) {
     this.onQueryChange(to)

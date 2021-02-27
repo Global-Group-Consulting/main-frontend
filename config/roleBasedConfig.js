@@ -153,6 +153,16 @@ const defaults = {
         'notes',
       ]
     }
+  },
+  blocks: {
+    dashboard: {
+      blocks: [
+        "deposit",
+        "interestAmount",
+        "interestsCollected",
+        "depositCollected",
+      ]
+    },
   }
 }
 
@@ -172,7 +182,6 @@ const admin = {
         'actions'
       ]
     },
-
     requests: {
       columns: [
         'contractNumber',
@@ -195,6 +204,15 @@ const admin = {
         "validatedAt"
       ]
     },
+    pendingSignatures: {
+      columns: [
+        "contractNumber",
+        "firstName",
+        "lastName",
+        "email",
+        "validatedAt"
+      ]
+    },
     movements: {
       columns: [
         "amountChange",
@@ -204,6 +222,16 @@ const admin = {
         "interestAmount"
       ]
     }
+  },
+  blocks: {
+    dashboard: {
+      blocks: [
+        "deposit",
+        "interestAmount",
+        "interestsCollected",
+        "depositCollected",
+      ]
+    },
   }
 }
 
@@ -248,6 +276,16 @@ const servClienti = {
         "firstName",
         "lastName",
         "email",
+      ]
+    },
+  },
+  blocks: {
+    dashboard: {
+      blocks: [
+        "deposit",
+        "interestAmount",
+        "interestsCollected",
+        "depositCollected",
       ]
     },
   }

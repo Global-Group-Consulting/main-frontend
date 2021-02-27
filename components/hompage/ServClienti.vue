@@ -119,7 +119,6 @@ export default {
   },
   data() {
     return {
-      pendingRequests,
       adminDashboardChart
     };
   },
@@ -133,10 +132,10 @@ export default {
     },
 
     pendingUsers() {
-      return pendingUsers.map(group => group.data[0]);
+      return this.pendingUsers.map(group => group.data[0]);
     },
     chartsAdminDataset() {
-      return adminDashboardChart.datasets.map(set => {
+      return this.adminDashboardChart.datasets.map(set => {
         set.label = this.$t(set.label);
 
         return set;

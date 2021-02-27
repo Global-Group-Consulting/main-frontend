@@ -1,6 +1,6 @@
 {
   "name": "ggc-frontend",
-  "version": "1.7.2",
+  "version": "1.7.3",
   "description": "Global Group Consulting frontend app.",
   "private": true,
   "engines": {
@@ -25,6 +25,7 @@
     "animate.css": "^4.1.1",
     "array-sort": "^1.0.0",
     "body-parser": "^1.19.0",
+    "bowser": "^2.11.0",
     "chart.js": "^2.9.3",
     "cleave.js": "^1.6.0",
     "concurrently": "^5.3.0",
@@ -67,7 +68,8 @@
     "@nuxt/typescript-build": "^2.0.4",
     "@nuxtjs/vuetify": "^1.11.2",
     "@types/array-sort": "^1.0.0",
-    "@types/lodash": "^4.14.168"
+    "@types/lodash": "^4.14.168",
+    "@types/vuelidate": "^0.7.13"
   },
   "resolutions": {
     "tiptap/**/prosemirror-model": "1.11.0"

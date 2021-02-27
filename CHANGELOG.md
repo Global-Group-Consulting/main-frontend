@@ -1,5 +1,12 @@
 [comment]: <> (## Non ancora rilasciato)
 
+## v 1.7.3 - <small>TBA</small>
+### Miglioramenti
+- Risolti problemi richieste di riscossione in mobile
+- Sistemato menu inferiore su iPhone lasciando spazio per la home line
+- Menu "altro" in mobile, non mostra più gli elementi già visibili nella barra inferiore
+- Calcolatrice spostato aggiunta movimenti direttamente nella tabella
+
 ## v 1.7.0 - <small>23/02/2020</small>
 ### Aggiunte
 - Campo "IBAN", "BIC" e "Note" nel report excel delle richieste

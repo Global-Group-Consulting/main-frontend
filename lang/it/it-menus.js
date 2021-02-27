@@ -18,6 +18,6 @@ export default {
   "lastMonth": "Ultimo mese",
   "last2Month": "Ultimi 2 mese",
   "last3Month": "Ultimi 3 mesi",
-  "show-brite-account": "Visualizza Brite",
-  "show-user-account": "Visualizza Profilo Utente"
+  "show-brite-account": "Visualizza Profilo",
+  "show-user-account": "Visualizza Anagrafica"
 }

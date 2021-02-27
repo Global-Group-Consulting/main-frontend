@@ -18,7 +18,7 @@
           </v-card-text>
 
           <v-card-actions class="text-right pt-0 transparent"
-                          v-if="block.action">
+                          v-if="block.action && !readonly">
             <v-btn link text small color="primary" @click="block.action">
               {{ $t(`pages.${page}.${block.actionText}`) }}
             </v-btn>
@@ -30,8 +30,8 @@
 </template>
 
 <script>
-import { ref, computed } from "@vue/composition-api";
-import { get as _get } from "lodash";
+import {ref, computed} from "@vue/composition-api";
+import {get as _get} from "lodash";
 
 import DashboardBlocksList from "../config/blocks/dashboardBlocks";
 import RoleBasedConfig from "../config/roleBasedConfig";
@@ -47,10 +47,11 @@ export default {
     page: {
       default: "dashboard",
       type: String
-    }
+    },
+    readonly: Boolean
   },
-  setup(props, { root }) {
-    const { $auth, $router } = root;
+  setup(props, {root}) {
+    const {$auth, $router} = root;
     const blocksActions = {
       addDeposit() {
         $router.push("/requests?new=add_deposit");
@@ -75,7 +76,7 @@ export default {
 
       const blocks = _get(
         RoleBasedConfig,
-          `${roleName}.blocks.${props.page}.blocks`
+        `${roleName}.blocks.${props.page}.blocks`
       );
 
       if (!blocks) {
