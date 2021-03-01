@@ -13,6 +13,7 @@ import ClubPacks from "@/enums/ClubPacks";
 import {FormSchema} from "~/@types/FormSchema";
 import {UserDataSchema} from "~/@types/UserFormData";
 import {Permissions} from "~/@types/Permissions";
+import {ClubPermissions} from "~/functions/acl/enums/club.permissions";
 
 interface FormContext extends Vue {
   userIsPersonaGiuridica: boolean,
@@ -176,6 +177,7 @@ export function basicData(formContext: FormContext): FormSchema[] {
           }
         },
         'mobile': {
+          // component: "phone-input",
           validations: {
             required: {},
             phoneNumber: {}
@@ -344,7 +346,9 @@ export function contractData(formContext: FormContext) {
  */
 export function clubData(formContext: FormContext) {
   const gold = formContext.formData.gold
-  const canChange = formContext.$auth.user.role === UserRoles.ADMIN
+  const userIsNew = !formContext.formData.id
+  const hasPermission = formContext.$acl.checkPermissions([ClubPermissions.CLUB_WRITE])
+  const canChange = userIsNew || hasPermission
 
   return [
     {
@@ -365,7 +369,7 @@ export function clubData(formContext: FormContext) {
         'clubPack': {
           component: "v-select",
           items: ClubPacks,
-          disabled: !gold || !canChange
+          disabled: !gold || !hasPermission
         }
       }
     }
