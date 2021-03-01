@@ -10,7 +10,7 @@ export interface FormSchema {
   cols: {
     [key: string]: {
       component?: "v-select" | "date-picker" | "file-uploader"
-        | "agent-commissions-select" | "contract-doc" | "money-input"
+        | "agent-commissions-select" | "contract-doc" | "money-input" | "phone-input"
         | "v-switch" | "v-autocomplete" | "v-textarea" | "",
       label?: string,
       formatter?: Formatters | Function,

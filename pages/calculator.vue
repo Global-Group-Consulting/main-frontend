@@ -169,9 +169,13 @@ import DatePicker from "~/components/forms/inputs/DatePicker.vue";
 import {Vue, Component} from "vue-property-decorator"
 import DataTable from "~/components/table/DataTable.vue";
 import CalculatorMovementDialog from "~/components/dialogs/EditDialogs/CalculatorMovementDialog.vue";
+import {CalculatorPermissions} from "~/functions/acl/enums/calculator.permissions";
 
 @Component({
   components: {CalculatorMovementDialog, DataTable, DatePicker, PageToolbar, PageHeader},
+  meta: {
+    permissions: [CalculatorPermissions.CALCULATOR_READ]
+  }
 })
 export default class Calculator extends Vue {
   public formDataDefault = {
