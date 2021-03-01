@@ -3,6 +3,7 @@ import {UsersPermissions} from "~/functions/acl/enums/users.permissions";
 import {RequestsPermissions} from "~/functions/acl/enums/requests.permissions";
 import {AclPermissions} from "~/functions/acl/enums/acl.permissions";
 import {ClubPermissions} from "~/functions/acl/enums/club.permissions";
+import {CalculatorPermissions} from "~/functions/acl/enums/calculator.permissions";
 
 export interface DrawerEntry {
   id?: string
@@ -116,7 +117,8 @@ export default function (context: Vue): DrawerEntry[] {
           id: 'calculator',
           text: 'calculator',
           icon: 'mdi-calculator-variant',
-          link: '/calculator'
+          link: '/calculator',
+          permissions: [CalculatorPermissions.CALCULATOR_READ]
         }
       ]
     },
