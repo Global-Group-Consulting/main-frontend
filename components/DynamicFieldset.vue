@@ -91,6 +91,7 @@ import ReceiversCombobox from "@/components/forms/inputs/ReceiversCombobox";
 import ContractDoc from "@/components/forms/inputs/ContractDoc";
 import AgentCommissionsSelect from "@/components/forms/inputs/AgentCommissionsSelect";
 import PasswordInput from "@/components/forms/inputs/PasswordInput";
+import PhoneInput from "@/components/forms/inputs/PhoneInput";
 
 import {validationRules, errorMessages} from "@/mixins/ValidationsParser";
 import {validationMixin} from "vuelidate";
@@ -112,7 +113,8 @@ export default {
     ReceiversCombobox,
     ContractDoc,
     AgentCommissionsSelect,
-    PasswordInput
+    PasswordInput,
+    PhoneInput
   },
   mixins: [validationMixin],
   validations() {
