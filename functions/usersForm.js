@@ -16,6 +16,7 @@ import {computed, ref, onMounted} from '@vue/composition-api'
 import PersonTypes from '../enums/PersonTypes'
 import UserRoles from '../enums/UserRoles'
 import AccountStatuses from '../enums/AccountStatuses'
+import ClubPacks from '../enums/ClubPacks'
 
 import usersTabs from '../config/tabs/usersIdTabs'
 import usersDataSchema from '../config/forms/usersDataSchema.ts'
@@ -28,7 +29,8 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
    */
   const formData = ref({
     role: UserRoles.CLIENTE,
-    personType: PersonTypes.FISICA
+    personType: PersonTypes.FISICA,
+    clubPack: ClubPacks.BASIC
   })
   const permissions = Permissions({$auth})
   const userIsNew = computed(() => $route.params.id === "new" || !formData.value.id)
