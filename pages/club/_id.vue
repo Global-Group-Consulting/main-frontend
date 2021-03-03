@@ -222,6 +222,8 @@ export default class Brite extends Vue {
   getCardsList(tab: DynamicTab): CardBlockI[] {
     const canAdd = this.$acl.checkPermissions([ClubPermissions.BRITES_ALL_ADD])
       && tab.id === this.currentSemester
+    const canRemove = this.$acl.checkPermissions([ClubPermissions.BRITES_ALL_ADD])
+      && tab.id === this.currentSemester
     const permissionToUse = this.$acl.checkPermissions([ClubPermissions.BRITES_SELF_USE])
     const canUse = false //permissionToUse && this.$moment().isAfter(tab.useFrom) && this.$moment().isBefore(tab.expiresAt)
 
@@ -239,7 +241,9 @@ export default class Brite extends Vue {
       value: (card: any, tab: any) => this.getCardValue(card, tab),
       icon: "mdi-diamond-outline",
       // actionText: this.$t("pages.club.brite.tabs.movements"),
-      color: "#f9a825"
+      color: "#f9a825",
+      actionText: canRemove ? this.$t("pages.club.brite.tabs.removeBrite") : null,
+      action: this.onRemoveBrite,
     }, {
       id: "briteAvailable",
       title: this.$t("pages.club.brite.tabs.briteAvailable"),
@@ -363,9 +367,13 @@ export default class Brite extends Vue {
     });
   }
 
+  onRemoveBrite(){}
+
+
   onBriteAdded(newValue: any) {
     this.tableData.unshift(newValue)
   }
+
 
   async beforeMount() {
     try {
