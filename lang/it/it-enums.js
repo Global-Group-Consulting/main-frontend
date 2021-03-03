@@ -113,6 +113,7 @@ export default {
     "user_revalidate_message": "Occorre rivalidare i dati di {firstName} {lastName} in quanto aggiornati dall'agente.",
     "user_sign_request": "Contratto da firmare",
     "user_sign_request_message": "E' necessario firmare il contratto di {firstName} {lastName}.",
+    "user_approved": "L'account dell'utente {firstName} {lastName} è stato approvato!",
     "request_deposit": "Richiesta di versamento",
     "request_deposit_message": "{firstName} {lastName} desidera versare € {amount}",
     "request_deposit_collect": "Richiesta di riscossione deposito",
