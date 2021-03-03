@@ -72,9 +72,9 @@ import {User} from "~/@types/UserFormData";
   components: {DashboardBlocks, DataTable, PageHeader}
 })
 export default class Profile extends Vue {
-  userData: User = {}
+  userData: User | any = {}
 
-  userDashboardData = {
+  userDashboardData: any = {
     blocks: {
       deposit: 0,
       interestAmount: 0,
@@ -82,7 +82,7 @@ export default class Profile extends Vue {
       interestsCollected: 0
     }
   }
-  agentDashboardData = {
+  agentDashboardData: any = {
     blocks: {
       monthCommissions: 0,
       reinvestedCommissions: 0,
