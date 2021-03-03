@@ -11,6 +11,7 @@ class NotificationTypes extends BasicEnum {
     this.USER_INCOMPLETE = "user_incomplete"
     this.USER_REVALIDATE = "user_revalidate"
     this.USER_SIGN_REQUEST = "user_sign_request"
+    this.USER_APPROVED = "user_approved"
 
     this.REQUEST_DEPOSIT = "request_deposit"
     this.REQUEST_DEPOSIT_COLLECT = "request_deposit_collect"

@@ -170,6 +170,7 @@ export default {
         movements: "Elenco movimenti",
         use: "Utilizza",
         addBrite: "Aggiungi",
+        removeBrite: "Rimuovi",
       },
     }
   }
