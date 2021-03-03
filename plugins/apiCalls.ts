@@ -273,13 +273,13 @@ export class ApiCalls extends BasicApiCall {
    *  interestPercentage: number
    * }}
    */
-  async fetchWalletStatus(data: any) {
+  async fetchWalletStatus(data?: any) {
     return await this.get({
       endPoint: "/api/movements/status" + (data && data.userId ? `/${data.userId}` : ''),
     })
   }
 
-  async fetchCommissionsStatus(data: any) {
+  async fetchCommissionsStatus(data?: any) {
     return await this.get({
       endPoint: "/api/commissions/status" + (data && data.userId ? `/${data.userId}` : ''),
     })
