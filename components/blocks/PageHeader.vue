@@ -17,7 +17,7 @@
         'display-3': $vuetify.breakpoint.mdAndUp,
         'display-2': $vuetify.breakpoint.smOnly,
         'display-1': $vuetify.breakpoint.xsOnly
-        }">{{ pageTitle }}</h1>
+        }" v-html="pageTitle"></h1>
     </div>
     <h3
       v-if="pageSubtitle"

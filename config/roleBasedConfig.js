@@ -232,6 +232,14 @@ const admin = {
         "depositCollected",
       ]
     },
+    wallet: {
+      blocks: [
+        "monthCommissions",
+        "reinvestedCommissions",
+        "collectedCommissions",
+        "clientsTotalDeposit",
+      ]
+    }
   }
 }
 
@@ -288,6 +296,14 @@ const servClienti = {
         "depositCollected",
       ]
     },
+    wallet: {
+      blocks: [
+        "monthCommissions",
+        "reinvestedCommissions",
+        "collectedCommissions",
+        "clientsTotalDeposit",
+      ]
+    }
   }
 }
 

@@ -77,10 +77,10 @@
         </template>
       </page-header>
 
-      <dashboard-blocks :dashboard-data="dashboardData"
-                        class="mb-6"
-                        readonly
-                        ></dashboard-blocks>
+      <!--      <dashboard-blocks :dashboard-data="dashboardData"
+                              class="mb-6"
+                              readonly
+            ></dashboard-blocks>-->
 
       <page-toolbar>
         <template slot="left-block">

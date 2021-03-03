@@ -1,5 +1,6 @@
 export default {
-  "edit": "Modifica",
+  "edit": "Visualizza Anagrafica",
+  "profile": "Visualizza Profilo",
   "delete": "Elimina",
   "sendCommunication": "Invia comunicazione",
   "showRequests": "Mostra richieste",

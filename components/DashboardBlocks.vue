@@ -18,7 +18,7 @@
           </v-card-text>
 
           <v-card-actions class="text-right pt-0 transparent"
-                          v-if="block.action && !readonly">
+                          v-if="block.action">
             <v-btn link text small color="primary" @click="block.action">
               {{ $t(`pages.${page}.${block.actionText}`) }}
             </v-btn>
@@ -33,7 +33,7 @@
 import {ref, computed} from "@vue/composition-api";
 import {get as _get} from "lodash";
 
-import DashboardBlocksList from "../config/blocks/dashboardBlocks";
+import DashboardBlocksList from "../config/blocks/dashboardBlocks.ts";
 import RoleBasedConfig from "../config/roleBasedConfig";
 import UserRoles from "../enums/UserRoles";
 
@@ -51,10 +51,16 @@ export default {
     readonly: Boolean
   },
   setup(props, {root}) {
-    const {$auth, $router} = root;
+    const {$auth, $router, $alerts} = root;
     const blocksActions = {
       addDeposit() {
         $router.push("/requests?new=add_deposit");
+      },
+      addCommissions() {
+        $alerts.info({
+          title: "",
+          text: "Funzione presto disponibile!"
+        })
       },
       showMovementsList() {
         $router.push("/movements");
@@ -87,11 +93,26 @@ export default {
 
       return blocks.reduce((acc, _block) => {
         const blockObj = DashboardBlocksList[_block];
+        let action
+        let actionText
+
+        if (typeof blockObj.action === "function") {
+          action = blockObj.action(root, props.readonly)
+        } else if (!props.readonly) {
+          action = blockObj.action
+        }
+
+        if (typeof blockObj.actionText === "function") {
+          actionText = blockObj.actionText(root, props.readonly)
+        } else if (!props.readonly) {
+          actionText = blockObj.actionText
+        }
 
         acc.push({
           ...blockObj,
           id: _block,
-          action: blocksActions[blockObj.action]
+          action: blocksActions[action],
+          actionText
         });
 
         return acc;

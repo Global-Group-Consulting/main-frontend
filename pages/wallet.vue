@@ -125,7 +125,6 @@ export default {
       }
     }
 
-
     onBeforeMount(async () => {
       const result = await $apiCalls.fetchCommissionsStatus();
 
