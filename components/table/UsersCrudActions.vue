@@ -18,8 +18,9 @@
           @click="entry.action"
         >
           <v-list-item-title>{{
-            $t("menus." + entry.value)
-          }}</v-list-item-title>
+              $t("menus." + entry.value)
+            }}
+          </v-list-item-title>
         </v-list-item>
       </template>
     </v-list>
@@ -27,116 +28,127 @@
 </template>
 
 <script>
-  import { computed } from "@vue/composition-api";
-  import Permissions from "../../functions/permissions";
-  import AccountStatuses from "@/enums/AccountStatuses";
+import {computed} from "@vue/composition-api";
+import Permissions from "../../functions/permissions";
+import AccountStatuses from "@/enums/AccountStatuses";
 
-  export default {
-    name: "UsersCrudActions",
-    props: {
-      item: Object,
-    },
-    setup(props, { root, emit }) {
-      const { $alerts, $apiCalls, $auth, $router, $enums } = root;
-      const permissions = Permissions(root);
+export default {
+  name: "UsersCrudActions",
+  props: {
+    item: Object,
+  },
+  setup(props, {root, emit}) {
+    const {$alerts, $apiCalls, $auth, $router, $enums} = root;
+    const permissions = Permissions(root);
 
-      const onEditClick = function () {
-        const { id } = props.item;
+    const onEditClick = function () {
+      const {id} = props.item;
 
-        $router.push("/users/" + id);
-      };
+      $router.push("/users/" + id);
+    };
 
-      const onDeleteClick = async () => {
-        const { firstName, lastName, id } = props.item;
+    const onProfileClick = function () {
+      const {id} = props.item;
 
-        $alerts.askBeforeAction({
-          key: "delete-user",
-          data: { firstName, lastName },
-          settings: {
-            confirmButtonColor: "red",
+      $router.push("/users/profile/" + id);
+    }
+
+    const onDeleteClick = async () => {
+      const {firstName, lastName, id} = props.item;
+
+      $alerts.askBeforeAction({
+        key: "delete-user",
+        data: {firstName, lastName},
+        settings: {
+          confirmButtonColor: "red",
+        },
+        preConfirm: async function () {
+          await $apiCalls.userDelete(id);
+
+          emit("userDeleted", props.item);
+        },
+      });
+    };
+
+    const onSendCommunicationClick = function () {
+    };
+
+    const onShowRequestsClick = function () {
+    };
+
+    const onApproveUserClick = async function () {
+      try {
+        await $alerts.askBeforeAction({
+          key: "approve-user",
+          preConfirm: async () => {
+            const result = await $apiCalls.userApprove(
+              props.item.id
+            );
+            props.item.account_status = result.account_status;
           },
-          preConfirm: async function () {
-            await $apiCalls.userDelete(id);
-
-            emit("userDeleted", props.item);
-          },
+          data: props.item
         });
-      };
+      } catch (er) {
+        $alerts.error(er);
+      }
+    };
 
-      const onSendCommunicationClick = function () {
-      };
+    const menuOptions = [
+      {
+        value: "edit",
+        action: onEditClick,
+      },
+      {
+        value: "profile",
+        action: onProfileClick,
+        if: computed(() => [$enums.UserRoles.AGENTE, $enums.UserRoles.CLIENTE].includes(+props.item.role))
+      },
+      {
+        value: "sendCommunication",
+        action: onSendCommunicationClick,
+        if: computed(() => props.item.id !== $auth.user.id &&
+          props.item.account_status === $enums.AccountStatuses.ACTIVE),
+      },
+      {
+        value: "showRequests",
+        action: onShowRequestsClick,
+        if: computed(
+          () =>
+            props.item.id !== $auth.user.id &&
+            [$enums.UserRoles.CLIENTE, $enums.UserRoles.AGENTE].includes(props.item.role) &&
+            props.item.account_status === $enums.AccountStatuses.ACTIVE
+        ),
+      },
+      {
+        value: "enterAs",
+        if: computed(() => false),
+      },
+      {
+        value: "approveUser",
+        action: onApproveUserClick,
+        if: computed(
+          () => (
+            (props.item.account_status === $enums.AccountStatuses.DRAFT &&
+              permissions.superAdmin)
+          )),
+        divider: true,
+      },
+      {
+        value: "delete",
+        action: onDeleteClick,
+        if: computed(
+          () => props.item.id !== $auth.user.id && permissions.deleteUser
+        ),
+        divider: true,
+      },
+    ];
 
-      const onShowRequestsClick = function () {
-      };
-
-      const onApproveUserClick = async function () {
-        try {
-          await $alerts.askBeforeAction({
-            key: "approve-user",
-            preConfirm: async () => {
-              const result = await $apiCalls.userApprove(
-                props.item.id
-              );
-              props.item.account_status = result.account_status;
-            },
-            data: props.item
-          });
-        } catch (er) {
-          $alerts.error(er);
-        }
-      };
-
-      const menuOptions = [
-        {
-          value: "edit",
-          action: onEditClick,
-        },
-        {
-          value: "sendCommunication",
-          action: onSendCommunicationClick,
-          if: computed(() => props.item.id !== $auth.user.id &&
-            props.item.account_status === $enums.AccountStatuses.ACTIVE),
-        },
-        {
-          value: "showRequests",
-          action: onShowRequestsClick,
-          if: computed(
-            () =>
-              props.item.id !== $auth.user.id &&
-              [$enums.UserRoles.CLIENTE, $enums.UserRoles.AGENTE].includes(props.item.role) &&
-              props.item.account_status === $enums.AccountStatuses.ACTIVE
-          ),
-        },
-        {
-          value: "enterAs",
-          if: computed(() => false),
-        },
-        {
-          value: "approveUser",
-          action: onApproveUserClick,
-          if: computed(
-            () => (
-              (props.item.account_status === $enums.AccountStatuses.DRAFT &&
-                permissions.superAdmin)
-            )),
-          divider: true,
-        },
-        {
-          value: "delete",
-          action: onDeleteClick,
-          if: computed(
-            () => props.item.id !== $auth.user.id && permissions.deleteUser
-          ),
-          divider: true,
-        },
-      ];
-
-      return {
-        menuOptions,
-      };
-    },
-    methods: {},
-  };
+    return {
+      menuOptions,
+    };
+  },
+  methods: {},
+};
 </script>
 
 <style scoped>

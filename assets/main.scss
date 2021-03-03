@@ -17,9 +17,9 @@ html {
   overflow-y: auto !important;
 }
 
-html, body, #__nuxt, #__layout, .v-application, .v-application--wrap {
+html, body, #__nuxt, #__layout, .v-application, .v-application--wrap, body.swal2-height-auto {
   width: 100%;
-  height: 100%;
+  height: 100% !important;
 }
 
 .v-application--wrap {

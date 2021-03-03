@@ -101,6 +101,11 @@ export default {
     }
 
   },
+  user: {
+    profile: {
+      title: "Profilo utente"
+    }
+  },
   communications: {
     title: 'Chat e comunicazioni',
     subtitle: '',
@@ -142,7 +147,8 @@ export default {
     reinvestedCommissions: "Provvigioni reinvestite",
     collectedCommissions: "Provvigioni riscosse",
     clientsTotalDeposit: "Versamenti dei clienti nell'ultimo anno",
-    collectCommissions: "Preleva"
+    collectCommissions: "Preleva",
+    addCommissions: "Aggiungi / Regala"
   },
   calculator: {
     title: "Preventivi"
