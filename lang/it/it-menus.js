@@ -1,5 +1,6 @@
 export default {
-  "edit": "Modifica",
+  "edit": "Visualizza Anagrafica",
+  "profile": "Visualizza Profilo",
   "delete": "Elimina",
   "sendCommunication": "Invia comunicazione",
   "showRequests": "Mostra richieste",
@@ -13,5 +14,11 @@ export default {
   "cancel": "Annulla",
   "cancelRequest": "Annulla richiesta",
   "approveUser": "Attiva account",
-  "noNotifications": "Nessuna nuova notifica"
+  "noNotifications": "Nessuna nuova notifica",
+  "downloadReceipt": "Scarica integrazione",
+  "lastMonth": "Ultimo mese",
+  "last2Month": "Ultimi 2 mese",
+  "last3Month": "Ultimi 3 mesi",
+  "show-brite-account": "Visualizza Profilo",
+  "show-user-account": "Visualizza Anagrafica"
 }

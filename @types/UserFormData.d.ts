@@ -1,4 +1,6 @@
-export interface UserDataSchema {
+import AgentTeamType from "~/enums/AgentTeamType";
+
+export interface User {
   id: string,
   role: number
   personType: string
@@ -35,9 +37,26 @@ export interface UserDataSchema {
   contractPercentage: string
   contractIban: string
   contractBic: string
+  contractInitialPaymentMethod: string
   referenceAgent: string
+  referenceAgentData: string
   accountCreatedAt: string
   accountUpdatedAt: string
   accountActivatedAt: string
   accountVerifiedAt: string
+  contractSignedAt: string
+  signinLogs: any
+  contractFiles: any[]
+  account_status: string
+  files: any[]
+  gold: boolean
+  hasSubAgents: boolean
+  agentTeamType: typeof AgentTeamType,
+  permissions: string[],
+  superAdmin: boolean
+  clubCardNumber: string
+  clubPack: string
+}
+
+export interface UserDataSchema extends User {
 }

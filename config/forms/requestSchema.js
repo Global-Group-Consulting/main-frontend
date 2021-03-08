@@ -30,11 +30,12 @@ export default function (context) {
           disabled: readonly,
           formatter: readonly ? (value) => context.$i18n.t(`enums.RequestTypes.${context.$enums.RequestTypes.getIdName(value)}`) : null,
           items: !readonly ? context.$enums.RequestTypes.list.reduce((acc, type) => {
+            const reqGold = [context.$enums.RequestTypes.RISC_CAPITALE_GOLD, context.$enums.RequestTypes.RISC_INTERESSI_BRITE].includes(type.value)
             let mustHide = false
 
-            if (type.value === context.$enums.RequestTypes.VERSAMENTO ||
-              (type.value === context.$enums.RequestTypes.RISC_PROVVIGIONI &&
-                context.$auth.user.role !== context.$enums.UserRoles.AGENTE)
+            if (type.value === context.$enums.RequestTypes.VERSAMENTO
+              || (type.value === context.$enums.RequestTypes.RISC_PROVVIGIONI && context.$auth.user.role !== context.$enums.UserRoles.AGENTE)
+              || reqGold
             ) {
               mustHide = true
             }
@@ -127,6 +128,22 @@ export default function (context) {
           formatter: "dateHourFormatter",
           "prepend-icon": "",
           "prepend-inner-icon": "mdi-calendar",
+        },
+      }
+    },
+    {
+      cols: {
+        clubCardNumber: {
+          disabled: true,
+          if: context.formData.typeClub === "brite"
+        },
+      }
+    },
+    {
+      cols: {
+        iban: {
+          disabled: true,
+          if: context.formData.typeClub === "brite"
         },
       }
     },

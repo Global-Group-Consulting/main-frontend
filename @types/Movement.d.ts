@@ -1,4 +1,3 @@
-
 export interface IMovement {
   // Soldi attualmente disponibili già con tutto calcolato.
   deposit: number,
@@ -24,6 +23,20 @@ export interface IMovement {
   cancelReason: string,
 
   created_at: Date
+}
+
+export interface Movement {
+  amountChange: number
+  created_at: string
+  deposit: number
+  depositOld: number
+  id: string
+  interestAmount: number
+  interestAmountOld: number
+  interestPercentage: number
+  movementType: number
+  updated_at: string
+  userId: string
 }
 
 export interface AddMovementDto {

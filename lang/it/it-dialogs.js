@@ -9,12 +9,16 @@ export default {
     'btn-send': 'Invia',
   },
   requests: {
-    'title-withdrawal': 'Nuova richiesta di riscossione',
+    'title-withdrawal': 'Nuova richiesta di riscossione Classic',
+    'title-withdrawal-gold': 'Nuova richiesta di riscossione Gold',
     'title-deposit': 'Versamento di nuova liquidità',
     'title-details': 'Dettagli richiesta',
+    'tab-brite': 'Utilizza i tuoi Brite<br>e delega GlobalClub<br>alla vendita dell\'oro riservato',
+    'tab-gold': 'Preleva l\'oro fisico',
     'btn-cancel': 'Annulla',
     'btn-close': 'Chiudi',
     'btn-send': 'Invia richiesta',
+    'btn-send-club': 'Procedi con la richiesta',
     'btn-accept': 'Approva',
     'btn-reject': 'Rifiuta',
     'btn-delete': 'Elimina',
@@ -68,5 +72,51 @@ export default {
     'btn-cancel': 'Chiudi',
     'btn-import': 'Importa lista',
     'btn-import-contract': 'Importa contratto',
+  },
+  changelog: {
+    title: "Dettaglio degli Aggiornamenti"
+  },
+  clientsList: {
+    'title': 'Elenco clienti dell\'agente',
+    'btn-cancel': "Chiudi",
+    'btn-open-user': "Apri"
+  },
+  aclEditDialog: {
+    titleRoles: "Modifica Ruoli",
+    titlePermissions: "Modifica Permessi",
+    titleDirectPermissions: "Modifica Permessi Diretti",
+    titleDescription: "Modifica Descrizione",
+    cancelText: "Annulla",
+    saveText: "Salva",
+    addText: "Aggiungi...",
+    select: {
+      label: {
+        roles: "",
+        permissions: "",
+        directPermissions: ""
+      },
+      selection: "{count} selezionati"
+    }
+  },
+  addAclDialog: {
+    titleRoles: "Aggiungi Ruolo",
+    titlePermissions: "Aggiungi Permesso",
+    "btn-cancel": "Annulla",
+    "btn-save": "Salva e Crea"
+  },
+  briteAddDialog: {
+    title: "Aggiungi Brite",
+    "btn-cancel": "Annulla",
+    "btn-save": "Aggiungi"
+  },
+  briteUseDialog: {
+    title: "Richiesta utilizzo brite",
+    "btn-send": "Invia richiesta",
+    "btn-cancel": "Annulla"
+  },
+  calculatorMovementsDialog: {
+    titleDepositCollected: "Riscossione deposito",
+    titleDepositAdded: "Versamento nuova liquidità",
+    titleInterestCollected: "Riscossione interessi"
   }
 }

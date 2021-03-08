@@ -1,13 +1,89 @@
 @import "sweetAlert";
 @import "vueToasted";
 
+@import '~vuetify/src/styles/styles.sass';
+
 @import "../node_modules/animate.css/animate.min.css";
+@import "../node_modules/vue2-animate/src/sass/vue2-animate.scss";
 
+:root {
+  --sat: env(safe-area-inset-top);
+  --sar: env(safe-area-inset-right);
+  --sab: env(safe-area-inset-bottom, 32px); /* THIS ONE GETS US THE HOME BAR HEIGHT */
+  --sal: env(safe-area-inset-left);
+}
 
-/*@import "../node_modules/animate.css/source/_vars.css";
-@import "../node_modules/animate.css/source/_base.css";
-@import "../node_modules/animate.css/source/attention_seekers/swing.css";*/
+html {
+  overflow-y: auto !important;
+}
+
+html, body, #__nuxt, #__layout, .v-application, .v-application--wrap, body.swal2-height-auto {
+  width: 100%;
+  height: 100% !important;
+}
+
+.v-application--wrap {
+  overflow: hidden;
+  min-height: 100% !important;
+
+  .v-main {
+    align-self: stretch;
+    justify-self: stretch;
+    overflow: auto;
+    flex: 1 1 auto;
+
+    .v-main__wrap > .container {
+      padding-bottom: 86px;
+    }
+
+    .v-tabs {
+      padding-right: 12px;
+      padding-left: 12px;
+    }
+  }
+}
+
+.container {
+  overflow-y: auto;
+
+}
 
 .p-relative {
   position: relative !important;
 }
+
+.text-decoration-underline-dotted {
+  text-decoration: underline dotted;
+}
+
+.theme--light {
+  &.v-tabs-items, &.v-tabs > .v-tabs-bar {
+    background-color: transparent !important;
+  }
+
+}
+
+
+@media #{map-get($display-breakpoints, 'sm-and-down')}{
+  .v-slide-group__prev--disabled, .v-slide-group__next--disabled {
+    display: none !important;
+  }
+
+  .v-speed-dial--bottom {
+    //bottom: 76px!important;
+  }
+}
+
+@media #{map-get($display-breakpoints, 'xs-only')}{
+  .v-application--wrap {
+
+    .v-main {
+      .v-main__wrap > .container {
+        padding-bottom: 18px;
+      }
+    }
+  }
+
+}
+
+

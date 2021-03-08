@@ -30,10 +30,10 @@
 </template>
 
 <script>
-import { ref, computed } from "@vue/composition-api";
-import { get as _get } from "lodash";
+import {ref, computed} from "@vue/composition-api";
+import {get as _get} from "lodash";
 
-import DashboardBlocksList from "../config/blocks/dashboardBlocks";
+import DashboardBlocksList from "../config/blocks/dashboardBlocks.ts";
 import RoleBasedConfig from "../config/roleBasedConfig";
 import UserRoles from "../enums/UserRoles";
 
@@ -47,13 +47,20 @@ export default {
     page: {
       default: "dashboard",
       type: String
-    }
+    },
+    readonly: Boolean
   },
-  setup(props, { root }) {
-    const { $auth, $router } = root;
+  setup(props, {root}) {
+    const {$auth, $router, $alerts} = root;
     const blocksActions = {
       addDeposit() {
         $router.push("/requests?new=add_deposit");
+      },
+      addCommissions() {
+        $alerts.info({
+          title: "",
+          text: "Funzione presto disponibile!"
+        })
       },
       showMovementsList() {
         $router.push("/movements");
@@ -75,7 +82,7 @@ export default {
 
       const blocks = _get(
         RoleBasedConfig,
-          `${roleName}.blocks.${props.page}.blocks`
+        `${roleName}.blocks.${props.page}.blocks`
       );
 
       if (!blocks) {
@@ -86,11 +93,26 @@ export default {
 
       return blocks.reduce((acc, _block) => {
         const blockObj = DashboardBlocksList[_block];
+        let action
+        let actionText
+
+        if (typeof blockObj.action === "function") {
+          action = blockObj.action(root, props.readonly)
+        } else if (!props.readonly) {
+          action = blockObj.action
+        }
+
+        if (typeof blockObj.actionText === "function") {
+          actionText = blockObj.actionText(root, props.readonly)
+        } else if (!props.readonly) {
+          actionText = blockObj.actionText
+        }
 
         acc.push({
           ...blockObj,
           id: _block,
-          action: blocksActions[blockObj.action]
+          action: blocksActions[action],
+          actionText
         });
 
         return acc;

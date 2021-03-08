@@ -3,6 +3,8 @@ export default function (context) {
     {
       cols: {
         'password': {
+          component: "passwordInput",
+          checkPasswordStrength: true,
           validations: {
             required: {},
             minLength: { params: 6 }
@@ -12,7 +14,9 @@ export default function (context) {
     }, {
       cols: {
         'password_confirmation': {
+          component: "passwordInput",
           validations: {
+            required: {},
             sameAs: {
               params: 'password',
             }

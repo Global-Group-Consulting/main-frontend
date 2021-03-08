@@ -1,10 +1,10 @@
 import {BasicEnum} from '../classes/BasicEnum'
 
 /** @enum */
-class AccountStatuses extends BasicEnum {
+class CommissionType extends BasicEnum {
   /** @enum */
   constructor() {
-    super('AccountStatuses')
+    super('CommissionType')
 
     this.NEW_DEPOSIT = "newDeposit"
     this.TOTAL_DEPOSIT = "totalDeposit"
@@ -42,4 +42,4 @@ class AccountStatuses extends BasicEnum {
   }
 }
 
-export default new AccountStatuses()
+export default new CommissionType()

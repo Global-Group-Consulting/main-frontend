@@ -95,9 +95,16 @@ export default {
       'user-legal-residence': 'Sede legale / Residenza',
       'contacts': 'Contatti',
       'contract': 'Contratto',
-      'other': 'Varie'
+      'agent': 'Impostazioni Agente',
+      'club': 'Gold / Global Club',
+      'other': 'Ruolo / Varie'
     }
 
+  },
+  user: {
+    profile: {
+      title: "Profilo utente"
+    }
   },
   communications: {
     title: 'Chat e comunicazioni',
@@ -105,6 +112,7 @@ export default {
     tickets: "Chat",
     communications: "Comunicazioni",
     messagesSent: "Comunicazioni Inviate",
+    clubConversations: "Global Club",
     me: "Me",
     "btn-new-conversation": "Nuova chat",
     "btn-new-message": "Nuova comunicazione"
@@ -112,14 +120,18 @@ export default {
   requests: {
     title: "Elenco delle richieste",
     subtitle: '',
-    "btnWithdrawal": "Riscossione",
-    "btnWithdrawal-tooltip": "Crea una richiesta di riscossione",
+    "btnWithdrawal": "Risc. Classic",
+    "btnWithdrawalGold": "Risc. Gold",
+    "btnWithdrawal-tooltip": "Crea una richiesta di Riscossione Classic",
+    "btnWithdrawalGold-tooltip": "Crea una richiesta di Riscossione Gold",
     "btnDeposit": "Versamento",
     "btnDeposit-tooltip": "Versa nuova liquidità",
+    "btnDownloadReport": "Scarica Report",
     'tableNuova-title': "In attesa",
     'tableLavorazione-title': "In lavorazione",
     'tableAccettata-title': "Accettate",
     'tableRifiutata-title': "Rifiutate",
+    "fileReportName": "Report {date}"
   },
   signResult: {
     "success-title": "Contratto firmato!",
@@ -135,6 +147,37 @@ export default {
     reinvestedCommissions: "Provvigioni reinvestite",
     collectedCommissions: "Provvigioni riscosse",
     clientsTotalDeposit: "Versamenti dei clienti nell'ultimo anno",
-    collectCommissions: "Preleva"
+    collectCommissions: "Preleva",
+    addCommissions: "Aggiungi / Regala"
+  },
+  calculator: {
+    title: "Preventivi"
+  },
+  acl: {
+    title: "Ruoli e permessi"
+  },
+  club: {
+    title: "Global Club",
+
+    brite: {
+      title: "Movimenti Brite",
+      activePack: "Pacchetto attivo: <strong>{pack}</strong>",
+      changeActivePack: "Cambia il pacchetto attivo",
+      totalUsableBrite: "Totale brite utilizzabili",
+      totalExpiresAt: "<strong>{amount}</strong> scadono il {expiresAt}",
+
+      tabs: {
+        archive: "Archivio",
+        briteTotal: "Totale Brite accumulati",
+        briteUsed: "Brite Utilizzati",
+        briteAvailable: "Brite Disponibili",
+        usableFrom: "<strong>Utilizzabili dal</strong> {date}",
+        expiresAt: "<strong>Scadenza</strong> {date}",
+        movements: "Elenco movimenti",
+        use: "Utilizza",
+        addBrite: "Aggiungi",
+        removeBrite: "Rimuovi",
+      },
+    }
   }
 }

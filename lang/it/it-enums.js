@@ -48,6 +48,8 @@ export default {
     'risc_provvigioni': 'Riscossione provvigioni',
     'risc_capitale': 'Prelievo deposito',
     'risc_interessi': 'Riscossione rendite (classic)',
+    'risc_interessi_brite': 'Riscossione rendite in Brite',
+    'risc_capitale_gold': 'Prelievo deposito in Oro Fisico',
   },
   'WalletTypes': {
     'deposit': 'Deposito',
@@ -111,6 +113,7 @@ export default {
     "user_revalidate_message": "Occorre rivalidare i dati di {firstName} {lastName} in quanto aggiornati dall'agente.",
     "user_sign_request": "Contratto da firmare",
     "user_sign_request_message": "E' necessario firmare il contratto di {firstName} {lastName}.",
+    "user_approved": "L'account dell'utente {firstName} {lastName} è stato approvato!",
     "request_deposit": "Richiesta di versamento",
     "request_deposit_message": "{firstName} {lastName} desidera versare € {amount}",
     "request_deposit_collect": "Richiesta di riscossione deposito",
@@ -127,5 +130,26 @@ export default {
     "message_chat_message": "Hai un nuovo messaggio in una chat.",
     "message_communication": "Nuova comunicazione",
     "message_communication_message": "Hai una nuova comunicazione.",
+  },
+  'PaymentMethods': {
+    "bonifico": "Bonifico",
+    "assegno": "Assegno",
+    "altro": "Altro",
+  },
+  'ClubPacks': {
+    "basic": "Basic",
+    "fast": "Fast",
+    "premium": "Premium",
+  },
+  'ClubMovementTypes': {
+    "interest_recapitalized": "Ricapitalizzazione interessi",
+    "deposit_added": "Aggiunta manuale",
+    "deposit_transferred": "Trasferimento tra utenti",
+    "deposit_collected": "Utilizzo brite",
+  },
+  'AgentTeamType': {
+    "group_percentage": "Percentuale di gruppo",
+    "subject_percentage": "Percentuale soggettiva"
   }
 }
+

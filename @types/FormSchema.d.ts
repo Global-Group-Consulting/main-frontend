@@ -1,23 +1,33 @@
-import { Formatters } from "./Formatters";
+import {Formatters} from "./Formatters";
+import CurrencyType from "~/enums/CurrencyType";
 
 export interface FormSchema {
-  if?: boolean | function,
+  if?: boolean | Function,
   legend?: string,
   disableEditMode?: boolean,
   class?: string,
   maxCols?: number,
   cols: {
     [key: string]: {
-      component?: string,
+      component?: "v-select" | "date-picker" | "file-uploader"
+        | "agent-commissions-select" | "contract-doc" | "money-input" | "phone-input"
+        | "v-switch" | "v-autocomplete" | "v-textarea" | "",
       label?: string,
-      formatter?: Formatters,
-      disabled?: boolean,
+      formatter?: Formatters | Function,
       if?: any,
-      items?: [] | function
-      disabled?: boolean | function
+      items?: Function | any;
+      disabled?: boolean | Function;
       type?: string
-      files?: [],
+      files?: any[],
       clearable?: boolean,
+      multiple?: boolean,
+      max?: string | number,
+      min?: string | number,
+      showBrite?: boolean,
+      onlyBrite?: boolean,
+      currency?: number,
+      autoGrow?: boolean,
+      rows?: number,
       validations?: {
         [key: string]: {
           params?: any

@@ -14,6 +14,31 @@ const defaults = {
         'lastName',
         'email',
         'accountStatus',
+        'commissionsAssigned',
+        'actions'
+      ]
+    },
+    clients: {
+      columns: [
+        'contractNumber',
+        'firstName',
+        'lastName',
+        'email',
+        'role',
+        'clientsNumber',
+        'actions'
+      ]
+    },
+    usersFilter: {
+      columns: [
+        'contractNumber',
+        'firstName',
+        'lastName',
+        'email',
+        'referenceAgent',
+        'contractStatus',
+        'role',
+        'accountStatus',
         'actions'
       ]
     },
@@ -49,7 +74,95 @@ const defaults = {
         "updatedAt",
         "unreadMessages",
       ]
+    },
+    clubConversations: {
+      columns: [
+        "subject",
+        "createdAt",
+        "creator",
+        "updatedAt",
+        "unreadMessages",
+      ]
+    },
+    calculator: {
+      columns: [
+        "date",
+        "depositAdded",
+        "depositCurrent",
+        "interestAmount",
+        "interestRecapitalized",
+        "interestCollected",
+        "depositCollected",
+        "brite",
+        "britePartial",
+      ]
+    },
+    calculatorMovements: {
+      columns: [
+        'date',
+        'movementType',
+        'amount',
+        'actions',
+      ]
+    },
+    aclUsers: {
+      columns: [
+        'firstName',
+        'lastName',
+        'email',
+        'roles',
+        'permissions',
+      ]
+    },
+    aclRoles: {
+      columns: [
+        'code',
+        'description',
+        'permissions',
+        'actions',
+      ]
+    },
+    aclPermissions: {
+      columns: [
+        'code',
+        'description',
+        'actions',
+      ]
+    },
+    club: {
+      columns: [
+        'clubCardNumber',
+        'firstName',
+        'lastName',
+        'email',
+        'clubPack',
+        // 'role',
+        'briteTotal',
+        'briteUsed',
+        'briteAvailable',
+        'actions'
+      ]
+    },
+    brite: {
+      columns: [
+        'amountChange',
+        'createdAt',
+        'movementType',
+        'deposit',
+        'depositOld',
+        'notes',
+      ]
     }
+  },
+  blocks: {
+    dashboard: {
+      blocks: [
+        "deposit",
+        "interestAmount",
+        "interestsCollected",
+        "depositCollected",
+      ]
+    },
   }
 }
 
@@ -63,6 +176,8 @@ const admin = {
         'lastName',
         'email',
         ['referenceAgent', [UserRoles.AGENTE, UserRoles.CLIENTE]],
+        ['commissionsAssigned', [UserRoles.AGENTE]],
+        ['contractStatus', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         'accountStatus',
         'actions'
       ]
@@ -89,6 +204,15 @@ const admin = {
         "validatedAt"
       ]
     },
+    pendingSignatures: {
+      columns: [
+        "contractNumber",
+        "firstName",
+        "lastName",
+        "email",
+        "validatedAt"
+      ]
+    },
     movements: {
       columns: [
         "amountChange",
@@ -96,6 +220,24 @@ const admin = {
         "createdAt",
         "deposit",
         "interestAmount"
+      ]
+    }
+  },
+  blocks: {
+    dashboard: {
+      blocks: [
+        "deposit",
+        "interestAmount",
+        "interestsCollected",
+        "depositCollected",
+      ]
+    },
+    wallet: {
+      blocks: [
+        "monthCommissions",
+        "reinvestedCommissions",
+        "collectedCommissions",
+        "clientsTotalDeposit",
       ]
     }
   }
@@ -110,6 +252,8 @@ const servClienti = {
         'lastName',
         'email',
         ['referenceAgent', [UserRoles.AGENTE, UserRoles.CLIENTE]],
+        ['commissionsAssigned', [UserRoles.AGENTE]],
+        ['contractStatus', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         'accountStatus',
         'actions'
       ]
@@ -142,6 +286,24 @@ const servClienti = {
         "email",
       ]
     },
+  },
+  blocks: {
+    dashboard: {
+      blocks: [
+        "deposit",
+        "interestAmount",
+        "interestsCollected",
+        "depositCollected",
+      ]
+    },
+    wallet: {
+      blocks: [
+        "monthCommissions",
+        "reinvestedCommissions",
+        "collectedCommissions",
+        "clientsTotalDeposit",
+      ]
+    }
   }
 }
 
@@ -164,10 +326,19 @@ const cliente = {
         "movementType",
         "createdAt",
         "deposit",
-        "interestAmount"
+        "interestAmount",
+        "actions"
       ]
     },
     conversations: {
+      columns: [
+        "subject",
+        "createdAt",
+        "updatedAt",
+        "unreadMessages",
+      ]
+    },
+    clubConversations: {
       columns: [
         "subject",
         "createdAt",
@@ -197,6 +368,9 @@ const agente = {
         'lastName',
         'email',
         'accountStatus',
+        ['referenceAgent', [UserRoles.AGENTE]],
+        ['clientsNumber', [UserRoles.AGENTE]],
+        ['commissionsAssigned', [UserRoles.AGENTE]],
         'actions'
       ]
     },
@@ -217,7 +391,8 @@ const agente = {
         "movementType",
         "createdAt",
         "deposit",
-        "interestAmount"
+        "interestAmount",
+        "actions"
       ]
     },
     commissions: {
@@ -252,8 +427,7 @@ const agente = {
 }
 
 
-
-export { admin, servClienti, agente, cliente }
+export {admin, servClienti, agente, cliente}
 
 export default {
   defaults,

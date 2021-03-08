@@ -1,4 +1,4 @@
-import { sortBy as _sortBy, capitalize as _capitalize } from 'lodash'
+import {sortBy as _sortBy, capitalize as _capitalize, startCase as _startCase} from 'lodash'
 
 export const state = () => ({
   /**
@@ -18,11 +18,16 @@ export const state = () => ({
    * @property {string} sigla
    */
   provinces: [],
-  regions: []
+  regions: [],
+  lastFetch: {
+    countries: null,
+    provinces: null,
+    regions: null,
+  }
 })
 
 export const getters = {
-  countriesList (state, getters, rootState) {
+  countriesList(state, getters, rootState) {
     const list = state.countries.reduce((acc, country) => {
       const countryName = country.translations[rootState.i18n.locale] || country.name
 
@@ -36,7 +41,27 @@ export const getters = {
 
     return _sortBy(list, ['text'])
   },
-  regionsList (state) {
+  countriesPhoneCodeList(state, getters, rootState) {
+    const list = state.countries.reduce((acc, country) => {
+      // const countryName = country.translations[rootState.i18n.locale] || country.name
+
+      if (country.callingCodes) {
+        country.callingCodes.forEach(code => {
+          if (code) {
+            acc.push({
+              value: "+" + code,
+              text: `+${code} (${country.nativeName})`
+            })
+          }
+        })
+      }
+
+      return acc
+    }, [])
+
+    return _sortBy(list, ['text'])
+  },
+  regionsList(state) {
     const list = state.regions.reduce((acc, region) => {
       acc.push({
         value: region.toLowerCase(),
@@ -48,11 +73,11 @@ export const getters = {
 
     return _sortBy(list, ['text'])
   },
-  provincesList (state) {
+  provincesList(state) {
     const list = state.provinces.reduce((acc, province) => {
       acc.push({
         value: province.sigla,
-        text: _capitalize(province.nome)
+        text: _startCase(province.nome)
       })
 
       return acc
@@ -63,19 +88,22 @@ export const getters = {
 }
 
 export const mutations = {
-  STORE_COUNTRIES (state, payload) {
+  STORE_COUNTRIES(state, payload) {
     state.countries = payload
+    state.lastFetch.countries = new Date()
   },
-  STORE_REGIONS (state, payload) {
+  STORE_REGIONS(state, payload) {
     state.regions = payload
+    state.lastFetch.regions = new Date()
   },
-  STORE_PROVINCES (state, payload) {
+  STORE_PROVINCES(state, payload) {
     state.provinces = payload
+    state.lastFetch.provinces = new Date()
   }
 }
 
 export const actions = {
-  async getCountries ({ commit }) {
+  async getCountries({commit}) {
     try {
       const data = await this.$axios.$get('/enum/countries')
 
@@ -85,7 +113,7 @@ export const actions = {
     }
   },
 
-  async getRegions ({ commit }) {
+  async getRegions({commit}) {
     try {
       const data = await this.$axios.$get('/enum/regions')
 
@@ -95,7 +123,7 @@ export const actions = {
     }
   },
 
-  async getProvinces ({ commit }) {
+  async getProvinces({commit}) {
     try {
       const data = await this.$axios.$get('/enum/provinces')
 

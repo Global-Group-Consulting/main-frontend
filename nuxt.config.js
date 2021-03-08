@@ -6,6 +6,9 @@ import nuxtProxy from './config/nuxtModules/nuxtProxy'
 import nuxtVuetify from './config/nuxtModules/nuxtVuetify'
 import nuxtVueScrollTo from './config/nuxtModules/vueScrollTo'
 
+// Autogenerate the changelog html from .md file
+import "./changelog"
+
 const IS_BETA = !!process.env.BETA
 const FAVICON_PATH = IS_BETA ? "/beta" : ""
 const FAVICON_VERSION = process.env.FAVICON_VERSION
@@ -31,7 +34,7 @@ export default {
     title: 'Web App',
     meta: [
       {charset: 'utf-8'},
-      {name: 'viewport', content: 'width=device-width, initial-scale=1'},
+      {name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover'},
       {hid: 'description', name: 'description', content: "Private area for Global Group Consulting"},
       {name: "apple-mobile-web-app-title", content: `${APP_NAME}`},
       {name: "application-name", content: `${APP_NAME}`},
@@ -60,14 +63,15 @@ export default {
   ** https://nuxtjs.org/guide/plugins
   */
   plugins: [
+    './plugins/acl.ts',
     './plugins/axios.js',
-    './plugins/alerts.js',
-    './plugins/apiCalls.js',
+    './plugins/alerts.ts',
+    './plugins/apiCalls.ts',
     './plugins/filters.js',
-    './plugins/enums.js',
+    './plugins/enums.ts',
     './plugins/mixins.js',
     './plugins/global-components.js',
-    './plugins/socket.js',
+    './plugins/socket.ts',
     './plugins/vue-composition-api.js',
     './plugins/vue-portal.js',
     {src: './plugins/vuex-persist', ssr: false}
@@ -84,10 +88,13 @@ export default {
     color: "orange",
   },
 
+  loadingIndicator: "./components/loadingIndicator.html",
+
   /*
   ** Nuxt.js dev-modules
   */
   buildModules: [
+    ['@nuxt/typescript-build'],
     ['@nuxtjs/vuetify', nuxtVuetify],
     ['@nuxtjs/moment', nuxtMoment]
   ],
@@ -117,12 +124,18 @@ export default {
   },
 
   router: {
-    middleware: ['storeFetch', 'auth', 'authJWT']
+    middleware: ['storeFetch', 'auth', 'authJWT', 'aclAuth']
   },
 
   serverMiddleware: [
     // {path: '/api', handler: '~/server/index.js' }
   ],
+
+  pageTransition: {
+    name: 'fade',
+    mode: 'out-in',
+    duration: 100
+  },
 
   env: {
     version: require('./package.json').version,

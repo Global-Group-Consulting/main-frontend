@@ -1,14 +1,10 @@
 <template>
   <v-layout>
     <v-flex>
-      <page-header
-        :title="title"
-        :subtitle="subtitle"
-        :icon="icon"
-      ></page-header>
+      <page-header page-name="communications"></page-header>
 
-      <v-toolbar class="mb-5" v-if="permissions.seeToolbar.value">
-        <v-toolbar-items class="flex-fill justify-center">
+      <page-toolbar v-if="permissions.seeToolbar.value">
+        <template slot="center-block">
           <tooltip-btn
             :tooltip="$t('pages.communications.btn-new-conversation')"
             text
@@ -28,8 +24,8 @@
           >
             {{ $t("pages.communications.btn-new-message") }}
           </tooltip-btn>
-        </v-toolbar-items>
-      </v-toolbar>
+        </template>
+      </page-toolbar>
 
       <v-tabs v-model="currentTab">
         <v-tab v-for="tab of communicationsTabs" :key="tab.key">
@@ -42,12 +38,13 @@
         </v-tab>
       </v-tabs>
 
-      <v-tabs-items v-model="currentTab">
-        <v-tab-item v-for="tab of communicationsTabs" :key="tab.key">
-          <v-card>
+      <v-card class="overflow-hidden">
+        <v-tabs-items v-model="currentTab" touchless>
+          <v-tab-item v-for="tab of communicationsTabs" :key="tab.key">
             <data-table
               :items="communicationsList[tab.key]"
               :table-key="tab.key"
+              :items-per-page="25"
               schema="communicationsSchema"
               @click:row="openCommunication"
             >
@@ -104,9 +101,9 @@
                 <span v-else></span>
               </template>
             </data-table>
-          </v-card>
-        </v-tab-item>
-      </v-tabs-items>
+          </v-tab-item>
+        </v-tabs-items>
+      </v-card>
     </v-flex>
 
     <comunication-details-dialog
@@ -123,21 +120,25 @@
 </template>
 
 <script>
-import {reactive, onBeforeMount, ref, computed} from "@vue/composition-api";
+import {computed, onBeforeMount, reactive, ref} from "@vue/composition-api";
 
 import ComunicationDetailsDialog from "@/components/dialogs/ComunicationDetailsDialog";
 import CommunicationNewDialog from "@/components/dialogs/CommunicationNewDialog";
 
 import pageBasic from "@/functions/pageBasic";
-import requestsCrudActions from "@/functions/requestsCrudActions.js";
 
 import CommunicationsTabs from "@/config/tabs/communicationsTabs";
 import DataTable from "@/components/table/DataTable";
 import PageHeader from "@/components/blocks/PageHeader";
+import PageToolbar from "@/components/blocks/PageToolbar";
+import {ClubPermissions} from "../functions/acl/enums/club.permissions";
 
 export default {
   name: "index",
-  components: {PageHeader, DataTable, ComunicationDetailsDialog, CommunicationNewDialog},
+  components: {PageToolbar, PageHeader, DataTable, ComunicationDetailsDialog, CommunicationNewDialog},
+  /* meta: {
+     permissions: [CommunicationsPermissions.ACL_COMMUNICATIONS_ALL_READ, CommunicationsPermissions.ACL_COMMUNICATIONS_SELF_READ]
+   },*/
   props: {
     receiversShowLimit: {
       type: Number,
@@ -145,27 +146,33 @@ export default {
     }
   },
   setup(props, {root}) {
-    const {$apiCalls, $alerts, $enums, $auth, $route} = root;
+    const {$apiCalls, $alerts, $enums, $auth, $route, $acl} = root;
 
     let dataRefreshTimer = null;
     const currentTab = ref(0);
     const communicationsList = reactive({
       messages: [],
       messagesSent: [],
-      conversations: []
+      conversations: [],
+      clubConversations: []
     });
     const rawList = [];
     const communicationsTabs = computed(() => {
         const tabs = CommunicationsTabs.filter(_tab => {
-          return _tab.key === "messagesSent"
-            ? $enums.UserRoles.ADMIN === $auth.user.role : true;
+          if (_tab.key === "messagesSent") {
+            return $enums.UserRoles.ADMIN === $auth.user.role
+          } else if (_tab.key === "clubConversations") {
+            return $acl.checkPermissions([ClubPermissions.BRITES_SELF_USE, ClubPermissions.CLUB_APPROVE])
+          }
+
+          return true
         })
 
         return tabs.map(tab => {
           const dataList = communicationsList[tab.key]
           let counter = 0
 
-          if (tab.key === "conversations") {
+          if (["conversations", "clubConversations"].includes(tab.key)) {
             counter = dataList.reduce((acc, curr) => curr.unreadMessages > 0 ? acc + 1 : acc, 0)
           } else if (tab.key === "messages") {
             counter = dataList.reduce((acc, curr) => !curr.read_at ? acc + 1 : acc, 0)
@@ -209,6 +216,7 @@ export default {
         }));
         root.$set(communicationsList, "messagesSent", result.messagesSent);
         root.$set(communicationsList, "conversations", result.conversations);
+        root.$set(communicationsList, "clubConversations", result.clubConversations);
       } catch (er) {
         $alerts.error(er);
       } finally {
@@ -230,7 +238,10 @@ export default {
       root.$store.dispatch("dialog/updateStatus", {
         id: "CommunicationDetailsDialog",
         title: communication.subject,
-        fullscreen: isConversation,
+        large: true,
+        showCloseBtn: true,
+        theme: "communications",
+        // fullscreen: isConversation,
         readonly: !isConversation || communication.readonly,
         texts: {cancelBtn: root.$t("dialogs.communicationDialog.btn-cancel")},
         data: {

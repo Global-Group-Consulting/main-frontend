@@ -2,7 +2,7 @@ import Vue from 'vue'
 import moment from 'moment'
 import Cleave from 'cleave.js'
 
-import {capitalize, kebabCase} from "lodash"
+import {capitalize, kebabCase, upperFirst as _upperFirst} from "lodash"
 
 class BriteConverter {
   static toBrite(value) {
@@ -91,7 +91,7 @@ export function datePickerFormatter(value) {
   return moment(value).format('YYYY-MM-DD')
 }
 
-export function moneyFormatter(value, formatBrite = false) {
+export function moneyFormatter(value, formatBrite = false, avoidNull = false) {
   if (!["string", "number"].includes(typeof value)) {
     return ''
   }
@@ -123,6 +123,10 @@ export function moneyFormatter(value, formatBrite = false) {
     decimals += '0'
   }
 
+  if (formatted === "0" && avoidNull) {
+    return ""
+  }
+
   return formatted.split(',')[0] + (decimals ? ',' + decimals : '')
 }
 
@@ -140,6 +144,10 @@ export function formFieldNameFormatter(field) {
   return kebabCase(field)
 }
 
+export function upperFirst(value) {
+  return _upperFirst(value)
+}
+
 Vue.filter('dateFormatter', dateFormatter)
 Vue.filter('dateHourFormatter', dateHourFormatter)
 Vue.filter('datePickerFormatter', datePickerFormatter)
@@ -150,3 +158,4 @@ Vue.filter('regionFormatter', regionFormatter)
 Vue.filter('numberCasting', numberCasting)
 Vue.filter('userFormatter', userFormatter)
 Vue.filter('formFieldNameFormatter', formFieldNameFormatter)
+Vue.filter('upperFirst', upperFirst)

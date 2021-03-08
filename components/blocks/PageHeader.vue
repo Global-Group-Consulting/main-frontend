@@ -1,66 +1,77 @@
 <template>
   <v-sheet
-    color="primary"
-    class="mx-n3 mt-n3"
+    class="pb-10"
+    color="transparent"
     tile
-    style="margin-bottom: -100px"
   >
-    <v-row>
-      <v-col cols="12">
-        <v-row
-          justify="center"
-          align="start"
-          style="height: 287px; padding-bottom: 100px"
-          class="flex-column mx-3"
-        >
-          <div class="d-flex">
-            <v-icon
-              x-large
-              color="white"
+    <div class="d-flex">
+      <!--      <v-icon
               class="mr-3"
-              style="font-size: 3.75rem; opacity: 0.5"
-              >{{ icon }}
-            </v-icon>
+              style="opacity: 0.5"
+              v-if="icon"
+              :x-large="$vuetify.breakpoint.mdAndUp"
+            >{{ icon }}
+            </v-icon>-->
 
-            <h1 class="display-3 white--text">
-              {{ title }}
-              <!-- <small
-                v-if="showUserRole"
-                class="italic"
-                >({{ $t("enums.UserRoles." + userRole) }})</small
-              > -->
-            </h1>
-          </div>
-          <h3
-            v-if="subtitle"
-            class="display-1 font-weight-light white--text"
-            style="opacity: 0.5"
-          >
-            <slot name="subtitle">
-              <div v-html="subtitle"></div>
-            </slot>
-          </h3>
-        </v-row>
-      </v-col>
-    </v-row>
+      <h1 :class="{
+        'display-3': $vuetify.breakpoint.mdAndUp,
+        'display-2': $vuetify.breakpoint.smOnly,
+        'display-1': $vuetify.breakpoint.xsOnly
+        }" v-html="pageTitle"></h1>
+    </div>
+    <h3
+      v-if="pageSubtitle"
+      class="display-1 font-weight-light"
+      style="opacity: 0.5"
+    >
+      <slot name="subtitle">
+        <div v-html="pageSubtitle"></div>
+      </slot>
+    </h3>
   </v-sheet>
 </template>
 
-<script>
-export default {
-  name: "PageHeader",
-  props: {
-    title: "",
-    subtitle: "",
-    icon: "",
-    showUserRole: Boolean
-  },
-  computed: {
-    userRole() {
-      return this.$enums.UserRoles.get(this.$auth.user.role)?.id;
-    }
-  }
-};
-</script>
+<script lang="ts">
+import {Component, Prop, Vue} from "vue-property-decorator"
+// import pages from "~/config/pages";
 
-<style></style>
+@Component
+export default class PageHeader extends Vue {
+  @Prop({type: String, required: true})
+  public pageName!: string
+
+  @Prop({type: String})
+  public title!: string
+
+  @Prop({type: [Boolean, String]})
+  public subTitle!: string | any
+
+  get userRole() {
+    return this.$enums.UserRoles.get(this.$auth.user.role)?.id
+  }
+
+  get titlePath() {
+    return `pages.${this.pageName}.title`
+  }
+
+  get subtitlePath() {
+    return `pages.${this.pageName}.subtitle`
+  }
+
+  get pageTitle() {
+    return this.title ? this.title : this.$t(this.titlePath)
+  }
+
+  get pageSubtitle() {
+    if (typeof this.subTitle === "boolean" && !this.subTitle) {
+      return ""
+    }
+
+    return this.subTitle ? this.subTitle : this.$te(this.subtitlePath) ? this.$t(this.subtitlePath) : ""
+  }
+
+  /*get icon() {
+    return pages[this.pageName] && pages[this.pageName].icon ? pages[this.pageName].icon : ''
+  }*/
+}
+</script>

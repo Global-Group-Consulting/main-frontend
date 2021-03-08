@@ -2,15 +2,11 @@
   <v-layout>
     <v-flex>
       <page-header
-        :title="title"
-        :subtitle="subtitle"
-        :icon="icon"
+        page-name="requests"
       ></page-header>
 
-      <v-toolbar class="mb-5" v-if="permissions.userType === 'user'">
-        <v-toolbar-items class="flex-fill">
-          <v-spacer></v-spacer>
-
+      <page-toolbar>
+        <template slot="center-block">
           <tooltip-btn
             v-if="permissions.addRequest"
             :tooltip="$t('pages.requests.btnWithdrawal-tooltip')"
@@ -21,6 +17,18 @@
             @click="newWithdrawlRequest"
           >
             {{ $t("pages.requests.btnWithdrawal") }}
+          </tooltip-btn>
+
+          <tooltip-btn
+            v-if="permissions.addRequestGold"
+            :tooltip="$t('pages.requests.btnWithdrawalGold-tooltip')"
+            text
+            color="orange"
+            breakpoint="sm"
+            icon-name="mdi-bank-minus"
+            @click="newWithdrawlRequestGold"
+          >
+            {{ $t("pages.requests.btnWithdrawalGold") }}
           </tooltip-btn>
 
           <tooltip-btn
@@ -35,25 +43,56 @@
             {{ $t("pages.requests.btnDeposit") }}
           </tooltip-btn>
 
-          <v-spacer></v-spacer>
-        </v-toolbar-items>
-      </v-toolbar>
+          <v-menu offset-y
+                  transition="slide-y-transition"
+                  v-if="permissions.userType === 'admin'"
+                  :close-on-content-click="true"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                color="primary"
+                text
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-icon class="mr-2">mdi-download</v-icon>
+                {{ $t("pages.requests.btnDownloadReport") }}
 
-      <v-tabs v-model="currentTab" :color="getTabColor">
+                <v-icon class="">mdi-chevron-down</v-icon>
+              </v-btn>
+            </template>
+
+            <v-card>
+              <v-list>
+                <v-list-item @click="onDownloadReportClick()">
+                  <v-list-item-title>{{ getLastMonth() }}</v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="onDownloadReportClick(2)">
+                  <v-list-item-title>{{ getLastMonth(2) }}</v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="onDownloadReportClick(3)">
+                  <v-list-item-title>{{ getLastMonth(3) }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-card>
+
+
+          </v-menu>
+        </template>
+      </page-toolbar>
+
+      <v-tabs v-model="currentTab">
         <v-tab v-for="table of requestsTables" :key="table.id">
-          <v-icon class="mr-2">{{ table.icon }}</v-icon>
+          <v-icon class="mr-2" small :color="requestsTables[currentTab].id === table.id ? table.color : ''">
+            {{ table.icon }}
+          </v-icon>
           {{ table.title }} ({{ requestsGroups[table.id].length }})
-          <!--          <div
-                      class="v-alert__border v-alert__border&#45;&#45;bottom"
-                      :class="table.color"
-                    ></div>-->
-
         </v-tab>
       </v-tabs>
 
-      <v-tabs-items v-model="currentTab">
-        <v-tab-item v-for="table of requestsTables" :key="table.id">
-          <v-card>
+      <v-card class="overflow-hidden">
+        <v-tabs-items v-model="currentTab" touchless>
+          <v-tab-item v-for="table of requestsTables" :key="table.id">
             <requests-list-table
               :condition="table.id"
               :items="requestsGroups[table.id]"
@@ -65,9 +104,9 @@
               @requestStartWorking="onRequestStartWorking"
               :items-per-page="25"
             ></requests-list-table>
-          </v-card>
-        </v-tab-item>
-      </v-tabs-items>
+          </v-tab-item>
+        </v-tabs-items>
+      </v-card>
     </v-flex>
 
     <request-dialog
@@ -78,15 +117,27 @@
       v-if="$store.getters['dialog/dialogId'] === 'RequestDialog'"
     ></request-dialog>
 
+    <request-dialog-gold
+      @newRequestAdded="onNewRequestAdded"
+      @requestDeleted="onRequestDeleted"
+      @requestStatusChanged="onRequestStatusChanged"
+      @requestStartWorking="onRequestStartWorking"
+      v-if="$store.getters['dialog/dialogId'] === 'RequestDialogGold'"
+    ></request-dialog-gold>
+
     <communication-new-dialog
       v-if="$store.getters['dialog/dialogId'] === 'CommunicationNewDialog'"
       @communicationAdded="onCommunicationAdded"
     ></communication-new-dialog>
+
   </v-layout>
 </template>
 
 <script>
 import {ref, computed, onBeforeMount, onMounted, watch} from "@vue/composition-api";
+
+import jsFileDownload from "js-file-download"
+import {capitalize} from "lodash"
 
 // configs
 import tableHeadersSchema from "../config/tables/requestsSchema";
@@ -103,26 +154,35 @@ import pageBasicFn from "../functions/pageBasic";
 import tableHeadersFn from "../functions/tablesHeaders";
 import permissionsFn from "../functions/permissions";
 import RequestTypes from "../enums/RequestTypes";
+import PageToolbar from "@/components/blocks/PageToolbar";
+import RequestDialogGold from "@/components/dialogs/RequestGoldDialog";
+import {RequestsPermissions} from "../functions/acl/enums/requests.permissions";
 
 export default {
   components: {
+    RequestDialogGold,
+    PageToolbar,
     RequestDialog,
     PageHeader,
     RequestsCrudActions,
     RequestsListTable,
     CommunicationNewDialog
   },
+  meta: {
+    permissions: [RequestsPermissions.ACL_REQUESTS_ALL_READ, RequestsPermissions.ACL_REQUESTS_SELF_READ]
+  },
   setup(props, {root}) {
     const {
       $apiCalls,
+      $alerts,
       $set,
       $enums,
       $store,
       $i18n,
       $options,
+      $moment,
       $route,
       $router,
-      $alerts
     } = root;
     const permissions = permissionsFn(root);
     const requestsList = ref([]);
@@ -186,10 +246,28 @@ export default {
         }
       ];
     });
-
     const getTabColor = computed(() => {
       return requestsTables.value[currentTab.value].color
     })
+
+    const actionsList = [
+      {
+        if: permissions.addRequest,
+        tooltip: "$t('pages.requests.btnWithdrawal-tooltip')",
+        color: "red",
+        breakpoint: "sm",
+        iconName: "mdi-cash-minus",
+        click: newWithdrawlRequest,
+        options: {
+          text: true
+        }
+      },
+      {
+        title: "RiCiao",
+        icon: "",
+        click: ""
+      }
+    ]
 
     async function _fetchAll() {
       try {
@@ -199,6 +277,23 @@ export default {
       } catch (er) {
         $alerts.error(er);
       }
+    }
+
+    function getLastMonth(months, returnMoment = false) {
+      const now = $moment()
+      let rightMonth = now.date() > 15 ? now : now.subtract(1, "months")
+
+      if (months) {
+        rightMonth = now.subtract(months - 1, "months")
+      }
+
+      if (returnMoment) {
+        return rightMonth
+      }
+
+      const prevMonth = $moment(rightMonth).subtract(1, "months")
+
+      return capitalize(rightMonth.format("MMMM YYYY")) + ` (16 ${prevMonth.format("MMM")} - 15 ${rightMonth.format("MMM")})`
     }
 
     function onRefetchData() {
@@ -233,6 +328,19 @@ export default {
         id: "RequestDialog",
         data: {
           type: type || $enums.RequestTypes.RISC_INTERESSI
+        }
+      });
+    }
+
+    function newWithdrawlRequestGold(type) {
+      $store.dispatch("dialog/updateStatus", {
+        title: $i18n.t("dialogs.requests.title-withdrawal-gold"),
+        id: "RequestDialogGold",
+        fullscreen: true,
+        theme: "global-club",
+        noActions: true,
+        data: {
+          type: type || $enums.RequestTypes.RISC_CAPITALE
         }
       });
     }
@@ -293,34 +401,47 @@ export default {
       _fetchAll();
     }
 
-      function onQueryChange(route) {
-        const query = route.query;
+    function onQueryChange(route) {
+      const query = window.location.search;
 
-        if (query.open) {
-          const idToOpen = query.open;
+      if (query.open) {
+        const idToOpen = query.open;
 
-          const request = requestsList.value.find(_req => _req.id === idToOpen);
+        const request = requestsList.value.find(_req => _req.id === idToOpen);
 
-          if (request) {
-            openRequestDetails(request);
-          }
-
-          root.$router.replace({query: {}});
+        if (request) {
+          openRequestDetails(request);
         }
+
+        root.$router.replace({query: {}});
       }
+    }
 
-    onBeforeMount(async () => {
-      await _fetchAll();
+    /**
+     *
+     * @param months
+     * @returns {Promise<void>}
+     */
+    async function onDownloadReportClick(months) {
+      const rightMonth = getLastMonth(months, true)
 
-      onQueryChange($route)
-    });
+      try {
+        const file = await $apiCalls.downloadRequestsReport(rightMonth.format("YYYY-MM"))
 
-    onMounted(() => {
-      const query = $route.query;
+        jsFileDownload(file.data, $i18n.t("pages.requests.fileReportName", {date: getLastMonth(months)}) + ".xlsx")
+      } catch (er) {
+        $alerts.error(er)
+      }
+    }
+
+    function onUrlQueryChange() {
+      const query = new URLSearchParams(window.location.search);
+
+      const queryNew = query.get("new")
 
       // if in the query we found "new" then open the corresponding dialog if any
-      if (query.new) {
-        switch (query.new) {
+      if (queryNew) {
+        switch (queryNew) {
           case "add_deposit":
             newDepositRequest();
             break;
@@ -329,19 +450,40 @@ export default {
           case "collect_commissions":
             let type;
 
-            if (query.new === "collect_deposit") {
+            if (queryNew === "collect_deposit") {
               type = RequestTypes.RISC_CAPITALE;
-            } else if (query.new === "collect_interests") {
+            } else if (queryNew === "collect_interests") {
               type = RequestTypes.RISC_INTERESSI;
-            } else if (query.new === "collect_commissions") {
+            } else if (queryNew === "collect_commissions") {
               type = RequestTypes.RISC_PROVVIGIONI;
             }
 
             newWithdrawlRequest(type);
             break;
+          case "collect_gold":
+            newWithdrawlRequestGold()
+            break;
         }
+
+        onQueryChange($route)
       }
+    }
+
+    onBeforeMount(async () => {
+      await _fetchAll();
+
+      onQueryChange($route)
     });
+
+    onMounted(() => {
+      onUrlQueryChange()
+    });
+
+    watch(() => $store.getters["dialog/dialogState"], (value) => {
+      if (!value) {
+        $router.push({path: $route.path, query: {new: ""}})
+      }
+    })
 
     return {
       ...pageBasicFn(root, "requests"),
@@ -352,8 +494,10 @@ export default {
       requestsGroups,
       requestsTables,
       getTabColor,
+      getLastMonth,
       newDepositRequest,
       newWithdrawlRequest,
+      newWithdrawlRequestGold,
       openRequestDetails,
       onRefetchData,
       onNewRequestAdded,
@@ -361,8 +505,20 @@ export default {
       onRequestStatusChanged,
       onRequestStartWorking,
       onCommunicationAdded,
-      onQueryChange
+      onQueryChange,
+      onUrlQueryChange,
+      onDownloadReportClick,
+      actionsList
     };
+  },
+  watch: {
+    '$route.query.new'() {
+      setTimeout(() => {
+
+        this.onUrlQueryChange()
+      }, 300)
+    },
+
   },
   beforeRouteUpdate(to, from, next) {
     this.onQueryChange(to)

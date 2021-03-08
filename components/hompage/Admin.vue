@@ -9,24 +9,41 @@
       </v-card-text>
     </v-card>
 
-    <v-card class="mb-5">
-      <!-- Table with all users in "validated" state -->
-      <v-card-title class="p-relative">
-        <v-icon>mdi-account-clock</v-icon>
-        {{ this.$t("tables.pending-users-table") }}
+    <!--    <v-card class="mb-5">
+          <v-card-title class="p-relative">
+            <v-icon>mdi-file-document-edit-outline</v-icon>
+            {{ this.$t("tables.pending-contract-signature") }}
 
-        <div class="v-alert__border v-alert__border--bottom red"></div>
-      </v-card-title>
+            <div class="v-alert__border v-alert__border&#45;&#45;bottom blue"></div>
+          </v-card-title>
 
-      <v-card-text>
-        <data-table
-          :items="[{ firstName: 'asdasd' }]"
-          table-key="pendingUsers"
-          schema="usersSchema"
-          no-data-text="tables.no-pending-requests"
-        ></data-table>
-      </v-card-text>
-    </v-card>
+          <v-card-text>
+            <data-table
+              :items="dashboardData.pendingSignatures"
+              table-key="pendingSignatures"
+              schema="usersSchema"
+            ></data-table>
+          </v-card-text>
+        </v-card>-->
+
+    <!--    <v-card class="mb-5">
+          &lt;!&ndash; Table with all users in "validated" state &ndash;&gt;
+          <v-card-title class="p-relative">
+            <v-icon>mdi-account-clock</v-icon>
+            {{ this.$t("tables.pending-users-table") }}
+
+            <div class="v-alert__border v-alert__border&#45;&#45;bottom red"></div>
+          </v-card-title>
+
+          <v-card-text>
+            <data-table
+              :items="[{ firstName: 'asdasd' }]"
+              table-key="pendingUsers"
+              schema="usersSchema"
+              no-data-text="tables.no-pending-requests"
+            ></data-table>
+          </v-card-text>
+        </v-card>-->
 
     <v-card class="mb-5">
       <v-card-title class="p-relative">
@@ -48,27 +65,24 @@
 </template>
 
 <script>
-import Chart from "@/components/charts/Chart";
 import ChartLines from "@/components/charts/ChartLines";
 import RequestsListTable from "@/components/table/RequestsListTable";
 
-import { requests as pendingRequests } from "@/assets/fakeRichieste";
 
 import adminDashboardChart from "@/config/charts/adminDashboard";
-import availableTableColumns from "@/config/tables/usersSchema";
-import requestsTableSchema from "@/config/tables/requestsSchema";
 import users from "@/functions/users";
-import { computed, onMounted, reactive, ref } from "@vue/composition-api";
+import {computed, onMounted, reactive, ref} from "@vue/composition-api";
 
 export default {
   name: "Admin",
-  components: { ChartLines, RequestsListTable },
-  setup(props, { root }) {
-    const { $apiCalls, $router } = root;
+  components: {ChartLines, RequestsListTable},
+  setup(props, {root}) {
+    const {$apiCalls, $router} = root;
     const dashboardChart = ref(adminDashboardChart);
     const dashboardData = reactive({
       validatedUsers: [],
-      pendingRequests: []
+      pendingRequests: [],
+      pendingSignatures: []
     });
 
     function openRequest(request) {
@@ -80,6 +94,7 @@ export default {
 
       // root.$set(dashboardData, "validatedUsers", result.validatedUsers || []);
       root.$set(dashboardData, "pendingRequests", result.pendingRequests);
+      root.$set(dashboardData, "pendingSignatures", result.pendingSignatures);
     });
 
     return {
@@ -90,9 +105,7 @@ export default {
     };
   },
   data() {
-    return {
-      pendingRequests
-    };
+    return {};
   },
   computed: {
     pendingUsers() {

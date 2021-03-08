@@ -1,5 +1,6 @@
 <template>
   <v-data-table
+    class="data-table"
     :headers="headers"
     :items="items"
     :items-per-page="itemsPerPage"
@@ -13,11 +14,10 @@
     @click:row="$emit('click:row', $event)"
     :locale="$i18n.locale"
     :options="options"
-    mobile-breakpoint="0"
   >
     <!-- Dynamic item templates -->
-    <template v-for="col in headers" v-slot:[`item.${col.value}`]="{ item }">
-      <slot :name="'item.' + col.value" v-bind:item="item">
+    <template v-for="col in headers" v-slot:[`item.${col.value}`]="{ item, value }">
+      <slot :name="'item.' + col.value" v-bind:item="item" v-bind:value="value">
         {{ item[col.value] }}
       </slot>
     </template>
@@ -49,12 +49,15 @@
         {{ $options.filters.dateFormatter(item.updated_at, true) }}
       </span>
     </template>
+
+    <template v-slot:no-data="{item}">
+    </template>
   </v-data-table>
 </template>
 
 <script>
-import { computed, onMounted, ref } from "@vue/composition-api";
-import { get as _get } from "lodash";
+import {computed, onMounted, ref} from "@vue/composition-api";
+import {get as _get} from "lodash";
 
 import UserRoles from "../../enums/UserRoles.js";
 import roleBasedConfig from "../../config/roleBasedConfig";
@@ -65,10 +68,18 @@ export default {
       type: Array,
       required: true
     },
+    /**
+     * @example
+     * tableKey="calculator"
+     */
     tableKey: {
       type: String,
       required: true
     },
+    /**
+     * @example
+     * schema="calculatorSchema"
+     */
     schema: {
       type: String,
       required: true
@@ -97,8 +108,8 @@ export default {
     },
     condition: String | Number
   },
-  setup(props, { root }) {
-    const { $auth } = root;
+  setup(props, {root}) {
+    const {$auth} = root;
     const availableTableColumns = ref([]);
 
     const headers = computed(() => {
@@ -167,3 +178,14 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.data-table::v-deep {
+  .v-data-table__mobile-table-row:nth-child(odd) {
+    background-color: #f7f7f7;
+    display: inline-block;
+    width: 100%;
+  }
+
+}
+</style>

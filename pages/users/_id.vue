@@ -2,78 +2,88 @@
   <v-layout>
     <v-flex>
       <page-header
-        :title="pageData.title.value"
-        :subtitle="!userIsNew ? pageData.subtitle.value : ''"
-        :icon="pageData.icon.value"
+        page-name="usersId"
+        :title="pageTitle"
+        :sub-title="!userIsNew ? pageSubTitle : false "
       >
-        <template v-slot:subtitle v-if="!userIsNew">
-          <div v-html="pageData.subtitle.value" class="d-inline-block"></div>
+        <template v-slot:subtitle>
+          <div v-if="!userIsNew">
+            <div v-html="pageSubTitle" class="d-inline-block"></div>
 
-          <!-- <v-tooltip bottom v-if="canChangeStatus">
-            <template v-slot:activator="{ on }">
-              <v-btn icon dark @click="openChangeStatusDialog" v-on="on">
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
-            </template>
+            <!-- <v-tooltip bottom v-if="canChangeStatus">
+              <template v-slot:activator="{ on }">
+                <v-btn icon dark @click="openChangeStatusDialog" v-on="on">
+                  <v-icon>mdi-pencil</v-icon>
+                </v-btn>
+              </template>
 
-            <span>Modifica stato</span>
-          </v-tooltip> -->
+              <span>Modifica stato</span>
+            </v-tooltip> -->
 
-          <!-- Incomplete data info -->
-          <v-menu offset-y open-on-hover bottom v-if="showIncompleteDataInfo">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn icon dark v-on="on" v-bind="attrs">
-                <v-icon>mdi-information</v-icon>
-              </v-btn>
-            </template>
+            <!-- Incomplete data info -->
+            <v-menu offset-y open-on-hover bottom
+                    v-if="showIncompleteDataInfo"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon v-on="on" v-bind="attrs">
+                  <v-icon>mdi-information</v-icon>
+                </v-btn>
+              </template>
 
-            <v-card color="white" max-width="400px">
-              <v-card-text>
-                {{ $t("pages.usersId.info-incomplete-data") }}
+              <v-card color="white" max-width="400px" flat>
+                <v-card-text>
+                  {{ $t("pages.usersId.info-incomplete-data") }}
 
-                <template v-if="formData.incompleteData && formData.incompleteData.message">
-                  <v-layout align-items-start class="mt-2">
-                    <strong>
-                      {{ $t('pages.usersId.info-incomplete-data-message') }}
-                    </strong>
-                    <div class="ml-2">
-                      {{ formData.incompleteData.message }}
-                    </div>
-                  </v-layout>
-                </template>
-
-                <template
-                  v-if="formData.incompleteData && formData.incompleteData.checkedFields && formData.incompleteData.checkedFields.length > 0">
-                  <v-layout align-items-start class="mt-2">
-                    <strong>
-                      {{ $t('pages.usersId.info-incomplete-data-fields') }}
-                    </strong>
-                    <div class="ml-2">
-                      <div v-for="field of formData.incompleteData.checkedFields">
-                        {{ $t(`forms.${$options.filters.formFieldNameFormatter(field)}`) }}
+                  <template v-if="formData.incompleteData && formData.incompleteData.message">
+                    <v-layout align-items-start class="mt-2">
+                      <strong>
+                        {{ $t('pages.usersId.info-incomplete-data-message') }}
+                      </strong>
+                      <div class="ml-2">
+                        {{ formData.incompleteData.message }}
                       </div>
-                    </div>
-                  </v-layout>
-                </template>
-              </v-card-text>
-            </v-card>
-          </v-menu>
+                    </v-layout>
+                  </template>
 
-          <!-- Contract status -->
-          <v-menu offset-y open-on-hover bottom v-if="formData.account_status === $enums.AccountStatuses.VALIDATED">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn icon dark v-on="on" v-bind="attrs">
-                <v-icon>mdi-information</v-icon>
-              </v-btn>
-            </template>
+                  <template
+                    v-if="formData.incompleteData && formData.incompleteData.checkedFields && formData.incompleteData.checkedFields.length > 0">
+                    <v-layout align-items-start class="mt-2">
+                      <strong>
+                        {{ $t('pages.usersId.info-incomplete-data-fields') }}
+                      </strong>
+                      <div class="ml-2">
+                        <div v-for="field of formData.incompleteData.checkedFields">
+                          {{ $t(`forms.${$options.filters.formFieldNameFormatter(field)}`) }}
+                        </div>
+                      </div>
+                    </v-layout>
+                  </template>
+                </v-card-text>
+              </v-card>
+            </v-menu>
 
-            <signing-logs-popup :value="formData.signinLogs"></signing-logs-popup>
-          </v-menu>
+            <!-- Contract status -->
+            <v-menu offset-y open-on-hover bottom
+                    v-if="formData.account_status === $enums.AccountStatuses.VALIDATED">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon v-on="on" v-bind="attrs">
+                  <v-icon>mdi-information</v-icon>
+                </v-btn>
+              </template>
+
+              <signing-logs-popup :value="formData.signinLogs"></signing-logs-popup>
+            </v-menu>
+          </div>
         </template>
       </page-header>
 
-      <v-toolbar class="mb-5">
-        <v-toolbar-items class="flex-fill">
+      <!--      <dashboard-blocks :dashboard-data="dashboardData"
+                              class="mb-6"
+                              readonly
+            ></dashboard-blocks>-->
+
+      <page-toolbar>
+        <template slot="left-block">
           <tooltip-btn
             v-if="permissions.seeOtherUsers"
             :tooltip="$t('pages.usersId.btn-go-back-tooltip')"
@@ -82,8 +92,9 @@
             @click="$router.push('/users')"
           >
           </tooltip-btn>
+        </template>
 
-          <v-spacer></v-spacer>
+        <template slot="center-block">
 
           <!-- approve a user and change the status to "APPROVED" -->
           <tooltip-btn
@@ -133,8 +144,9 @@
             {{ $t("pages.usersId.btn-incomplete-user") }}
           </tooltip-btn>
 
-          <v-spacer></v-spacer>
+        </template>
 
+        <template slot="right-block">
           <tooltip-btn
             :tooltip="$t('pages.usersId.btn-movements-list')"
             icon-name="mdi-view-list"
@@ -165,81 +177,80 @@
               </v-list-item>
             </v-list>
           </v-menu>
-        </v-toolbar-items>
-      </v-toolbar>
+        </template>
+      </page-toolbar>
 
       <v-form>
-        <v-card>
-          <v-tabs
-            v-model="currentTab"
-            :color="accentColor"
-            center-active
-            show-arrows
+        <v-tabs
+          v-model="currentTab"
+          center-active
+          show-arrows
+          class="ml-3"
+        >
+          <v-tab
+            v-for="(section, index) in formTabs"
+            :key="index"
+            :title="'pages.usersId.tabs.' + section.title"
+            :disabled="userIsNew"
           >
-            <v-tab
-              v-for="(section, index) in formTabs"
-              :key="index"
-              :title="'pages.usersId.tabs.' + section.title"
-              :disabled="userIsNew"
-            >
-              {{ $t("pages.usersId.tabs." + section.title) }}
-            </v-tab>
-          </v-tabs>
-          <v-divider></v-divider>
+            {{ $t("pages.usersId.tabs." + section.title) }}
+          </v-tab>
+        </v-tabs>
 
-          <div>
-            <v-tabs-items v-model="currentTab">
-              <v-tab-item v-for="(tab, index) in formTabs" :key="index">
-                <v-card elevation="0">
-                  <v-card-text>
-                    <dynamic-fieldset
-                      :schema="getFormSchema(tab)"
-                      v-model="formData"
-                      :invalidFields="formData.incompleteData ? formData.incompleteData.checkedFields : []"
-                      :ref="'dynamicForm_' + index"
-                      :edit-mode="editMode"
-                      @status="saveStatus(tab.schema, $event)"
-                      @checkedFieldsChange="onCheckedFieldsChange"
-                    />
-                  </v-card-text>
-                </v-card>
-              </v-tab-item>
-            </v-tabs-items>
+        <v-card>
+          <v-tabs-items v-model="currentTab">
+            <v-tab-item v-for="(tab, index) in formTabs" :key="index">
+              <v-card elevation="0">
+                <v-card-text>
+                  <dynamic-fieldset
+                    :schema="getFormSchema(tab)"
+                    v-model="formData"
+                    :invalidFields="formData.incompleteData ? formData.incompleteData.checkedFields : []"
+                    :ref="'dynamicForm_' + index"
+                    :edit-mode="editMode"
+                    @status="saveStatus(tab.schema, $event)"
+                    @checkedFieldsChange="onCheckedFieldsChange"
+                  />
+                </v-card-text>
+              </v-card>
+            </v-tab-item>
+          </v-tabs-items>
 
-            <v-card-actions>
-              <v-btn @click="goBack" v-if="currentTab > 0" text>
-                <v-icon>mdi-chevron-left</v-icon>
-                {{ $t("pages.usersId.btn-previous") }}
-              </v-btn>
-              <v-spacer></v-spacer>
-              <v-btn
-                dark
-                :color="
+          <v-card-actions>
+            <v-btn @click="goBack" v-if="currentTab > 0" text rounded>
+              <v-icon>mdi-chevron-left</v-icon>
+              {{ $t("pages.usersId.btn-previous") }}
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn
+              dark
+              rounded
+              :color="
                   currentTab < formTabs.length - 1 ? accentColor : 'success'
                 "
-                @click="
+              @click="
                   currentTab < formTabs.length - 1 ? goNext() : onSaveClick()
                 "
+            >
+              {{
+                $t(
+                  `pages.usersId.btn-${
+                    currentTab < formTabs.length - 1 ? "next" : "save"
+                  }`
+                )
+              }}
+              <v-icon v-if="currentTab < formTabs.length - 1"
+              >mdi-chevron-right
+              </v-icon
               >
-                {{
-                  $t(
-                    `pages.usersId.btn-${
-                      currentTab < formTabs.length - 1 ? "next" : "save"
-                    }`
-                  )
-                }}
-                <v-icon v-if="currentTab < formTabs.length - 1"
-                >mdi-chevron-right
-                </v-icon
-                >
-                <v-icon v-else class="ml-2">mdi-content-save</v-icon>
-              </v-btn>
-            </v-card-actions>
-          </div>
+              <v-icon v-else class="ml-2">mdi-content-save</v-icon>
+            </v-btn>
+          </v-card-actions>
         </v-card>
 
+
         <!-- Floating action button -->
-        <v-fab-transition v-if="!userIsNew && currentTab < formTabs.length - 1">
+        <v-fab-transition v-if="!userIsNew && currentTab < formTabs.length - 1 && $vuetify.breakpoint.smAndUp">
           <v-tooltip left>
             <template v-slot:activator="{ on }">
               <v-btn
@@ -288,7 +299,7 @@
 import PageHeader from "@/components/blocks/PageHeader";
 import DynamicFieldset from "@/components/DynamicFieldset";
 import UserMessage from "../../components/dialogs/UserMessage";
-import FilePreviewer from "../..//components/dialogs/FilePreviewer";
+import FilePreviewer from "../../components/dialogs/FilePreviewer";
 import StatusChangeDialog from "../../components/dialogs/StatusChangeDialog";
 import MovementsListDialog from "../../components/dialogs/MovementsListDialog";
 
@@ -302,10 +313,15 @@ import pageBasic from "@/functions/pageBasic";
 import usersForm from "../../functions/usersForm";
 import Permissions from "@/functions/permissions";
 import SigningLogsPopup from "@/components/elements/SigningLogsPopup";
+import PageToolbar from "@/components/blocks/PageToolbar";
+import {UsersPermissions} from "../../functions/acl/enums/users.permissions";
+import DashboardBlocks from "../../components/DashboardBlocks";
 
 export default {
   name: "_id",
   components: {
+    DashboardBlocks,
+    PageToolbar,
     SigningLogsPopup,
     UserMessage,
     DynamicFieldset,
@@ -314,7 +330,9 @@ export default {
     StatusChangeDialog,
     MovementsListDialog
   },
-  middleware: ["pagesAuth"],
+  meta: {
+    permissions: [UsersPermissions.ACL_USERS_GROUP_READ, UsersPermissions.ACL_USERS_ALL_READ, UsersPermissions.ACL_USERS_SELF_READ]
+  },
   setup(props, {root, refs}) {
     const {
       $apiCalls,
@@ -329,8 +347,15 @@ export default {
     const currentTab = ref(0);
     const checkedFields = ref([])
     const permissions = Permissions(root);
-
     const userForm = usersForm(root, refs);
+    const dashboardData = reactive({
+      blocks: {
+        deposit: 0,
+        interestAmount: 0,
+        depositCollected: 0,
+        interestsCollected: 0
+      }
+    });
 
     const editMode = computed(() =>
       !userForm.userIsNew.value &&
@@ -585,7 +610,7 @@ export default {
       }
     }
 
-    pageData.title = computed(() => {
+    const pageTitle = computed(() => {
       if (userForm.userIsNew.value) {
         return $i18n.t(`pages.usersId.title-new-with-role`, {
           role: $i18n.t(
@@ -598,7 +623,7 @@ export default {
       return $i18n.t(`pages.usersId.title`);
     });
 
-    pageData.subtitle = computed(() => {
+    const pageSubTitle = computed(() => {
       return $i18n.t("pages.usersId.subtitle", {
         accountState: $i18n.t(
           `enums.AccountStatuses.${
@@ -611,8 +636,13 @@ export default {
     // fetches user details
     onBeforeMount(async () => {
       const userId = $route.params.id;
+      const loggedUser = $auth.user
 
-      if (permissions.changeAgenteRif || (userForm.userIsNew.value && permissions.userRole !== $enums.UserRoles.AGENTE)) {
+      // TODO:: Must check if the user can see others account.
+
+      if (permissions.changeAgenteRif
+        || (loggedUser.hasSubAgents && userForm.formData.value.id !== loggedUser.id)
+        || (userForm.userIsNew.value && permissions.userRole !== $enums.UserRoles.AGENTE)) {
         $store.dispatch("fetchAgentsList", {$apiCalls, $auth});
       }
 
@@ -632,6 +662,12 @@ export default {
         userForm.formData.value = await $apiCalls.fetchUserDetails(
           $route.params.id
         );
+
+        if (userId !== "new" && [$enums.UserRoles.AGENTE, $enums.UserRoles.CLIENTE].includes(+userForm.formData.value.role)) {
+          const result = await $apiCalls.dashboardFetch(userForm.formData.value.id);
+
+          $set(dashboardData, "blocks", result.blocks);
+        }
       } catch (er) {
         $alerts.error(er);
       }
@@ -643,7 +679,8 @@ export default {
       getFormSchema,
       ...userForm,
       ...userDetails(root),
-      pageData,
+      pageTitle,
+      pageSubTitle,
       communicationsList,
       accentColor,
       canApprove,
@@ -651,6 +688,7 @@ export default {
       canSeeMovementsList,
       canConfirmDraftUser,
       canValidateUser,
+      dashboardData,
       showIncompleteDataInfo,
       permissions,
       openChangeStatusDialog,

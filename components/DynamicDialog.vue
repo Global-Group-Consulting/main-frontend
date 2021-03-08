@@ -1,21 +1,25 @@
 <template>
-  <v-row justify="center">
+  <v-row justify="center" class="dynamic-dialog"
+         style="position: fixed"
+         v-if="dialogState" >
     <v-dialog
-      :value="dialogState"
-      :persistent="true"
-      :fullscreen="dialogData.fullscreen"
-      :transition="dialogData.fullscreen ? 'dialog-bottom-transition' : ''"
-      :retain-focus="false"
-      scrollable
-      :max-width="dialogData.large ? '900px' : '600px'"
+        :value="dialogState"
+        :persistent="true"
+        :fullscreen="dialogData.fullscreen"
+        :transition="dialogData.fullscreen ? 'dialog-bottom-transition' : ''"
+        :content-class="dialogData.theme ? 'theme-' + dialogData.theme : ''"
+        :dark="darkMode"
+        :retain-focus="false"
+        scrollable
+        :max-width="dialogData.large ? '900px' : '600px'"
     >
       <v-card>
-        <div class="d-flex">
+        <div class="d-flex dynamic-dialog-title">
           <v-card-title class="flex-fill">
             <span class="headline" v-html="dialogData.title"></span>
           </v-card-title>
 
-          <v-card-title v-if="dialogData.fullscreen">
+          <v-card-title v-if="dialogData.fullscreen || dialogData.showCloseBtn">
             <v-btn icon @click="close">
               <v-icon>mdi-close</v-icon>
             </v-btn>
@@ -24,23 +28,29 @@
 
         <v-divider></v-divider>
 
-        <portal-target
-          name="dialog-pre-content"
-          :slot-props="dialogData"
-        ></portal-target>
+        <div class="dynamic-dialog-content flex-fill">
 
-        <v-card-text ref="dialogContent" :class="dialogData.contentClass">
           <portal-target
-            name="dialog-content"
-            :slot-props="dialogData"
+              name="dialog-pre-content"
+              :slot-props="dialogData"
           ></portal-target>
-        </v-card-text>
 
-        <v-card-actions v-if="!dialogData.noActions">
+          <v-card-text ref="dialogContent" :class="dialogData.contentClass">
+            <portal-target
+                name="dialog-content"
+                :slot-props="dialogData"
+            ></portal-target>
+          </v-card-text>
+        </div>
+
+        <v-divider></v-divider>
+
+        <v-card-actions v-if="!dialogData.noActions"
+                        class="dynamic-dialog-actions">
           <portal-target
-            name="dialog-actions"
-            style="width: 100%"
-            class="d-flex align-center"
+              name="dialog-actions"
+              style="width: 100%"
+              class="d-flex align-center"
           >
             <portal-target name="dialog-actions-left"></portal-target>
 
@@ -51,10 +61,10 @@
                 {{ $t(dialogData.texts.cancelBtn) }}
               </v-btn>
               <v-btn
-                color="blue darken-1"
-                text
-                @click="close"
-                v-if="!dialogData.readonly"
+                  color="blue darken-1"
+                  text
+                  @click="close"
+                  v-if="!dialogData.readonly"
               >
                 {{ $t(dialogData.texts.confirmBtn) }}
               </v-btn>
@@ -67,9 +77,9 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import {mapGetters} from "vuex";
 
-import { onUnmounted } from "@vue/composition-api";
+import {onUnmounted} from "@vue/composition-api";
 
 export default {
   name: "DynamicDialog",
@@ -85,16 +95,51 @@ export default {
     ...mapGetters({
       dialogData: "dialog/dialogData",
       dialogState: "dialog/dialogState"
-    })
+    }),
+    darkMode() {
+      return this.dialogData.theme === 'global-club'
+    }
   },
   methods: {
     close() {
       try {
         this.$store.dispatch("dialog/updateStatus", false);
-      } catch (er) {}
+      } catch (er) {
+      }
     }
   }
 };
 </script>
 
-<style scoped></style>
+<style lang="scss">
+.v-dialog--fullscreen {
+  .v-card {
+    border-radius: 0 !important;
+  }
+}
+
+.dynamic-dialog-content {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  .v-card__text {
+    overflow: auto;
+  }
+}
+
+
+.theme-global-club {
+  .dynamic-dialog-content {
+    background-color: #000;
+  }
+}
+
+.theme-communications {
+  .dynamic-dialog-content {
+    .v-card__text {
+      background-color: #f7f7f7;
+    }
+  }
+}
+</style>

@@ -1,3 +1,5 @@
+import UserRoles from "~/enums/UserRoles";
+
 export default {
   deposit: {
     title: "deposit",
@@ -36,8 +38,30 @@ export default {
     icon: "mdi-wallet",
     color: "green",
     value: "monthCommissions",
-    actionText: "collectCommissions",
-    action: "collectCommissions"
+    actionText: (context: Vue, readonly = false) => {
+      const user = context.$auth.user
+
+      const isReferenceAgent = user.hasSubAgents && !user.referenceAgent
+      const userIsAdmin = [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(context.$auth.user.role)
+
+      if (readonly) {
+        return isReferenceAgent || userIsAdmin ? "addCommissions" : ""
+      }
+
+      return "collectCommissions"
+    },
+    action: (context: Vue, readonly = false) => {
+      const user = context.$auth.user
+
+      const isReferenceAgent = user.hasSubAgents && !user.referenceAgent
+      const userIsAdmin = [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(context.$auth.user.role)
+
+      if (readonly) {
+        return isReferenceAgent || userIsAdmin ? "addCommissions" : ""
+      }
+
+      return "collectCommissions"
+    }
   },
   reinvestedCommissions: {
     title: "reinvestedCommissions",

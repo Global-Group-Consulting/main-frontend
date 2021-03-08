@@ -1,9 +1,7 @@
 <template>
   <v-flex>
     <page-header
-      :title="title"
-      :subtitle="subtitle"
-      :icon="icon"
+      page-name="wallet"
     ></page-header>
 
     <dashboard-blocks :dashboard-data="dashboardData"
@@ -66,10 +64,14 @@ import DataTable from "@/components/table/DataTable";
 import PageHeader from "@/components/blocks/PageHeader";
 import CommissionType from "@/enums/CommissionType";
 import pageBasicFn from "@/functions/pageBasic"
+import {PortfolioPermissions} from "../functions/acl/enums/portfolio.permissions";
 
 export default {
   name: "wallet",
   components: {PageHeader, DataTable, DashboardBlocks},
+  meta: {
+    permissions: [PortfolioPermissions.ACL_PORTFOLIO_SELF_READ]
+  },
   setup(props, {root}) {
     const {$apiCalls, $options, $i18n} = root
     const dashboardData = reactive({
@@ -122,7 +124,6 @@ export default {
         return "yellow lighten-5";
       }
     }
-
 
     onBeforeMount(async () => {
       const result = await $apiCalls.fetchCommissionsStatus();

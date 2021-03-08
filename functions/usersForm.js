@@ -11,23 +11,26 @@
  * @property {Boolean} showReferenceAgent
  */
 
-import { computed, ref, onMounted } from '@vue/composition-api'
+import {computed, ref, onMounted} from '@vue/composition-api'
 
 import PersonTypes from '../enums/PersonTypes'
 import UserRoles from '../enums/UserRoles'
 import AccountStatuses from '../enums/AccountStatuses'
+import ClubPacks from '../enums/ClubPacks'
 
 import usersTabs from '../config/tabs/usersIdTabs'
-import usersDataSchema from '../config/forms/usersDataSchema'
+import usersDataSchema from '../config/forms/usersDataSchema.ts'
 import Permissions from './permissions'
+import AgentTeamType from "~/enums/AgentTeamType";
 
-export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set, $auth }, refs) {
+export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $auth}, refs) {
   /**
    * @type {import('@vue/composition-api').Ref<Partial<import("../@types/UserFormData").UserDataSchema>>}
    */
   const formData = ref({
     role: UserRoles.CLIENTE,
-    personType: PersonTypes.FISICA
+    personType: PersonTypes.FISICA,
+    clubPack: ClubPacks.BASIC
   })
   const permissions = Permissions({$auth})
   const userIsNew = computed(() => $route.params.id === "new" || !formData.value.id)
@@ -125,6 +128,10 @@ export default function ({ $route, $apiCalls, $alerts, $router, $i18n, $set, $au
         $router.replace("/users/" + result.id)
       } else {
         result = await $apiCalls.userUpdate(data)
+
+        if ($auth.user.id === result.id) {
+          $auth.setUser(result)
+        }
 
         $set(formData, "value", result)
       }

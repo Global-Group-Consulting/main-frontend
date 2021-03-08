@@ -1,47 +1,70 @@
 <template>
-  <v-card class="elevation-12 rounded-lg"
-          :loading="loading"
-          :disabled="!!loading"
-  >
-    <v-sheet class="card-header">
-      <v-card-title class="">{{ title }}</v-card-title>
-    </v-sheet>
+  <div class="default-panel">
 
-    <v-divider></v-divider>
+    <div class="d-flex justify-content-center mb-10 ">
+      <v-img src="/logo_dark.png" position="center" height="100px" contain></v-img>
+    </div>
 
-    <v-card-text>
-      <p class="subtitle-1" v-if="message">{{ message }}</p>
+    <v-card class="elevation-12 rounded-lg default-panel-card"
+            :loading="loading"
+            :disabled="!!loading"
+    >
+      <div class="text-center text-h5">{{ title }}</div>
 
-      <slot></slot>
-    </v-card-text>
+      <v-card-text>
+        <p class="subtitle-1" v-if="message">{{ message }}</p>
 
-    <v-divider></v-divider>
+        <slot></slot>
+      </v-card-text>
 
-    <v-card-actions class="justify-center" v-if="this.$slots.actions">
-      <slot name="actions"></slot>
-    </v-card-actions>
-  </v-card>
+      <!--      <v-divider></v-divider>-->
+
+      <v-card-actions class="justify-center" v-if="this.$slots.actions">
+        <slot name="actions"></slot>
+      </v-card-actions>
+    </v-card>
+  </div>
 </template>
 
 <script>
-  export default {
-    name:  'DefaultPanel',
-    data () {
-      return {
-        loading: false
-      }
-    },
-    props: {
-      title:        '',
-      message:      '',
-      loadingModel: false
-    },
-    watch: {
-      loadingModel (value) {
-        this.loading = value ? 'accent' : false
-      }
+export default {
+  name: 'DefaultPanel',
+  data() {
+    return {
+      loading: false
+    }
+  },
+  props: {
+    title: '',
+    message: '',
+    loadingModel: false
+  },
+  watch: {
+    loadingModel(value) {
+      this.loading = value ? 'accent' : false
     }
   }
+}
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+@import '~vuetify/src/styles/styles.sass';
+
+.default-panel::v-deep {
+  .default-panel-card{
+    padding: 50px 70px;
+  }
+}
+
+@media #{map-get($display-breakpoints, 'sm-and-down')}{
+  .default-panel::v-deep {
+    //margin-top: -25vh;
+
+    .default-panel-card{
+      padding: 30px 0px;
+    }
+  }
+}
+
+
+</style>

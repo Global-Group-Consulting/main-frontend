@@ -81,8 +81,6 @@ import Chart from "@/components/charts/Chart";
 import ChartLines from "@/components/charts/ChartLines";
 import DataTable from "@/components/table/DataTable";
 
-import { requests as pendingRequests } from "@/assets/fakeRichieste";
-import pendingUsers from "@/assets/fakeUsers";
 
 import adminDashboardChart from "@/config/charts/adminDashboard";
 import usersTableSchema from "@/config/tables/usersSchema";
@@ -121,7 +119,6 @@ export default {
   },
   data() {
     return {
-      pendingRequests,
       adminDashboardChart
     };
   },
@@ -135,10 +132,10 @@ export default {
     },
 
     pendingUsers() {
-      return pendingUsers.map(group => group.data[0]);
+      return this.pendingUsers.map(group => group.data[0]);
     },
     chartsAdminDataset() {
-      return adminDashboardChart.datasets.map(set => {
+      return this.adminDashboardChart.datasets.map(set => {
         set.label = this.$t(set.label);
 
         return set;

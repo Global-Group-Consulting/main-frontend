@@ -8,6 +8,8 @@ const defaultData = {
   large: false,
   noActions: false,
   retainFocus: true,
+  theme: "",
+  showCloseBtn: false,
   contentClass: "",
   texts: {
     cancelBtn: "dialogs.default.cancelBtn",
