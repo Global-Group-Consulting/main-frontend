@@ -9,6 +9,12 @@ export default {
   'contractStatus': {text: 'tables.contract-status', value: 'contractSignedAt'},
   'role': {text: 'tables.role', value: 'role', align: "center"},
   'clientsNumber': {text: 'tables.clients-number', value: 'clientsCount', align: 'center'},
+
+  'signDocSent': {text: 'tables.sign-doc-sent', value: 'signDocSent', align: 'center'},
+  'signDocViewed': {text: 'tables.sign-doc-viewed', value: 'signDocViewed', align: 'center'},
+  'signDocSigned': {text: 'tables.sign-doc-signed', value: 'signDocSigned', align: 'center'},
+  'signDocLogs': {value: 'signDocLogs', align: 'center', sortable: false},
+
   'commissionsAssigned': {
     text: 'tables.commissions-assigned',
     value: 'commissionsAssigned', align: 'center',

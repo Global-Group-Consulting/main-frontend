@@ -210,7 +210,11 @@ const admin = {
         "firstName",
         "lastName",
         "email",
-        "validatedAt"
+        'signDocSent',
+        'signDocViewed',
+        'signDocSigned',
+        'signDocLogs',
+        'actions',
       ]
     },
     movements: {
