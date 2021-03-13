@@ -141,4 +141,6 @@ export default {
   "brite-use-confirmBtnText": "Si, richiedi",
   "brite-use-cancelBtnText": "Annulla",
   "brite-use-success": "Richiesta inoltrata correttamente!",
+
+  "sign-contract-unavailable": "Per procedere con la firma del contratto è necessario accedere alla propria casella email e cliccare sul link contenuto nell'email di notifica relativa alla firma del contratto per l'utente <strong>{name}</strong>."
 }

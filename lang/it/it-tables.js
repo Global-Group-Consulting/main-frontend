@@ -62,6 +62,9 @@ export default {
   'calc-movement-type': "Tipo Movimento",
   'calc-amount': "Valore",
   'clients-number': "Clienti",
+  'sign-doc-sent': "Data invio",
+  'sign-doc-viewed': "Data lettura",
+  'sign-doc-signed': "Data firma",
   acl: {
     code: "Codice",
     description: "Descrizione",
