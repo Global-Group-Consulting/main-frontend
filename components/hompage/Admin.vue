@@ -127,7 +127,7 @@ export default class Admin extends Vue {
   }
 
   openRequest(request: any) {
-    this.$router.push("/requests?open=" + request.id);
+    this.$router.push("/requests#" + request.id);
   }
 
   getSignDocSent(item: User): SignRequestLog {
