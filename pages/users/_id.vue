@@ -186,6 +186,7 @@
           center-active
           show-arrows
           class="ml-3"
+
         >
           <v-tab
             v-for="(section, index) in formTabs"
@@ -199,7 +200,7 @@
 
         <v-card>
           <v-tabs-items v-model="currentTab">
-            <v-tab-item v-for="(tab, index) in formTabs" :key="index">
+            <v-tab-item v-for="(tab, index) in formTabs" :key="index" eager>
               <v-card elevation="0">
                 <v-card-text>
                   <dynamic-fieldset

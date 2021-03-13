@@ -9,7 +9,7 @@
           <v-card>
             <movements-list-table
               :movements="movements"
-              v-if="movements.list.value.length > 0"
+
             >
 
             </movements-list-table>
