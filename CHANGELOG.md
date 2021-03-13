@@ -7,6 +7,9 @@
 - Menu "altro" in mobile, non mostra più gli elementi già visibili nella barra inferiore
 - Calcolatrice spostato aggiunta movimenti direttamente nella tabella
 
+### Aggiunte
+- Tabella con elenco contratti in attesa di firma nella dashboard admin
+
 ## v 1.7.0 - <small>23/02/2020</small>
 ### Aggiunte
 - Campo "IBAN", "BIC" e "Note" nel report excel delle richieste

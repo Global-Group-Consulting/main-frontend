@@ -54,7 +54,7 @@ export default {
     const {$auth, $router, $alerts} = root;
     const blocksActions = {
       addDeposit() {
-        $router.push("/requests?new=add_deposit");
+        $router.push("/requests#new_add_deposit");
       },
       addCommissions() {
         $alerts.info({
@@ -66,13 +66,13 @@ export default {
         $router.push("/movements");
       },
       collectDeposit() {
-        $router.push("/requests?new=collect_deposit");
+        $router.push("/requests#new_collect_deposit");
       },
       collectInterests() {
-        $router.push("/requests?new=collect_interests");
+        $router.push("/requests#new_collect_interests");
       },
       collectCommissions() {
-        $router.push("/requests?new=collect_commissions");
+        $router.push("/requests#new_collect_commissions");
       }
     };
 

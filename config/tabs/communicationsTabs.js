@@ -10,8 +10,8 @@ export default [
   {
     key: "messagesSent",
     title: "messagesSent",
-  },  {
+  },/*  {
     key: "clubConversations",
     title: "clubConversations",
-  }
+  }*/
 ]

@@ -285,13 +285,13 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async dashboardFetch(userId: string) {
+  async dashboardFetch(userId?: string) {
     return await this.get({
       endPoint: "/api/dashboards" + (userId ? "/" + userId : "")
     })
   }
 
-  async communicationsFetch(type: string) {
+  async communicationsFetch(type?: string) {
     return await this.get({
       endPoint: "/api/communications" + (type ? `?t=${type}` : "")
     })
