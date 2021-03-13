@@ -39,7 +39,7 @@
               link
               outlined
               x-small
-              :href="'/communications?open=' + conversationId"
+              :href="'/communications#' + conversationId"
               target="__blank"
             >
               <v-icon x-small>mdi-open-in-new</v-icon>

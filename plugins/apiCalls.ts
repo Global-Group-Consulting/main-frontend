@@ -291,7 +291,7 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async communicationsFetch(type: string) {
+  async communicationsFetch(type?: string) {
     return await this.get({
       endPoint: "/api/communications" + (type ? `?t=${type}` : "")
     })

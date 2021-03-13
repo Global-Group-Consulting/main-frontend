@@ -16,21 +16,11 @@ export default function ({$socket, $set, $i18n, $router, $alerts}) {
 
 
     if (type.startsWith("request")) {
-      $router.push({
-        path: "requests",
-        query: {
-          open: message.payload.id
-        }
-      })
+      $router.push("/requests#" + message.payload.id)
     } else if (type.startsWith("user")) {
       $router.push("/users/" + message.payload.id)
     } else if (type.startsWith("message")) {
-      $router.push({
-        path: "communications",
-        query: {
-          open: message.payload.conversationId || message.payload.id
-        }
-      })
+      $router.push("communications#" + (message.payload.conversationId || message.payload.id))
     }
 
     signAsRead(message)

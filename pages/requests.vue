@@ -149,17 +149,13 @@ import CommunicationNewDialog from "~/components/dialogs/CommunicationNewDialog.
 import {RequestsPermissions} from "~/functions/acl/enums/requests.permissions";
 import permissionsFn from "~/functions/permissions";
 import RequestTypes from "~/enums/RequestTypes";
+import {contractNumberFormatter, dateFormatter, moneyFormatter, userFormatter} from "~/plugins/filters";
+import {Moment} from "moment";
 
 
 @Component({
   components: {
-    RequestDialogGold,
-    PageToolbar,
-    RequestDialog,
     PageHeader,
-    RequestsCrudActions,
-    RequestsListTable,
-    CommunicationNewDialog
   },
   meta: {
     permissions: [RequestsPermissions.ACL_REQUESTS_ALL_READ, RequestsPermissions.ACL_REQUESTS_SELF_READ]
@@ -207,16 +203,16 @@ export default class Requests extends Vue {
   ]
 
   get requestsGroups() {
-    const toReturn = {
+    const toReturn: any = {
       nuova: [],
       lavorazione: [],
       accettata: [],
       rifiutata: []
     };
 
-    this.requestsList.forEach(richiesta => {
+    this.requestsList.forEach((richiesta: any) => {
       const stato = this.$enums.RequestStatus.get(richiesta.status);
-      let groupName = stato.id;
+      let groupName: string = stato.id;
 
       if (groupName === "annullata") {
         groupName = "accettata";
@@ -256,7 +252,7 @@ export default class Requests extends Vue {
     }
   }
 
-  getLastMonth(months?: number, returnMoment = false) {
+  getLastMonth(months?: number, returnMoment = false): Moment | string {
     const now = this.$moment()
     let rightMonth = now.date() > 15 ? now : now.subtract(1, "months")
 
@@ -303,7 +299,7 @@ export default class Requests extends Vue {
         type: this.$enums.MessageTypes.CONVERSATION,
         subject: this.$t(
           "dialogs.communicationNewDialog.subject-new-deposit",
-          {date: this.$options.filters.dateFormatter(request.created_at)}
+          {date: dateFormatter(request.created_at)}
         ),
         receiver: request.user.id,
         message: this.$t(
@@ -311,7 +307,7 @@ export default class Requests extends Vue {
           {
             firstName: request.user.firstName,
             lastName: request.user.lastName,
-            amount: this.$options.filters.moneyFormatter(request.amount)
+            amount: moneyFormatter(request.amount)
           }
         ),
         request
@@ -320,7 +316,7 @@ export default class Requests extends Vue {
   }
 
   async onDownloadReportClick(months?: number) {
-    const rightMonth = this.getLastMonth(months, true)
+    const rightMonth: Moment = this.getLastMonth(months, true) as Moment
 
     try {
       const file = await this.$apiCalls.downloadRequestsReport(rightMonth.format("YYYY-MM"))
@@ -341,7 +337,7 @@ export default class Requests extends Vue {
     });
   }
 
-  newWithdrawlRequest(type: number) {
+  newWithdrawlRequest(type?: number) {
     this.$store.dispatch("dialog/updateStatus", {
       title: this.$t("dialogs.requests.title-withdrawal"),
       id: "RequestDialog",
@@ -351,7 +347,7 @@ export default class Requests extends Vue {
     });
   }
 
-  newWithdrawlRequestGold(type: number) {
+  newWithdrawlRequestGold(type?: number) {
     this.$store.dispatch("dialog/updateStatus", {
       title: this.$t("dialogs.requests.title-withdrawal-gold"),
       id: "RequestDialogGold",
@@ -368,11 +364,7 @@ export default class Requests extends Vue {
     let title = this.$t("dialogs.requests.title-details");
 
     if (this.permissions.userType === "admin") {
-      title += ` <small><em>(${this.$options.filters.userFormatter(
-        row.user
-      )} - ${this.$options.filters.contractNumberFormatter(
-        row.user.contractNumber
-      )})</em></small>`;
+      title += ` <small><em>(${userFormatter(row.user)} - ${contractNumberFormatter(row.user.contractNumber)})</em></small>`;
     }
 
     this.$store.dispatch("dialog/updateStatus", {
@@ -390,9 +382,7 @@ export default class Requests extends Vue {
   }
 
   @Watch("$route.hash")
-  onUrlHashChange(event?: Event) {
-    console.log("triggering url_hash_change", event)
-
+  onUrlHashChange() {
     const hash = window.location.hash.replace("#", "")
 
     if (!hash) {
@@ -427,7 +417,7 @@ export default class Requests extends Vue {
           break;
       }
     } else {
-      const request = this.requestsList.find(_req => _req.id === hash);
+      const request = this.requestsList.find((_req: any) => _req.id === hash);
 
       if (request) {
         this.openRequestDetails(request);
@@ -436,7 +426,7 @@ export default class Requests extends Vue {
   }
 
   @Watch('dialogState')
-  onDialogClose(value) {
+  onDialogClose(value: boolean) {
     if (!value) {
       window.location.hash = ""
     }

@@ -3,14 +3,14 @@
     <v-flex>
       <page-header page-name="communications"></page-header>
 
-      <page-toolbar v-if="permissions.seeToolbar.value">
+      <page-toolbar v-if="permissions.seeToolbar">
         <template slot="center-block">
           <tooltip-btn
             :tooltip="$t('pages.communications.btn-new-conversation')"
             text
             icon-name="mdi-forum"
             @click="openNewCommunication($enums.MessageTypes.CONVERSATION)"
-            v-if="permissions.createTicket.value"
+            v-if="permissions.createTicket"
           >
             {{ $t("pages.communications.btn-new-conversation") }}
           </tooltip-btn>
@@ -20,7 +20,7 @@
             text
             icon-name="mdi-email-plus"
             @click="openNewCommunication($enums.MessageTypes.SERVICE)"
-            v-if="permissions.createCommunication.value"
+            v-if="permissions.createCommunication"
           >
             {{ $t("pages.communications.btn-new-message") }}
           </tooltip-btn>
@@ -119,236 +119,209 @@
   </v-layout>
 </template>
 
-<script>
-import {computed, onBeforeMount, reactive, ref} from "@vue/composition-api";
-
-import ComunicationDetailsDialog from "@/components/dialogs/ComunicationDetailsDialog";
-import CommunicationNewDialog from "@/components/dialogs/CommunicationNewDialog";
-
-import pageBasic from "@/functions/pageBasic";
+<script lang="ts">
+import CommunicationNewDialog from "@/components/dialogs/CommunicationNewDialog.vue";
 
 import CommunicationsTabs from "@/config/tabs/communicationsTabs";
-import DataTable from "@/components/table/DataTable";
-import PageHeader from "@/components/blocks/PageHeader";
-import PageToolbar from "@/components/blocks/PageToolbar";
-import {ClubPermissions} from "../functions/acl/enums/club.permissions";
+import PageHeader from "@/components/blocks/PageHeader.vue";
+import {ClubPermissions} from "~/functions/acl/enums/club.permissions";
+import {Component, Vue, Watch} from "vue-property-decorator";
 
-export default {
-  name: "index",
-  components: {PageToolbar, PageHeader, DataTable, ComunicationDetailsDialog, CommunicationNewDialog},
-  /* meta: {
-     permissions: [CommunicationsPermissions.ACL_COMMUNICATIONS_ALL_READ, CommunicationsPermissions.ACL_COMMUNICATIONS_SELF_READ]
-   },*/
-  props: {
-    receiversShowLimit: {
-      type: Number,
-      default: 2
-    }
+
+@Component({
+  components: {PageHeader},
+  meta: {
+    // permissions: [CommunicationsPermissions.ACL_COMMUNICATIONS_ALL_READ, CommunicationsPermissions.ACL_COMMUNICATIONS_SELF_READ]
   },
-  setup(props, {root}) {
-    const {$apiCalls, $alerts, $enums, $auth, $route, $acl} = root;
+})
+export default class Communications extends Vue {
+  public receiversShowLimit: number = 2
+  public dataRefreshTimer: any = null;
+  public currentTab: number = 0
+  public communicationsList: any = {
+    messages: [],
+    messagesSent: [],
+    conversations: [],
+    clubConversations: []
+  }
+  public rawList: any[] = [];
 
-    let dataRefreshTimer = null;
-    const currentTab = ref(0);
-    const communicationsList = reactive({
-      messages: [],
-      messagesSent: [],
-      conversations: [],
-      clubConversations: []
-    });
-    const rawList = [];
-    const communicationsTabs = computed(() => {
-        const tabs = CommunicationsTabs.filter(_tab => {
-          if (_tab.key === "messagesSent") {
-            return $enums.UserRoles.ADMIN === $auth.user.role
-          } else if (_tab.key === "clubConversations") {
-            return $acl.checkPermissions([ClubPermissions.BRITES_SELF_USE, ClubPermissions.CLUB_APPROVE])
-          }
-
-          return true
-        })
-
-        return tabs.map(tab => {
-          const dataList = communicationsList[tab.key]
-          let counter = 0
-
-          if (["conversations", "clubConversations"].includes(tab.key)) {
-            counter = dataList.reduce((acc, curr) => curr.unreadMessages > 0 ? acc + 1 : acc, 0)
-          } else if (tab.key === "messages") {
-            counter = dataList.reduce((acc, curr) => !curr.read_at ? acc + 1 : acc, 0)
-          }
-
-          tab.unreadCounter = counter
-
-          return tab
-        })
-      }
-    );
-    const permissions = {
-      createTicket: computed(
-        () => true//$auth.user.role !== $enums.UserRoles.CLIENTE
-      ),
-      createCommunication: computed(() =>
-        [$enums.UserRoles.ADMIN].includes(
-          $auth.user.role
-        )
-      ),
-      seeToolbar: computed(
-        () =>
-          permissions.createTicket.value ||
-          permissions.createCommunication.value
-      )
-    };
-
-    async function _fetchAll() {
-      try {
-        const result = await $apiCalls.communicationsFetch();
-
-        rawList.push(...Object.values(result).flat());
-
-        root.$set(communicationsList, "messages", result.messages.map(_msg => {
-          // i create anyway the prop so i can observe it when changes.
-          if (!_msg.read_at) {
-            _msg.read_at = null
-          }
-
-          return _msg
-        }));
-        root.$set(communicationsList, "messagesSent", result.messagesSent);
-        root.$set(communicationsList, "conversations", result.conversations);
-        root.$set(communicationsList, "clubConversations", result.clubConversations);
-      } catch (er) {
-        $alerts.error(er);
-      } finally {
-        _startRefreshTimer();
-      }
-    }
-
-    function _startRefreshTimer() {
-      dataRefreshTimer = setTimeout(() => {
-        _fetchAll();
-      }, 120000 /* 2 minutes */);
-    }
-
-    function openCommunication(communication) {
-      const isConversation =
-        +communication.type === $enums.MessageTypes.CONVERSATION ||
-        !communication.type;
-
-      root.$store.dispatch("dialog/updateStatus", {
-        id: "CommunicationDetailsDialog",
-        title: communication.subject,
-        large: true,
-        showCloseBtn: true,
-        theme: "communications",
-        // fullscreen: isConversation,
-        readonly: !isConversation || communication.readonly,
-        texts: {cancelBtn: root.$t("dialogs.communicationDialog.btn-cancel")},
-        data: {
-          ...communication,
-          isConversation
-        }
-      });
-    }
-
-    function openNewCommunication(type) {
-      root.$store.dispatch("dialog/updateStatus", {
-        id: "CommunicationNewDialog",
-        title: root.$t(
-          `dialogs.communicationNewDialog.title-${
-            type === $enums.MessageTypes.CONVERSATION
-              ? "conversation"
-              : "service"
-          }`
-        ),
-        fullscreen: false,
-        readonly: false,
-        data: {
-          type
-        }
-      });
-    }
-
-    async function onCommunicationAdded(communication) {
-      const updatedSection = await $apiCalls.communicationsFetch(
-        communication.type +
-        (communication.senderId === $auth.user.id ? "&out" : "")
-      );
-
-      if (communication.type === $enums.MessageTypes.CONVERSATION) {
-        root.$set(communicationsList, "conversations", updatedSection);
-      } else {
-        root.$set(communicationsList, "messagesSent", updatedSection);
-      }
-    }
-
-    /**
-     * @param {string} unreadMessagesId
-     */
-    async function onSetAsRead(unreadMessagesId) {
-      const unreadMessage = rawList.find(_comm => _comm.id === unreadMessagesId)
-      const msgType = "unreadMessages" in unreadMessage ? "conversations" : "messages"
-
-      communicationsList[msgType].forEach(_com => {
-        if (_com.id === unreadMessagesId) {
-          if (msgType === "conversations") {
-            _com.unreadMessages = 0;
-          } else {
-            _com.read_at = new Date().toISOString();
-          }
-        }
-      });
-    }
-
-    function onRequestStatusChanged(changedCommunication) {
-      const communication = communicationsList.conversations.find(
-        _com => (_com.id = changedCommunication.id)
-      );
-
-      communication.request.status = changedCommunication.request.status;
-    }
-
-    function onQueryChange(route) {
-      const query = route.query;
-
-      if (query.open) {
-        const idToOpen = query.open;
-
-        const communication = rawList.find(_req => _req.id === idToOpen);
-
-        if (communication) {
-          openCommunication(communication);
-        }
-
-        root.$router.replace({query: {}});
-      }
-    }
-
-
-    onBeforeMount(async () => {
-      await _fetchAll();
-
-      onQueryChange($route)
-    });
+  get permissions() {
+    const createTicket = true; //$auth.user.role !== $enums.UserRoles.CLIENTE
+    const createCommunication = [this.$enums.UserRoles.ADMIN].includes(this.$auth.user.role)
 
     return {
-      ...pageBasic(root, "communications"),
-      currentTab,
-      communicationsList,
-      communicationsTabs,
-      openCommunication,
-      openNewCommunication,
-      onCommunicationAdded,
-      onSetAsRead,
-      permissions,
-      onRequestStatusChanged,
-      onQueryChange
-    };
-  },
-  beforeRouteUpdate(to, from, next) {
-    this.onQueryChange(to)
+      createTicket,
+      createCommunication,
+      seeToolbar: createTicket || createCommunication
+    }
+  };
 
-    next()
+  get communicationsTabs() {
+    const tabs: any = CommunicationsTabs.filter((_tab: any) => {
+      if (_tab.key === "messagesSent") {
+        return this.$enums.UserRoles.ADMIN === this.$auth.user.role
+      } else if (_tab.key === "clubConversations") {
+        return this.$acl.checkPermissions([ClubPermissions.BRITES_SELF_USE, ClubPermissions.CLUB_APPROVE])
+      }
+
+      return true
+    })
+
+    return tabs.map((tab: any) => {
+      const dataList: any = this.communicationsList[tab.key]
+      let counter = 0
+
+      if (["conversations", "clubConversations"].includes(tab.key)) {
+        counter = dataList.reduce((acc: any, curr: any) => curr.unreadMessages > 0 ? acc + 1 : acc, 0)
+      } else if (tab.key === "messages") {
+        counter = dataList.reduce((acc: any, curr: any) => !curr.read_at ? acc + 1 : acc, 0)
+      }
+
+      tab.unreadCounter = counter
+
+      return tab
+    })
+  }
+
+  get dialogState() {
+    return this.$store.getters["dialog/dialogState"]
+  }
+
+  private async _fetchAll() {
+    try {
+      const result: any = await this.$apiCalls.communicationsFetch();
+
+      this.rawList.push(...Object.values(result).flat());
+
+      this.communicationsList.messages = result.messages.map((_msg: any) => {
+        // i create anyway the prop so i can observe it when changes.
+        if (!_msg.read_at) {
+          _msg.read_at = null
+        }
+
+        return _msg
+      })
+      this.communicationsList.messagesSent = result.messagesSent
+      this.communicationsList.conversations = result.conversations
+      this.communicationsList.clubConversations = result.clubConversations
+    } catch (er) {
+      this.$alerts.error(er);
+    } finally {
+      this._startRefreshTimer();
+    }
+  }
+
+  private _startRefreshTimer() {
+    this.dataRefreshTimer = setTimeout(() => {
+      this._fetchAll();
+    }, 120000 /* 2 minutes */);
+  }
+
+  openCommunication(communication: any) {
+    const isConversation =
+      +communication.type === this.$enums.MessageTypes.CONVERSATION ||
+      !communication.type;
+
+    this.$store.dispatch("dialog/updateStatus", {
+      id: "CommunicationDetailsDialog",
+      title: communication.subject,
+      large: true,
+      showCloseBtn: true,
+      theme: "communications",
+      // fullscreen: isConversation,
+      readonly: !isConversation || communication.readonly,
+      texts: {cancelBtn: this.$t("dialogs.communicationDialog.btn-cancel")},
+      data: {
+        ...communication,
+        isConversation
+      }
+    });
+  }
+
+  openNewCommunication(type: number) {
+    this.$store.dispatch("dialog/updateStatus", {
+      id: "CommunicationNewDialog",
+      title: this.$t(
+        `dialogs.communicationNewDialog.title-${
+          type === this.$enums.MessageTypes.CONVERSATION
+            ? "conversation"
+            : "service"
+        }`
+      ),
+      fullscreen: false,
+      readonly: false,
+      data: {
+        type
+      }
+    });
+  }
+
+  async onCommunicationAdded(communication: any) {
+    const updatedSection = await this.$apiCalls.communicationsFetch(
+      communication.type +
+      (communication.senderId === this.$auth.user.id ? "&out" : "")
+    );
+
+    if (communication.type === this.$enums.MessageTypes.CONVERSATION) {
+      this.communicationsList.conversations = updatedSection
+    } else {
+      this.communicationsList.messagesSent = updatedSection
+    }
+  }
+
+  /**
+   * @param {string} unreadMessagesId
+   */
+  async onSetAsRead(unreadMessagesId: string) {
+    const unreadMessage: any = this.rawList.find((_comm: any) => _comm.id === unreadMessagesId)
+    const msgType = "unreadMessages" in unreadMessage ? "conversations" : "messages"
+
+    this.communicationsList[msgType].forEach((_com: any) => {
+      if (_com.id === unreadMessagesId) {
+        if (msgType === "conversations") {
+          _com.unreadMessages = 0;
+        } else {
+          _com.read_at = new Date().toISOString();
+        }
+      }
+    });
+  }
+
+  onRequestStatusChanged(changedCommunication: any) {
+    const communication: any = this.communicationsList.conversations.find(
+      (_com: any) => (_com.id = changedCommunication.id)
+    );
+
+    communication.request.status = changedCommunication.request.status;
+  }
+
+  @Watch("$route.hash")
+  onUrlHashChange() {
+    const hash = window.location.hash.replace("#", "")
+
+    if (!hash) {
+      return
+    }
+
+    const communication = this.rawList.find((_req: any) => _req.id === hash);
+
+    if (communication) {
+      this.openCommunication(communication);
+    }
+  }
+
+  @Watch('dialogState')
+  onDialogClose(value: boolean) {
+    if (!value) {
+      window.location.hash = ""
+    }
+  }
+
+  async beforeMount() {
+    await this._fetchAll();
+
+    this.onUrlHashChange()
   }
 };
 </script>
