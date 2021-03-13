@@ -76,8 +76,10 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
   async function validateAll() {
     let result = true
 
-    for (const key of Object.keys(refs)) {
-      if (key.startsWith("dynamicForm_")) {
+    const formRefKeys = Object.keys(refs)
+
+    for (const key of formRefKeys) {
+      if (key.startsWith("dynamicForm_") && refs[key].length) {
         const valid = await refs[key][0].validate()
 
         if (!valid) {
