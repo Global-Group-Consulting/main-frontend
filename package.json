@@ -11,7 +11,8 @@
     "staging": "nuxt-ts",
     "build": "nuxt-ts build",
     "start": "nuxt-ts start",
-    "generate": "nuxt-ts generate"
+    "generate": "nuxt-ts generate",
+    "lint": "eslint --ext .ts,.js,.vue ."
   },
   "dependencies": {
     "@adonisjs/websocket-client": "^1.0.9",
