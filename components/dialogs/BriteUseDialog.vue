@@ -1,22 +1,17 @@
 <template>
   <div ref="test">
     <portal to="dialog-content" ref="dialogContent">
-      <dynamic-fieldset
-        :schema="formSchema"
-        v-model="formData"
-        fill-row
-        ref="dialogForm"
-      ></dynamic-fieldset>
+      <v-img src="/global_club/use_brite.png" eager :options="{}"></v-img>
     </portal>
 
     <portal to="dialog-actions-right">
       <v-btn color="" text @click="onClose" :disabled="gLoading">
         {{ $t("dialogs.briteUseDialog.btn-cancel") }}
       </v-btn>
-      <v-btn color="success" @click="onSubmit" :loading="gLoading">
-        {{ $t("dialogs.briteUseDialog.btn-send") }}
-        <v-icon class="ml-2">mdi-send</v-icon>
-      </v-btn>
+      <!--      <v-btn color="success" @click="onSubmit" :loading="gLoading">
+              {{ $t("dialogs.briteUseDialog.btn-send") }}
+              <v-icon class="ml-2">mdi-send</v-icon>
+            </v-btn>-->
     </portal>
   </div>
 </template>

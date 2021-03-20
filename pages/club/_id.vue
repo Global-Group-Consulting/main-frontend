@@ -230,7 +230,7 @@ export default class Brite extends Vue {
     const canRemove = this.$acl.checkPermissions([ClubPermissions.BRITES_ALL_ADD])
       && tab.id === this.currentSemester
     const permissionToUse = this.$acl.checkPermissions([ClubPermissions.BRITES_SELF_USE])
-    const canUse = false //permissionToUse && this.$moment().isAfter(tab.useFrom) && this.$moment().isBefore(tab.expiresAt)
+    const canUse = true //permissionToUse && this.$moment().isAfter(tab.useFrom) && this.$moment().isBefore(tab.expiresAt)
 
     const toReturn: CardBlockI[] = [{
       id: "briteTotal",
@@ -365,6 +365,7 @@ export default class Brite extends Vue {
       title: this.$t(`dialogs.briteUseDialog.title`),
       fullscreen: false,
       readonly: false,
+      large: true,
       data: {
         card,
         totalReport: this.totalReport
