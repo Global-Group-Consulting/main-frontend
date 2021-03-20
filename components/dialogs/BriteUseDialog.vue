@@ -1,7 +1,20 @@
 <template>
   <div ref="test">
     <portal to="dialog-content" ref="dialogContent">
-      <v-img src="/global_club/use_brite.png" eager :options="{}"></v-img>
+      <v-row>
+        <v-col md="6" class="text-center">
+          <a href="https://play.google.com/store/apps/details?id=global.app" target="_blank" class="d-inline-block">
+            <img src="/global_club/google-store.png" alt="Download from Google Play store" style="max-width: 200px"/>
+          </a>
+        </v-col>
+        <v-col md="6" class="text-center">
+          <a href="https://apps.apple.com/it/app/globalclub/id1499467842" target="_blank"  class="d-inline-block">
+            <img src="/global_club/app-store.png" alt="Download from App store"  style="max-width: 200px"/>
+          </a>
+        </v-col>
+      </v-row>
+
+      <v-img src="/global_club/use_brite.jpg" eager :options="{}"></v-img>
     </portal>
 
     <portal to="dialog-actions-right">

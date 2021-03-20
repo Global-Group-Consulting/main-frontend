@@ -365,7 +365,7 @@ export default class Brite extends Vue {
       title: this.$t(`dialogs.briteUseDialog.title`),
       fullscreen: false,
       readonly: false,
-      large: true,
+      large: false,
       data: {
         card,
         totalReport: this.totalReport
