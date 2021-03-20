@@ -4,7 +4,7 @@ export interface CardBlockI {
   icon?: string
   value?: string | ((card: any, tab: any) => string)
   title?: string | any
-  action?: (data: any) => void | null
+  action?: (data: any, extraData: any) => void | null
   actionText?: string | any
   actionDisabled?: ((card?: any, tab?: any) => boolean) | boolean
 }

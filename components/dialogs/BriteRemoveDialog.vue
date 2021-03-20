@@ -1,43 +1,37 @@
 <template>
   <div ref="test">
     <portal to="dialog-content" ref="dialogContent">
-      <v-row>
-        <v-col md="6" class="text-center">
-          <a href="https://play.google.com/store/apps/details?id=global.app" target="_blank" class="d-inline-block">
-            <img src="/global_club/google-store.png" alt="Download from Google Play store" style="max-width: 200px"/>
-          </a>
-        </v-col>
-        <v-col md="6" class="text-center">
-          <a href="https://apps.apple.com/it/app/globalclub/id1499467842" target="_blank"  class="d-inline-block">
-            <img src="/global_club/app-store.png" alt="Download from App store"  style="max-width: 200px"/>
-          </a>
-        </v-col>
-      </v-row>
-
-      <v-img src="/global_club/use_brite.jpg" eager :options="{}"></v-img>
+      <dynamic-fieldset
+        :schema="formSchema"
+        v-model="formData"
+        fill-row
+        ref="dialogForm"
+      ></dynamic-fieldset>
     </portal>
 
     <portal to="dialog-actions-right">
       <v-btn color="" text @click="onClose" :disabled="gLoading">
-        {{ $t("dialogs.briteUseDialog.btn-cancel") }}
+        {{ $t("dialogs.briteRemoveDialog.btn-cancel") }}
       </v-btn>
-      <!--      <v-btn color="success" @click="onSubmit" :loading="gLoading">
-              {{ $t("dialogs.briteUseDialog.btn-send") }}
-              <v-icon class="ml-2">mdi-send</v-icon>
-            </v-btn>-->
+      <v-btn color="success" @click="onSubmit" :loading="gLoading">
+        {{ $t("dialogs.briteRemoveDialog.btn-send") }}
+        <v-icon class="ml-2">mdi-send</v-icon>
+      </v-btn>
     </portal>
   </div>
 </template>
 
 <script lang="ts">
-import briteUseSchema from "~/config/forms/briteUseSchema";
+import briteRemoveSchema from "~/config/forms/briteRemoveSchema";
 import {Component, Vue} from "vue-property-decorator";
 import DynamicFieldset from "~/components/DynamicFieldset.vue";
 import {CardBlockI} from "~/@types/components/CardBlock";
 import {Moment} from "moment";
+import {DynamicTab} from "~/@types/components/DynamicTab";
 
 interface DialogData {
   card: CardBlockI,
+  extraData: DynamicTab,
   totalReport: {
     totalAmount: number,
     expirations: { amount: number, expiresAt: Moment }[]
@@ -46,10 +40,10 @@ interface DialogData {
 
 
 @Component({})
-export default class BriteUseDialog extends Vue {
+export default class BriteRemoveDialog extends Vue {
   public formData: any = {
     availableAmount: this.availableAmount,
-    amount: 0,
+    amountChange: 0,
     notes: ""
   }
 
@@ -58,7 +52,7 @@ export default class BriteUseDialog extends Vue {
   }
 
   get formSchema() {
-    return briteUseSchema(this.formData)
+    return briteRemoveSchema(this.formData)
   }
 
   get dialogData(): { data: DialogData } {
@@ -81,18 +75,21 @@ export default class BriteUseDialog extends Vue {
       if (!(await this.$refs.dialogForm.validate(false))) {
         return;
       }
+      const semesterId = this.dialogData.data.extraData.id
+
+      debugger
 
       await this.$alerts.askBeforeAction({
-        key: "brite-use",
+        key: "brite-remove",
         preConfirm: async () => {
-          const result = await $apiCalls.clubUseBrites(userId, this.formData);
+          const result = await $apiCalls.clubRemoveBrites(userId, this.formData, semesterId);
 
-          this.$emit("briteRequestSent", result)
+          this.$emit("briteRemoved", result)
           this.onClose();
         },
         settings: {},
         data: {
-          amount: this.formData.amount
+          amount: this.formData.amountChange
         }
       });
     } catch (er) {
