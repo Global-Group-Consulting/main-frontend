@@ -9,6 +9,8 @@ module.exports = `<h2 id="v173smalltbasmall">v 1.7.3 - <small>TBA</small></h2>
 <h3 id="aggiunte">Aggiunte</h3>
 <ul>
 <li>Tabella con elenco contratti in attesa di firma nella dashboard admin</li>
+<li>Pulsante rimozione manuale Brite</li>
+<li>Pulsante aggiunta manuale Provvigioni</li>
 </ul>
 <h2 id="v170small23022020small">v 1.7.0 - <small>23/02/2020</small></h2>
 <h3 id="aggiunte-1">Aggiunte</h3>

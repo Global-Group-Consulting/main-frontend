@@ -9,6 +9,8 @@
 
 ### Aggiunte
 - Tabella con elenco contratti in attesa di firma nella dashboard admin
+- Pulsante rimozione manuale Brite
+- Pulsante aggiunta manuale Provvigioni
 
 ## v 1.7.0 - <small>23/02/2020</small>
 ### Aggiunte
