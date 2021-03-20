@@ -110,4 +110,6 @@ export default {
   'brite-add-notes': "Motivazione",
   'brite-use-amount': "Importo da usare",
   'brite-use-notes': "Motivo della richiesta",
+  'brite-remove-amount': "Importo da rimuovere",
+  'brite-remove-notes': "Motivazione",
 }

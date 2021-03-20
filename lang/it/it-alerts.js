@@ -142,5 +142,11 @@ export default {
   "brite-use-cancelBtnText": "Annulla",
   "brite-use-success": "Richiesta inoltrata correttamente!",
 
+  "brite-remove-title": "",
+  "brite-remove-text": "Sei sicuro di voler rimuovere <strong>{amount}</strong> brite dall'account dell'utente?",
+  "brite-remove-confirmBtnText": "Si, rimuovi",
+  "brite-remove-cancelBtnText": "Annulla",
+  "brite-remove-success": "Brite rimossi correttamente!",
+
   "sign-contract-unavailable": "Per procedere con la firma del contratto è necessario accedere alla propria casella email e cliccare sul link contenuto nell'email di notifica relativa alla firma del contratto per l'utente <strong>{name}</strong>."
 }

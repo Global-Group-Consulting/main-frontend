@@ -84,6 +84,10 @@
 
       <brite-use-dialog v-if="$store.getters['dialog/dialogId'] === 'BriteUseDialog'"
       ></brite-use-dialog>
+
+      <brite-remove-dialog v-if="$store.getters['dialog/dialogId'] === 'BriteRemoveDialog'"
+                           @briteRemoved="onBriteRemoved"
+      ></brite-remove-dialog>
     </v-flex>
   </v-layout>
 </template>
@@ -102,6 +106,7 @@ import {User} from "~/@types/UserFormData";
 import {ClubMovement} from "~/@types/club/ClubMovement";
 import {ClubPermissions} from "~/functions/acl/enums/club.permissions";
 import BriteUseDialog from "~/components/dialogs/BriteUseDialog.vue";
+import BriteRemoveDialog from "~/components/dialogs/BriteRemoveDialog.vue";
 
 interface BlockData {
   briteTotal: number
@@ -115,7 +120,7 @@ interface TotalReport {
 }
 
 @Component({
-  components: {BriteUseDialog, BriteAddDialog, CardBlock, DynamicTabs, DataTable, PageHeader},
+  components: {BriteRemoveDialog, BriteUseDialog, BriteAddDialog, CardBlock, DynamicTabs, DataTable, PageHeader},
   meta: {
     permissions: [ClubPermissions.BRITES_ALL_READ, ClubPermissions.BRITES_SELF_READ]
   }
@@ -301,7 +306,7 @@ export default class Brite extends Vue {
   getMovementColor(movement: ClubMovement) {
     const toReturn = []
 
-    if ([this.$enums.ClubMovementTypes.DEPOSIT_COLLECTED].includes(movement.movementType)) {
+    if ([this.$enums.ClubMovementTypes.DEPOSIT_COLLECTED, this.$enums.ClubMovementTypes.DEPOSIT_REMOVED].includes(movement.movementType)) {
       toReturn.push("red--text")
     } else {
       toReturn.push("green--text")
@@ -367,10 +372,25 @@ export default class Brite extends Vue {
     });
   }
 
-  onRemoveBrite(){}
+  onRemoveBrite(card: CardBlockI) {
+    this.$store.dispatch("dialog/updateStatus", {
+      id: "BriteRemoveDialog",
+      title: this.$t(`dialogs.briteRemoveDialog.title`),
+      fullscreen: false,
+      readonly: false,
+      data: {
+        card,
+        totalReport: this.totalReport
+      }
+    });
+  }
 
 
   onBriteAdded(newValue: any) {
+    this.tableData.unshift(newValue)
+  }
+
+  onBriteRemoved(newValue: any) {
     this.tableData.unshift(newValue)
   }
 

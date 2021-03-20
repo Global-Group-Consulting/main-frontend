@@ -402,6 +402,13 @@ export class ApiCalls extends BasicApiCall {
       body: data
     })
   }
+
+  async clubRemoveBrites(userId: string, data: any) {
+    return await this.post({
+      endPoint: `/api/club/${userId}/remove`,
+      body: data
+    })
+  }
 }
 
 const apiCallsPlugin: Plugin = (context, inject) => {
