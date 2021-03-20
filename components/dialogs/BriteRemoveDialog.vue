@@ -27,9 +27,11 @@ import {Component, Vue} from "vue-property-decorator";
 import DynamicFieldset from "~/components/DynamicFieldset.vue";
 import {CardBlockI} from "~/@types/components/CardBlock";
 import {Moment} from "moment";
+import {DynamicTab} from "~/@types/components/DynamicTab";
 
 interface DialogData {
   card: CardBlockI,
+  extraData: DynamicTab,
   totalReport: {
     totalAmount: number,
     expirations: { amount: number, expiresAt: Moment }[]
@@ -73,13 +75,14 @@ export default class BriteRemoveDialog extends Vue {
       if (!(await this.$refs.dialogForm.validate(false))) {
         return;
       }
+      const semesterId = this.dialogData.data.extraData.id
 
       debugger
 
       await this.$alerts.askBeforeAction({
         key: "brite-remove",
         preConfirm: async () => {
-          const result = await $apiCalls.clubRemoveBrites(userId, this.formData);
+          const result = await $apiCalls.clubRemoveBrites(userId, this.formData, semesterId);
 
           this.$emit("briteRemoved", result)
           this.onClose();

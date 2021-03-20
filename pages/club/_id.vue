@@ -228,7 +228,7 @@ export default class Brite extends Vue {
     const canAdd = this.$acl.checkPermissions([ClubPermissions.BRITES_ALL_ADD])
       && tab.id === this.currentSemester
     const canRemove = this.$acl.checkPermissions([ClubPermissions.BRITES_ALL_ADD])
-      && tab.id === this.currentSemester
+      && this.$moment().isAfter(tab.useFrom) && this.$moment().isBefore(tab.expiresAt)
     const permissionToUse = this.$acl.checkPermissions([ClubPermissions.BRITES_SELF_USE])
     const canUse = true //permissionToUse && this.$moment().isAfter(tab.useFrom) && this.$moment().isBefore(tab.expiresAt)
 
@@ -247,15 +247,18 @@ export default class Brite extends Vue {
       icon: "mdi-diamond-outline",
       // actionText: this.$t("pages.club.brite.tabs.movements"),
       color: "#f9a825",
-      actionText: canRemove ? this.$t("pages.club.brite.tabs.removeBrite") : null,
-      action: this.onRemoveBrite,
+      /*  actionText: canRemove ? this.$t("pages.club.brite.tabs.removeBrite") : null,
+        action: this.onRemoveBrite,
+        actionDisabled: (card: CardBlockI, tab: DynamicTab) => {
+          return card.value === "B 0"
+        },*/
     }, {
       id: "briteAvailable",
       title: this.$t("pages.club.brite.tabs.briteAvailable"),
       value: (card: any, tab: any) => this.getCardValue(card, tab),
       icon: "mdi-diamond-stone",
-      actionText: permissionToUse ? this.$t("pages.club.brite.tabs.use") : '',
-      action: this.onUseBrite,
+      actionText: canRemove ? this.$t("pages.club.brite.tabs.removeBrite") : (permissionToUse ? this.$t("pages.club.brite.tabs.use") : ''),
+      action: canRemove ? this.onRemoveBrite : this.onUseBrite,
       actionDisabled: (card: CardBlockI, tab: DynamicTab) => {
         return !canUse || card.value === "B 0"
       },
@@ -373,7 +376,7 @@ export default class Brite extends Vue {
     });
   }
 
-  onRemoveBrite(card: CardBlockI) {
+  onRemoveBrite(card: CardBlockI, extraData: any) {
     this.$store.dispatch("dialog/updateStatus", {
       id: "BriteRemoveDialog",
       title: this.$t(`dialogs.briteRemoveDialog.title`),
@@ -381,6 +384,7 @@ export default class Brite extends Vue {
       readonly: false,
       data: {
         card,
+        extraData,
         totalReport: this.totalReport
       }
     });

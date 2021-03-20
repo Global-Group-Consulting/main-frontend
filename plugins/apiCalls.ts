@@ -403,10 +403,10 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async clubRemoveBrites(userId: string, data: any) {
+  async clubRemoveBrites(userId: string, data: any, semesterId: string) {
     return await this.post({
       endPoint: `/api/club/${userId}/remove`,
-      body: data
+      body: Object.assign({}, data, {semesterId})
     })
   }
 }
