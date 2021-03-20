@@ -50,6 +50,7 @@ export default {
     'risc_interessi': 'Riscossione rendite (classic)',
     'risc_interessi_brite': 'Riscossione rendite in Brite',
     'risc_capitale_gold': 'Prelievo deposito in Oro Fisico',
+    'commission_manual_add': 'Aggiunta provvigioni manuali ad agente',
   },
   'WalletTypes': {
     'deposit': 'Deposito',
@@ -99,6 +100,7 @@ export default {
     "newDeposit": "Provvigione versamento",
     "totalDeposit": "Provvigione deposito mensile",
     "annualDeposit": "Provvigione deposito annuale",
+    "manualAdd": "Aggiunta manuale",
     "commissionsReinvestment": "Reinvestimento provvigioni",
     "commissionsCollected": "Riscossione provvigioni",
     "cancelCommissionsCollected": "Annullamento riscossione provvigioni",

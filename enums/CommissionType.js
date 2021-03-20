@@ -9,6 +9,7 @@ class CommissionType extends BasicEnum {
     this.NEW_DEPOSIT = "newDeposit"
     this.TOTAL_DEPOSIT = "totalDeposit"
     this.ANNUAL_DEPOSIT = "annualDeposit"
+    this.MANUAL_ADD = "manualAdd"
     this.COMMISSIONS_REINVESTMENT = "commissionsReinvestment"
     this.COMMISSIONS_COLLECTED = "commissionsCollected"
     this.CANCEL_COMMISSIONS_COLLECTED = "cancelCommissionsCollected"
@@ -25,6 +26,9 @@ class CommissionType extends BasicEnum {
       },
       [this.ANNUAL_DEPOSIT]: {
         id: "annualDeposit",
+      },
+      [this.MANUAL_ADD]: {
+        id: this.MANUAL_ADD,
       },
       [this.COMMISSIONS_REINVESTMENT]: {
         id: "commissionsReinvestment",

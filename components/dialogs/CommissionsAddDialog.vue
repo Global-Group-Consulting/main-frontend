@@ -8,7 +8,9 @@
     </portal>
 
     <portal to="dialog-actions-right">
-      <v-btn color="blue darken-1" text @click="close"
+      <v-btn color="blue darken-1"
+             text
+             @click="close"
              :disabled="gLoading">
         {{ $t(dialogData.texts.cancelBtn) }}
       </v-btn>
@@ -26,15 +28,15 @@
 </template>
 
 <script lang="ts">
+import {Vue, Component} from "vue-property-decorator"
+import CommissionsAddSchema from "~/config/forms/commissionsAddSchema"
 
-import {Component, Vue} from "vue-property-decorator";
-import briteAddSchema from "~/config/forms/briteAddSchema"
-
-@Component({
-  components: {}
-})
-export default class BriteAddDialog extends Vue {
-  public formData = {amountChange: null, notes: ""}
+@Component({})
+export default class CommissionsAddDialog extends Vue {
+  public formData = {
+    amountChange: null,
+    notes: ""
+  }
 
   $refs!: {
     dialogForm: any
@@ -45,7 +47,7 @@ export default class BriteAddDialog extends Vue {
   }
 
   get formSchema() {
-    return briteAddSchema()
+    return CommissionsAddSchema()
   }
 
   close() {
@@ -67,11 +69,11 @@ export default class BriteAddDialog extends Vue {
       }
 
       await this.$alerts.askBeforeAction({
-        key: "brite-add",
+        key: "commissions-add",
         preConfirm: async () => {
-          const result = await $apiCalls.clubAddBrites(userId, this.formData);
+          const result = await $apiCalls.commissionsAdd(userId, this.formData);
 
-          this.$emit("briteAdded", result)
+          this.$emit("commissionsAdded", result)
           this.close();
         },
         settings: {},
@@ -85,3 +87,7 @@ export default class BriteAddDialog extends Vue {
   }
 }
 </script>
+
+<style scoped>
+
+</style>

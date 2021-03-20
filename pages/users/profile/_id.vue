@@ -16,6 +16,7 @@
       <dashboard-blocks :dashboard-data="agentDashboardData"
                         page="wallet"
                         readonly
+                        includeCommissionsAddDialog
                         v-if="showAgentBlocks"
       ></dashboard-blocks>
 
@@ -106,15 +107,15 @@ export default class Profile extends Vue {
       this.userData = await this.$apiCalls.fetchUserDetails(userId);
 
       if (this.showUserBlocks) {
-        const result = await this.$apiCalls.dashboardFetch(userId);
+        const resultDashboard = await this.$apiCalls.dashboardFetch(userId);
 
-        this.userDashboardData.blocks = result.blocks
+        this.userDashboardData.blocks = resultDashboard.blocks
       }
 
       if (this.showAgentBlocks) {
-        const result = await this.$apiCalls.fetchCommissionsStatus();
+        const resultCommissions = await this.$apiCalls.fetchCommissionsStatus({userId});
 
-        this.agentDashboardData.block = result.blocks
+        this.agentDashboardData.blocks = resultCommissions.blocks
       }
     } catch (er) {
       this.$alerts.error(er)

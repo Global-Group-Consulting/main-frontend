@@ -142,6 +142,11 @@ export default {
   "brite-use-cancelBtnText": "Annulla",
   "brite-use-success": "Richiesta inoltrata correttamente!",
 
+  "commissions-add-title": "",
+  "commissions-add-text": "Sei sicuro di voler aggiungere provvigioni per un valore di <strong>{amount}</strong>?",
+  "commissions-add-confirmBtnText": "Si, aggiungi",
+  "commissions-add-cancelBtnText": "Annulla",
+  "commissions-add-success": "Operazione inoltrata correttamente!",
   "brite-remove-title": "",
   "brite-remove-text": "Sei sicuro di voler rimuovere <strong>{amount}</strong> brite dall'account dell'utente?",
   "brite-remove-confirmBtnText": "Si, rimuovi",

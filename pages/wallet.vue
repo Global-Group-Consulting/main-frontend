@@ -92,6 +92,7 @@ export default {
         CommissionType.NEW_DEPOSIT,
         CommissionType.ANNUAL_DEPOSIT,
         CommissionType.TOTAL_DEPOSIT,
+        CommissionType.MANUAL_ADD,
       ].includes(item.commissionType)
         ? "+"
         : "-";

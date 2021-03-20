@@ -403,12 +403,20 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async clubRemoveBrites(userId: string, data: any, semesterId: string) {
+   async  commissionsAdd(userId: string, data: any){
+    return await this.post({
+      endPoint: `/api/commissions/${userId}/add`,
+      body: data
+    })
+  }
+  
+   async clubRemoveBrites(userId: string, data: any, semesterId: string) {
     return await this.post({
       endPoint: `/api/club/${userId}/remove`,
       body: Object.assign({}, data, {semesterId})
     })
-  }
+  }  
+  
 }
 
 const apiCallsPlugin: Plugin = (context, inject) => {
