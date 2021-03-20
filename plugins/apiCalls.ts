@@ -402,6 +402,13 @@ export class ApiCalls extends BasicApiCall {
       body: data
     })
   }
+
+  async  commissionsAdd(userId: string, data: any){
+    return await this.post({
+      endPoint: `/api/commissions/${userId}/add`,
+      body: data
+    })
+  }
 }
 
 const apiCallsPlugin: Plugin = (context, inject) => {

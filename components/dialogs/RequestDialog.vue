@@ -72,7 +72,8 @@
           </v-btn>
           <v-btn text color="success" @click="onApprove">
             <v-icon>mdi-check</v-icon>
-            {{ $t("dialogs.requests.btn-accept") }}</v-btn
+            {{ $t("dialogs.requests.btn-accept") }}
+          </v-btn
           >
         </v-toolbar-items>
         <v-spacer></v-spacer>
@@ -92,8 +93,9 @@
 
     <portal to="dialog-actions-left">
       <v-btn color="red" text v-if="canDelete" @click="onDelete">{{
-        $t("dialogs.requests.btn-delete")
-      }}</v-btn>
+          $t("dialogs.requests.btn-delete")
+        }}
+      </v-btn>
     </portal>
 
     <portal to="dialog-actions-right">
@@ -108,7 +110,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from "vuex";
+import {mapGetters, mapState} from "vuex";
 import {
   ref,
   onBeforeMount,
@@ -116,21 +118,21 @@ import {
   watch,
   computed
 } from "@vue/composition-api";
-import { createNamespacedHelpers } from "vuex-composition-helpers";
+import {createNamespacedHelpers} from "vuex-composition-helpers";
 
 import DynamicFieldset from "@/components/DynamicFieldset";
 import requestSchema from "@/config/forms/requestSchema";
 
 import requestsCrudActionsFn from "../../functions/requestsCrudActions";
 import permissionsFn from "../../functions/permissions";
-import { admin } from "../../config/roleBasedConfig";
+import {admin} from "../../config/roleBasedConfig";
 import WalletTypes from "../../enums/WalletTypes";
 import RequestStatus from "../../enums/RequestStatus";
 import RequestTypes from "../../enums/RequestTypes";
 
 export default {
   name: "RequestDialog",
-  components: { DynamicFieldset },
+  components: {DynamicFieldset},
   props: {
     value: false,
     requestData: {
@@ -145,12 +147,12 @@ export default {
    *    $apiCalls: import("../../plugins/apiCalls").ApiCalls
    * }, emit: function}} param1
    */
-  setup(props, { root, emit }) {
-    const { $auth, $apiCalls, $store, $enums } = root;
-    const { useGetters: dialogUseGetters } = createNamespacedHelpers("dialog");
-    const { useGetters: userUseGetters } = createNamespacedHelpers("user");
-    const { dialogData } = dialogUseGetters(["dialogData"]);
-    const { availableWallets } = userUseGetters(["availableWallets"]);
+  setup(props, {root, emit}) {
+    const {$auth, $apiCalls, $store, $enums} = root;
+    const {useGetters: dialogUseGetters} = createNamespacedHelpers("dialog");
+    const {useGetters: userUseGetters} = createNamespacedHelpers("user");
+    const {dialogData} = dialogUseGetters(["dialogData"]);
+    const {availableWallets} = userUseGetters(["availableWallets"]);
     const permissions = permissionsFn(root);
 
     const formData = ref({
@@ -196,6 +198,9 @@ export default {
           break;
         case $enums.RequestTypes.RISC_PROVVIGIONI:
           toReturn = wallet.value?.currMonthCommissions ?? 0;
+          break;
+        case $enums.RequestTypes.COMMISSION_MANUAL_ADD:
+          toReturn = formData.value.availableAmount
           break;
       }
 
@@ -270,19 +275,19 @@ export default {
       value => {
         formData.value.availableAmount = availableAmount.value;
       },
-      { immediate: true }
+      {immediate: true}
     );
     watch(
       () => formData.value.type,
       type => {
         formData.value.wallet =
-          type !== $enums.RequestTypes.RISC_PROVVIGIONI
+          ![$enums.RequestTypes.RISC_PROVVIGIONI, $enums.RequestTypes.COMMISSION_MANUAL_ADD].includes(type)
             ? $enums.WalletTypes.DEPOSIT
             : $enums.WalletTypes.COMMISION;
 
         formData.value.currency = $enums.CurrencyType.EURO;
       },
-      { immediate: true }
+      {immediate: true}
     );
 
     onBeforeMount(async () => {
@@ -303,7 +308,7 @@ export default {
         data.userId = formData.value.userId;
       }
 
-      $store.dispatch("user/updateWallets", { apiCalls: $apiCalls, data });
+      $store.dispatch("user/updateWallets", {apiCalls: $apiCalls, data});
     });
 
     return {
@@ -394,7 +399,7 @@ export default {
           data: {
             type: this.$t(
               "enums.RequestTypes." +
-                this.$enums.RequestTypes.get(this.formData.type).id
+              this.$enums.RequestTypes.get(this.formData.type).id
             ),
             amount:
               this.$enums.CurrencyType.get(data.currency).symbol +

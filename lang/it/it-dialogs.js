@@ -118,5 +118,10 @@ export default {
     titleDepositCollected: "Riscossione deposito",
     titleDepositAdded: "Versamento nuova liquidità",
     titleInterestCollected: "Riscossione interessi"
-  }
+  },
+  commissionsAddDialog: {
+    title: "Aggiunta manuale provvigioni",
+    "btn-send": "Aggiungi",
+    "btn-cancel": "Annulla"
+  },
 }

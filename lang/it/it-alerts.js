@@ -142,5 +142,11 @@ export default {
   "brite-use-cancelBtnText": "Annulla",
   "brite-use-success": "Richiesta inoltrata correttamente!",
 
+  "commissions-add-title": "",
+  "commissions-add-text": "Sei sicuro di voler aggiungere provvigioni per un valore di <strong>{amount}</strong>?",
+  "commissions-add-confirmBtnText": "Si, aggiungi",
+  "commissions-add-cancelBtnText": "Annulla",
+  "commissions-add-success": "Operazione inoltrata correttamente!",
+
   "sign-contract-unavailable": "Per procedere con la firma del contratto è necessario accedere alla propria casella email e cliccare sul link contenuto nell'email di notifica relativa alla firma del contratto per l'utente <strong>{name}</strong>."
 }
