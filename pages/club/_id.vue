@@ -393,10 +393,26 @@ export default class Brite extends Vue {
 
   onBriteAdded(newValue: any) {
     this.tableData.unshift(newValue)
+
+    this.refreshBlocks()
   }
 
   onBriteRemoved(newValue: any) {
     this.tableData.unshift(newValue)
+
+    this.refreshBlocks()
+  }
+
+  async refreshBlocks() {
+    try {
+      const blocks = await this.$apiCalls.clubFetchBlocks(this.userId)
+
+      if (blocks) {
+        this.blocksData = blocks
+      }
+    } catch (er) {
+      this.$alerts.error(er)
+    }
   }
 
 

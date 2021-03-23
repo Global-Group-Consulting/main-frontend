@@ -77,8 +77,6 @@ export default class BriteRemoveDialog extends Vue {
       }
       const semesterId = this.dialogData.data.extraData.id
 
-      debugger
-
       await this.$alerts.askBeforeAction({
         key: "brite-remove",
         preConfirm: async () => {
