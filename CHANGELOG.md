@@ -2,10 +2,12 @@
 
 ## v 1.8.0 - <small>01/04/2020</small>
 ## Miglioramenti
+- Aggiornata logica di creazione ed attivazione account.
 
 ### Aggiunte
 - Pulsante rimozione manuale Brite
 - Pulsante aggiunta manuale Provvigioni
+- Pulsante per reinviare il contratto da firmare
 
 ## v 1.7.3 - <small>13/03/2020</small>
 ### Miglioramenti

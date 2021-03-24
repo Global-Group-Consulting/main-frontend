@@ -1,9 +1,13 @@
 module.exports = `<h2 id="v180small01042020small">v 1.8.0 - <small>01/04/2020</small></h2>
 <h2 id="miglioramenti">Miglioramenti</h2>
+<ul>
+<li>Aggiornata logica di creazione ed attivazione account.</li>
+</ul>
 <h3 id="aggiunte">Aggiunte</h3>
 <ul>
 <li>Pulsante rimozione manuale Brite</li>
 <li>Pulsante aggiunta manuale Provvigioni</li>
+<li>Pulsante per reinviare il contratto da firmare</li>
 </ul>
 <h2 id="v173small13032020small">v 1.7.3 - <small>13/03/2020</small></h2>
 <h3 id="miglioramenti-1">Miglioramenti</h3>
