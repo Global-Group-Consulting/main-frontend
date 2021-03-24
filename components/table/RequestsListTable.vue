@@ -46,7 +46,30 @@
 
     <template v-slot:item.type="{ item }">
       <v-icon color="orange" v-if="item.typeClub">mdi-cards-spade</v-icon>
+
+      <v-tooltip v-if="item.initialMovement" bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on">
+            <v-icon color="blue">mdi-flare</v-icon>
+          </v-btn>
+        </template>
+        {{ item.notes }}
+      </v-tooltip>
+
       {{ getTipoRichiesta(item.type, item) }}
+
+      <v-tooltip v-if="$enums.RequestTypes.COMMISSION_MANUAL_ADD === item.type" bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on">
+            <v-icon>mdi-information</v-icon>
+          </v-btn>
+        </template>
+
+        <template v-if="item.targetUser">
+          Agente destinatario:<br>
+          {{ item.targetUser.firstName }} {{ item.targetUser.lastName }} ({{ item.targetUser.email }})
+        </template>
+      </v-tooltip>
     </template>
   </data-table>
 </template>
@@ -91,19 +114,24 @@ export default {
     }
 
     function getAmountSign(requestType) {
-      return [
+      if ([
         $enums.RequestTypes["VERSAMENTO"],
         $enums.RequestTypes["INTERESSI"]
-      ].includes(requestType)
-        ? "+"
-        : "-";
+      ].includes(requestType)) {
+        return "+"
+      } else if ($enums.RequestTypes.COMMISSION_MANUAL_ADD === requestType) {
+        return "*"
+      } else {
+        return "-";
+      }
     }
 
     function getAmountClass(sign) {
       const minus = "red--text";
       const plus = "green--text";
+      const wildcard = "orange--text";
 
-      return sign === "-" ? minus : plus;
+      return sign === "-" ? minus : (sign === "*" ? wildcard : plus);
     }
 
     function getTipoRichiesta(_id, item) {

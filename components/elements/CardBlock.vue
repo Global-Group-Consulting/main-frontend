@@ -59,7 +59,7 @@ export default class CardBlock extends Vue {
 
   public onAction() {
     if (this.data.action) {
-      this.data.action(this.data)
+      this.data.action(this.data, this.extraData)
     }
   }
 }

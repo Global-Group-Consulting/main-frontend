@@ -114,9 +114,19 @@ export default {
     "btn-send": "Invia richiesta",
     "btn-cancel": "Annulla"
   },
+  briteRemoveDialog: {
+    title: "Rimuovi brite",
+    "btn-send": "Rimuovi",
+    "btn-cancel": "Annulla"
+  },
   calculatorMovementsDialog: {
     titleDepositCollected: "Riscossione deposito",
     titleDepositAdded: "Versamento nuova liquidità",
     titleInterestCollected: "Riscossione interessi"
-  }
+  },
+  commissionsAddDialog: {
+    title: "Aggiunta manuale provvigioni",
+    "btn-send": "Aggiungi",
+    "btn-cancel": "Annulla"
+  },
 }

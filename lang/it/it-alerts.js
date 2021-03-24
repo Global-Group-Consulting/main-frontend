@@ -95,10 +95,10 @@ export default {
   "bug-report-success": "Segnalazione inviata correttamente!",
 
   "confirm-draft-user-title": "Confermare account?",
-  "confirm-draft-user-text": "Sei sicuro di voler confermare l'account dell'utente {firstName} {lastName}? Procedendo, si avvierà l'iter di attivazione dell'account, con la verifica dei dati da parte del Servizio Clienti e la Firma del contratto da parte del cliente.",
+  "confirm-draft-user-text": "Sei sicuro di voler confermare l'account dell'utente {firstName} {lastName}? Procedendo, l'utente riceverà il contratto finale da firmare.",
   "confirm-draft-user-confirmBtnText": "Si, conferma account",
   "confirm-draft-user-cancelBtnText": "Annulla",
-  "confirm-draft-user-success": "Richiesta di conferma inviata correttamente al Servizio Clienti!",
+  "confirm-draft-user-success": "Account confermato e richiesta di firma inviata correttamente!",
 
   "confirm-updated-incomplete-data-title": "Hai corretto i dati non validi?",
   "confirm-updated-incomplete-data-text": "Procedendo, il servizio clienti ricontrollerà i dati inseriti.",
@@ -142,5 +142,24 @@ export default {
   "brite-use-cancelBtnText": "Annulla",
   "brite-use-success": "Richiesta inoltrata correttamente!",
 
-  "sign-contract-unavailable": "Per procedere con la firma del contratto è necessario accedere alla propria casella email e cliccare sul link contenuto nell'email di notifica relativa alla firma del contratto per l'utente <strong>{name}</strong>."
+  "commissions-add-title": "",
+  "commissions-add-text": "Sei sicuro di voler aggiungere provvigioni per un valore di <strong>{amount}</strong>?",
+  "commissions-add-confirmBtnText": "Si, aggiungi",
+  "commissions-add-cancelBtnText": "Annulla",
+  "commissions-add-success": "Operazione inoltrata correttamente!",
+
+  "brite-remove-title": "",
+  "brite-remove-text": "Sei sicuro di voler rimuovere <strong>{amount}</strong> brite dall'account dell'utente?",
+  "brite-remove-confirmBtnText": "Si, rimuovi",
+  "brite-remove-cancelBtnText": "Annulla",
+  "brite-remove-success": "Brite rimossi correttamente!",
+
+  "sign-contract-unavailable": "Per procedere con la firma del contratto è necessario accedere alla propria casella email e cliccare sul link contenuto nell'email di notifica relativa alla firma del contratto per l'utente <strong>{name}</strong>.",
+  "sign-contract-declined": "Il cliente ha rifiutato di firmare il contratto in data {date}. Per attivare l'account è necessario ricreare il contratto e farlo firmare al cliente.",
+
+  "resend-contract-title": "Ricreare il contratto?",
+  "resend-contract-text": "Sei sicuro di voler ricreare il contratto dell'utente {firstName} {lastName}? Procedendo, la richiesta di firma attuale verrà annullata e l'utente riceverà una nuova email dove gli verrà chiesto di firmare il nuovo contratto appena generato.",
+  "resend-contract-confirmBtnText": "Si, ricrea",
+  "resend-contract-cancelBtnText": "Annulla",
+  "resend-contract-success": "Contratto creato correttamente e richiesta di firma inviata!",
 }

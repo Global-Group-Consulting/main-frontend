@@ -84,6 +84,10 @@
 
       <brite-use-dialog v-if="$store.getters['dialog/dialogId'] === 'BriteUseDialog'"
       ></brite-use-dialog>
+
+      <brite-remove-dialog v-if="$store.getters['dialog/dialogId'] === 'BriteRemoveDialog'"
+                           @briteRemoved="onBriteRemoved"
+      ></brite-remove-dialog>
     </v-flex>
   </v-layout>
 </template>
@@ -102,6 +106,7 @@ import {User} from "~/@types/UserFormData";
 import {ClubMovement} from "~/@types/club/ClubMovement";
 import {ClubPermissions} from "~/functions/acl/enums/club.permissions";
 import BriteUseDialog from "~/components/dialogs/BriteUseDialog.vue";
+import BriteRemoveDialog from "~/components/dialogs/BriteRemoveDialog.vue";
 
 interface BlockData {
   briteTotal: number
@@ -115,7 +120,7 @@ interface TotalReport {
 }
 
 @Component({
-  components: {BriteUseDialog, BriteAddDialog, CardBlock, DynamicTabs, DataTable, PageHeader},
+  components: {BriteRemoveDialog, BriteUseDialog, BriteAddDialog, CardBlock, DynamicTabs, DataTable, PageHeader},
   meta: {
     permissions: [ClubPermissions.BRITES_ALL_READ, ClubPermissions.BRITES_SELF_READ]
   }
@@ -223,9 +228,9 @@ export default class Brite extends Vue {
     const canAdd = this.$acl.checkPermissions([ClubPermissions.BRITES_ALL_ADD])
       && tab.id === this.currentSemester
     const canRemove = this.$acl.checkPermissions([ClubPermissions.BRITES_ALL_ADD])
-      && tab.id === this.currentSemester
+      && this.$moment().isAfter(tab.useFrom) && this.$moment().isBefore(tab.expiresAt)
     const permissionToUse = this.$acl.checkPermissions([ClubPermissions.BRITES_SELF_USE])
-    const canUse = false //permissionToUse && this.$moment().isAfter(tab.useFrom) && this.$moment().isBefore(tab.expiresAt)
+    const canUse = true //permissionToUse && this.$moment().isAfter(tab.useFrom) && this.$moment().isBefore(tab.expiresAt)
 
     const toReturn: CardBlockI[] = [{
       id: "briteTotal",
@@ -242,15 +247,18 @@ export default class Brite extends Vue {
       icon: "mdi-diamond-outline",
       // actionText: this.$t("pages.club.brite.tabs.movements"),
       color: "#f9a825",
-      actionText: canRemove ? this.$t("pages.club.brite.tabs.removeBrite") : null,
-      action: this.onRemoveBrite,
+      /*  actionText: canRemove ? this.$t("pages.club.brite.tabs.removeBrite") : null,
+        action: this.onRemoveBrite,
+        actionDisabled: (card: CardBlockI, tab: DynamicTab) => {
+          return card.value === "B 0"
+        },*/
     }, {
       id: "briteAvailable",
       title: this.$t("pages.club.brite.tabs.briteAvailable"),
       value: (card: any, tab: any) => this.getCardValue(card, tab),
       icon: "mdi-diamond-stone",
-      actionText: permissionToUse ? this.$t("pages.club.brite.tabs.use") : '',
-      action: this.onUseBrite,
+      actionText: canRemove ? this.$t("pages.club.brite.tabs.removeBrite") : (permissionToUse ? this.$t("pages.club.brite.tabs.use") : ''),
+      action: canRemove ? this.onRemoveBrite : this.onUseBrite,
       actionDisabled: (card: CardBlockI, tab: DynamicTab) => {
         return !canUse || card.value === "B 0"
       },
@@ -301,7 +309,7 @@ export default class Brite extends Vue {
   getMovementColor(movement: ClubMovement) {
     const toReturn = []
 
-    if ([this.$enums.ClubMovementTypes.DEPOSIT_COLLECTED].includes(movement.movementType)) {
+    if ([this.$enums.ClubMovementTypes.DEPOSIT_COLLECTED, this.$enums.ClubMovementTypes.DEPOSIT_REMOVED].includes(movement.movementType)) {
       toReturn.push("red--text")
     } else {
       toReturn.push("green--text")
@@ -360,6 +368,7 @@ export default class Brite extends Vue {
       title: this.$t(`dialogs.briteUseDialog.title`),
       fullscreen: false,
       readonly: false,
+      large: false,
       data: {
         card,
         totalReport: this.totalReport
@@ -367,11 +376,43 @@ export default class Brite extends Vue {
     });
   }
 
-  onRemoveBrite(){}
+  onRemoveBrite(card: CardBlockI, extraData: any) {
+    this.$store.dispatch("dialog/updateStatus", {
+      id: "BriteRemoveDialog",
+      title: this.$t(`dialogs.briteRemoveDialog.title`),
+      fullscreen: false,
+      readonly: false,
+      data: {
+        card,
+        extraData,
+        totalReport: this.totalReport
+      }
+    });
+  }
 
 
   onBriteAdded(newValue: any) {
     this.tableData.unshift(newValue)
+
+    this.refreshBlocks()
+  }
+
+  onBriteRemoved(newValue: any) {
+    this.tableData.unshift(newValue)
+
+    this.refreshBlocks()
+  }
+
+  async refreshBlocks() {
+    try {
+      const blocks = await this.$apiCalls.clubFetchBlocks(this.userId)
+
+      if (blocks) {
+        this.blocksData = blocks
+      }
+    } catch (er) {
+      this.$alerts.error(er)
+    }
   }
 
 
