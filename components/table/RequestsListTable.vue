@@ -46,6 +46,16 @@
 
     <template v-slot:item.type="{ item }">
       <v-icon color="orange" v-if="item.typeClub">mdi-cards-spade</v-icon>
+
+      <v-tooltip v-if="item.initialMovement" bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on">
+            <v-icon color="blue">mdi-flare</v-icon>
+          </v-btn>
+        </template>
+        {{ item.notes }}
+      </v-tooltip>
+
       {{ getTipoRichiesta(item.type, item) }}
 
       <v-tooltip v-if="$enums.RequestTypes.COMMISSION_MANUAL_ADD === item.type" bottom>

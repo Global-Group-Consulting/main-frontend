@@ -103,6 +103,12 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
+  async userResendContract(userId: string) {
+    return await this.post({
+      endPoint: `/api/users/${userId}/resendContract`
+    })
+  }
+
   /**
    *
    * @param {{userId: string, message: string, checkedFields: string[]}} data
@@ -409,14 +415,14 @@ export class ApiCalls extends BasicApiCall {
       body: data
     })
   }
-  
+
    async clubRemoveBrites(userId: string, data: any, semesterId: string) {
     return await this.post({
       endPoint: `/api/club/${userId}/remove`,
       body: Object.assign({}, data, {semesterId})
     })
-  }  
-  
+  }
+
 }
 
 const apiCallsPlugin: Plugin = (context, inject) => {
