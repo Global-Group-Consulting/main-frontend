@@ -88,6 +88,8 @@ export default {
     'btn-incomplete-user': "Segnala dati",
     'btn-incomplete-user-tooltip': "Segnala all'agente di riferimento i dati non corretti.",
     'btn-movements-list': "Movimenti e Contratto",
+    'btn-resend-contract': "Ricrea contratto",
+    'btn-resend-contract-tooltip': "Annulla contratto pendente e ne crea uno nuovo.",
 
     tabs: {
       'user-data': 'Dati Utente',

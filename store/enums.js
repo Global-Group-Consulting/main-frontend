@@ -32,7 +32,7 @@ export const getters = {
       const countryName = country.translations[rootState.i18n.locale] || country.name
 
       acc.push({
-        value: country.alpha2Code || country.name,
+        value: (country.alpha2Code || country.name).toLowerCase(),
         text: `${countryName} (${country.nativeName})`
       })
 
@@ -76,7 +76,7 @@ export const getters = {
   provincesList(state) {
     const list = state.provinces.reduce((acc, province) => {
       acc.push({
-        value: province.sigla,
+        value: province.sigla.toLowerCase(),
         text: _startCase(province.nome)
       })
 
