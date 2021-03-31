@@ -67,7 +67,7 @@
               </template>
 
               <template v-slot:item.creator="{ item }">
-                <div v-if="item.createdById !== $auth.user.id">
+                <div v-if="item.createdById !== $auth.user.id && item.creator">
                   {{ item.creator.firstName }} {{ item.creator.lastName }}
                 </div>
 
