@@ -1,6 +1,28 @@
 import {Formatters} from "./Formatters";
 import CurrencyType from "~/enums/CurrencyType";
 
+type ValidatorRules = "required" |
+  "requiredIf" |
+  "requiredUnless" |
+  "minLength" |
+  "maxLength" |
+  "minValue" |
+  "maxValue" |
+  "between" |
+  "alpha" |
+  "alphaNum" |
+  "numeric" |
+  "integer" |
+  "decimal" |
+  "email" |
+  "ipAddress" |
+  "macAddress" |
+  "sameAs" |
+  "url" |
+  "not" |
+  "or" |
+  "and" | "phoneNumber"
+
 export interface FormSchema {
   if?: boolean | Function,
   legend?: string,
@@ -16,8 +38,9 @@ export interface FormSchema {
       label?: string,
       formatter?: Formatters | Function,
       if?: any,
-      items?: Function | any;
-      disabled?: boolean | Function;
+      items?: Function | any
+      disabled?: boolean | Function
+      hideDetails?: boolean
       type?: string
       files?: any[],
       clearable?: boolean,
@@ -29,11 +52,9 @@ export interface FormSchema {
       currency?: number,
       autoGrow?: boolean,
       rows?: number,
-      validations?: {
-        [key: string]: {
-          params?: any
-        }
-      }
+      validations?: Partial<Record<ValidatorRules, {
+        params?: any
+      }>>
     }
   }
 }

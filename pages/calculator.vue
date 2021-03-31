@@ -16,12 +16,6 @@
                    class="mb-2 mb-sm-0"
                    :block="$vuetify.breakpoint.xsOnly">Applica
             </v-btn>
-            <!--            <v-btn type="button" class="ml-0 mb-2 mb-sm-0 ml-sm-3"
-                               rounded @click="onAddMovement"
-                               outlined
-                               :block="$vuetify.breakpoint.xsOnly"
-                               color="grey">Aggiungi movimento
-                        </v-btn>-->
 
             <v-spacer></v-spacer>
 
@@ -30,58 +24,7 @@
             </v-btn>
           </v-card-actions>
         </v-card>
-        <!--
-                <v-tabs v-model="currentTab">
-                  <v-tab>Impostazioni preventivo</v-tab>
-                  <v-tab>Elenco movimenti</v-tab>
-                </v-tabs>
 
-                <v-card class="mb-10" flat>
-                  <v-card-text>
-                    <v-tabs-items :value="currentTab">
-                      <v-tab-item>
-                        <dynamic-fieldset :schema="formSchema" v-model="formData"></dynamic-fieldset>
-                      </v-tab-item>
-
-                      <v-tab-item>
-                        <data-table id="quotationMovementsTable"
-                                    tableKey="calculatorMovements"
-                                    schema="calculatorMovementsSchema"
-                                    :items="movementsList"
-                                    :items-per-page="25">
-                          <template v-slot:item.date="{item}">
-                            <date-picker
-                              :hide-details="true"
-                              :value="item.date" dense
-                              @change="item.date = $event"
-                              prepend-icon=""
-                              :min="$moment(formData.initialDate).toISOString()"
-                              :max="$moment(formData.finalDate).toISOString()"
-                            >
-                            </date-picker>
-                          </template>
-                          <template v-slot:item.type="{item}">
-                            <v-select v-model="item.type"
-                                      dense hide-details
-                                      :items="movementsSelectItems"></v-select>
-                          </template>
-                          <template v-slot:item.amount="{item}">
-                            <money-input v-model="item.amount"
-                                         dense hide-details
-                            ></money-input>
-                          </template>
-                          <template v-slot:item.actions="{item}">
-                            <v-btn icon @click="onRemoveMovement(item)" small>
-                              <v-icon>mdi-close</v-icon>
-                            </v-btn>
-                          </template>
-                        </data-table>
-                      </v-tab-item>
-                    </v-tabs-items>
-                  </v-card-text>
-
-
-                </v-card>-->
       </v-form>
 
       <data-table
@@ -91,7 +34,8 @@
         :items="tableData"
         :items-per-page="25">
         <template v-slot:item.date="{item, value}">
-          {{ $moment(value).format("MMMM YYYY") }}
+          {{ value +1 }}
+          <!--          {{ $moment(value).format("MMMM YYYY") }}-->
         </template>
         <template v-slot:item.depositAdded="{item, value}">
           <calculator-movement-dialog :cell-data="item" field="depositAdded"
@@ -123,7 +67,7 @@
         </template>
         <template v-slot:item.interestCollected="{item, value}">
           <calculator-movement-dialog :cell-data="item" field="interestCollected"
-                                      v-if="item.interestRecapitalized"
+                                      v-if="item.interestAmount"
                                       :value="value"
                                       color="red--text"
                                       :max-value="item.interestAmount"
@@ -181,8 +125,7 @@ export default class Calculator extends Vue {
   public formDataDefault = {
     initialDeposit: 3000,
     interestPercentage: 4,
-    initialDate: this.$moment(),
-    finalDate: this.$moment().add(2, "years")
+    numMonths: 24
   }
 
   public currentTab = 0
@@ -218,7 +161,7 @@ export default class Calculator extends Vue {
 
 
   onCalcUpdate() {
-    const months = this.$moment(this.formData.finalDate).diff(this.$moment(this.formData.initialDate), "months", true)
+    const months = this.formData.numMonths
     const newData: QuotationEntry[] = []
 
     for (let i = 0; i < months; i++) {
@@ -226,7 +169,7 @@ export default class Calculator extends Vue {
 
       const
         entry: QuotationEntry = {
-          date: this.$moment(this.formData.initialDate).add(i, "months"),
+          date: i,
           depositAdded: rowData.depositAdded || 0,
           depositCurrent: 0,
           depositCollected: rowData.depositCollected || 0,
