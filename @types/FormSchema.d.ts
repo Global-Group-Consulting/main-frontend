@@ -41,6 +41,8 @@ export interface FormSchema {
       items?: Function | any
       disabled?: boolean | Function
       hideDetails?: boolean
+      falseValue?: boolean
+      inputValue?: string | number | boolean
       type?: string
       files?: any[],
       clearable?: boolean,

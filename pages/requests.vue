@@ -8,7 +8,7 @@
       <page-toolbar>
         <template slot="center-block">
           <tooltip-btn
-            v-if="permissions.addRequest"
+            v-if="canRequestClassic"
             :tooltip="$t('pages.requests.btnWithdrawal-tooltip')"
             text
             color="red"
@@ -20,7 +20,7 @@
           </tooltip-btn>
 
           <tooltip-btn
-            v-if="permissions.addRequestGold"
+            v-if="canRequestGold"
             :tooltip="$t('pages.requests.btnWithdrawalGold-tooltip')"
             text
             color="orange"
@@ -32,7 +32,7 @@
           </tooltip-btn>
 
           <tooltip-btn
-            v-if="permissions.addRequest"
+            v-if="canDeposit"
             :tooltip="$t('pages.requests.btnDeposit-tooltip')"
             text
             color="green"
@@ -151,6 +151,8 @@ import permissionsFn from "~/functions/permissions";
 import RequestTypes from "~/enums/RequestTypes";
 import {contractNumberFormatter, dateFormatter, moneyFormatter, userFormatter} from "~/plugins/filters";
 import {Moment} from "moment";
+import {computed} from "@vue/composition-api";
+import UserRoles from "~/enums/UserRoles";
 
 
 @Component({
@@ -242,6 +244,22 @@ export default class Requests extends Vue {
 
   get dialogState() {
     return this.$store.getters["dialog/dialogState"]
+  }
+
+  get userType(): "admin" | "user" {
+    return [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(+this.$auth.user.role) ? "admin" : "user"
+  }
+
+  get canRequestClassic() {
+    return this.userType === "user" && !this.$auth.user.gold
+  }
+
+  get canRequestGold() {
+    return this.userType === "user" && this.$auth.user.gold
+  }
+
+  get canDeposit() {
+    return this.userType === "user"
   }
 
   private async fetchAll() {

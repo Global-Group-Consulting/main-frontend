@@ -407,7 +407,7 @@ export function contractData(formContext: FormContext) {
  * @param {FormContext} formContext
  * @returns {FormSchema[]}
  */
-export function clubData(formContext: FormContext) {
+export function clubData(formContext: FormContext): FormSchema[] {
   const gold = formContext.formData.gold
   const userIsNew = !formContext.formData.id
   const hasPermission = formContext.$acl.checkPermissions([ClubPermissions.CLUB_WRITE])
@@ -434,7 +434,9 @@ export function clubData(formContext: FormContext) {
           items: ClubPacks,
           disabled: !gold || !hasPermission,
           validations: {
-            required: {}
+            required: {
+              params: () => formContext.formData.gold && hasPermission
+            }
           }
         }
       }
