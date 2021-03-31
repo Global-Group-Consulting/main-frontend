@@ -30,7 +30,7 @@ import {ref, onBeforeMount, computed, onMounted, nextTick, } from "@vue/composit
 import UserRoles from "@/enums/UserRoles";
 
 export default {
-  name: "CommunicationNewDialog",
+  name: "BugSendDialog",
   components: {DynamicFieldset},
 
   setup(props, {root, refs, emit, app}) {

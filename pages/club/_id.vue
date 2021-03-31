@@ -181,7 +181,7 @@ export default class Brite extends Vue {
       return ""
     }
 
-    toReturn.push(this.currentUser.firstName + " " + this.currentUser.lastName + `(${this.currentUser.clubCardNumber})`)
+    toReturn.push(this.currentUser.firstName + " " + this.currentUser.lastName + (this.currentUser.clubCardNumber ? ` (${this.currentUser.clubCardNumber})` : ''))
     toReturn.push(this.$t("pages.club.brite.activePack", {pack: this.$t("enums.ClubPacks." + this.currentUser.clubPack)}))
 
     return toReturn.join("<br>")

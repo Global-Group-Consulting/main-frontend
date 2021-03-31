@@ -78,6 +78,7 @@ export default {
     'conversation': "Conversazione",
     'notification': "Notifica",
     'bug_report': "Segnalazione problema",
+    'brite_use': "Utilizzo Brite",
   },
   "SignRequestEvents": {
     "convert_error": "Errore creazione documento",

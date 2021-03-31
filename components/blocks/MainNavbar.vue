@@ -88,10 +88,10 @@
       </account-menu>
     </div>
 
-    <communication-new-dialog
-      v-if="$store.getters['dialog/dialogId'] === 'CommunicationNewDialog'"
+    <bug-send-dialog
+      v-if="$store.getters['dialog/dialogId'] === 'BugSendDialog'"
       @communicationAdded="onBugReported"
-    ></communication-new-dialog>
+    ></bug-send-dialog>
 
   </v-app-bar>
 </template>
@@ -102,10 +102,11 @@ import socketAccountFn from "~/functions/socket/account";
 import {computed, onMounted, ref} from "@vue/composition-api";
 import CommunicationNewDialog from "~/components/dialogs/CommunicationNewDialog";
 import AccountMenu from "~/components/elements/AccountMenu";
+import BugSendDialog from "../dialogs/BugSendDialog";
 
 export default {
   name: "MainNavbar",
-  components: {AccountMenu, CommunicationNewDialog},
+  components: {BugSendDialog, AccountMenu, CommunicationNewDialog},
   setup(props, {root}) {
     let scrollElement;
     let scrollTop = ref(0)
@@ -118,7 +119,7 @@ export default {
 
     async function openBugReport() {
       root.$store.dispatch("dialog/updateStatus", {
-        id: "CommunicationNewDialog",
+        id: "BugSendDialog",
         title: root.$t(`dialogs.communicationNewDialog.title-bug-report`),
         fullscreen: false,
         readonly: false,

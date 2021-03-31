@@ -635,7 +635,7 @@ export default {
 
       if (dialogData.value.requestId) {
         _initRequestActions();
-        requestStatus.value = dialogData.value.request.status;
+        requestStatus.value = dialogData.value.request?.status;
       }
 
       await _fetchMessages();
