@@ -184,6 +184,7 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
     userType,
     showReferenceAgent,
     onSaveClick,
-    permissions
+    permissions,
+    validateAll
   }
 }
