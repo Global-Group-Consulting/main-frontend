@@ -50,8 +50,20 @@ export function basicData(formContext: FormContext): FormSchema[] {
     {
       if: formContext.userIsPersonaGiuridica,
       cols: {
-        'businessName': {},
-        'vatNumber': {}
+        'businessName': {
+          validations: {
+            requiredIf: {
+              params: () => formContext.userIsPersonaGiuridica
+            }
+          }
+        },
+        'vatNumber': {
+          validations: {
+            requiredIf: {
+              params: () => formContext.userIsPersonaGiuridica
+            }
+          }
+        }
       }
     },
     {
@@ -60,21 +72,44 @@ export function basicData(formContext: FormContext): FormSchema[] {
       cols: {
         'businessCountry': {
           component: 'v-select',
-          items: 'enums.countriesList'
+          items: 'enums.countriesList',
+          validations: {
+            requiredIf: {
+              params: () => formContext.userIsPersonaGiuridica
+            }
+          }
         },
         'businessRegion': {
           component: 'v-select',
           items: 'enums.regionsList',
-          if: formContext.userBusinessItaly
+          if: formContext.userBusinessItaly,
+
         },
         'businessProvince': {
           component: 'v-select',
           items: 'enums.provincesList',
-          if: formContext.userBusinessItaly
+          if: formContext.userBusinessItaly,
+          validations: {
+            requiredIf: {
+              params: () => formContext.userIsPersonaGiuridica || formContext.userBusinessItaly
+            }
+          }
         },
-        'businessCity': {},
+        'businessCity': {
+          validations: {
+            requiredIf: {
+              params: () => formContext.userIsPersonaGiuridica
+            }
+          }
+        },
         'businessZip': {},
-        'businessAddress': {}
+        'businessAddress': {
+          validations: {
+            requiredIf: {
+              params: () => formContext.userIsPersonaGiuridica
+            }
+          }
+        }
       }
     },
     {
@@ -82,23 +117,17 @@ export function basicData(formContext: FormContext): FormSchema[] {
       cols: {
         'firstName': {
           validations: {
-            requiredIf: {
-              params: () => !formContext.userIsPersonaGiuridica
-            }
+            required: {}
           }
         },
         'lastName': {
           validations: {
-            requiredIf: {
-              params: () => !formContext.userIsPersonaGiuridica
-            }
+            required: {}
           }
         },
         'fiscalCode': {
           validations: {
-            requiredIf: {
-              params: () => !formContext.userIsPersonaGiuridica
-            }
+            required: {}
           }
         },
         'gender': {
@@ -117,12 +146,24 @@ export function basicData(formContext: FormContext): FormSchema[] {
         'birthProvince': {
           component: 'v-select',
           items: 'enums.provincesList',
-          if: formContext.userBirthItaly
+          if: formContext.userBirthItaly,
+          validations: {
+            requiredIf: {
+              params: () => formContext.userBirthItaly
+            }
+          }
         },
-        'birthCity': {},
+        'birthCity': {
+          validations: {
+            required: {}
+          }
+        },
         'birthDate': {
           'component': 'date-picker',
-          max: moment().subtract(18, 'years').format('YYYY-MM-DD')
+          max: moment().subtract(18, 'years').format('YYYY-MM-DD'),
+          validations: {
+            required: {}
+          }
         }
       }
     },
@@ -141,11 +182,28 @@ export function basicData(formContext: FormContext): FormSchema[] {
         'legalRepresentativeProvince': {
           component: 'v-select',
           items: 'enums.provincesList',
-          if: formContext.userLegalReprItaly
+          if: formContext.userLegalReprItaly,
+          validations: {
+            requiredIf: {
+              params: () => formContext.userBirthItaly
+            }
+          }
         },
-        'legalRepresentativeCity': {},
-        'legalRepresentativeZip': {},
-        'legalRepresentativeAddress': {}
+        'legalRepresentativeCity': {
+          validations: {
+            required: {}
+          }
+        },
+        'legalRepresentativeZip': {
+          validations: {
+            required: {}
+          }
+        },
+        'legalRepresentativeAddress': {
+          validations: {
+            required: {}
+          }
+        }
       }
     },
     {
@@ -332,7 +390,12 @@ export function contractData(formContext: FormContext) {
           }
         },
         'contractInitialPaymentMethodOther': {
-          if: formContext.formData.contractInitialPaymentMethod === PaymentMethods.ALTRO
+          if: formContext.formData.contractInitialPaymentMethod === PaymentMethods.ALTRO,
+          validations: {
+            requiredIf: {
+              params: () => formContext.formData.contractInitialPaymentMethod === PaymentMethods.ALTRO
+            }
+          }
         },
       }
     },
@@ -369,7 +432,10 @@ export function clubData(formContext: FormContext) {
         'clubPack': {
           component: "v-select",
           items: ClubPacks,
-          disabled: !gold || !hasPermission
+          disabled: !gold || !hasPermission,
+          validations: {
+            required: {}
+          }
         }
       }
     }
