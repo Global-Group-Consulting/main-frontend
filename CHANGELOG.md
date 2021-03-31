@@ -1,11 +1,23 @@
 [comment]: <> (## Non ancora rilasciato)
 
-## v 1.7.3 - <small>TBA</small>
+## v 1.8.0 - <small>01/04/2020</small>
+## Miglioramenti
+- Aggiornata logica di creazione ed attivazione account.
+
+### Aggiunte
+- Pulsante rimozione manuale Brite
+- Pulsante aggiunta manuale Provvigioni
+- Pulsante per reinviare il contratto da firmare
+
+## v 1.7.3 - <small>13/03/2020</small>
 ### Miglioramenti
 - Risolti problemi richieste di riscossione in mobile
 - Sistemato menu inferiore su iPhone lasciando spazio per la home line
 - Menu "altro" in mobile, non mostra più gli elementi già visibili nella barra inferiore
 - Calcolatrice spostato aggiunta movimenti direttamente nella tabella
+
+### Aggiunte
+- Tabella con elenco contratti in attesa di firma nella dashboard admin
 
 ## v 1.7.0 - <small>23/02/2020</small>
 ### Aggiunte

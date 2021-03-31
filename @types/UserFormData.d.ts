@@ -1,4 +1,5 @@
 import AgentTeamType from "~/enums/AgentTeamType";
+import {SignRequestLog} from "~/@types/SignRequest";
 
 export interface User {
   id: string,
@@ -38,6 +39,7 @@ export interface User {
   contractIban: string
   contractBic: string
   contractInitialPaymentMethod: string
+  contractInitialPaymentMethodOther: string,
   referenceAgent: string
   referenceAgentData: string
   accountCreatedAt: string
@@ -45,7 +47,7 @@ export interface User {
   accountActivatedAt: string
   accountVerifiedAt: string
   contractSignedAt: string
-  signinLogs: any
+  signinLogs: SignRequestLog[]
   contractFiles: any[]
   account_status: string
   files: any[]

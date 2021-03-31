@@ -103,6 +103,12 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
+  async userResendContract(userId: string) {
+    return await this.post({
+      endPoint: `/api/users/${userId}/resendContract`
+    })
+  }
+
   /**
    *
    * @param {{userId: string, message: string, checkedFields: string[]}} data
@@ -285,13 +291,13 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async dashboardFetch(userId: string) {
+  async dashboardFetch(userId?: string) {
     return await this.get({
       endPoint: "/api/dashboards" + (userId ? "/" + userId : "")
     })
   }
 
-  async communicationsFetch(type: string) {
+  async communicationsFetch(type?: string) {
     return await this.get({
       endPoint: "/api/communications" + (type ? `?t=${type}` : "")
     })
@@ -402,6 +408,21 @@ export class ApiCalls extends BasicApiCall {
       body: data
     })
   }
+
+   async  commissionsAdd(userId: string, data: any){
+    return await this.post({
+      endPoint: `/api/commissions/${userId}/add`,
+      body: data
+    })
+  }
+
+   async clubRemoveBrites(userId: string, data: any, semesterId: string) {
+    return await this.post({
+      endPoint: `/api/club/${userId}/remove`,
+      body: Object.assign({}, data, {semesterId})
+    })
+  }
+
 }
 
 const apiCallsPlugin: Plugin = (context, inject) => {

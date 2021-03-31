@@ -16,7 +16,7 @@
             target="__blank"
             outlined
             x-small
-            :href="'/requests?open=' + requestId"
+            :href="'/requests#' + requestId"
           >
             <v-icon x-small class="mr-2">mdi-open-in-new</v-icon>
             {{ $t("dialogs.communicationDialog.btn-go-to-request") }}
@@ -635,7 +635,7 @@ export default {
 
       if (dialogData.value.requestId) {
         _initRequestActions();
-        requestStatus.value = dialogData.value.request.status;
+        requestStatus.value = dialogData.value.request?.status;
       }
 
       await _fetchMessages();

@@ -54,7 +54,6 @@ declare module 'vuex/types/index' {
 }
 
 
-
 class Alerts {
   private i18n
   private store
@@ -81,7 +80,7 @@ class Alerts {
     return Swal.fire(Object.assign({}, defaultSettings, settings))
   }
 
-  info(settings = {}) {
+  info(settings: AlertSettings | string = {}) {
     if (typeof settings === 'string') {
       settings = {
         title: settings
@@ -200,7 +199,7 @@ class Alerts {
    * @return {Promise<void>}
    * @param payload
    */
-  async askBeforeAction(payload: { key: string, preConfirm: any, data: any, settings: AlertSettings}) {
+  async askBeforeAction(payload: { key: string, preConfirm: any, data: any, settings: AlertSettings }) {
     const {key, preConfirm, data, settings} = payload
     const title = this.i18n.t(`alerts.${key}-title`, data) as string
     const html = this.i18n.t(`alerts.${key}-text`, data) as string

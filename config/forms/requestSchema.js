@@ -15,7 +15,7 @@ import RequestStatus from "../../enums/RequestStatus"
  * @returns {import("../../@types/FormSchema").FormSchema[]}
  */
 export default function (context) {
-  const isVersamento = context.dialogData && context.dialogData.data?.type === context.$enums.RequestTypes.VERSAMENTO
+  const isVersamento = context.dialogData && [context.$enums.RequestTypes.VERSAMENTO, context.$enums.RequestTypes.COMMISSION_MANUAL_ADD].includes(context.dialogData.data?.type)
   const isNew = !context.formData.id
   const readonly = context.dialogData.readonly
   const isCompleted = context.formData.status && ![RequestStatus.NUOVA, RequestStatus.LAVORAZIONE].includes(context.formData.status)
@@ -34,6 +34,7 @@ export default function (context) {
             let mustHide = false
 
             if (type.value === context.$enums.RequestTypes.VERSAMENTO
+              || type.value === context.$enums.RequestTypes.COMMISSION_MANUAL_ADD
               || (type.value === context.$enums.RequestTypes.RISC_PROVVIGIONI && context.$auth.user.role !== context.$enums.UserRoles.AGENTE)
               || reqGold
             ) {
@@ -76,6 +77,17 @@ export default function (context) {
         },
       }
     }, */
+    {
+      cols: {
+        targetUser: {
+          disabled: true,
+          formatter: (item) => {
+            return item.firstName + " " + item.lastName + ` (${item.email})`
+          },
+          if: context.formData.type === RequestTypes.COMMISSION_MANUAL_ADD,
+        }
+      }
+    },
     {
       cols: {
         availableAmount: {

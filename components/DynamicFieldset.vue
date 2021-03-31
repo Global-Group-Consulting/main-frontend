@@ -38,7 +38,7 @@
               <v-tooltip
                 top
                 v-if="field.validations
-                  && (field.validations.required || field.validations.requiredIf && field.validations.requiredIf.params())
+                  && (field.validations.required || (field.validations.requiredIf && field.validations.requiredIf.params()))
                   && !(field.readonly || field.disabled)
                 "
               >
@@ -174,7 +174,7 @@ export default {
         return;
       }
 
-      const toReturn = {
+      const toReturn = row.colsBreakpoints || {
         cols: "12",
         sm: "6",
         lg: "4"
@@ -189,7 +189,7 @@ export default {
     getValue(field, key) {
       let value = this.value[key];
 
-      if(!(key in this.value) && field.defaultValue){
+      if (!(key in this.value) && field.defaultValue) {
         debugger
         value = field.defaultValue
         this.value[key] = value
@@ -287,6 +287,11 @@ export default {
 
         return false;
       });
+
+      if (!refs[0]) {
+        return
+      }
+
       const firstErrorField = refs[0][1];
 
       this.$scrollTo(firstErrorField[0].$el);

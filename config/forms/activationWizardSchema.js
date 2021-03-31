@@ -1,11 +1,11 @@
-import { basicData, contactsData, addressData } from './usersDataSchema'
+// import { basicData, contactsData, addressData } from './usersDataSchema'
 
 export default function (context) {
   return {
     'user-data': [
-      ...basicData(context),
+     /* ...basicData(context),
       ...addressData(context),
-      ...contactsData(context)
+      ...contactsData(context)*/
     ],
     'attachments': [
       {

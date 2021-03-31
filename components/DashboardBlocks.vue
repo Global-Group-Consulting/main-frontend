@@ -26,6 +26,9 @@
         </div>
       </v-card>
     </v-col>
+
+    <commissions-add-dialog
+      v-if="includeCommissionsAddDialog && $store.getters['dialog/dialogId'] === 'CommissionsAddDialog'"/>
   </v-row>
 </template>
 
@@ -36,9 +39,11 @@ import {get as _get} from "lodash";
 import DashboardBlocksList from "../config/blocks/dashboardBlocks.ts";
 import RoleBasedConfig from "../config/roleBasedConfig";
 import UserRoles from "../enums/UserRoles";
+import CommissionsAddDialog from "~/components/dialogs/CommissionsAddDialog";
 
 export default {
   name: "DashboardBlocks",
+  components: {CommissionsAddDialog},
   props: {
     dashboardData: {
       type: Object,
@@ -48,31 +53,38 @@ export default {
       default: "dashboard",
       type: String
     },
-    readonly: Boolean
+    readonly: Boolean,
+    includeCommissionsAddDialog: Boolean
   },
   setup(props, {root}) {
-    const {$auth, $router, $alerts} = root;
+    const {$auth, $router, $alerts, $store, $i18n} = root;
+
     const blocksActions = {
       addDeposit() {
-        $router.push("/requests?new=add_deposit");
+        $router.push("/requests#new_add_deposit");
       },
       addCommissions() {
-        $alerts.info({
-          title: "",
-          text: "Funzione presto disponibile!"
-        })
+        $store.dispatch("dialog/updateStatus", {
+          id: "CommissionsAddDialog",
+          title: $i18n.t("dialogs.commissionsAddDialog.title"),
+          texts: {
+            cancelBtn: "dialogs.commissionsAddDialog.btn-cancel",
+            confirmBtn: "dialogs.commissionsAddDialog.btn-send"
+          },
+          data: {}
+        });
       },
       showMovementsList() {
         $router.push("/movements");
       },
       collectDeposit() {
-        $router.push("/requests?new=collect_deposit");
+        $router.push("/requests#new_collect_deposit");
       },
       collectInterests() {
-        $router.push("/requests?new=collect_interests");
+        $router.push("/requests#new_collect_interests");
       },
       collectCommissions() {
-        $router.push("/requests?new=collect_commissions");
+        $router.push("/requests#new_collect_commissions");
       }
     };
 

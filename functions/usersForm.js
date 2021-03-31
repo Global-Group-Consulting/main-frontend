@@ -23,6 +23,8 @@ import usersDataSchema from '../config/forms/usersDataSchema.ts'
 import Permissions from './permissions'
 import AgentTeamType from "~/enums/AgentTeamType";
 
+import {kebabCase} from "lodash"
+
 export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $auth}, refs) {
   /**
    * @type {import('@vue/composition-api').Ref<Partial<import("../@types/UserFormData").UserDataSchema>>}
@@ -76,14 +78,40 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
   async function validateAll() {
     let result = true
 
-    for (const key of Object.keys(refs)) {
-      if (key.startsWith("dynamicForm_")) {
-        const valid = await refs[key][0].validate()
+    const formRefKeys = Object.keys(refs)
+    const errorsList = {}
 
-        if (!valid) {
+    // Recover all error messages from all forms
+    for (const key of formRefKeys) {
+      if (key.startsWith("dynamicForm_") && refs[key].length) {
+        const errors = await refs[key][0].validate(false, true)
+
+        if (Object.keys(errors).length > 0) {
           result = false
         }
+
+        Object.assign(errorsList, errors)
       }
+    }
+
+    // If there are errors, show them in an alert
+    if (Object.keys(errorsList).length > 0) {
+      // Format messages for displaying them in an alert
+      const formattedMessages = Object.entries(errorsList).reduce((acc, curr) => {
+        const key = curr[0];
+        const message = curr[1]
+
+        acc.push("<strong>" + $i18n.t(`forms.${kebabCase(key)}`) + "</strong>: <em>" + message + "</em>")
+
+        return acc
+      }, [])
+
+      $alerts.info({
+        title: "",
+        html: $i18n.t("alerts.invalid-form", {
+          fields: formattedMessages.join("<br>")
+        })
+      })
     }
 
     return result
@@ -156,6 +184,7 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
     userType,
     showReferenceAgent,
     onSaveClick,
-    permissions
+    permissions,
+    validateAll
   }
 }

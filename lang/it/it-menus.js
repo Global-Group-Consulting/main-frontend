@@ -20,5 +20,6 @@ export default {
   "last2Month": "Ultimi 2 mese",
   "last3Month": "Ultimi 3 mesi",
   "show-brite-account": "Visualizza Profilo",
-  "show-user-account": "Visualizza Anagrafica"
+  "show-user-account": "Visualizza Anagrafica",
+  "sign-contract": "Apponi firma finale"
 }

@@ -28,10 +28,7 @@
 <script lang="ts">
 
 import {Component, Vue} from "vue-property-decorator";
-import DynamicFieldset from "~/components/DynamicFieldset.vue";
 import briteAddSchema from "~/config/forms/briteAddSchema"
-import {CardBlockI} from "~/@types/components/CardBlock";
-import {Moment} from "moment";
 
 @Component({
   components: {}

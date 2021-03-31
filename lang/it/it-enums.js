@@ -50,6 +50,7 @@ export default {
     'risc_interessi': 'Riscossione rendite (classic)',
     'risc_interessi_brite': 'Riscossione rendite in Brite',
     'risc_capitale_gold': 'Prelievo deposito in Oro Fisico',
+    'commission_manual_add': 'Aggiunta provvigioni manuali ad agente',
   },
   'WalletTypes': {
     'deposit': 'Deposito',
@@ -77,6 +78,7 @@ export default {
     'conversation': "Conversazione",
     'notification': "Notifica",
     'bug_report': "Segnalazione problema",
+    'brite_use': "Utilizzo Brite",
   },
   "SignRequestEvents": {
     "convert_error": "Errore creazione documento",
@@ -99,6 +101,7 @@ export default {
     "newDeposit": "Provvigione versamento",
     "totalDeposit": "Provvigione deposito mensile",
     "annualDeposit": "Provvigione deposito annuale",
+    "manualAdd": "Aggiunta manuale",
     "commissionsReinvestment": "Reinvestimento provvigioni",
     "commissionsCollected": "Riscossione provvigioni",
     "cancelCommissionsCollected": "Annullamento riscossione provvigioni",
@@ -125,7 +128,7 @@ export default {
     "request_cancelled": "Richiesta annullata dall'utente",
     "request_cancelled_message": "{firstName} {lastName} ha annullato la sua richiesta.",
     "message_report": "Segnalazione Bug!!!",
-    "message_report_message": "{firstName} {lastName} ha segnalato un problema.",
+    "message_report_message": "{senderName} ha segnalato un problema.",
     "message_chat": "Nuovo messaggio in chat",
     "message_chat_message": "Hai un nuovo messaggio in una chat.",
     "message_communication": "Nuova comunicazione",
@@ -144,6 +147,7 @@ export default {
   'ClubMovementTypes': {
     "interest_recapitalized": "Ricapitalizzazione interessi",
     "deposit_added": "Aggiunta manuale",
+    "deposit_removed": "Rimozione manuale",
     "deposit_transferred": "Trasferimento tra utenti",
     "deposit_collected": "Utilizzo brite",
   },

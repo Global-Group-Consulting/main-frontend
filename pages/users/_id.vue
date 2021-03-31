@@ -77,6 +77,13 @@
         </template>
       </page-header>
 
+      <v-alert v-if="formData.contractStatus === 'declined'"
+               type="error">
+        {{
+          $t("alerts.sign-contract-declined", {date: $options.filters.dateHourFormatter(formData.contractDeclinedAt)})
+        }}
+      </v-alert>
+
       <!--      <dashboard-blocks :dashboard-data="dashboardData"
                               class="mb-6"
                               readonly
@@ -157,6 +164,19 @@
             {{ $t("pages.usersId.btn-movements-list") }}
           </tooltip-btn>
 
+          <!-- Create a new Sign Request document, by cancelling the previous one.
+          MNaybe i must save a reference of the create document and save it in the user data, for further use. -->
+          <tooltip-btn
+            :tooltip="$t('pages.usersId.btn-resend-contract-tooltip')"
+            icon-name="mdi-signature-freehand"
+            color="orange"
+            text
+            v-if="canResendContract"
+            @click="askResendContract"
+          >
+            {{ $t("pages.usersId.btn-resend-contract") }}
+          </tooltip-btn>
+
           <v-menu offset-y v-if="communicationsList.length > 0">
             <template v-slot:activator="{ on: on, attrs }">
               <v-btn color="primary" dark v-bind="attrs" v-on="on" small text>
@@ -186,6 +206,7 @@
           center-active
           show-arrows
           class="ml-3"
+
         >
           <v-tab
             v-for="(section, index) in formTabs"
@@ -199,7 +220,7 @@
 
         <v-card>
           <v-tabs-items v-model="currentTab">
-            <v-tab-item v-for="(tab, index) in formTabs" :key="index">
+            <v-tab-item v-for="(tab, index) in formTabs" :key="index" eager>
               <v-card elevation="0">
                 <v-card-text>
                   <dynamic-fieldset
@@ -435,6 +456,10 @@ export default {
       return [AccountStatuses.INCOMPLETE, AccountStatuses.MUST_REVALIDATE].includes(userForm.formData.value.account_status)
     })
 
+    const canResendContract = computed(() => {
+      return [AccountStatuses.VALIDATED].includes(userForm.formData.value.account_status)
+    })
+
     function getFormSchema(tab) {
       const schema = userForm.formSchemas[tab.schema];
 
@@ -534,6 +559,12 @@ export default {
 
     async function askConfirmDraftUser() {
       try {
+        const formValid = await userForm.validateAll();
+
+        if (!formValid) {
+          return
+        }
+
         await $alerts.askBeforeAction({
           key: "confirm-draft-user",
           preConfirm: async () => {
@@ -610,6 +641,22 @@ export default {
       }
     }
 
+    async function askResendContract() {
+      try {
+        await $alerts.askBeforeAction({
+          key: "resend-contract",
+          preConfirm: async () => {
+            const result = await $apiCalls.userResendContract(
+              userForm.formData.value.id
+            );
+          },
+          data: userForm.formData.value
+        });
+      } catch (er) {
+        $alerts.error(er);
+      }
+    }
+
     const pageTitle = computed(() => {
       if (userForm.userIsNew.value) {
         return $i18n.t(`pages.usersId.title-new-with-role`, {
@@ -663,11 +710,11 @@ export default {
           $route.params.id
         );
 
-        if (userId !== "new" && [$enums.UserRoles.AGENTE, $enums.UserRoles.CLIENTE].includes(+userForm.formData.value.role)) {
+        /*if (userId !== "new" && [$enums.UserRoles.AGENTE, $enums.UserRoles.CLIENTE].includes(+userForm.formData.value.role)) {
           const result = await $apiCalls.dashboardFetch(userForm.formData.value.id);
 
           $set(dashboardData, "blocks", result.blocks);
-        }
+        }*/
       } catch (er) {
         $alerts.error(er);
       }
@@ -688,6 +735,7 @@ export default {
       canSeeMovementsList,
       canConfirmDraftUser,
       canValidateUser,
+      canResendContract,
       dashboardData,
       showIncompleteDataInfo,
       permissions,
@@ -699,7 +747,8 @@ export default {
       askApproveUser,
       askConfirmDraftUser,
       askValidateUser,
-      askIncompleteUser
+      askIncompleteUser,
+      askResendContract
     };
   },
   computed: {},

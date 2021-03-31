@@ -74,8 +74,6 @@ export default {
 
     const communicationNewSchema = computed(CommunicationNewSchema);
 
-    console.log(this)
-
     function _formatUsersList(list) {
       let lastType = "";
 
