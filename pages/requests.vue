@@ -154,9 +154,9 @@ import {Moment} from "moment";
 import {computed} from "@vue/composition-api";
 import UserRoles from "~/enums/UserRoles";
 
-
 @Component({
   components: {
+    RequestDialogGold: RequestDialogGold as any,
     PageHeader,
   },
   meta: {
@@ -255,7 +255,7 @@ export default class Requests extends Vue {
   }
 
   get canRequestGold() {
-    return this.userType === "user" && this.$auth.user.gold
+    return this.userType === "user"
   }
 
   get canDeposit() {
