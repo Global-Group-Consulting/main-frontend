@@ -34,7 +34,7 @@
         :items="tableData"
         :items-per-page="25">
         <template v-slot:item.date="{item, value}">
-          {{ value +1 }}
+          {{ value + 1 }}
           <!--          {{ $moment(value).format("MMMM YYYY") }}-->
         </template>
         <template v-slot:item.depositAdded="{item, value}">
@@ -251,13 +251,17 @@ export default class Calculator extends Vue {
       columns: Object.keys(this.tableData[0]).reduce<any[]>((acc, curr: string) => {
         acc.push({
           name: this.$i18n.t("tables.calc-" + kebabCase(curr))
+
         })
         return acc
       }, []),
       rows: this.tableData.reduce<any[]>((acc, curr: QuotationEntry) => {
-        const data = Object.values(curr).map((val: number | Moment) => {
-          if (this.$moment.isMoment(val)) {
-            return val.format("MMMM YYYY")
+        const data = Object.entries(curr).map((entry: [string, number]) => {
+          const key = entry[0]
+          const val = entry[1]
+
+          if (key === "date") {
+            return val + 1
           }
 
           return val.toFixed(2)
