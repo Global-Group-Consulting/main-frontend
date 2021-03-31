@@ -174,7 +174,7 @@ export default {
         return;
       }
 
-      const toReturn = {
+      const toReturn = row.colsBreakpoints || {
         cols: "12",
         sm: "6",
         lg: "4"

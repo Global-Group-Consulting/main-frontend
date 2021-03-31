@@ -7,6 +7,7 @@ export interface FormSchema {
   disableEditMode?: boolean,
   class?: string,
   maxCols?: number,
+  colsBreakpoints?: Record<"cols" | "sm" | "md" | "lg", string>
   cols: {
     [key: string]: {
       component?: "v-select" | "date-picker" | "file-uploader"
