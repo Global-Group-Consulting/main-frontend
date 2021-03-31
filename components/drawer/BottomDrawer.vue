@@ -116,15 +116,16 @@ export default class BottomDrawer extends Vue {
   right: 0;
   display: flex;
   background-color: white;
-  height: calc(60px + env(safe-area-inset-bottom, 0));
-  min-height: 60px;
+  height: 60px;
+  height: calc(60px + var(--sab));
+  //min-height: 60px;
   z-index: 4;
   justify-content: center;
   align-items: center;
   box-shadow: 0 2px 4px -1px rgba(0, 0, 0, .2), 0 4px 5px 0 rgba(0, 0, 0, .14), 0 1px 10px 0 rgba(0, 0, 0, .12);
   border-top-left-radius: 14px;
   border-top-right-radius: 14px;
-  padding-bottom: env(safe-area-inset-bottom, 32px);
+  padding-bottom: var(--sab);
 
   .btn-wrapper {
     flex: 1;
