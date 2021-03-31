@@ -2,7 +2,7 @@
   <div>
     <portal to="dialog-pre-content">
       <div class="d-flex justify-center" style="margin-bottom: -100px">
-        <v-img src="global_club/bg_wide.jpg" max-width="600px"></v-img>
+        <v-img src="global_club/bg_wide.jpg" max-width="600px" eager transition="fade"></v-img>
       </div>
     </portal>
 

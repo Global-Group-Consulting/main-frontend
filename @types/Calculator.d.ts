@@ -2,13 +2,13 @@ import {Moment} from "moment";
 
 export interface Movement {
   id: number
-  date: Moment
+  date: number
   type: number
   amount: number
 }
 
 export interface QuotationEntry {
-  date: Moment
+  date: number
   depositAdded: number
   depositCurrent: number
   depositCollected: number

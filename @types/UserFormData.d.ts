@@ -39,6 +39,7 @@ export interface User {
   contractIban: string
   contractBic: string
   contractInitialPaymentMethod: string
+  contractInitialPaymentMethodOther: string,
   referenceAgent: string
   referenceAgentData: string
   accountCreatedAt: string

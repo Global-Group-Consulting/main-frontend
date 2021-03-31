@@ -15,7 +15,7 @@
           :key="entry.value"
           :entry="entry"
           v-if="entry.if ? entry.if.value : true"
-          @click="entry.action"
+          @click="entry.action($event)"
         >
           <v-list-item-title>{{
               $t("menus." + entry.value)
@@ -41,16 +41,26 @@ export default {
     const {$alerts, $apiCalls, $auth, $router, $enums} = root;
     const permissions = Permissions(root);
 
-    const onEditClick = function () {
+    const onEditClick = function (event) {
       const {id} = props.item;
+      const path = "/users/" + id
 
-      $router.push("/users/" + id);
+      if (event.ctrlKey) {
+        return window.open(path, "_blank")
+      }
+
+      $router.push(path);
     };
 
-    const onProfileClick = function () {
+    const onProfileClick = function (event) {
       const {id} = props.item;
+      const path = "/users/profile/" + id
 
-      $router.push("/users/profile/" + id);
+      if (event.ctrlKey) {
+        return window.open(path, "_blank")
+      }
+
+      $router.push(path);
     }
 
     const onDeleteClick = async () => {

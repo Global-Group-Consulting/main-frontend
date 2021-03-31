@@ -162,4 +162,6 @@ export default {
   "resend-contract-confirmBtnText": "Si, ricrea",
   "resend-contract-cancelBtnText": "Annulla",
   "resend-contract-success": "Contratto creato correttamente e richiesta di firma inviata!",
+
+  "invalid-form": "Prima di procedere è necessario correggere i seguenti campi: <br><br>{fields}"
 }

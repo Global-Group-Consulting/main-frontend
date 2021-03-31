@@ -1,12 +1,35 @@
 import {Formatters} from "./Formatters";
 import CurrencyType from "~/enums/CurrencyType";
 
+type ValidatorRules = "required" |
+  "requiredIf" |
+  "requiredUnless" |
+  "minLength" |
+  "maxLength" |
+  "minValue" |
+  "maxValue" |
+  "between" |
+  "alpha" |
+  "alphaNum" |
+  "numeric" |
+  "integer" |
+  "decimal" |
+  "email" |
+  "ipAddress" |
+  "macAddress" |
+  "sameAs" |
+  "url" |
+  "not" |
+  "or" |
+  "and" | "phoneNumber"
+
 export interface FormSchema {
   if?: boolean | Function,
   legend?: string,
   disableEditMode?: boolean,
   class?: string,
   maxCols?: number,
+  colsBreakpoints?: Record<"cols" | "sm" | "md" | "lg", string>
   cols: {
     [key: string]: {
       component?: "v-select" | "date-picker" | "file-uploader"
@@ -15,8 +38,11 @@ export interface FormSchema {
       label?: string,
       formatter?: Formatters | Function,
       if?: any,
-      items?: Function | any;
-      disabled?: boolean | Function;
+      items?: Function | any
+      disabled?: boolean | Function
+      hideDetails?: boolean
+      falseValue?: boolean
+      inputValue?: string | number | boolean
       type?: string
       files?: any[],
       clearable?: boolean,
@@ -28,11 +54,9 @@ export interface FormSchema {
       currency?: number,
       autoGrow?: boolean,
       rows?: number,
-      validations?: {
-        [key: string]: {
-          params?: any
-        }
-      }
+      validations?: Partial<Record<ValidatorRules, {
+        params?: any
+      }>>
     }
   }
 }

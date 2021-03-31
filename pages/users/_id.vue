@@ -559,6 +559,12 @@ export default {
 
     async function askConfirmDraftUser() {
       try {
+        const formValid = await userForm.validateAll();
+
+        if (!formValid) {
+          return
+        }
+
         await $alerts.askBeforeAction({
           key: "confirm-draft-user",
           preConfirm: async () => {
