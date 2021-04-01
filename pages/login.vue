@@ -6,12 +6,11 @@
         v-model="formData"
         fill-row
         ref="loginForm"
-        @status="saveStatus($event)"
+        @input="saveStatus($event)"
       />
 
       <div class="text-center mt-4">
         <v-btn
-          :disabled="!formValid"
           color="primary"
           type="submit"
           rounded
@@ -84,7 +83,7 @@ export default {
   },
   data() {
     return {
-      formValid: false,
+      formValid: true,
       recover: false
     };
   },
