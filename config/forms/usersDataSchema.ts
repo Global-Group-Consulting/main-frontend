@@ -365,7 +365,7 @@ export function contractData(formContext: FormContext) {
           validations: {
             required: {},
             minValue: {
-              params: 1
+              params: formContext.formData.role === UserRoles.AGENTE ? 0 : 1
             }
           }
         },
@@ -376,7 +376,7 @@ export function contractData(formContext: FormContext) {
           prefix: "gr.",
           validations: {
             minValue: {
-              params: 1
+              params: formContext.formData.role === UserRoles.AGENTE ? 0 : 1
             }
           }
         },
