@@ -91,7 +91,7 @@ export function basicData(formContext: FormContext): FormSchema[] {
           if: formContext.userBusinessItaly,
           validations: {
             requiredIf: {
-              params: () => formContext.userIsPersonaGiuridica || formContext.userBusinessItaly
+              params: () => formContext.userIsPersonaGiuridica && formContext.userBusinessItaly
             }
           }
         },
@@ -141,7 +141,10 @@ export function basicData(formContext: FormContext): FormSchema[] {
       cols: {
         'birthCountry': {
           component: 'v-select',
-          items: 'enums.countriesList'
+          items: 'enums.countriesList',
+          validations: {
+            required: {}
+          }
         },
         'birthProvince': {
           component: 'v-select',
@@ -172,7 +175,10 @@ export function basicData(formContext: FormContext): FormSchema[] {
       cols: {
         'legalRepresentativeCountry': {
           component: 'v-select',
-          items: 'enums.countriesList'
+          items: 'enums.countriesList',
+          validations: {
+            required: {}
+          }
         },
         'legalRepresentativeRegion': {
           component: 'v-select',
@@ -228,7 +234,7 @@ export function basicData(formContext: FormContext): FormSchema[] {
       legend: 'contacts',
       cols: {
         'email': {
-          disabled: !formContext.userIsNew,
+          disabled: !formContext.userIsNew && formContext.formData.account_status !== AccountStatuses.DRAFT,
           validations: {
             required: {},
             email: {}
@@ -359,7 +365,7 @@ export function contractData(formContext: FormContext) {
           validations: {
             required: {},
             minValue: {
-              params: 1
+              params: formContext.formData.role === UserRoles.AGENTE ? 0 : 1
             }
           }
         },
@@ -370,7 +376,7 @@ export function contractData(formContext: FormContext) {
           prefix: "gr.",
           validations: {
             minValue: {
-              params: 1
+              params: formContext.formData.role === UserRoles.AGENTE ? 0 : 1
             }
           }
         },
