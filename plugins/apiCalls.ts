@@ -338,6 +338,12 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
+  async getContractLogs(userId: string) {
+    return await this.get({
+      endPoint: `/api/users/${userId}/contractLogs`
+    })
+  }
+
 
   async aclReadPermissions() {
     return await this.get({endPoint: `/api/acl/permissions`})

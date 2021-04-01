@@ -1,6 +1,16 @@
 <template>
-  <v-card color="white" width="800px">
-    <v-card-title class="subtitle"> {{ $t("pages.usersId.info-sign-logs-title") }}</v-card-title>
+  <v-card color="white" width="800px" :loading="gLoading">
+    <v-card-title class="subtitle">
+      <div style="flex-grow:1">
+        {{ $t("pages.usersId.info-sign-logs-title") }}
+      </div>
+
+      <v-btn icon @click="refreshData"
+             :disabled="gLoading"
+             :loading="gLoading">
+        <v-icon>mdi-refresh</v-icon>
+      </v-btn>
+    </v-card-title>
     <v-card-text>
       <v-simple-table dense>
         <template v-slot:default>
@@ -32,10 +42,29 @@
 export default {
   name: "SigningLogsPopup",
   props: {
-    value: {
-      type: Array,
+    userId: {
+      type: String,
       required: true
     }
+  },
+  data() {
+    return {
+      value: [],
+    }
+  },
+  methods: {
+    async refreshData() {
+      try {
+        const logs = await this.$apiCalls.getContractLogs(this.userId)
+
+        this.value = logs
+      } catch (e) {
+        console.error(e)
+      }
+    }
+  },
+  async mounted() {
+    await this.refreshData()
   }
 }
 </script>

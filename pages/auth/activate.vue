@@ -5,6 +5,8 @@
         <dynamic-fieldset
           :schema="formSchema"
           v-model="formData"
+          immediateUpdate
+          ref="form"
           fill-row
           @status="onFormStatusChange"
         />
@@ -12,7 +14,6 @@
 
       <div class="text-center mt-4">
         <v-btn
-          :disabled="!formValid"
           color="primary"
           type="submit"
           rounded
@@ -42,7 +43,7 @@ export default {
   layout: "public",
   auth: "guest",
   components: {DynamicFieldset, DefaultPanel},
-  setup(props, {root}) {
+  setup(props, {root, refs: $refs}) {
     const {$alerts, $apiCalls, $route, $router, $auth} = root;
     const formValid = ref(false);
     const formData = ref({
@@ -52,7 +53,6 @@ export default {
     });
     const formSent = ref(false);
     const countdownTimer = ref(0);
-
     const formSchema = computed(activateSchema);
 
     const startCountdown = function (result) {
@@ -71,6 +71,10 @@ export default {
 
     const onFormSubmit = async function () {
       try {
+        if (!(await $refs["form"].validate())) {
+          return;
+        }
+
         const result = await $apiCalls.authActivate(formData.value);
 
         formSent.value = true;

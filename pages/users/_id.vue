@@ -63,7 +63,7 @@
             </v-menu>
 
             <!-- Contract status -->
-            <v-menu offset-y open-on-hover bottom
+            <v-menu offset-y bottom :close-on-content-click="false"
                     v-if="formData.account_status === $enums.AccountStatuses.VALIDATED">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn icon v-on="on" v-bind="attrs">
@@ -71,7 +71,7 @@
                 </v-btn>
               </template>
 
-              <signing-logs-popup :value="formData.signinLogs"></signing-logs-popup>
+              <signing-logs-popup :userId="formData.id"></signing-logs-popup>
             </v-menu>
           </div>
         </template>

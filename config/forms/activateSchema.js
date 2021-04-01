@@ -7,7 +7,7 @@ export default function (context) {
           checkPasswordStrength: true,
           validations: {
             required: {},
-            minLength: { params: 6 }
+            minLength: {params: 6}
           }
         },
       }
@@ -15,6 +15,7 @@ export default function (context) {
       cols: {
         'password_confirmation': {
           component: "passwordInput",
+          "data-lpignore": "true",
           validations: {
             required: {},
             sameAs: {

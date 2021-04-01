@@ -3,14 +3,14 @@
     <div>
       <slot name="label" v-if="previewOnly">
       </slot>
-      <v-menu offset-y open-on-hover bottom v-if="signinLogs.length > 0">
+      <v-menu offset-y bottom v-if="userId" :close-on-content-click="false">
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon v-on="on" v-bind="attrs" x-small color="info">
             <v-icon small>mdi-information-outline</v-icon>
           </v-btn>
         </template>
 
-        <signing-logs-popup :value="signinLogs"></signing-logs-popup>
+        <signing-logs-popup :user-id="userId"></signing-logs-popup>
       </v-menu>
     </div>
 
@@ -85,7 +85,8 @@ export default {
     signinLogs: {
       type: Array,
       default: () => ([])
-    }
+    },
+    userId: String
   },
   setup(props, {root}) {
     /**
