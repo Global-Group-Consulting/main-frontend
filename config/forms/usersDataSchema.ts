@@ -74,9 +74,7 @@ export function basicData(formContext: FormContext): FormSchema[] {
           component: 'v-select',
           items: 'enums.countriesList',
           validations: {
-            requiredIf: {
-              params: () => formContext.userIsPersonaGiuridica
-            }
+            required: {}
           }
         },
         'businessRegion': {
@@ -141,7 +139,10 @@ export function basicData(formContext: FormContext): FormSchema[] {
       cols: {
         'birthCountry': {
           component: 'v-select',
-          items: 'enums.countriesList'
+          items: 'enums.countriesList',
+          validations: {
+            required: {}
+          }
         },
         'birthProvince': {
           component: 'v-select',
