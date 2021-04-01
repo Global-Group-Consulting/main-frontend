@@ -34,7 +34,8 @@
         :items="tableData"
         :items-per-page="25">
         <template v-slot:item.date="{item, value}">
-          {{ value + 1 }}
+          <span style="white-space: nowrap">{{ value }}</span>
+
           <!--          {{ $moment(value).format("MMMM YYYY") }}-->
         </template>
         <template v-slot:item.depositAdded="{item, value}">
@@ -81,8 +82,8 @@
         <template v-slot:item.britePartial="{item, value, header}">
 
           <span :class="{
-            'yellow--text text--darken-3': ![5, 11].includes($moment(item.date).month()),
-            'font-weight-bold yellow darken-3 rounded px-1 py-1': [5, 11].includes($moment(item.date).month())}">
+            'yellow--text text--darken-3': (item.index % 6),
+            'font-weight-bold yellow darken-3 rounded px-1 py-1': !(item.index % 6)}">
             {{ value | moneyFormatter(true, true) }}
           </span>
         </template>
@@ -169,7 +170,8 @@ export default class Calculator extends Vue {
 
       const
         entry: QuotationEntry = {
-          date: i,
+          index: i + 1,
+          date: "Mese " + (i + 1),
           depositAdded: rowData.depositAdded || 0,
           depositCurrent: 0,
           depositCollected: rowData.depositCollected || 0,
@@ -261,7 +263,7 @@ export default class Calculator extends Vue {
           const val = entry[1]
 
           if (key === "date") {
-            return val + 1
+            return val
           }
 
           return val.toFixed(2)

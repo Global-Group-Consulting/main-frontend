@@ -8,7 +8,8 @@ export interface Movement {
 }
 
 export interface QuotationEntry {
-  date: number
+  date: string
+  index: number
   depositAdded: number
   depositCurrent: number
   depositCollected: number

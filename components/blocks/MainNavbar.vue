@@ -12,7 +12,7 @@
     <v-spacer></v-spacer>
 
     <div>
-      <v-tooltip bottom>
+      <v-tooltip bottom v-if="$auth.user.role !== $enums.UserRoles.CLIENTE">
         <template v-slot:activator="{on}">
           <v-btn v-on="on" color="orange lighten-3"
                  icon
