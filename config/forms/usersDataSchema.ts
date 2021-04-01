@@ -74,7 +74,9 @@ export function basicData(formContext: FormContext): FormSchema[] {
           component: 'v-select',
           items: 'enums.countriesList',
           validations: {
-            required: {}
+            requiredIf: {
+              params: () => formContext.userIsPersonaGiuridica
+            }
           }
         },
         'businessRegion': {
@@ -89,7 +91,7 @@ export function basicData(formContext: FormContext): FormSchema[] {
           if: formContext.userBusinessItaly,
           validations: {
             requiredIf: {
-              params: () => formContext.userIsPersonaGiuridica || formContext.userBusinessItaly
+              params: () => formContext.userIsPersonaGiuridica && formContext.userBusinessItaly
             }
           }
         },
@@ -173,7 +175,10 @@ export function basicData(formContext: FormContext): FormSchema[] {
       cols: {
         'legalRepresentativeCountry': {
           component: 'v-select',
-          items: 'enums.countriesList'
+          items: 'enums.countriesList',
+          validations: {
+            required: {}
+          }
         },
         'legalRepresentativeRegion': {
           component: 'v-select',
