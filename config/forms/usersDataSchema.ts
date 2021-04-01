@@ -337,7 +337,8 @@ export function contractData(formContext: FormContext) {
       cols: {
         'contractDoc': {
           component: "contract-doc",
-          signinLogs: formContext.formData.signinLogs,
+          userId: formContext.formData.id,
+          // signinLogs: formContext.formData.signinLogs,
           files: formContext.formData.contractFiles,
           previewOnly: true
         },

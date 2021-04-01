@@ -112,15 +112,14 @@
                 <div v-if="item.contractSignedAt">
                   <template v-if="!item.contractImported">
 
-
-                    <v-menu offset-y open-on-hover left>
+                    <v-menu offset-y left :close-on-content-click="false">
                       <template v-slot:activator="{ on, attrs }">
                         <a v-on="on" v-bind="attrs" class="text-decoration-underline-dotted">
                           {{ $t("tables.contract-signed") }}
                         </a>
                       </template>
 
-                      <signing-logs-popup :value="item.signinLogs || []"></signing-logs-popup>
+                      <signing-logs-popup :userId="item.id"></signing-logs-popup>
                     </v-menu>
                   </template>
 
