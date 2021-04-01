@@ -1,5 +1,5 @@
 export default {
-  'date': {text: 'tables.calc-num-month', value: 'date', align: "right", width: "1%", sortable: false},
+  'date': {text: 'tables.calc-num-month', value: 'date', align: "right", width: "6%", sortable: false},
   'depositAdded': {text: 'tables.calc-deposit-added', value: 'depositAdded', align: "right", sortable: false},
   'depositCurrent': {text: 'tables.calc-deposit-current', value: 'depositCurrent', align: "right", sortable: false},
   'depositCollected': {
