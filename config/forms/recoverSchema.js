@@ -15,6 +15,7 @@ export default function (context) {
       cols: {
         'password_confirmation': {
           component: "passwordInput",
+          "data-lpignore": "true",
           validations: {
             sameAs: {
               params: 'password',

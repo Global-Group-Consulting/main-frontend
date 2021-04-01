@@ -6,13 +6,13 @@
           :schema="formSchema"
           v-model="formData"
           fill-row
+          ref="form"
           @status="onFormStatusChange"
         />
       </v-form>
 
       <div class="text-center mt-4">
         <v-btn
-          :disabled="!formValid"
           color="primary"
           type="submit"
           rounded
@@ -47,9 +47,9 @@
     layout: "public",
     auth: "guest",
     components: { DynamicFieldset, DefaultPanel },
-    setup(props, { root }) {
+    setup(props, { root, refs: $refs}) {
       const { $alerts, $apiCalls } = root;
-      const formValid = ref(false);
+      const formValid = ref(true);
       const formData = ref({
         password: "",
       });
@@ -59,6 +59,10 @@
 
       const onFormSubmit = async function () {
         try {
+          if (!(await $refs["form"].validate())) {
+            return;
+          }
+
           await $apiCalls.authForgot(formData.value);
 
           formSent.value = true;

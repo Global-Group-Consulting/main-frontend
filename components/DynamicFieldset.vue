@@ -27,7 +27,8 @@
             :error-messages="errorMessages[key]"
             :class="{ 'edit-mode': editMode && !row.disableEditMode }"
             :edit-mode="editMode && !row.disableEditMode"
-            @change="update(key, $event)"
+            @change="onChange(key, $event)"
+            @input="onInput(key, $event)"
           >
             <template v-slot:label>
               <component :is="invalidFields.includes(key) ? 'strong' : 'span'"
@@ -136,11 +137,12 @@ export default {
       default: () => ([])
     },
     fillRow: Boolean,
-    editMode: Boolean
+    editMode: Boolean,
+    immediateUpdate: Boolean
   },
   setup(props, {root}) {
     const {$set} = root;
-    const form = reactive({});
+    const form = ref({});
     const checkedFields = ref([])
 
     watch(
@@ -153,7 +155,7 @@ export default {
 
         for (let {cols} of props.schema.value || props.schema) {
           for (let name in cols) {
-            $set(form, name, value[name]);
+            $set(form.value, name, value[name]);
           }
         }
       },
@@ -237,7 +239,7 @@ export default {
     update(key, value) {
       const mustValidate = !!this.$v.form[key];
 
-      console.log("UPDATING");
+      console.log("UPDATING", key);
 
       // stores the new value
       this.form[key] = value;
@@ -252,6 +254,16 @@ export default {
 
       // announce validation statu only if must be validated
       mustValidate && this.announceStatus();
+    },
+
+    onInput(key, value) {
+      if (this.immediateUpdate) {
+        this.update(key, value)
+      }
+    },
+
+    onChange(key, value) {
+      this.update(key, value)
     },
 
     onFieldChecked(key, value) {
