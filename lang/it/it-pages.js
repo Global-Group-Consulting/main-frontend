@@ -80,7 +80,7 @@ export default {
     'btn-approve': 'Attiva account',
     'btn-approve-tooltip': 'Attiva l\'account dell\'utente.',
     'btn-confirm-draft-user': 'Confermare account',
-    'btn-confirm-draft-user-tooltip': 'Conferma account e richiedi verifica al Servizio Clienti.',
+    'btn-confirm-draft-user-tooltip': 'Conferma account e invia il contratto da firmare.',
     'btn-confirm-draft-user-admin': 'Attiva account',
     'btn-confirm-draft-user-tooltip-admin': 'Attiva l\'account dell\'utente.',
     'btn-validate-user': "Convalida account",

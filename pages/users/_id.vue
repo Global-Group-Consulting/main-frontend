@@ -128,28 +128,28 @@
           </tooltip-btn>
 
           <!-- Set as VALIDATED a user that is in status CREATED -->
-          <tooltip-btn
-            :tooltip="$t('pages.usersId.btn-validate-user-tooltip')"
-            icon-name="mdi-account-check"
-            color="green"
-            text
-            v-if="canValidateUser"
-            @click="askValidateUser"
-          >
-            {{ $t("pages.usersId.btn-validate-user") }}
-          </tooltip-btn>
+          <!--          <tooltip-btn
+                      :tooltip="$t('pages.usersId.btn-validate-user-tooltip')"
+                      icon-name="mdi-account-check"
+                      color="green"
+                      text
+                      v-if="canValidateUser"
+                      @click="askValidateUser"
+                    >
+                      {{ $t("pages.usersId.btn-validate-user") }}
+                    </tooltip-btn>-->
 
           <!-- Set as INCOMPLETE a user that is in status CREATED -->
-          <tooltip-btn
-            :tooltip="$t('pages.usersId.btn-incomplete-user-tooltip')"
-            icon-name="mdi-account-alert"
-            color="red"
-            text
-            v-if="canValidateUser"
-            @click="askIncompleteUser"
-          >
-            {{ $t("pages.usersId.btn-incomplete-user") }}
-          </tooltip-btn>
+          <!--          <tooltip-btn
+                      :tooltip="$t('pages.usersId.btn-incomplete-user-tooltip')"
+                      icon-name="mdi-account-alert"
+                      color="red"
+                      text
+                      v-if="canValidateUser"
+                      @click="askIncompleteUser"
+                    >
+                      {{ $t("pages.usersId.btn-incomplete-user") }}
+                    </tooltip-btn>-->
 
         </template>
 
@@ -393,12 +393,13 @@ export default {
       () => $enums.UserRoles.get(userForm.userRole.value).color
     );
 
+    // Only for admin users
     const canApprove = computed(() => {
       const formData = userForm.formData.value;
 
       return (
         (formData.account_status === AccountStatuses.DRAFT &&
-          permissions.superAdmin)
+          [$enums.UserRoles.ADMIN, $enums.UserRoles.SERV_CLIENTI].includes(formData.role))
       );
     });
 
@@ -420,12 +421,18 @@ export default {
       );
     });
 
+    // Only for agents and clients
     const canConfirmDraftUser = computed(() => {
       const refAgent = userForm.formData.value.referenceAgent;
 
       return (
-        ($auth.user.id === refAgent) &&
-        userForm.formData.value.account_status === $enums.AccountStatuses.DRAFT
+        ($auth.user.id === refAgent
+          || (
+            [$enums.UserRoles.ADMIN, $enums.UserRoles.SERV_CLIENTI].includes($auth.user.role)
+            && [$enums.UserRoles.AGENTE, $enums.UserRoles.CLIENTE].includes(userForm.formData.value.role)
+          )
+          && userForm.formData.value.account_status === $enums.AccountStatuses.DRAFT
+        )
       );
     });
 
