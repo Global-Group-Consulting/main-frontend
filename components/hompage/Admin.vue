@@ -9,65 +9,65 @@
       </v-card-text>
     </v-card>
 
-    <v-card class="mb-5">
-      <v-card-title class="p-relative">
-        <v-icon>mdi-file-document-edit-outline</v-icon>
-        {{ this.$t("tables.pending-contract-signature") }}
+    <!-- <v-card class="mb-5">
+       <v-card-title class="p-relative">
+         <v-icon>mdi-file-document-edit-outline</v-icon>
+         {{ this.$t("tables.pending-contract-signature") }}
 
-        <div class="v-alert__border v-alert__border&#45;&#45;bottom blue"></div>
-      </v-card-title>
+         <div class="v-alert__border v-alert__border&#45;&#45;bottom blue"></div>
+       </v-card-title>
 
-      <v-card-text>
-        <!--        <data-table
-                  :items="dashboardData.pendingSignatures"
-                  table-key="pendingSignatures"
-                  schema="usersSchema"
-                >
-                  <template v-slot:item.signDocSent="{item}">
-                    {{ getSignDocSent(item).timestamp | dateHourFormatter }}
-                  </template>
-                  <template v-slot:item.signDocViewed="{item}">
-                    {{ getSignDocViewed(item).timestamp | dateHourFormatter }}
-                  </template>
-                  <template v-slot:item.signDocSigned="{item}">
-                    {{ getSignDocSigned(item).timestamp | dateHourFormatter }}
-                  </template>
-                  <template v-slot:item.signDocLogs="{item}">
-                    <v-menu offset-y open-on-hover bottom>
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-btn icon v-on="on" v-bind="attrs">
-                          <v-icon>mdi-information</v-icon>
-                        </v-btn>
-                      </template>
+       <v-card-text>
+                 <data-table
+                   :items="dashboardData.pendingSignatures"
+                   table-key="pendingSignatures"
+                   schema="usersSchema"
+                 >
+                   <template v-slot:item.signDocSent="{item}">
+                     {{ getSignDocSent(item).timestamp | dateHourFormatter }}
+                   </template>
+                   <template v-slot:item.signDocViewed="{item}">
+                     {{ getSignDocViewed(item).timestamp | dateHourFormatter }}
+                   </template>
+                   <template v-slot:item.signDocSigned="{item}">
+                     {{ getSignDocSigned(item).timestamp | dateHourFormatter }}
+                   </template>
+                   <template v-slot:item.signDocLogs="{item}">
+                     <v-menu offset-y open-on-hover bottom>
+                       <template v-slot:activator="{ on, attrs }">
+                         <v-btn icon v-on="on" v-bind="attrs">
+                           <v-icon>mdi-information</v-icon>
+                         </v-btn>
+                       </template>
 
-                      <signing-logs-popup :value="item.signinLogs"></signing-logs-popup>
-                    </v-menu>
-                  </template>
-                  <template v-slot:item.actions="{item}">
-                    <v-menu offset-y>
-                      <template v-slot:activator="{ on }">
-                        <v-btn color="primary" icon v-on="on">
-                          <v-icon>mdi-dots-vertical</v-icon>
-                        </v-btn>
-                      </template>
-                      <v-list>
-                        <v-list-item @click="onSignContractClick(item)">
-                          <v-list-item-title>
-                            {{ $t("menus.sign-contract") }}
-                          </v-list-item-title>
-                        </v-list-item>
+                       <signing-logs-popup :value="item.signinLogs"></signing-logs-popup>
+                     </v-menu>
+                   </template>
+                   <template v-slot:item.actions="{item}">
+                     <v-menu offset-y>
+                       <template v-slot:activator="{ on }">
+                         <v-btn color="primary" icon v-on="on">
+                           <v-icon>mdi-dots-vertical</v-icon>
+                         </v-btn>
+                       </template>
+                       <v-list>
+                         <v-list-item @click="onSignContractClick(item)">
+                           <v-list-item-title>
+                             {{ $t("menus.sign-contract") }}
+                           </v-list-item-title>
+                         </v-list-item>
 
-                        <v-list-item :to="'/users/' + item.id">
-                          <v-list-item-title>
-                            {{ $t("menus.show-user-account") }}
-                          </v-list-item-title>
-                        </v-list-item>
-                      </v-list>
-                    </v-menu>
-                  </template>
-                </data-table>-->
+                         <v-list-item :to="'/users/' + item.id">
+                           <v-list-item-title>
+                             {{ $t("menus.show-user-account") }}
+                           </v-list-item-title>
+                         </v-list-item>
+                       </v-list>
+                     </v-menu>
+                   </template>
+                 </data-table>
       </v-card-text>
-    </v-card>
+    </v-card>-->
 
     <v-card class="mb-5">
       <v-card-title class="p-relative">
