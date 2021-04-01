@@ -234,7 +234,7 @@ export function basicData(formContext: FormContext): FormSchema[] {
       legend: 'contacts',
       cols: {
         'email': {
-          disabled: !formContext.userIsNew,
+          disabled: !formContext.userIsNew && formContext.formData.account_status !== AccountStatuses.DRAFT,
           validations: {
             required: {},
             email: {}
