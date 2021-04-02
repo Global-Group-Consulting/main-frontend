@@ -340,12 +340,14 @@ export function contractData(formContext: FormContext) {
           userId: formContext.formData.id,
           // signinLogs: formContext.formData.signinLogs,
           files: formContext.formData.contractFiles,
+          contractImported: formContext.formData.contractImported,
           previewOnly: true
         },
         'contractDocSignLog': {
           component: "contract-doc",
           files: formContext.formData.contractFiles,
-          previewOnly: true
+          previewOnly: true,
+          if: !formContext.formData.contractImported
         }
       }
     },

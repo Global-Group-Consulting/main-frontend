@@ -1,7 +1,9 @@
 module.exports = `<h2 id="v180small01042020small">v 1.8.0 - <small>01/04/2020</small></h2>
-<h2 id="miglioramenti">Miglioramenti</h2>
+<h3 id="miglioramenti">Miglioramenti</h3>
 <ul>
 <li>Aggiornata logica di creazione ed attivazione account.</li>
+<li>Implementata logica log firma contratto.</li>
+<li>Rimosso riferimenti a date nei preventivi</li>
 </ul>
 <h3 id="aggiunte">Aggiunte</h3>
 <ul>

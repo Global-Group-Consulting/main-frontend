@@ -3,7 +3,9 @@
     <div>
       <slot name="label" v-if="previewOnly">
       </slot>
-      <v-menu offset-y bottom v-if="userId" :close-on-content-click="false">
+      <v-menu offset-y bottom
+              v-if="userId && !contractImported"
+              :close-on-content-click="false">
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon v-on="on" v-bind="attrs" x-small color="info">
             <v-icon small>mdi-information-outline</v-icon>
@@ -86,7 +88,8 @@ export default {
       type: Array,
       default: () => ([])
     },
-    userId: String
+    userId: String,
+    contractImported: Boolean
   },
   setup(props, {root}) {
     /**
