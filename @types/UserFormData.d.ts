@@ -49,6 +49,7 @@ export interface User {
   contractSignedAt: string
   signinLogs: SignRequestLog[]
   contractFiles: any[]
+  contractImported: boolean
   account_status: string
   files: any[]
   gold: boolean

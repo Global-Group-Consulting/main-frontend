@@ -87,14 +87,15 @@
 </template>
 
 <script>
-import { createNamespacedHelpers } from "vuex-composition-helpers";
-import { onBeforeMount, ref } from "@vue/composition-api";
+import {createNamespacedHelpers} from "vuex-composition-helpers";
+import {onBeforeMount, ref} from "@vue/composition-api";
 
 import MovementsListTable from "@/components/table/MovementsListTable.vue";
 import FileUploader from "@/components/forms/inputs/FileUploader";
 
 import MovementsFn from "@/functions/movementsFn.js";
 import UserRoles from "@/enums/UserRoles";
+import AccountStatuses from "../../enums/AccountStatuses";
 
 export default {
   components: {MovementsListTable, FileUploader},
@@ -118,7 +119,7 @@ export default {
     const canImportContract = [
       UserRoles.SERV_CLIENTI,
       UserRoles.ADMIN
-    ].includes(+$auth.user.role);
+    ].includes(+$auth.user.role) && user.account_status === AccountStatuses.DRAFT;
 
     async function onImportContractClick(file) {
       try {
