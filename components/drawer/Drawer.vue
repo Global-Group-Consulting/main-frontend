@@ -82,15 +82,15 @@
       </v-list>
 
       <v-list class="" dense>
-        <v-list-item @click="onVersionChangelogClick" dense>
+        <v-list-item @click="canSeeChangelog ? onVersionChangelogClick() : null" dense>
           <v-list-item-action>
             <small>
               v {{ $store.state.appVersion }}
             </small>
           </v-list-item-action>
 
-          <v-list-item-content>
-            <v-list-item-title>
+          <v-list-item-content >
+            <v-list-item-title  v-if="canSeeChangelog">
               Mostra dettagli
             </v-list-item-title>
           </v-list-item-content>
@@ -163,6 +163,9 @@ export default {
     },
     permanentDrawer() {
       return !!this.$vuetify.breakpoint.smAndUp
+    },
+    canSeeChangelog() {
+      return [this.$enums.UserRoles.ADMIN, this.$enums.UserRoles.SERV_CLIENTI].includes(this.$auth.user.role)
     }
   },
   methods: {
