@@ -1,8 +1,10 @@
 [comment]: <> (## Non ancora rilasciato)
 
 ## v 1.8.0 - <small>01/04/2020</small>
-## Miglioramenti
+### Miglioramenti
 - Aggiornata logica di creazione ed attivazione account.
+- Implementata logica log firma contratto.
+- Rimosso riferimenti a date nei preventivi
 
 ### Aggiunte
 - Pulsante rimozione manuale Brite
