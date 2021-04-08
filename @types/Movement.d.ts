@@ -9,6 +9,8 @@ export interface IMovement {
   // Tipologia di movimento (versamento, reinvestimento, ecc.)
   movementType: number,
 
+  commissionType: string,
+
   // Percentuale di interesse attualmente attiva.
   interestPercentage: number,
 

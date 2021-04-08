@@ -27,37 +27,11 @@
       </v-alert>
 
       <!-- Elenco Richieste -->
-      <!-- Elenco Movimenti -->
+      <commissions-list-table :user-id="this.$auth.user.id" v-if="showAgentBlocks"></commissions-list-table>
 
-      <!--      <data-table schema="clubBriteSchema"
-                        table-key="brite"
-                        :items="tableData">
-              <template v-slot:item.amountChange="{item, value}">
-                <span :class="getMovementColor(item)">
-                  B {{ value | moneyFormatter(true) }}</span>
-              </template>
-              <template v-slot:item.deposit="{item, value}">
-                <strong>B {{ value | moneyFormatter(true) }}</strong>
-              </template>
-              <template v-slot:item.depositOld="{item, value}">
-                B {{ value | moneyFormatter(true) }}
-              </template>
-              <template v-slot:item.movementType="{item, value}">
-                <v-chip :color="$enums.ClubMovementTypes.get(value).color" small>
-                  {{ $t(`enums.ClubMovementTypes.` + value) }}
-                </v-chip>
-              </template>
-              <template v-slot:item.notes="{item, value}">
-                <v-tooltip bottom v-if="value">
-                  <template v-slot:activator="{ on }">
-                    <v-btn icon v-on="on">
-                      <v-icon>mdi-note</v-icon>
-                    </v-btn>
-                  </template>
-                  {{ value }}
-                </v-tooltip>
-              </template>
-            </data-table>-->
+      <!-- Elenco Movimenti -->
+      <movements-list-table :movements="movementsFn" v-if="showUserBlocks"/>
+
     </v-flex>
   </v-layout>
 </template>
@@ -68,12 +42,17 @@ import PageHeader from "../../../components/blocks/PageHeader.vue";
 import DataTable from "../../../components/table/DataTable.vue";
 import DashboardBlocks from "~/components/DashboardBlocks.vue";
 import {User} from "~/@types/UserFormData";
+import MovementsListTable from "~/components/table/MovementsListTable.vue";
+
+import MovementsFn from "@/functions/movementsFn.js";
+import CommissionsListTable from "~/components/table/CommissionsListTable.vue";
 
 @Component({
-  components: {DashboardBlocks, DataTable, PageHeader}
+  components: {CommissionsListTable, MovementsListTable, DashboardBlocks, DataTable, PageHeader}
 })
 export default class Profile extends Vue {
   userData: User | any = {}
+  movementsFn = MovementsFn(this);
 
   userDashboardData: any = {
     blocks: {
@@ -108,6 +87,8 @@ export default class Profile extends Vue {
 
       if (this.showUserBlocks) {
         const resultDashboard = await this.$apiCalls.dashboardFetch(userId);
+
+        await this.movementsFn.fetchList(userId)
 
         this.userDashboardData.blocks = resultDashboard.blocks
       }
