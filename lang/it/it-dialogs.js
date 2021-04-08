@@ -129,4 +129,8 @@ export default {
     "btn-send": "Aggiungi",
     "btn-cancel": "Annulla"
   },
+  contractTermsCondition: {
+    title: "Termini e condizioni",
+    "btn-cancel": "Chiudi"
+  }
 }
