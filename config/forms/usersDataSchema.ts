@@ -163,7 +163,7 @@ export function basicData(formContext: FormContext): FormSchema[] {
         },
         'birthDate': {
           'component': 'date-picker',
-          max: moment().subtract(18, 'years').format('YYYY-MM-DD'),
+          max: moment().subtract(14, 'years').format('YYYY-MM-DD'),
           validations: {
             required: {}
           }
