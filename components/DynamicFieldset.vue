@@ -90,6 +90,7 @@ import MoneyInput from "@/components/forms/inputs/MoneyInput";
 import FileUploader from "@/components/forms/inputs/FileUploader";
 import ReceiversCombobox from "@/components/forms/inputs/ReceiversCombobox";
 import ContractDoc from "@/components/forms/inputs/ContractDoc";
+import ContractTermsCondition from "@/components/forms/inputs/ContractTermsCondition";
 import AgentCommissionsSelect from "@/components/forms/inputs/AgentCommissionsSelect";
 import PasswordInput from "@/components/forms/inputs/PasswordInput";
 import PhoneInput from "@/components/forms/inputs/PhoneInput";
@@ -113,6 +114,7 @@ export default {
     FileUploader,
     ReceiversCombobox,
     ContractDoc,
+    ContractTermsCondition,
     AgentCommissionsSelect,
     PasswordInput,
     PhoneInput

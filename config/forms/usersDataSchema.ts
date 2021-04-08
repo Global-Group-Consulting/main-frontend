@@ -348,6 +348,11 @@ export function contractData(formContext: FormContext) {
           files: formContext.formData.contractFiles,
           previewOnly: true,
           if: !formContext.formData.contractImported
+        },
+        'contractTermsCondition': {
+          component: "contract-terms-condition",
+          previewOnly: true,
+          contractPercentage: formContext.formData.contractPercentage?.toString()
         }
       }
     },

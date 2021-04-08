@@ -29,6 +29,8 @@ export default {
   'contract-investment-attachment': 'Contabile versamento iniziale',
   'contract-doc': "Contratto firmato",
   'contract-doc-sign-log': "Autenticazione firma contratto",
+  'contract-terms-condition': "Termini e Condizioni",
+  'contract-terms-condition-open': "Visualizza termini e condizioni",
   'currency-type': 'Valuta di scambio',
   'doc-expiration': 'Data scadenza documento',
   'doc-number': 'Numero documento',
