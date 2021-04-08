@@ -50,7 +50,7 @@
       <v-tooltip v-if="item.initialMovement" bottom>
         <template v-slot:activator="{ on }">
           <v-btn icon v-on="on">
-            <v-icon color="blue">mdi-flare</v-icon>
+            <v-icon color="blue">mdi-new-box</v-icon>
           </v-btn>
         </template>
         {{ item.notes }}

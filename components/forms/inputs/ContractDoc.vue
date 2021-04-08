@@ -16,7 +16,7 @@
       </v-menu>
     </div>
 
-    <v-list dense class="">
+    <v-list dense class="pt-0">
       <template v-for="(file, index) in filesList">
         <v-divider :key="index" v-if="index > 0"></v-divider>
 
@@ -50,7 +50,7 @@
           </v-btn>
         </v-list-item>
       </template>
-      <v-list-item v-if="filesList.length === 0 && previewOnly" class="px-0">
+      <v-list-item v-if="filesList.length === 0 && previewOnly">
         <span class="text-truncate text-no-wrap font-italic grey--text">
             {{ $t("pages.usersId.no-contract-available") }}
           </span>

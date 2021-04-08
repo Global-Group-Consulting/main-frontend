@@ -60,8 +60,9 @@ html, body, #__nuxt, #__layout, .v-application, .v-application--wrap, body.swal2
   &.v-tabs-items, &.v-tabs > .v-tabs-bar {
     background-color: transparent !important;
   }
-
 }
+
+
 
 
 @media #{map-get($display-breakpoints, 'sm-and-down')}{
