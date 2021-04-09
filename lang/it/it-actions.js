@@ -15,4 +15,12 @@ export default {
   "users-add-admin": "Nuovo Amministrazione",
   "add-role": "Aggiungi Ruolo",
   "add-permission": "Aggiungi Permesso",
+  "user-data": "Apri anagrafica",
+  "user-profile": "Apri profilo",
+  "user-profile-tooltip": "mostra la pagina del profilo dell'utente",
+  "user-data-tooltip": "Mostra la pagina dell'anagrafica dell'utente",
+  "import-contract": "Importa Contratto",
+  "import-contract-tooltip": "",
+  "import-movements": "Importa Movimenti",
+  "import-movements-tooltip": "",
 }
