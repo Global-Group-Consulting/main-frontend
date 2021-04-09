@@ -66,6 +66,17 @@ const defaults = {
         "createdAt",
       ]
     },
+    commissions: {
+      columns: [
+        "amountChange",
+        "commissionType",
+        "commissionPercentage",
+        "user",
+        "createdAt",
+        "currMonthCommissions"
+      ]
+    },
+
     conversations: {
       columns: [
         "subject",

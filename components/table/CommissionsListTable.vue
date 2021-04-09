@@ -3,6 +3,7 @@
     :items="commissions"
     table-key="commissions"
     schema="commissionsSchema"
+    :loading="loading"
     :items-per-page="25"
     :item-class="getItemClass"
     :options="{
@@ -41,16 +42,20 @@
 </template>
 
 <script lang="ts">
-import {Component, Vue} from "vue-property-decorator";
+import {Component, Vue, Prop} from "vue-property-decorator";
 import DataTable from "./DataTable.vue";
 import CommissionType from "@/enums/CommissionType";
 import {IMovement} from "~/@types/Movement";
+import {Commission} from "~/@types/Commission";
 
 @Component({
   components: {DataTable}
 })
 export default class CommissionsListTable extends Vue {
-  commissions = []
+  @Prop({type: String, required: true})
+  userId!: string
+  commissions: Commission[] = []
+  loading = false
 
   formatAmountChange(item: IMovement) {
     const sign = [
@@ -85,16 +90,20 @@ export default class CommissionsListTable extends Vue {
     }
   }
 
-  async beforeMount() {
+  public async updateData() {
+    this.loading = true;
+
     try {
-      const result = await this.$apiCalls.fetchCommissionsStatus();
-
-      debugger
-
-      this.commissions = result.list
+      this.commissions = await this.$apiCalls.fetchCommissionsList(this.userId);
     } catch (er) {
       console.error(er)
     }
+
+    this.loading = false
+  }
+
+  async mounted() {
+    await this.updateData()
   }
 }
 </script>
