@@ -24,7 +24,8 @@ export interface IMovement {
   // Motivo dello storno. al momento non serve, ma potrebbe
   cancelReason: string,
 
-  created_at: Date
+  created_at: Date,
+  id: string
 }
 
 export interface Movement {
