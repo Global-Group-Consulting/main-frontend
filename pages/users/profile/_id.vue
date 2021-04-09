@@ -20,15 +20,18 @@
                         v-if="showAgentBlocks"
       ></dashboard-blocks>
 
-      <!-- Dashboard agente se agente -->
+      <div class="mt-10"></div>
 
+      <page-toolbar :actions-list="actionsList"></page-toolbar>
+
+      <!-- Dashboard agente se agente -->
 
       <dynamic-tabs :tabs-list="tabsList">
         <template v-for="tab of tabsList"
                   v-slot:[`tabContent_${tab.id}`]="{item}">
           <component :is="tab.id + '-list-table'"
                      :user-id="userId"
-            />
+          />
         </template>
       </dynamic-tabs>
 
@@ -48,9 +51,14 @@ import MovementsFn from "@/functions/movementsFn.js";
 import CommissionsListTable from "~/components/table/CommissionsListTable.vue";
 import DynamicTabs from "~/components/DynamicTabs.vue";
 import {DynamicTab} from "~/@types/components/DynamicTab";
+import PageToolbar from "~/components/blocks/PageToolbar.vue";
+import {ActionItem} from "~/@types/ActionItem";
 
 @Component({
-  components: {DynamicTabs, CommissionsListTable, MovementsListTable, DashboardBlocks, DataTable, PageHeader}
+  components: {
+    PageToolbar,
+    DynamicTabs, CommissionsListTable, MovementsListTable, DashboardBlocks, DataTable, PageHeader
+  }
 })
 export default class Profile extends Vue {
   userData: User | any = {}
@@ -71,6 +79,28 @@ export default class Profile extends Vue {
       collectedCommissions: 0,
       clientsTotalDeposit: 0,
     }
+  }
+
+  get actionsList(): ActionItem[] {
+    return [
+      {
+        text: "user-data",
+        tooltip: "user-data-tooltip",
+        position: "center",
+        icon: "mdi-account-box",
+        click: this.goToUserData
+      }, /*{
+        text: "import-contract",
+        tooltip: "import-contract-tooltip",
+        position: "right",
+        icon: "mdi-file-document-edit"
+      }, {
+        text: "import-movements",
+        tooltip: "import-movements-tooltip",
+        position: "right",
+        icon: "mdi-playlist-plus",
+      }*/
+    ]
   }
 
   get userId() {
@@ -99,6 +129,17 @@ export default class Profile extends Vue {
         title: "Provvigioni",
       }
     ]
+  }
+
+  goToUserData(event: MouseEvent, action: ActionItem) {
+    let openInNewTab = event.ctrlKey
+    const path = "/users/" + this.$route.params.id
+
+    if (openInNewTab) {
+      return window.open(path, "_blank")
+    }
+
+    this.$router.push(path)
   }
 
   async beforeMount() {
