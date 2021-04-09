@@ -8,6 +8,7 @@
     :footer-props="{
       itemsPerPageOptions
     }"
+    :loading="loading"
     :hide-default-footer="items.length <= itemsPerPage"
     :no-data-text="$t(noDataText)"
     :dense="dense"
@@ -95,6 +96,7 @@ export default {
       }
     },
     itemClass: String | Function,
+    loading: Boolean,
     noDataText: {
       type: String,
       default: "tables.no-data"
