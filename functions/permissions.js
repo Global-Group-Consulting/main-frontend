@@ -1,7 +1,7 @@
-import { computed, reactive } from "@vue/composition-api"
+import {computed, reactive} from "@vue/composition-api"
 import UserRoles from "../enums/UserRoles"
 
-export default function ({ $auth }) {
+export default function ({$auth}) {
   const userGold = computed(() => $auth.user.gold)
 
   /**
@@ -35,7 +35,7 @@ export default function ({ $auth }) {
     addRequestGold: computed(() => userType.value === "user" && userGold.value),
     changeRole: computed(() => !!superAdmin.value),
     changeState: computed(() => !!superAdmin.value),
-    changeAgenteRif: computed(() => !!superAdmin.value),
+    changeAgenteRif: computed(() => userType.value === "admin"),
     deleteUser: computed(() => !!superAdmin.value),
     seeSuperAdmins: computed(() => !!superAdmin.value),
     seeAllUsers,

@@ -467,7 +467,7 @@ export function extraData(formContext: FormContext) {
   const loggedUser = formContext.$auth.user
   const canChangeAgenteRif = computed(() => {
     return (formContext.userIsNew && userRole !== UserRoles.AGENTE)
-      || (loggedUser.hasSubAgents && formContext.formData.id !== loggedUser.id)
+      || (loggedUser.hasSubAgents && formContext.formData.id !== loggedUser.id && formContext.formData.account_status === AccountStatuses.DRAFT)
       || changeAgenteRif
   })
 
