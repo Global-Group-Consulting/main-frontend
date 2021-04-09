@@ -177,6 +177,16 @@
             {{ $t("pages.usersId.btn-resend-contract") }}
           </tooltip-btn>
 
+          <tooltip-btn
+            :tooltip="$t('actions.user-profile-tooltip')"
+            icon-name="mdi-card-account-details"
+            text
+            v-if="hasProfile"
+            @click="goToUserProfile($event)"
+          >
+            {{ $t("actions.user-profile") }}
+          </tooltip-btn>
+
           <v-menu offset-y v-if="communicationsList.length > 0">
             <template v-slot:activator="{ on: on, attrs }">
               <v-btn color="primary" dark v-bind="attrs" v-on="on" small text>
@@ -332,7 +342,7 @@ import UserRoles from "@/enums/UserRoles.js";
 import userDetails from "@/functions/userDetails";
 import pageBasic from "@/functions/pageBasic";
 import usersForm from "../../functions/usersForm";
-import Permissions from "@/functions/permissions";
+import Permissions from "../../functions/permissions";
 import SigningLogsPopup from "@/components/elements/SigningLogsPopup";
 import PageToolbar from "@/components/blocks/PageToolbar";
 import {UsersPermissions} from "../../functions/acl/enums/users.permissions";
@@ -363,7 +373,8 @@ export default {
       $i18n,
       $enums,
       $store,
-      $set
+      $set,
+      $router
     } = root;
     const currentTab = ref(0);
     const checkedFields = ref([])
@@ -687,6 +698,22 @@ export default {
       });
     });
 
+
+    const hasProfile = computed(() => {
+        return userForm.userType.value === "user"
+      }
+    )
+
+    function goToUserProfile(event) {
+      const path = "/users/profile/" + userForm.formData.value.id
+
+      if (event.ctrlKey) {
+        return window.open(path, "_blank")
+      }
+
+      $router.push(path)
+    }
+
     // fetches user details
     onBeforeMount(async () => {
       const userId = $route.params.id;
@@ -755,7 +782,9 @@ export default {
       askConfirmDraftUser,
       askValidateUser,
       askIncompleteUser,
-      askResendContract
+      askResendContract,
+      hasProfile,
+      goToUserProfile
     };
   },
   computed: {},
