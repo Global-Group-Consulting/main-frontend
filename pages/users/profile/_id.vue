@@ -22,15 +22,15 @@
 
       <!-- Dashboard agente se agente -->
 
-      <v-alert>
-        <h4 class="text-center">Dati presto disponibili...</h4>
-      </v-alert>
 
-      <!-- Elenco Richieste -->
-      <commissions-list-table :user-id="this.$auth.user.id" v-if="showAgentBlocks"></commissions-list-table>
-
-      <!-- Elenco Movimenti -->
-      <movements-list-table :movements="movementsFn" v-if="showUserBlocks"/>
+      <dynamic-tabs :tabs-list="tabsList">
+        <template v-for="tab of tabsList"
+                  v-slot:[`tabContent_${tab.id}`]="{item}">
+          <component :is="tab.id + '-list-table'"
+                     :user-id="userId"
+            />
+        </template>
+      </dynamic-tabs>
 
     </v-flex>
   </v-layout>
@@ -46,9 +46,11 @@ import MovementsListTable from "~/components/table/MovementsListTable.vue";
 
 import MovementsFn from "@/functions/movementsFn.js";
 import CommissionsListTable from "~/components/table/CommissionsListTable.vue";
+import DynamicTabs from "~/components/DynamicTabs.vue";
+import {DynamicTab} from "~/@types/components/DynamicTab";
 
 @Component({
-  components: {CommissionsListTable, MovementsListTable, DashboardBlocks, DataTable, PageHeader}
+  components: {DynamicTabs, CommissionsListTable, MovementsListTable, DashboardBlocks, DataTable, PageHeader}
 })
 export default class Profile extends Vue {
   userData: User | any = {}
@@ -71,6 +73,10 @@ export default class Profile extends Vue {
     }
   }
 
+  get userId() {
+    return this.$route.params.id;
+  }
+
   get showUserBlocks() {
     return [this.$enums.UserRoles.AGENTE, this.$enums.UserRoles.CLIENTE].includes(+this.userData.role)
   }
@@ -79,22 +85,34 @@ export default class Profile extends Vue {
     return [this.$enums.UserRoles.AGENTE].includes(+this.userData.role)
   }
 
-  async beforeMount() {
-    const userId = this.$route.params.id;
+  get tabsList(): DynamicTab[] {
+    return [
+      {
+        id: "users",
+        title: "Utenti",
+      },
+      {
+        id: "movements",
+        title: "Movimenti",
+      }, {
+        id: "commissions",
+        title: "Provvigioni",
+      }
+    ]
+  }
 
+  async beforeMount() {
     try {
-      this.userData = await this.$apiCalls.fetchUserDetails(userId);
+      this.userData = await this.$apiCalls.fetchUserDetails(this.userId);
 
       if (this.showUserBlocks) {
-        const resultDashboard = await this.$apiCalls.dashboardFetch(userId);
-
-        await this.movementsFn.fetchList(userId)
+        const resultDashboard = await this.$apiCalls.dashboardFetch(this.userId);
 
         this.userDashboardData.blocks = resultDashboard.blocks
       }
 
       if (this.showAgentBlocks) {
-        const resultCommissions = await this.$apiCalls.fetchCommissionsStatus({userId});
+        const resultCommissions = await this.$apiCalls.fetchCommissionsStatus({userId: this.userId});
 
         this.agentDashboardData.blocks = resultCommissions.blocks
       }
