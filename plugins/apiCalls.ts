@@ -142,7 +142,7 @@ export class ApiCalls extends BasicApiCall {
 
   async fetchMovementsList(_id: string) {
     return (await this.get({
-      endPoint: `/api/movements` + (_id ? `/${_id}` : '')
+      endPoint: `/api/movements/list` + (_id ? `/${_id}` : '')
     }))
   }
 
@@ -288,6 +288,12 @@ export class ApiCalls extends BasicApiCall {
   async fetchCommissionsStatus(data?: any) {
     return await this.get({
       endPoint: "/api/commissions/status" + (data && data.userId ? `/${data.userId}` : ''),
+    })
+  }
+
+  async fetchCommissionsList(userId?: string) {
+    return await this.get({
+      endPoint: "/api/commissions/list" + (userId ? `/${userId}` : ''),
     })
   }
 

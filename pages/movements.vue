@@ -7,12 +7,7 @@
       <v-row>
         <v-col cols="12">
           <v-card>
-            <movements-list-table
-              :movements="movements"
-
-            >
-
-            </movements-list-table>
+            <movements-list-table :user-id="$auth.user.id"/>
           </v-card>
         </v-col>
       </v-row>
@@ -27,11 +22,10 @@ import {ref, onBeforeMount} from "@vue/composition-api";
 
 import DataTable from "../components/table/DataTable";
 import MovementTypes from "../enums/MovementTypes";
-import MovementsFn from "@/functions/movementsFn.js";
 
 import pageBasicFn from "../functions/pageBasic";
 import PageHeader from "@/components/blocks/PageHeader";
-import MovementsListTable from "@/components/table/MovementsListTable";
+import MovementsListTable from "../components/table/MovementsListTable";
 import {MovementsPermissions} from "../functions/acl/enums/movements.permissions";
 
 export default {
@@ -45,13 +39,9 @@ export default {
   },
   setup(props, {root}) {
     const {$apiCalls, $set, $options, $i18n} = root;
-    const movementsFn = MovementsFn(root);
-
-    onBeforeMount(movementsFn.fetchList);
 
     return {
       ...pageBasicFn(root, "movements"),
-      movements: movementsFn
     };
   }
 };

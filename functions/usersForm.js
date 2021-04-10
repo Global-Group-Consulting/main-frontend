@@ -165,6 +165,8 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
       }
 
       $alerts.toastSuccess("user-update-success")
+
+      return true
     } catch (error) {
       $alerts.error(error)
     }

@@ -113,13 +113,13 @@ export default function (root) {
 
 
   onBeforeMount(async () => {
-    const result = await fetchAllUsers()
+    /*const result = await fetchAllUsers()
 
     $set(usersList, "value", result)
 
     for (const entry of result) {
       $set(usersGroups, entry.id, entry.data)
-    }
+    }*/
   })
 
 

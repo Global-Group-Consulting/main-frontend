@@ -26,6 +26,7 @@ const defaults = {
         'email',
         'role',
         'clientsNumber',
+        'referenceAgent',
         'actions'
       ]
     },
@@ -66,6 +67,17 @@ const defaults = {
         "createdAt",
       ]
     },
+    commissions: {
+      columns: [
+        "amountChange",
+        "commissionType",
+        "commissionPercentage",
+        "user",
+        "createdAt",
+        "currMonthCommissions"
+      ]
+    },
+
     conversations: {
       columns: [
         "subject",
@@ -177,9 +189,10 @@ const admin = {
         'email',
         ['referenceAgent', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         ['commissionsAssigned', [UserRoles.AGENTE]],
+        ['clientsNumber', [UserRoles.AGENTE]],
         ['contractStatus', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         'accountStatus',
-        'actions'
+        'actions',
       ]
     },
     requests: {
@@ -257,6 +270,7 @@ const servClienti = {
         'email',
         ['referenceAgent', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         ['commissionsAssigned', [UserRoles.AGENTE]],
+        ['clientsNumber', [UserRoles.AGENTE]],
         ['contractStatus', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         'accountStatus',
         'actions'
@@ -371,10 +385,11 @@ const agente = {
         'firstName',
         'lastName',
         'email',
-        'accountStatus',
-        ['referenceAgent', [UserRoles.AGENTE]],
+        ['referenceAgent', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         ['clientsNumber', [UserRoles.AGENTE]],
         ['commissionsAssigned', [UserRoles.AGENTE]],
+        ['contractStatus', [UserRoles.AGENTE, UserRoles.CLIENTE]],
+        'accountStatus',
         'actions'
       ]
     },
