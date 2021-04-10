@@ -28,270 +28,274 @@
         </template>
       </page-toolbar>
 
-      <v-tabs v-model="currentTab">
-        <transition-group name="fadeRight" tag="div" class="d-flex">
-          <v-tab v-for="group of usersList" :key="group.id">
-            {{ $t(`enums.UserRoles.${$enums.UserRoles.getIdName(group.id)}_plural`) }}
-          </v-tab>
+      <users-list-table :user-id="$auth.user.id" :filters-active="filtersActive"
+                        @filtersClean="filtersClean">
 
-          <v-tab :key="99" v-if="filtersActive.length">
-            <v-icon class="mr-2">mdi-magnify</v-icon>
+      </users-list-table>
+      <!--      <v-tabs v-model="currentTab">
+              <transition-group name="fadeRight" tag="div" class="d-flex">
+                <v-tab v-for="group of usersList" :key="group.id">
+                  {{ $t(`enums.UserRoles.${$enums.UserRoles.getIdName(group.id)}_plural`) }}
+                </v-tab>
 
-            Risultati ricerca
+                <v-tab :key="99" v-if="filtersActive.length">
+                  <v-icon class="mr-2">mdi-magnify</v-icon>
 
-            <v-btn icon small @click="filtersClean" class="ml-2">
-              <v-icon small>
-                mdi-close
-              </v-icon>
-            </v-btn>
-          </v-tab>
-        </transition-group>
-      </v-tabs>
+                  Risultati ricerca
 
-      <v-card class="overflow-hidden">
-        <v-tabs-items v-model="currentTab" touchless>
-          <v-tab-item v-for="group of usersList" :key="+group.id">
-            <data-table
-              :condition="+group.id"
-              :items="group.data"
-              table-key="users"
-              schema="usersSchema"
-              light
-            >
-              <template v-slot:item.superAdmin="{ item }">
-                <v-tooltip right v-if="item.superAdmin">
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-icon v-on="on" v-bind="attrs" class="d-inline-block"
-                    >mdi-diamond-stone
-                    </v-icon
-                    >
-                  </template>
+                  <v-btn icon small @click="filtersClean" class="ml-2">
+                    <v-icon small>
+                      mdi-close
+                    </v-icon>
+                  </v-btn>
+                </v-tab>
+              </transition-group>
+            </v-tabs>
 
-                  <span>Super Admin</span>
-                </v-tooltip>
-              </template>
-
-              <template v-slot:item.referenceAgent="{item}">
-                <v-btn text
-                       v-if="item.referenceAgentData && item.referenceAgent !== $auth.user.id"
-                       small
-                       target="_blank"
-                       class="text-capitalize"
-                       color="primary"
-                       :href="'users/' + item.referenceAgent">
-                  <v-icon small class="mr-2">mdi-open-in-new</v-icon>
-                  {{ item.referenceAgentData.firstName }} {{ item.referenceAgentData.lastName }}
-                </v-btn>
-                <div v-else-if="item.referenceAgentData">
-                  <v-btn text disabled small>Tu</v-btn>
-                </div>
-              </template>
-
-              <template v-slot:item.account_status="{ item }">
-                <v-chip
-                  small
-                  :color="$enums.AccountStatuses.get(item.account_status).color"
-                >
-                  {{
-                    $t(
-                      "enums.AccountStatuses." +
-                      $enums.AccountStatuses.getIdName(item.account_status)
-                    )
-                  }}
-                </v-chip>
-              </template>
-
-              <template v-slot:item.actions="{ item }">
-                <users-crud-actions
-                  :item="item"
-                  @userDeleted="onUserDeleted(item, group)"
-                />
-              </template>
-
-              <template v-slot:item.contractSignedAt="{item}">
-                <div v-if="item.contractSignedAt">
-                  <template v-if="!item.contractImported">
-
-                    <v-menu offset-y left :close-on-content-click="false">
-                      <template v-slot:activator="{ on, attrs }">
-                        <a v-on="on" v-bind="attrs" class="text-decoration-underline-dotted">
-                          {{ $t("tables.contract-signed") }}
-                        </a>
-                      </template>
-
-                      <signing-logs-popup :userId="item.id"></signing-logs-popup>
-                    </v-menu>
-                  </template>
-
-                  <template v-else>
-                    <v-tooltip bottom>
-                      <template v-slot:activator="{on}">
-                        <a v-on="on" class="text-decoration-underline-dotted">
-                          {{ $t("tables.contract-imported") }}
-                        </a>
-                      </template>
-                      <span>{{
-                          $t("tables.contract-imported-at", {date: $options.filters.dateHourFormatter(item.contractSignedAt)})
-                        }}</span>
-                    </v-tooltip>
-                  </template>
-                </div>
-
-                <div v-else class="red--text">
-                  {{ $t("tables.contract-not-signed") }}
-                </div>
-              </template>
-
-              <template v-slot:item.commissionsAssigned="{item, value}">
-                <div class="mx-n1">
-                  <v-tooltip bottom v-for="(comm, i) of value" :key="i">
-                    <template v-slot:activator="{ on }">
-                      <v-chip x-small
-                              class="mx-1"
-                              v-on="on">
-                        {{ getInitials($t("enums.CommissionType." + comm.name), comm) }}
-                        <!--                        <template v-if="comm.percent">
-                                                  &nbsp;{{ comm.percent }} %
-                                                </template>-->
-                      </v-chip>
-                    </template>
-                    {{ $t("enums.CommissionType." + comm.name) }}
-                  </v-tooltip>
-
-                </div>
-              </template>
-
-              <template v-slot:item.clientsCount="{item, value}">
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-btn text
-                           @click="showClientsList(item)"
-                           :disabled="!+value"
-                           v-on="on"
-                           small
-                           color="primary">
-                      <v-icon small class="mr-2" v-if="+value === 1">mdi-account</v-icon>
-                      <v-icon small class="mr-2" v-else>mdi-account-multiple</v-icon>
-                      {{ +value || 0 }}
-                    </v-btn>
-                  </template>
-                  Mostra lista clienti
-                </v-tooltip>
-              </template>
-            </data-table>
-          </v-tab-item>
-
-          <v-tab-item :key="99" v-if="filtersActive.length">
-            <data-table
-              :items="filteredData"
-              table-key="usersFilter"
-              schema="usersSchema"
-              light
-              id="searchTableResults"
-            >
-              <template v-slot:item.superAdmin="{ item }">
-                <v-tooltip right v-if="item.superAdmin">
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-icon v-on="on" v-bind="attrs" class="d-inline-block"
-                    >mdi-diamond-stone
-                    </v-icon
-                    >
-                  </template>
-
-                  <span>Super Admin</span>
-                </v-tooltip>
-              </template>
-
-              <template v-slot:item.referenceAgent="{item}">
-                <v-btn text v-if="item.referenceAgentData" small
-                       target="_blank"
-                       class="text-capitalize"
-                       color="primary"
-                       :href="'users/' + item.referenceAgent">
-                  <v-icon small class="mr-2">mdi-open-in-new</v-icon>
-                  {{ item.referenceAgentData.firstName }} {{ item.referenceAgentData.lastName }}
-                </v-btn>
-              </template>
-
-              <template v-slot:item.account_status="{ item }">
-                <v-chip
-                  small
-                  :color="$enums.AccountStatuses.get(item.account_status).color"
-                >
-                  {{
-                    $t(
-                      "enums.AccountStatuses." +
-                      $enums.AccountStatuses.getIdName(item.account_status)
-                    )
-                  }}
-                </v-chip>
-              </template>
-
-              <template v-slot:item.role="{ item }">
-                <v-chip
-                  small
-                  dark
-                  :color="$enums.UserRoles.get(item.role).color"
-                >
-                  {{
-                    $t(
-                      "enums.UserRoles." +
-                      $enums.UserRoles.getIdName(item.role)
-                    )
-                  }}
-                </v-chip>
-              </template>
-
-              <template v-slot:item.actions="{ item }">
-                <users-crud-actions
-                  :item="item"
-                  @userDeleted="onUserDeleted(item, group)"
-                />
-              </template>
-
-              <template v-slot:item.contractSignedAt="{item}">
-                <div v-if="![$enums.UserRoles.ADMIN, $enums.UserRoles.SERV_CLIENTI].includes(+item.role)">
-                  <div v-if="item.contractSignedAt">
-                    <template v-if="!item.contractImported">
-
-                      <v-menu offset-y open-on-hover left>
+            <v-card class="overflow-hidden">
+              <v-tabs-items v-model="currentTab" touchless>
+                <v-tab-item v-for="group of usersList" :key="+group.id">
+                  <data-table
+                    :condition="+group.id"
+                    :items="group.data"
+                    table-key="users"
+                    schema="usersSchema"
+                    light
+                  >
+                    <template v-slot:item.superAdmin="{ item }">
+                      <v-tooltip right v-if="item.superAdmin">
                         <template v-slot:activator="{ on, attrs }">
-                          <a v-on="on" v-bind="attrs" class="text-decoration-underline-dotted">
-                            {{ $t("tables.contract-signed") }}
-                          </a>
+                          <v-icon v-on="on" v-bind="attrs" class="d-inline-block"
+                          >mdi-diamond-stone
+                          </v-icon
+                          >
                         </template>
 
-                        <signing-logs-popup :value="item.signinLogs || []"></signing-logs-popup>
-                      </v-menu>
-                    </template>
-
-                    <template v-else>
-                      <v-tooltip bottom>
-                        <template v-slot:activator="{on}">
-                          <a v-on="on" class="text-decoration-underline-dotted">
-                            {{ $t("tables.contract-imported") }}
-                          </a>
-                        </template>
-                        <span>{{
-                            $t("tables.contract-imported-at", {date: $options.filters.dateHourFormatter(item.contractSignedAt)})
-                          }}</span>
+                        <span>Super Admin</span>
                       </v-tooltip>
                     </template>
-                  </div>
 
-                  <div v-else class="red--text">
-                    {{ $t("tables.contract-not-signed") }}
-                  </div>
-                </div>
-              </template>
+                    <template v-slot:item.referenceAgent="{item}">
+                      <v-btn text
+                             v-if="item.referenceAgentData && item.referenceAgent !== $auth.user.id"
+                             small
+                             target="_blank"
+                             class="text-capitalize"
+                             color="primary"
+                             :href="'users/' + item.referenceAgent">
+                        <v-icon small class="mr-2">mdi-open-in-new</v-icon>
+                        {{ item.referenceAgentData.firstName }} {{ item.referenceAgentData.lastName }}
+                      </v-btn>
+                      <div v-else-if="item.referenceAgentData">
+                        <v-btn text disabled small>Tu</v-btn>
+                      </div>
+                    </template>
 
-              <template v-slot:no-data="{item}">
-                adasa
-              </template>
-            </data-table>
-          </v-tab-item>
-        </v-tabs-items>
-      </v-card>
+                    <template v-slot:item.account_status="{ item }">
+                      <v-chip
+                        small
+                        :color="$enums.AccountStatuses.get(item.account_status).color"
+                      >
+                        {{
+                          $t(
+                            "enums.AccountStatuses." +
+                            $enums.AccountStatuses.getIdName(item.account_status)
+                          )
+                        }}
+                      </v-chip>
+                    </template>
+
+                    <template v-slot:item.actions="{ item }">
+                      <users-crud-actions
+                        :item="item"
+                        @userDeleted="onUserDeleted(item, group)"
+                      />
+                    </template>
+
+                    <template v-slot:item.contractSignedAt="{item}">
+                      <div v-if="item.contractSignedAt">
+                        <template v-if="!item.contractImported">
+
+                          <v-menu offset-y left :close-on-content-click="false">
+                            <template v-slot:activator="{ on, attrs }">
+                              <a v-on="on" v-bind="attrs" class="text-decoration-underline-dotted">
+                                {{ $t("tables.contract-signed") }}
+                              </a>
+                            </template>
+
+                            <signing-logs-popup :userId="item.id"></signing-logs-popup>
+                          </v-menu>
+                        </template>
+
+                        <template v-else>
+                          <v-tooltip bottom>
+                            <template v-slot:activator="{on}">
+                              <a v-on="on" class="text-decoration-underline-dotted">
+                                {{ $t("tables.contract-imported") }}
+                              </a>
+                            </template>
+                            <span>{{
+                                $t("tables.contract-imported-at", {date: $options.filters.dateHourFormatter(item.contractSignedAt)})
+                              }}</span>
+                          </v-tooltip>
+                        </template>
+                      </div>
+
+                      <div v-else class="red&#45;&#45;text">
+                        {{ $t("tables.contract-not-signed") }}
+                      </div>
+                    </template>
+
+                    <template v-slot:item.commissionsAssigned="{item, value}">
+                      <div class="mx-n1">
+                        <v-tooltip bottom v-for="(comm, i) of value" :key="i">
+                          <template v-slot:activator="{ on }">
+                            <v-chip x-small
+                                    class="mx-1"
+                                    v-on="on">
+                              {{ getInitials($t("enums.CommissionType." + comm.name), comm) }}
+                              &lt;!&ndash;                        <template v-if="comm.percent">
+                                                        &nbsp;{{ comm.percent }} %
+                                                      </template>&ndash;&gt;
+                            </v-chip>
+                          </template>
+                          {{ $t("enums.CommissionType." + comm.name) }}
+                        </v-tooltip>
+
+                      </div>
+                    </template>
+
+                    <template v-slot:item.clientsCount="{item, value}">
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on }">
+                          <v-btn text
+                                 @click="showClientsList(item)"
+                                 :disabled="!+value"
+                                 v-on="on"
+                                 small
+                                 color="primary">
+                            <v-icon small class="mr-2" v-if="+value === 1">mdi-account</v-icon>
+                            <v-icon small class="mr-2" v-else>mdi-account-multiple</v-icon>
+                            {{ +value || 0 }}
+                          </v-btn>
+                        </template>
+                        Mostra lista clienti
+                      </v-tooltip>
+                    </template>
+                  </data-table>
+                </v-tab-item>
+
+                <v-tab-item :key="99" v-if="filtersActive.length">
+                  <data-table
+                    :items="filteredData"
+                    table-key="usersFilter"
+                    schema="usersSchema"
+                    light
+                    id="searchTableResults"
+                  >
+                    <template v-slot:item.superAdmin="{ item }">
+                      <v-tooltip right v-if="item.superAdmin">
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-icon v-on="on" v-bind="attrs" class="d-inline-block"
+                          >mdi-diamond-stone
+                          </v-icon
+                          >
+                        </template>
+
+                        <span>Super Admin</span>
+                      </v-tooltip>
+                    </template>
+
+                    <template v-slot:item.referenceAgent="{item}">
+                      <v-btn text v-if="item.referenceAgentData" small
+                             target="_blank"
+                             class="text-capitalize"
+                             color="primary"
+                             :href="'users/' + item.referenceAgent">
+                        <v-icon small class="mr-2">mdi-open-in-new</v-icon>
+                        {{ item.referenceAgentData.firstName }} {{ item.referenceAgentData.lastName }}
+                      </v-btn>
+                    </template>
+
+                    <template v-slot:item.account_status="{ item }">
+                      <v-chip
+                        small
+                        :color="$enums.AccountStatuses.get(item.account_status).color"
+                      >
+                        {{
+                          $t(
+                            "enums.AccountStatuses." +
+                            $enums.AccountStatuses.getIdName(item.account_status)
+                          )
+                        }}
+                      </v-chip>
+                    </template>
+
+                    <template v-slot:item.role="{ item }">
+                      <v-chip
+                        small
+                        dark
+                        :color="$enums.UserRoles.get(item.role).color"
+                      >
+                        {{
+                          $t(
+                            "enums.UserRoles." +
+                            $enums.UserRoles.getIdName(item.role)
+                          )
+                        }}
+                      </v-chip>
+                    </template>
+
+                    <template v-slot:item.actions="{ item }">
+                      <users-crud-actions
+                        :item="item"
+                        @userDeleted="onUserDeleted(item, group)"
+                      />
+                    </template>
+
+                    <template v-slot:item.contractSignedAt="{item}">
+                      <div v-if="![$enums.UserRoles.ADMIN, $enums.UserRoles.SERV_CLIENTI].includes(+item.role)">
+                        <div v-if="item.contractSignedAt">
+                          <template v-if="!item.contractImported">
+
+                            <v-menu offset-y open-on-hover left>
+                              <template v-slot:activator="{ on, attrs }">
+                                <a v-on="on" v-bind="attrs" class="text-decoration-underline-dotted">
+                                  {{ $t("tables.contract-signed") }}
+                                </a>
+                              </template>
+
+                              <signing-logs-popup :value="item.signinLogs || []"></signing-logs-popup>
+                            </v-menu>
+                          </template>
+
+                          <template v-else>
+                            <v-tooltip bottom>
+                              <template v-slot:activator="{on}">
+                                <a v-on="on" class="text-decoration-underline-dotted">
+                                  {{ $t("tables.contract-imported") }}
+                                </a>
+                              </template>
+                              <span>{{
+                                  $t("tables.contract-imported-at", {date: $options.filters.dateHourFormatter(item.contractSignedAt)})
+                                }}</span>
+                            </v-tooltip>
+                          </template>
+                        </div>
+
+                        <div v-else class="red&#45;&#45;text">
+                          {{ $t("tables.contract-not-signed") }}
+                        </div>
+                      </div>
+                    </template>
+
+                    <template v-slot:no-data="{item}">
+                      adasa
+                    </template>
+                  </data-table>
+                </v-tab-item>
+              </v-tabs-items>
+            </v-card>-->
 
       <v-row v-if="$vuetify.breakpoint.smAndUp">
         <!-- Floating action button -->
@@ -343,9 +347,9 @@
         </v-fab-transition>
       </v-row>
 
-      <clients-list-dialog
-        v-if="$store.getters['dialog/dialogId'] === 'ClientsListDialog'"
-      ></clients-list-dialog>
+      <!--      <clients-list-dialog
+              v-if="$store.getters['dialog/dialogId'] === 'ClientsListDialog'"
+            ></clients-list-dialog>-->
     </v-flex>
   </v-layout>
 </template>
@@ -365,12 +369,21 @@ import PageToolbar from "@/components/blocks/PageToolbar";
 import Mark from "mark.js"
 import ClientsListDialog from "../../components/dialogs/ClientsListDialog";
 import {UsersPermissions} from "../../functions/acl/enums/users.permissions";
+import UsersListTable from "../../components/table/UsersListTable";
 
 export default {
   name: "index",
-  components: {ClientsListDialog, PageToolbar, SigningLogsPopup, DataTable, UsersCrudActions, PageHeader},
+  components: {
+    UsersListTable,
+    ClientsListDialog,
+    PageToolbar,
+    SigningLogsPopup,
+    DataTable,
+    UsersCrudActions,
+    PageHeader
+  },
   meta: {
-    permissions: [UsersPermissions.ACL_USERS_GROUP_READ, UsersPermissions.ACL_USERS_ALL_READ]
+    permissions: [UsersPermissions.ACL_USERS_TEAM_READ, UsersPermissions.ACL_USERS_ALL_READ]
   },
   setup(props, {root}) {
     const {$enums, $i18n, $apiCalls, $vuetify, $router, $store, $alerts} = root;
