@@ -299,7 +299,7 @@ export default class UsersListTable extends Vue {
     return this.$enums.UserRoles.getIdName(+role)
   }
 
-  getInitials(str: string | LocaleMessages, item: User): string {
+  getInitials(str: any, item: any): string {
     switch (item.name) {
       case this.$enums.CommissionType.NEW_DEPOSIT:
 
@@ -311,9 +311,11 @@ export default class UsersListTable extends Vue {
 
         return item.percent + "% / anno"
     }
+
+    return ""
   }
 
-  async showClientsList(user) {
+  async showClientsList(user: User) {
     try {
       // Fetch the users list
       const usersList = await this.$apiCalls.getClientsList(user.id)
@@ -347,12 +349,12 @@ export default class UsersListTable extends Vue {
     this.loading = true
 
     try {
-      let usersList: User[] = []
+      let usersList: any[] = []
 
       if (this.$auth.user.id !== this.userId || this.$auth.user.role === this.$enums.UserRoles.AGENTE) {
         usersList = await this.$apiCalls.getClientsList(this.userId)
 
-        for (const user: User of usersList) {
+        for (const user of usersList) {
           if (user.id === this.userId) {
             continue
           }
@@ -362,7 +364,7 @@ export default class UsersListTable extends Vue {
       } else {
         usersList = await this.$apiCalls.fetchAllUsers()
 
-        for (const group: { id: string, data: User } of usersList) {
+        for (const group of usersList) {
           this.usersData[this.getRoleName(+group.id)].push(...group.data)
         }
       }

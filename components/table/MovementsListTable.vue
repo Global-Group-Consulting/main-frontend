@@ -89,7 +89,7 @@ export default class MovementsListTable extends Vue {
     return [UserRoles.AGENTE, UserRoles.CLIENTE].includes(this.$auth.user.role) ? "user" : "admin"
   }
 
-  formatAmountChange(item) {
+  formatAmountChange(item: any) {
     const sign = [
       MovementTypes.INTEREST_COLLECTED,
       MovementTypes.DEPOSIT_COLLECTED,
@@ -99,7 +99,7 @@ export default class MovementsListTable extends Vue {
       : "+";
     const color = sign === "-" ? "red--text" : "green--text";
 
-    return `<span class="text-no-wrap ${color}">€ ${sign}${this.$options.filters.moneyFormatter(
+    return `<span class="text-no-wrap ${color}">€ ${sign}${this.$options?.filters?.moneyFormatter(
       item.amountChange.toFixed(2)
     )}</span>`;
   }
