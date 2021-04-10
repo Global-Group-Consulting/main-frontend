@@ -36,7 +36,7 @@ export default function (context: Vue): DrawerEntry[] {
           text: 'clients',
           icon: 'mdi-account-group',
           link: '/users',
-          permissions: [UsersPermissions.ACL_USERS_GROUP_READ],
+          permissions: [UsersPermissions.ACL_USERS_TEAM_READ],
           hideInMobile: true
         },
         {

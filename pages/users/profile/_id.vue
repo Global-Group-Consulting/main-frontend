@@ -46,9 +46,10 @@ import DataTable from "../../../components/table/DataTable.vue";
 import DashboardBlocks from "~/components/DashboardBlocks.vue";
 import {User} from "~/@types/UserFormData";
 import MovementsListTable from "~/components/table/MovementsListTable.vue";
+import UsersListTable from "~/components/table/UsersListTable.vue";
+import CommissionsListTable from "~/components/table/CommissionsListTable.vue";
 
 import MovementsFn from "@/functions/movementsFn.js";
-import CommissionsListTable from "~/components/table/CommissionsListTable.vue";
 import DynamicTabs from "~/components/DynamicTabs.vue";
 import {DynamicTab} from "~/@types/components/DynamicTab";
 import PageToolbar from "~/components/blocks/PageToolbar.vue";
@@ -57,7 +58,7 @@ import {ActionItem} from "~/@types/ActionItem";
 @Component({
   components: {
     PageToolbar,
-    DynamicTabs, CommissionsListTable, MovementsListTable, DashboardBlocks, DataTable, PageHeader
+    DynamicTabs, CommissionsListTable, MovementsListTable, UsersListTable, DashboardBlocks, DataTable, PageHeader
   }
 })
 export default class Profile extends Vue {
@@ -120,15 +121,18 @@ export default class Profile extends Vue {
       {
         id: "users",
         title: "Utenti",
+        if: +this.userData.role !== this.$enums.UserRoles.CLIENTE
       },
       {
         id: "movements",
         title: "Movimenti",
+        if: true
       }, {
         id: "commissions",
         title: "Provvigioni",
+        if: +this.userData.role !== this.$enums.UserRoles.CLIENTE
       }
-    ]
+    ].filter(el => el.if)
   }
 
   goToUserData(event: MouseEvent, action: ActionItem) {

@@ -53,6 +53,30 @@
               Mostra lista clienti
             </v-tooltip>
           </template>
+
+          <template v-slot:item.referenceAgent="{item}">
+            <!-- Case item.referenceAgent is same as userId and is the same as auth.user.id - Tu -->
+            <div v-if="item.referenceAgent === $auth.user.id && item.referenceAgent === tab.id">
+              <v-btn text disabled small>Tu</v-btn>
+            </div>
+
+            <!-- Case item.referenceAgent is same as userId but is different from auth.user.id - Utente attuale -->
+            <div v-else-if="item.referenceAgent !== $auth.user.id && item.referenceAgent === tab.id">
+              <v-btn text disabled small>Utente attuale</v-btn>
+            </div>
+
+            <!-- Case item.referenceAgent is different fron userId and from auth.user.id -  -->
+            <v-btn text
+                   v-else-if="item.referenceAgentData && item.referenceAgent !== $auth.user.id && item.referenceAgent !== tab.id"
+                   small
+                   target="_blank"
+                   class="text-capitalize"
+                   color="primary"
+                   :href="'/users/' + item.referenceAgent">
+              <v-icon small class="mr-2">mdi-open-in-new</v-icon>
+              {{ item.referenceAgentData.firstName }} {{ item.referenceAgentData.lastName }}
+            </v-btn>
+          </template>
         </data-table>
       </v-tab-item>
     </v-tabs-items>

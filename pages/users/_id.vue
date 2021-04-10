@@ -362,7 +362,7 @@ export default {
     MovementsListDialog
   },
   meta: {
-    permissions: [UsersPermissions.ACL_USERS_GROUP_READ, UsersPermissions.ACL_USERS_ALL_READ, UsersPermissions.ACL_USERS_SELF_READ]
+    permissions: [UsersPermissions.ACL_USERS_TEAM_READ, UsersPermissions.ACL_USERS_ALL_READ, UsersPermissions.ACL_USERS_SELF_READ]
   },
   setup(props, {root, refs}) {
     const {
@@ -437,13 +437,14 @@ export default {
       const refAgent = userForm.formData.value.referenceAgent;
 
       return (
-        ($auth.user.id === refAgent
+        (
+          $auth.user.id === refAgent
           || (
-            [$enums.UserRoles.ADMIN, $enums.UserRoles.SERV_CLIENTI].includes($auth.user.role)
+            [$enums.UserRoles.AGENTE, $enums.UserRoles.ADMIN, $enums.UserRoles.SERV_CLIENTI].includes($auth.user.role)
             && [$enums.UserRoles.AGENTE, $enums.UserRoles.CLIENTE].includes(userForm.formData.value.role)
           )
-          && userForm.formData.value.account_status === $enums.AccountStatuses.DRAFT
         )
+        && userForm.formData.value.account_status === $enums.AccountStatuses.DRAFT
       );
     });
 
@@ -573,13 +574,11 @@ export default {
       } catch (er) {
         $alerts.error(er);
       }
-    };
+    }
 
     async function askConfirmDraftUser() {
       try {
-        const formValid = await userForm.validateAll();
-
-        if (!formValid) {
+        if (!(await userForm.onSaveClick())) {
           return
         }
 

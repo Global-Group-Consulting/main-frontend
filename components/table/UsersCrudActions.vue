@@ -87,7 +87,7 @@ export default {
     };
 
     const onApproveUserClick = async function () {
-      try {
+      /*try {
         await $alerts.askBeforeAction({
           key: "approve-user",
           preConfirm: async () => {
@@ -100,7 +100,7 @@ export default {
         });
       } catch (er) {
         $alerts.error(er);
-      }
+      }*/
     };
 
     const menuOptions = [
@@ -129,7 +129,7 @@ export default {
             props.item.account_status === $enums.AccountStatuses.ACTIVE
         ),
       },
-      {
+      /*{
         value: "enterAs",
         if: computed(() => false),
       },
@@ -142,7 +142,7 @@ export default {
               permissions.superAdmin)
           )),
         divider: true,
-      },
+      },*/
       {
         value: "delete",
         action: onDeleteClick,
