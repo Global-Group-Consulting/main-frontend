@@ -60,13 +60,14 @@
 import {Vue, Component, Prop, Watch} from 'vue-property-decorator'
 import DataTable from "~/components/table/DataTable.vue";
 import {computed, reactive, ref, watch} from "@vue/composition-api";
+import {DynamicTab} from "~/@types/components/DynamicTab";
 
 @Component({
   components: {DataTable}
 })
 export default class DynamicTabs extends Vue {
   @Prop({required: true, type: Array})
-  public tabsList!: DynamicTabs[]
+  public tabsList!: DynamicTab[]
 
   @Prop({type: String})
   public color!: string
@@ -98,7 +99,7 @@ export default class DynamicTabs extends Vue {
 
     const filterValue = this.filtersActive[0]?.generic.toLowerCase().trim().split(" ")
 
-    const filterRegex = new RegExp(filterValue.reduce((acc, curr) => {
+    const filterRegex = new RegExp(filterValue.reduce((acc: string[], curr: string) => {
       if (curr) {
         const val = curr.trim()
 
@@ -147,7 +148,7 @@ export default class DynamicTabs extends Vue {
   }
 
   @Watch('filtersActive')
-  onFiltersActiveChange(value) {
+  onFiltersActiveChange(value: any) {
     const maxTabs = this.tabsList.length
 
     if (value.length > 0) {
