@@ -15,7 +15,7 @@
     </template>
 
     <template v-slot:item.user="{ item }">
-      <v-btn text v-if="item.user.id" small
+      <v-btn text v-if="item.user && item.user.id" small
              target="_blank"
              class="text-capitalize"
              color="primary"
@@ -79,7 +79,7 @@
     </template>
 
     <template v-slot:item.user.referenceAgentData="{item}">
-      <v-btn text v-if="item.user.referenceAgentData" small
+      <v-btn text v-if="item.user && item.user.referenceAgentData" small
              target="_blank"
              class="text-capitalize"
              color="primary"
