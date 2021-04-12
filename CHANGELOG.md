@@ -1,5 +1,9 @@
 [comment]: <> (## Non ancora rilasciato)
 
+## v 1.8.8 - <small>15/04/2020</small>
+### Miglioramenti
+- Angrafica, campi obbligatori solo se non bozza.
+
 ## v 1.8.7 - <small>12/04/2020</small>
 ### Miglioramenti
 - Aggiornata pagina del profilo degli utenti

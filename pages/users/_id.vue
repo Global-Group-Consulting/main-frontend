@@ -582,6 +582,12 @@ export default {
           return
         }
 
+        userForm.beforeConfirm.value = true
+
+        if (!(await userForm.validateAll())) {
+          return
+        }
+
         await $alerts.askBeforeAction({
           key: "confirm-draft-user",
           preConfirm: async () => {
@@ -593,8 +599,11 @@ export default {
           },
           data: userForm.formData.value
         });
+
       } catch (er) {
         $alerts.error(er);
+      } finally {
+        // userForm.beforeConfirm.value = false
       }
     }
 
