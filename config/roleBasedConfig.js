@@ -164,7 +164,21 @@ const defaults = {
         'depositOld',
         'notes',
       ]
-    }
+    },
+    requests: {
+      columns: [
+        'contractNumber',
+        'user',
+        'referenceAgent',
+        'amount',
+        'currency',
+        'type',
+        'created_at',
+        ['updated_at', ["lavorazione"]],
+        ['completed_at', ["accettata", "rifiutata"]],
+        ['actions', ["nuova"]]
+      ]
+    },
   },
   blocks: {
     dashboard: {
@@ -195,19 +209,7 @@ const admin = {
         'actions',
       ]
     },
-    requests: {
-      columns: [
-        'contractNumber',
-        'user',
-        'amount',
-        'currency',
-        'type',
-        'created_at',
-        ['updated_at', ["lavorazione"]],
-        ['completed_at', ["accettata", "rifiutata"]],
-        ['actions', ["nuova"]]
-      ]
-    },
+
     pendingUsers: {
       columns: [
         "contractNumber",

@@ -15,9 +15,15 @@
     </template>
 
     <template v-slot:item.user="{ item }">
-      <template v-if="item.user">
+      <v-btn text v-if="item.user.id" small
+             target="_blank"
+             class="text-capitalize"
+             color="primary"
+             @click.stop=""
+             :href="'users/' + item.user.id">
+        <v-icon small class="mr-2">mdi-open-in-new</v-icon>
         {{ $options.filters.userFormatter(item.user) }}
-      </template>
+      </v-btn>
     </template>
 
     <template v-slot:item.actions="{ item }">
@@ -71,6 +77,18 @@
         </template>
       </v-tooltip>
     </template>
+
+    <template v-slot:item.user.referenceAgentData="{item}">
+      <v-btn text v-if="item.user.referenceAgentData" small
+             target="_blank"
+             class="text-capitalize"
+             color="primary"
+             @click.stop=""
+             :href="'users/' + item.user.referenceAgentData.id">
+        <v-icon small class="mr-2">mdi-open-in-new</v-icon>
+        {{ item.user.referenceAgentData.firstName }} {{ item.user.referenceAgentData.lastName }}
+      </v-btn>
+    </template>
   </data-table>
 </template>
 
@@ -88,7 +106,7 @@ export default {
     const {$enums, $set, $apiCalls, $store} = root;
 
     function getItemClass(item) {
-      if (+item.status == $enums.RequestStatus.ANNULLATA) {
+      if (+item.status === $enums.RequestStatus.ANNULLATA) {
         return "grey lighten-2 text-decoration-line-through";
       }
     }
