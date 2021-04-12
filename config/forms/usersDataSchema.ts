@@ -219,7 +219,7 @@ export function basicData(formContext: FormContext): FormSchema[] {
           if: formContext.userLegalReprItaly,
           validations: {
             requiredIf: {
-              params: () => formContext.userBirthItaly && isRequired(formContext)
+              params: () => formContext.userLegalReprItaly && isRequired(formContext)
             }
           }
         },
