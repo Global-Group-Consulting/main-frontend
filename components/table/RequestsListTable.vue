@@ -15,7 +15,7 @@
     </template>
 
     <template v-slot:item.user="{ item }">
-      <v-btn text v-if="item.user.id" small
+      <v-btn text v-if="item.user && item.user.id" small
              target="_blank"
              class="text-capitalize"
              color="primary"
@@ -79,14 +79,14 @@
     </template>
 
     <template v-slot:item.user.referenceAgentData="{item}">
-      <v-btn text v-if="item.user.referenceAgentData" small
+      <v-btn text v-if="item.user && item.user.referenceAgentData" small
              target="_blank"
              class="text-capitalize"
              color="primary"
              @click.stop=""
-             :href="'users/' + item.user.referenceAgentData.id">
+             :href="getRefAgentUrl(item)">
         <v-icon small class="mr-2">mdi-open-in-new</v-icon>
-        {{ item.user.referenceAgentData.firstName }} {{ item.user.referenceAgentData.lastName }}
+        {{ getRefAgentName(item) }}
       </v-btn>
     </template>
   </data-table>
@@ -158,6 +158,14 @@ export default {
       return root.$t("enums.RequestTypes." + id);
     }
 
+    function getRefAgentUrl(item) {
+      return 'users/' + item.user?.referenceAgentData?.id
+    }
+
+    function getRefAgentName(item) {
+      return  item.user?.referenceAgentData?.firstName  + " " +  item.user?.referenceAgentData?.lastName
+    }
+
     return {
       getItemClass,
       getAmountSign,
@@ -166,7 +174,9 @@ export default {
       onRequestDeleted,
       onRequestStatusChanged,
       onRequestCanceled,
-      formatRequestCurrency
+      formatRequestCurrency,
+      getRefAgentName,
+      getRefAgentUrl
     };
   }
 };
