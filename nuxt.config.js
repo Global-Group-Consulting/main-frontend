@@ -6,6 +6,9 @@ import nuxtProxy from './config/nuxtModules/nuxtProxy'
 import nuxtVuetify from './config/nuxtModules/nuxtVuetify'
 import nuxtVueScrollTo from './config/nuxtModules/vueScrollTo'
 
+import * as fs from "fs"
+import * as path from "path"
+
 // Autogenerate the changelog html from .md file
 import "./changelog"
 
@@ -13,6 +16,15 @@ const IS_BETA = !!process.env.BETA
 const FAVICON_PATH = IS_BETA ? "/beta" : ""
 const FAVICON_VERSION = process.env.FAVICON_VERSION
 const APP_NAME = `${IS_BETA ? "[Beta] " : ""}Global Group Consulting`
+
+const serverConfig = process.env.NODE_ENV === "development" ? {
+  https: {
+    key: fs.readFileSync(path.resolve(__dirname, 'key.pem')),
+    cert: fs.readFileSync(path.resolve(__dirname, 'cert.pem'))
+  }
+} : {}
+
+console.log(process.env.NODE_ENV)
 
 export default {
   /*
@@ -128,8 +140,11 @@ export default {
   },
 
   serverMiddleware: [
+    '~/server-middleware/redirect-https.js',
     // {path: '/api', handler: '~/server/index.js' }
   ],
+
+  server: serverConfig,
 
   pageTransition: {
     name: 'fade',

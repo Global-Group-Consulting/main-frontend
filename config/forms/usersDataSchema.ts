@@ -23,8 +23,27 @@ interface FormContext extends Vue {
   userIsNew: boolean,
   userRole: number
   showReferenceAgent: boolean
+  beforeConfirm: boolean
   permissions: Permissions
   formData: UserDataSchema
+}
+
+function isRequired(formContext: FormContext): boolean {
+  const accountStatus = formContext.formData.account_status
+  const userRole = formContext.formData.role
+  const beforeConfirm = formContext.beforeConfirm
+
+  /*
+  Required = false se
+  - account_status === BOZZA
+    E
+    - NOT beforeConfirm
+
+  OPPURE
+  - userRole è amministrativo
+   */
+  return !((accountStatus === AccountStatuses.DRAFT && !beforeConfirm)
+    || [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(userRole))
 }
 
 export function basicData(formContext: FormContext): FormSchema[] {
@@ -75,7 +94,7 @@ export function basicData(formContext: FormContext): FormSchema[] {
           items: 'enums.countriesList',
           validations: {
             requiredIf: {
-              params: () => formContext.userIsPersonaGiuridica
+              params: () => formContext.userIsPersonaGiuridica && isRequired(formContext)
             }
           }
         },
@@ -83,7 +102,6 @@ export function basicData(formContext: FormContext): FormSchema[] {
           component: 'v-select',
           items: 'enums.regionsList',
           if: formContext.userBusinessItaly,
-
         },
         'businessProvince': {
           component: 'v-select',
@@ -91,14 +109,14 @@ export function basicData(formContext: FormContext): FormSchema[] {
           if: formContext.userBusinessItaly,
           validations: {
             requiredIf: {
-              params: () => formContext.userIsPersonaGiuridica && formContext.userBusinessItaly
+              params: () => formContext.userIsPersonaGiuridica && formContext.userBusinessItaly && isRequired(formContext)
             }
           }
         },
         'businessCity': {
           validations: {
             requiredIf: {
-              params: () => formContext.userIsPersonaGiuridica
+              params: () => formContext.userIsPersonaGiuridica && isRequired(formContext)
             }
           }
         },
@@ -106,7 +124,7 @@ export function basicData(formContext: FormContext): FormSchema[] {
         'businessAddress': {
           validations: {
             requiredIf: {
-              params: () => formContext.userIsPersonaGiuridica
+              params: () => formContext.userIsPersonaGiuridica && isRequired(formContext)
             }
           }
         }
@@ -127,7 +145,9 @@ export function basicData(formContext: FormContext): FormSchema[] {
         },
         'fiscalCode': {
           validations: {
-            required: {}
+            requiredIf: {
+              params: () => isRequired(formContext)
+            }
           }
         },
         'gender': {
@@ -143,7 +163,9 @@ export function basicData(formContext: FormContext): FormSchema[] {
           component: 'v-select',
           items: 'enums.countriesList',
           validations: {
-            required: {}
+            requiredIf: {
+              params: () => isRequired(formContext)
+            }
           }
         },
         'birthProvince': {
@@ -152,20 +174,24 @@ export function basicData(formContext: FormContext): FormSchema[] {
           if: formContext.userBirthItaly,
           validations: {
             requiredIf: {
-              params: () => formContext.userBirthItaly
+              params: () => formContext.userBirthItaly && isRequired(formContext)
             }
           }
         },
         'birthCity': {
           validations: {
-            required: {}
+            requiredIf: {
+              params: () => isRequired(formContext)
+            }
           }
         },
         'birthDate': {
           'component': 'date-picker',
           max: moment().subtract(14, 'years').format('YYYY-MM-DD'),
           validations: {
-            required: {}
+            requiredIf: {
+              params: () => isRequired(formContext)
+            }
           }
         }
       }
@@ -177,7 +203,9 @@ export function basicData(formContext: FormContext): FormSchema[] {
           component: 'v-select',
           items: 'enums.countriesList',
           validations: {
-            required: {}
+            requiredIf: {
+              params: () => isRequired(formContext)
+            }
           }
         },
         'legalRepresentativeRegion': {
@@ -191,23 +219,29 @@ export function basicData(formContext: FormContext): FormSchema[] {
           if: formContext.userLegalReprItaly,
           validations: {
             requiredIf: {
-              params: () => formContext.userBirthItaly
+              params: () => formContext.userLegalReprItaly && isRequired(formContext)
             }
           }
         },
         'legalRepresentativeCity': {
           validations: {
-            required: {}
+            requiredIf: {
+              params: () => isRequired(formContext)
+            }
           }
         },
         'legalRepresentativeZip': {
           validations: {
-            required: {}
+            requiredIf: {
+              params: () => isRequired(formContext)
+            }
           }
         },
         'legalRepresentativeAddress': {
           validations: {
-            required: {}
+            requiredIf: {
+              params: () => isRequired(formContext)
+            }
           }
         }
       }
@@ -243,7 +277,9 @@ export function basicData(formContext: FormContext): FormSchema[] {
         'mobile': {
           // component: "phone-input",
           validations: {
-            required: {},
+            requiredIf: {
+              params: () => isRequired(formContext)
+            },
             phoneNumber: {}
           }
         },
@@ -371,7 +407,9 @@ export function contractData(formContext: FormContext) {
           // formatter: "moneyFormatter"
           component: "money-input",
           validations: {
-            required: {},
+            requiredIf: {
+              params: () => isRequired(formContext)
+            },
             minValue: {
               params: formContext.formData.role === UserRoles.AGENTE ? 0 : 1
             }
@@ -400,14 +438,16 @@ export function contractData(formContext: FormContext) {
           component: "v-select",
           items: PaymentMethods,
           validations: {
-            required: {}
+            requiredIf: {
+              params: () => isRequired(formContext)
+            }
           }
         },
         'contractInitialPaymentMethodOther': {
           if: formContext.formData.contractInitialPaymentMethod === PaymentMethods.ALTRO,
           validations: {
             requiredIf: {
-              params: () => formContext.formData.contractInitialPaymentMethod === PaymentMethods.ALTRO
+              params: () => formContext.formData.contractInitialPaymentMethod === PaymentMethods.ALTRO && isRequired(formContext)
             }
           }
         },
@@ -449,7 +489,7 @@ export function clubData(formContext: FormContext): FormSchema[] {
           disabled: !gold || !hasPermission,
           validations: {
             required: {
-              params: () => formContext.formData.gold && hasPermission
+              params: () => formContext.formData.gold && hasPermission && isRequired(formContext)
             }
           }
         }
