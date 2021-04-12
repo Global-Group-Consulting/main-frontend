@@ -24,6 +24,8 @@ const serverConfig = process.env.NODE_ENV === "development" ? {
   }
 } : {}
 
+console.log(process.env.NODE_ENV)
+
 export default {
   /*
   ** Nuxt rendering mode
