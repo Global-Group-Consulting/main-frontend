@@ -6,6 +6,7 @@ export default {
   'email': { text: 'tables.email', value: 'user.email' },
   'type': { text: 'tables.request-type', value: 'type' },
   'amount': { text: 'tables.request-amount', value: 'amount', align: "right", class: "no-wrap" },
+  'referenceAgent': {text: 'tables.reference-agent', value: 'user.referenceAgentData'},
   'created_at': { text: 'tables.created-at', value: 'created_at' },
   'updated_at': { text: 'tables.updated-at', value: 'updated_at' },
   'completed_at': { text: 'tables.completed-at', value: 'completed_at' },

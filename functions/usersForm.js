@@ -44,6 +44,7 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
   const showReferenceAgent = computed(() => [UserRoles.CLIENTE, UserRoles.AGENTE].includes(userRole.value))
   const userIsPersonaGiuridica = computed(() => +formData.value.personType === PersonTypes.GIURIDICA)
   const userType = computed(() => [UserRoles.CLIENTE, UserRoles.AGENTE].includes(formData.value.role) ? "user" : "admin")
+  const beforeConfirm = ref(false)
 
   /**
    * @type {import('@vue/composition-api').ComputedRef<{
@@ -132,6 +133,8 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
 
   async function onSaveClick() {
     try {
+      beforeConfirm.value = false
+
       const formValid = await validateAll();
 
       if (!formValid) {
@@ -176,6 +179,7 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
     formData,
     formTabs,
     formSchemas,
+    beforeConfirm,
     userIsNew,
     userRole,
     userAccountStatus,

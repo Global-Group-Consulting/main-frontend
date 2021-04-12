@@ -156,6 +156,7 @@ import UserRoles from "~/enums/UserRoles";
 
 @Component({
   components: {
+    RequestsListTable: RequestsListTable as any ,
     RequestDialogGold: RequestDialogGold as any,
     PageHeader,
   },

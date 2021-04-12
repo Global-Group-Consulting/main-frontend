@@ -1,5 +1,19 @@
 [comment]: <> (## Non ancora rilasciato)
 
+## v 1.8.8 - <small>15/04/2020</small>
+### Miglioramenti
+- Angrafica, campi obbligatori solo se non bozza.
+
+## v 1.8.7 - <small>12/04/2020</small>
+### Miglioramenti
+- Aggiornata pagina del profilo degli utenti
+- Abbassato l'età minima per apertura account a 14 anni
+- Mostra i log delle versioni solo per gli utenti amministrativi
+
+### Aggiunte
+- Aggiunto pulsante per passare dall'anagrafica al profilo e viceversa
+- Popup termini e condizioni nella pagina del contratto
+
 ## v 1.8.0 - <small>01/04/2020</small>
 ### Miglioramenti
 - Aggiornata logica di creazione ed attivazione account.
