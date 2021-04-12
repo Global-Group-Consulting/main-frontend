@@ -1,7 +1,4 @@
-import {ServerMiddleware} from '@nuxt/types'
-
-import express from 'express'
-
+const express = require('express')
 const app = express()
 
 app.all('*', (req, res, next) => {
@@ -12,4 +9,4 @@ app.all('*', (req, res, next) => {
   next()
 })
 
-export default app
+module.exports = app

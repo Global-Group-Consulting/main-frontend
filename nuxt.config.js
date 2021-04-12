@@ -138,7 +138,7 @@ export default {
   },
 
   serverMiddleware: [
-    '~/server-middleware/redirect-https.ts',
+    '~/server-middleware/redirect-https.js',
     // {path: '/api', handler: '~/server/index.js' }
   ],
 
