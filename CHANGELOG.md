@@ -1,6 +1,6 @@
 [comment]: <> (## Non ancora rilasciato)
 
-## v 1.8.7 - <small>01/04/2020</small>
+## v 1.8.7 - <small>12/04/2020</small>
 ### Miglioramenti
 - Aggiornata pagina del profilo degli utenti
 - Abbassato l'età minima per apertura account a 14 anni
