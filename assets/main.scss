@@ -62,7 +62,11 @@ html, body, #__nuxt, #__layout, .v-application, .v-application--wrap, body.swal2
   }
 }
 
-
+.text-trim {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 
 @media #{map-get($display-breakpoints, 'sm-and-down')}{

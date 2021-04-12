@@ -177,6 +177,16 @@
             {{ $t("pages.usersId.btn-resend-contract") }}
           </tooltip-btn>
 
+          <tooltip-btn
+            :tooltip="$t('actions.user-profile-tooltip')"
+            icon-name="mdi-card-account-details"
+            text
+            v-if="hasProfile"
+            @click="goToUserProfile($event)"
+          >
+            {{ $t("actions.user-profile") }}
+          </tooltip-btn>
+
           <v-menu offset-y v-if="communicationsList.length > 0">
             <template v-slot:activator="{ on: on, attrs }">
               <v-btn color="primary" dark v-bind="attrs" v-on="on" small text>
@@ -332,7 +342,7 @@ import UserRoles from "@/enums/UserRoles.js";
 import userDetails from "@/functions/userDetails";
 import pageBasic from "@/functions/pageBasic";
 import usersForm from "../../functions/usersForm";
-import Permissions from "@/functions/permissions";
+import Permissions from "../../functions/permissions";
 import SigningLogsPopup from "@/components/elements/SigningLogsPopup";
 import PageToolbar from "@/components/blocks/PageToolbar";
 import {UsersPermissions} from "../../functions/acl/enums/users.permissions";
@@ -352,7 +362,7 @@ export default {
     MovementsListDialog
   },
   meta: {
-    permissions: [UsersPermissions.ACL_USERS_GROUP_READ, UsersPermissions.ACL_USERS_ALL_READ, UsersPermissions.ACL_USERS_SELF_READ]
+    permissions: [UsersPermissions.ACL_USERS_TEAM_READ, UsersPermissions.ACL_USERS_ALL_READ, UsersPermissions.ACL_USERS_SELF_READ]
   },
   setup(props, {root, refs}) {
     const {
@@ -363,7 +373,8 @@ export default {
       $i18n,
       $enums,
       $store,
-      $set
+      $set,
+      $router
     } = root;
     const currentTab = ref(0);
     const checkedFields = ref([])
@@ -426,13 +437,14 @@ export default {
       const refAgent = userForm.formData.value.referenceAgent;
 
       return (
-        ($auth.user.id === refAgent
+        (
+          $auth.user.id === refAgent
           || (
-            [$enums.UserRoles.ADMIN, $enums.UserRoles.SERV_CLIENTI].includes($auth.user.role)
+            [$enums.UserRoles.AGENTE, $enums.UserRoles.ADMIN, $enums.UserRoles.SERV_CLIENTI].includes($auth.user.role)
             && [$enums.UserRoles.AGENTE, $enums.UserRoles.CLIENTE].includes(userForm.formData.value.role)
           )
-          && userForm.formData.value.account_status === $enums.AccountStatuses.DRAFT
         )
+        && userForm.formData.value.account_status === $enums.AccountStatuses.DRAFT
       );
     });
 
@@ -562,13 +574,11 @@ export default {
       } catch (er) {
         $alerts.error(er);
       }
-    };
+    }
 
     async function askConfirmDraftUser() {
       try {
-        const formValid = await userForm.validateAll();
-
-        if (!formValid) {
+        if (!(await userForm.onSaveClick())) {
           return
         }
 
@@ -687,6 +697,22 @@ export default {
       });
     });
 
+
+    const hasProfile = computed(() => {
+        return userForm.userType.value === "user"
+      }
+    )
+
+    function goToUserProfile(event) {
+      const path = "/users/profile/" + userForm.formData.value.id
+
+      if (event.ctrlKey) {
+        return window.open(path, "_blank")
+      }
+
+      $router.push(path)
+    }
+
     // fetches user details
     onBeforeMount(async () => {
       const userId = $route.params.id;
@@ -755,7 +781,9 @@ export default {
       askConfirmDraftUser,
       askValidateUser,
       askIncompleteUser,
-      askResendContract
+      askResendContract,
+      hasProfile,
+      goToUserProfile
     };
   },
   computed: {},

@@ -32,7 +32,6 @@
           </template>
         </v-alert>
 
-
         <v-alert
           :type="listImported ? 'success' : 'info'"
           class="text-center"
@@ -74,7 +73,7 @@
         </v-alert>
 
         <movements-list-table
-          :movements="movements"
+          :userId="user.id"
           v-if="movements.list.value.length > 0"
         ></movements-list-table>
       </template>

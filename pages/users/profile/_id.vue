@@ -20,44 +20,21 @@
                         v-if="showAgentBlocks"
       ></dashboard-blocks>
 
+      <div class="mt-10"></div>
+
+      <page-toolbar :actions-list="actionsList"></page-toolbar>
+
       <!-- Dashboard agente se agente -->
 
-      <v-alert>
-        <h4 class="text-center">Dati presto disponibili...</h4>
-      </v-alert>
+      <dynamic-tabs :tabs-list="tabsList">
+        <template v-for="tab of tabsList"
+                  v-slot:[`tabContent_${tab.id}`]="{item}">
+          <component :is="tab.id + '-list-table'"
+                     :user-id="userId"
+          />
+        </template>
+      </dynamic-tabs>
 
-      <!-- Elenco Richieste -->
-      <!-- Elenco Movimenti -->
-
-      <!--      <data-table schema="clubBriteSchema"
-                        table-key="brite"
-                        :items="tableData">
-              <template v-slot:item.amountChange="{item, value}">
-                <span :class="getMovementColor(item)">
-                  B {{ value | moneyFormatter(true) }}</span>
-              </template>
-              <template v-slot:item.deposit="{item, value}">
-                <strong>B {{ value | moneyFormatter(true) }}</strong>
-              </template>
-              <template v-slot:item.depositOld="{item, value}">
-                B {{ value | moneyFormatter(true) }}
-              </template>
-              <template v-slot:item.movementType="{item, value}">
-                <v-chip :color="$enums.ClubMovementTypes.get(value).color" small>
-                  {{ $t(`enums.ClubMovementTypes.` + value) }}
-                </v-chip>
-              </template>
-              <template v-slot:item.notes="{item, value}">
-                <v-tooltip bottom v-if="value">
-                  <template v-slot:activator="{ on }">
-                    <v-btn icon v-on="on">
-                      <v-icon>mdi-note</v-icon>
-                    </v-btn>
-                  </template>
-                  {{ value }}
-                </v-tooltip>
-              </template>
-            </data-table>-->
     </v-flex>
   </v-layout>
 </template>
@@ -68,12 +45,25 @@ import PageHeader from "../../../components/blocks/PageHeader.vue";
 import DataTable from "../../../components/table/DataTable.vue";
 import DashboardBlocks from "~/components/DashboardBlocks.vue";
 import {User} from "~/@types/UserFormData";
+import MovementsListTable from "~/components/table/MovementsListTable.vue";
+import UsersListTable from "~/components/table/UsersListTable.vue";
+import CommissionsListTable from "~/components/table/CommissionsListTable.vue";
+
+import MovementsFn from "@/functions/movementsFn.js";
+import DynamicTabs from "~/components/DynamicTabs.vue";
+import {DynamicTab} from "~/@types/components/DynamicTab";
+import PageToolbar from "~/components/blocks/PageToolbar.vue";
+import {ActionItem} from "~/@types/ActionItem";
 
 @Component({
-  components: {DashboardBlocks, DataTable, PageHeader}
+  components: {
+    PageToolbar,
+    DynamicTabs, CommissionsListTable, MovementsListTable, UsersListTable, DashboardBlocks, DataTable, PageHeader
+  }
 })
 export default class Profile extends Vue {
   userData: User | any = {}
+  movementsFn = MovementsFn(this);
 
   userDashboardData: any = {
     blocks: {
@@ -92,6 +82,32 @@ export default class Profile extends Vue {
     }
   }
 
+  get actionsList(): ActionItem[] {
+    return [
+      {
+        text: "user-data",
+        tooltip: "user-data-tooltip",
+        position: "center",
+        icon: "mdi-account-box",
+        click: this.goToUserData
+      }, /*{
+        text: "import-contract",
+        tooltip: "import-contract-tooltip",
+        position: "right",
+        icon: "mdi-file-document-edit"
+      }, {
+        text: "import-movements",
+        tooltip: "import-movements-tooltip",
+        position: "right",
+        icon: "mdi-playlist-plus",
+      }*/
+    ]
+  }
+
+  get userId() {
+    return this.$route.params.id;
+  }
+
   get showUserBlocks() {
     return [this.$enums.UserRoles.AGENTE, this.$enums.UserRoles.CLIENTE].includes(+this.userData.role)
   }
@@ -100,20 +116,48 @@ export default class Profile extends Vue {
     return [this.$enums.UserRoles.AGENTE].includes(+this.userData.role)
   }
 
-  async beforeMount() {
-    const userId = this.$route.params.id;
+  get tabsList(): DynamicTab[] {
+    return [
+      {
+        id: "users",
+        title: "Utenti",
+        if: +this.userData.role !== this.$enums.UserRoles.CLIENTE
+      },
+      {
+        id: "movements",
+        title: "Movimenti",
+        if: true
+      }, {
+        id: "commissions",
+        title: "Provvigioni",
+        if: +this.userData.role !== this.$enums.UserRoles.CLIENTE
+      }
+    ].filter(el => el.if)
+  }
 
+  goToUserData(event: MouseEvent, action: ActionItem) {
+    let openInNewTab = event.ctrlKey
+    const path = "/users/" + this.$route.params.id
+
+    if (openInNewTab) {
+      return window.open(path, "_blank")
+    }
+
+    this.$router.push(path)
+  }
+
+  async beforeMount() {
     try {
-      this.userData = await this.$apiCalls.fetchUserDetails(userId);
+      this.userData = await this.$apiCalls.fetchUserDetails(this.userId);
 
       if (this.showUserBlocks) {
-        const resultDashboard = await this.$apiCalls.dashboardFetch(userId);
+        const resultDashboard = await this.$apiCalls.dashboardFetch(this.userId);
 
         this.userDashboardData.blocks = resultDashboard.blocks
       }
 
       if (this.showAgentBlocks) {
-        const resultCommissions = await this.$apiCalls.fetchCommissionsStatus({userId});
+        const resultCommissions = await this.$apiCalls.fetchCommissionsStatus({userId: this.userId});
 
         this.agentDashboardData.blocks = resultCommissions.blocks
       }
