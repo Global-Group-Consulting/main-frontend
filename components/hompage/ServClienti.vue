@@ -1,13 +1,13 @@
 <template>
   <v-layout column>
-    <v-card width="100%" class="text-center mb-5">
+<!--    <v-card width="100%" class="text-center mb-5">
       <v-card-text>
         <chart-lines
           :labels="adminDashboardChart.labels"
           :datasets="chartsAdminDataset"
         />
       </v-card-text>
-    </v-card>
+    </v-card>-->
 
 <!--    <v-card class="mb-5">
       &lt;!&ndash; Table with all users in "validated" state &ndash;&gt;
