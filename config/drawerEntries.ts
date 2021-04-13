@@ -91,7 +91,7 @@ export default function (context: Vue): DrawerEntry[] {
           text: 'club',
           icon: 'mdi-diamond-stone',
           link: '/club',
-          permissions: [ClubPermissions.BRITES_ALL_READ]
+          permissions: [ClubPermissions.CLUB_READ]
         }, {
           id: 'club',
           text: 'club',
