@@ -81,6 +81,8 @@
         <requests-list-table
           :items="dashboardData.pendingRequests"
           @click:row="openRequest"
+          tableKey="requestsDashboard"
+          :items-per-page="25"
         >
         </requests-list-table>
       </v-card-text>

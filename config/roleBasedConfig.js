@@ -179,6 +179,17 @@ const defaults = {
         ['actions', ["nuova"]]
       ]
     },
+    requestsDashboard: {
+      columns: [
+        'amount',
+        'user',
+        'referenceAgent',
+        'type',
+        'status',
+        'created_at',
+        ['updated_at', ["lavorazione"]],
+      ]
+    },
   },
   blocks: {
     dashboard: {

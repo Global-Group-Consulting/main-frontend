@@ -2,7 +2,8 @@
 
 ## v 1.8.8 - <small>15/04/2020</small>
 ### Miglioramenti
-- Angrafica, campi obbligatori solo se non bozza.
+- Anagrafica, campi obbligatori solo se non bozza.
+- Aggiornata tabella richieste da evadere in dashboard
 
 ## v 1.8.7 - <small>12/04/2020</small>
 ### Miglioramenti

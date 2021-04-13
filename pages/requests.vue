@@ -172,7 +172,7 @@ export default class Requests extends Vue {
     {
       id: "nuova",
       title: this.$t(`pages.requests.tableNuova-title`),
-      color: "warning",
+      color: "blue",
       icon: "mdi-timer-sand",
       sortBy: "created_at",
       sortDesc: true
@@ -180,7 +180,7 @@ export default class Requests extends Vue {
     {
       id: "lavorazione",
       title: this.$t(`pages.requests.tableLavorazione-title`),
-      color: "blue",
+      color: "warning",
       icon: "mdi-sitemap",
       sortBy: "created_at",
       sortDesc: true
