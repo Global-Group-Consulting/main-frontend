@@ -33,6 +33,7 @@
       "@nuxt/types",
       "@nuxtjs/moment",
       "@nuxtjs/auth",
+      "@nuxtjs/auth-next",
       "nuxt-i18n",
       "@nuxtjs/vuetify"
     ],

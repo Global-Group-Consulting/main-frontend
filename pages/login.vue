@@ -67,7 +67,7 @@ export default {
       try {
         this.$auth.reset();
 
-        await this.$auth.loginWith("refreshScheme", { data: this.formData });
+        await this.$auth.loginWith("local", { data: this.formData });
       } catch (e) {
         this.$alerts.error(e);
       }
