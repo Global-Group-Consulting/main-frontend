@@ -115,7 +115,7 @@ export default {
   */
   modules: [
     ['@nuxtjs/axios', nuxtAxios],
-    ['@nuxtjs/auth', nuxtAuth],
+    ['@nuxtjs/auth-next', nuxtAuth],
     ['nuxt-i18n', nuxtI18n],
     ['@nuxtjs/proxy'],
     ['vue-scrollto/nuxt', nuxtVueScrollTo]
