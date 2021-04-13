@@ -71,10 +71,17 @@
             {{ $t("dialogs.requests.btn-reject") }}
           </v-btn>
           <v-btn text color="success" @click="onApprove">
-            <v-icon>mdi-check</v-icon>
-            {{ $t("dialogs.requests.btn-accept") }}
-          </v-btn
-          >
+            <template v-if="[$enums.RequestTypes.VERSAMENTO].includes(formData.type) && formData.status === $enums.RequestStatus.NUOVA">
+              <v-icon>mdi-wechat</v-icon>
+              {{ $t("dialogs.requests.btn-chat") }}
+            </template>
+
+            <template v-else>
+              <v-icon>mdi-check</v-icon>
+              {{ $t("dialogs.requests.btn-accept") }}
+            </template>
+
+          </v-btn>
         </v-toolbar-items>
         <v-spacer></v-spacer>
       </v-toolbar>

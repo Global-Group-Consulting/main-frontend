@@ -20,6 +20,7 @@ export default {
     'btn-send': 'Invia richiesta',
     'btn-send-club': 'Procedi con la richiesta',
     'btn-accept': 'Approva',
+    'btn-chat': 'Prendi in carico',
     'btn-reject': 'Rifiuta',
     'btn-delete': 'Elimina',
     'btn-go-to-conversation': 'Vai alla conversazione',

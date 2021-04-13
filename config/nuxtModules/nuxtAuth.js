@@ -2,22 +2,19 @@ export default {
   fullPathRedirect: true,
   strategies: {
     local: {
-      refreshToken: {
-        property: 'refresh_token',
-        data: 'refresh_token',
+      scheme: 'refresh',
+      token: {
+        property: 'token',
+        maxAge: 1800,
+        // type: 'Bearer'
       },
-      endpoints: {
-        login: { url: '/api/auth/login', method: 'post', propertyName: 'token' },
-        logout: { url: '/api/auth/logout', method: 'delete' },
-        user: { url: '/api/auth/user', method: 'get' },
-        refresh: { url: '/api/auth/refresh', method: 'post' },
-      }
-    },
-    refreshScheme: {
-      _scheme: '~/config/authSchemes/refreshScheme',
       refreshToken: {
-        property: 'refresh_token',
-        data: 'refresh_token',
+        property: 'refreshToken',
+        data: 'refreshToken',
+      },
+      user: {
+        property: '',
+        autoFetch: true
       },
       endpoints: {
         login: { url: '/api/auth/login', method: 'post', propertyName: 'token' },
@@ -32,5 +29,5 @@ export default {
     logout: '/login',
     callback: '/login',
     home: '/'
-  }
+  },
 }

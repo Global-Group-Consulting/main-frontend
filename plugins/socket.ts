@@ -73,7 +73,7 @@ class Socket {
         ctx.isConnected.value = false
       })
 
-      const token = (localStorage.getItem("auth._token.refreshScheme") || "").split(" ")[1]
+      const token = (localStorage.getItem("auth._token.local") || "").split(" ")[1]
 
       this.ws
         .withJwtToken(token)

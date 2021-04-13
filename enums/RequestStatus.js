@@ -1,4 +1,4 @@
-import { BasicEnum } from '@/classes/BasicEnum'
+import {BasicEnum} from '@/classes/BasicEnum'
 
 class RequestStatus extends BasicEnum {
   constructor() {
@@ -13,11 +13,11 @@ class RequestStatus extends BasicEnum {
     this.data = {
       [this.NUOVA]: {
         id: 'nuova',
-        text: 'Nuova'
+        color: "#0088ff"
       },
       [this.LAVORAZIONE]: {
         id: 'lavorazione',
-        text: 'In Lavorazione'
+        color: "#fb8c00"
       },
       [this.ACCETTATA]: {
         id: 'accettata',

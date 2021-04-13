@@ -129,7 +129,7 @@ export default {
     "btnDeposit": "Versamento",
     "btnDeposit-tooltip": "Versa nuova liquidità",
     "btnDownloadReport": "Scarica Report",
-    'tableNuova-title': "In attesa",
+    'tableNuova-title': "Da evadere",
     'tableLavorazione-title': "In lavorazione",
     'tableAccettata-title': "Accettate",
     'tableRifiutata-title': "Rifiutate",
