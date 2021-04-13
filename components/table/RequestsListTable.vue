@@ -1,9 +1,10 @@
 <template>
   <data-table
-    table-key="requests"
+    :table-key="tableKey"
     schema="requestsSchema"
     light
     :items="items"
+    :items-per-page="itemsPerPage"
     :item-class="getItemClass"
     v-bind="$attrs"
     v-on="$listeners"
@@ -37,13 +38,27 @@
     </template>
 
     <template v-slot:item.amount="{ item }">
-      <span
-        :class="getAmountClass(getAmountSign(item.type))"
-        class="text-no-wrap"
-      >
+      <v-flex class="d-flex">
+<!--        <v-tooltip v-if="item.initialMovement" bottom>
+          <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on">
+              <v-icon color="blue">mdi-new-box</v-icon>
+            </v-btn>
+          </template>
+
+          {{ item.notes }}
+        </v-tooltip>-->
+
+        <span style="flex: 1"></span>
+
+        <span
+          :class="getAmountClass(getAmountSign(item.type))"
+          class="text-no-wrap"
+        >
         {{ getAmountSign(item.type) }}
         € {{ $options.filters.moneyFormatter(item.amount) }}
       </span>
+      </v-flex>
     </template>
 
     <template v-slot:item.currency="{ item }">
@@ -53,16 +68,8 @@
     <template v-slot:item.type="{ item }">
       <v-icon color="orange" v-if="item.typeClub">mdi-cards-spade</v-icon>
 
-      <v-tooltip v-if="item.initialMovement" bottom>
-        <template v-slot:activator="{ on }">
-          <v-btn icon v-on="on">
-            <v-icon color="blue">mdi-new-box</v-icon>
-          </v-btn>
-        </template>
-        {{ item.notes }}
-      </v-tooltip>
 
-      {{ getTipoRichiesta(item.type, item) }}
+      <span v-html="getTipoRichiesta(item.type, item)"></span>
 
       <v-tooltip v-if="$enums.RequestTypes.COMMISSION_MANUAL_ADD === item.type" bottom>
         <template v-slot:activator="{ on }">
@@ -89,6 +96,17 @@
         {{ getRefAgentName(item) }}
       </v-btn>
     </template>
+
+    <template v-slot:item.status="{item, value}">
+      <v-chip small
+              :outlined="!item.initialMovement"
+              :dark="item.initialMovement"
+              :color="$enums.RequestStatus.get(value).color"
+      >
+        {{ $t("enums.RequestStatus." + $enums.RequestStatus.getIdName(value)) }}
+      </v-chip>
+
+    </template>
   </data-table>
 </template>
 
@@ -99,7 +117,15 @@ import tableHeadersFn from "../../functions/tablesHeaders";
 export default {
   components: {RequestsCrudActions},
   props: {
-    items: Array
+    items: Array,
+    tableKey: {
+      type: String,
+      default: "requests"
+    },
+    itemsPerPage: {
+      type: Number,
+      default: 10
+    }
     // condition: String // serve per decidere se mostrare una colonna, in base all'array passato come configurazione
   },
   setup(props, {root, emit}) {
@@ -155,7 +181,9 @@ export default {
     function getTipoRichiesta(_id, item) {
       const id = $enums.RequestTypes.get(_id).id;
 
-      return root.$t("enums.RequestTypes." + id);
+      const isInitialMovement = item.initialMovement
+
+      return root.$t("enums.RequestTypes." + id) + (isInitialMovement ? " <strong> Nuovo Cliente</strong>" : "");
     }
 
     function getRefAgentUrl(item) {
@@ -163,7 +191,7 @@ export default {
     }
 
     function getRefAgentName(item) {
-      return  item.user?.referenceAgentData?.firstName  + " " +  item.user?.referenceAgentData?.lastName
+      return item.user?.referenceAgentData?.firstName + " " + item.user?.referenceAgentData?.lastName
     }
 
     return {

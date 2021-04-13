@@ -52,6 +52,13 @@ export default {
     'risc_capitale_gold': 'Prelievo deposito in Oro Fisico',
     'commission_manual_add': 'Aggiunta provvigioni manuali ad agente',
   },
+  'RequestStatus': {
+    'nuova': "Da Evadere",
+    'lavorazione': "In lavorazione",
+    'accettata': "Accettata",
+    'rifiutata': "Rifiutata",
+    'annullata': "Annullata",
+  },
   'WalletTypes': {
     'deposit': 'Deposito',
     'commision': 'Provvigioni',

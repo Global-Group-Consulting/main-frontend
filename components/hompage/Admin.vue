@@ -1,13 +1,13 @@
 <template>
   <v-layout column>
-    <v-card width="100%" class="text-center mb-5">
+<!--    <v-card width="100%" class="text-center mb-5">
       <v-card-text>
         <chart-lines
           :labels="dashboardChart.labels"
           :datasets="chartsAdminDataset"
         />
       </v-card-text>
-    </v-card>
+    </v-card>-->
 
     <!-- <v-card class="mb-5">
        <v-card-title class="p-relative">
@@ -81,6 +81,8 @@
         <requests-list-table
           :items="dashboardData.pendingRequests"
           @click:row="openRequest"
+          tableKey="requestsDashboard"
+          :items-per-page="25"
         >
         </requests-list-table>
       </v-card-text>

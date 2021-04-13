@@ -34,6 +34,7 @@ export default {
   'deposit': "Capitale totale",
   'interest-amount': "Interessi maturati",
   'request-cancelled': "Richiesta annullata",
+  'request-status': "Stato Richiesta",
   'com-subject': "Oggetto",
   'com-sender': "Mittente",
   'com-receiver': "Destinatari",

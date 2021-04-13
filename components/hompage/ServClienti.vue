@@ -1,21 +1,21 @@
 <template>
   <v-layout column>
-    <v-card width="100%" class="text-center mb-5">
+<!--    <v-card width="100%" class="text-center mb-5">
       <v-card-text>
         <chart-lines
           :labels="adminDashboardChart.labels"
           :datasets="chartsAdminDataset"
         />
       </v-card-text>
-    </v-card>
+    </v-card>-->
 
-    <v-card class="mb-5">
-      <!-- Table with all users in "validated" state -->
+<!--    <v-card class="mb-5">
+      &lt;!&ndash; Table with all users in "validated" state &ndash;&gt;
       <v-card-title class="p-relative">
         <v-icon class="mr-2">mdi-account-question</v-icon>
         {{ this.$t("tables.pending-verify-users-table") }}
 
-        <div class="v-alert__border v-alert__border--bottom red"></div>
+        <div class="v-alert__border v-alert__border&#45;&#45;bottom red"></div>
       </v-card-title>
 
       <v-card-text>
@@ -27,7 +27,7 @@
           @click:row="openUser"
         ></data-table>
       </v-card-text>
-    </v-card>
+    </v-card>-->
 
     <!--    <v-card class="mb-5">
           <v-card-text>
