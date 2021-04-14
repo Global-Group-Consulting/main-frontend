@@ -163,5 +163,7 @@ export default {
   "resend-contract-cancelBtnText": "Annulla",
   "resend-contract-success": "Contratto creato correttamente e richiesta di firma inviata!",
 
-  "invalid-form": "Prima di procedere è necessario correggere i seguenti campi: <br><br>{fields}"
+  "invalid-form": "Prima di procedere è necessario correggere i seguenti campi: <br><br>{fields}",
+
+  "unsaved-data": "Attenzione, ci sono dati non ancora salvati sulla pagina. Se si procede, i dati non salvati andranno persi. Si desidera continuare?"
 }

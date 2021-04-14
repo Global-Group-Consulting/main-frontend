@@ -183,7 +183,7 @@ export default {
 
       const isInitialMovement = item.initialMovement
 
-      return root.$t("enums.RequestTypes." + id) + (isInitialMovement ? " <strong> Nuovo Cliente</strong>" : "");
+      return root.$t("enums.RequestTypes." + id) + (isInitialMovement ? " (<strong> Nuovo Cliente</strong>)" : "");
     }
 
     function getRefAgentUrl(item) {
