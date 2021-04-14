@@ -210,7 +210,7 @@
         </template>
       </page-toolbar>
 
-      <v-form>
+      <v-form ref="mainForm">
         <v-tabs
           v-model="currentTab"
           center-active
@@ -241,6 +241,7 @@
                     :edit-mode="editMode"
                     @status="saveStatus(tab.schema, $event)"
                     @checkedFieldsChange="onCheckedFieldsChange"
+                    @formDirty="updateDirtyForms($event, tab)"
                   />
                 </v-card-text>
               </v-card>
@@ -722,6 +723,20 @@ export default {
       $router.push(path)
     }
 
+    const areDirtyForms = computed(() => {
+      let result = false;
+
+
+
+      for (const entry of Object.entries(userForm.dirtyForms.value)) {
+        if (entry[1]) {
+          result = true
+        }
+      }
+
+      return result
+    })
+
     // fetches user details
     onBeforeMount(async () => {
       const userId = $route.params.id;
@@ -792,7 +807,8 @@ export default {
       askIncompleteUser,
       askResendContract,
       hasProfile,
-      goToUserProfile
+      goToUserProfile,
+      areDirtyForms
     };
   },
   computed: {},
@@ -818,6 +834,24 @@ export default {
       this.$store.dispatch("dialog/updateStatus", {
         title: this.$t("dialogs.userMessage.title")
       });
+    }
+  },
+  async beforeRouteLeave(to, from, next) {
+    if (!this.areDirtyForms) {
+      next()
+
+      return
+    }
+
+    try {
+      await this.$alerts.ask({
+        html: this.$t("alerts.unsaved-data"),
+        icon: "warning"
+      })
+
+      next()
+    } catch (er) {
+      return false
     }
   }
 };
