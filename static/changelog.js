@@ -4,6 +4,10 @@ module.exports = `<h2 id="v188small15042020small">v 1.8.8 - <small>15/04/2020</s
 <li>Anagrafica, campi obbligatori solo se non bozza.</li>
 <li>Aggiornata tabella richieste da evadere in dashboard</li>
 </ul>
+<h3 id="aggiunte">aggiunte</h3>
+<ul>
+<li>Aggiunto possibilità di trasferimento provvigioni da agente di riferimento a subagente </li>
+</ul>
 <h2 id="v187small12042020small">v 1.8.7 - <small>12/04/2020</small></h2>
 <h3 id="miglioramenti-1">Miglioramenti</h3>
 <ul>
@@ -11,7 +15,7 @@ module.exports = `<h2 id="v188small15042020small">v 1.8.8 - <small>15/04/2020</s
 <li>Abbassato l'età minima per apertura account a 14 anni</li>
 <li>Mostra i log delle versioni solo per gli utenti amministrativi</li>
 </ul>
-<h3 id="aggiunte">Aggiunte</h3>
+<h3 id="aggiunte-1">Aggiunte</h3>
 <ul>
 <li>Aggiunto pulsante per passare dall'anagrafica al profilo e viceversa</li>
 <li>Popup termini e condizioni nella pagina del contratto</li>
@@ -23,7 +27,7 @@ module.exports = `<h2 id="v188small15042020small">v 1.8.8 - <small>15/04/2020</s
 <li>Implementata logica log firma contratto.</li>
 <li>Rimosso riferimenti a date nei preventivi</li>
 </ul>
-<h3 id="aggiunte-1">Aggiunte</h3>
+<h3 id="aggiunte-2">Aggiunte</h3>
 <ul>
 <li>Pulsante rimozione manuale Brite</li>
 <li>Pulsante aggiunta manuale Provvigioni</li>
@@ -37,12 +41,12 @@ module.exports = `<h2 id="v188small15042020small">v 1.8.8 - <small>15/04/2020</s
 <li>Menu "altro" in mobile, non mostra più gli elementi già visibili nella barra inferiore</li>
 <li>Calcolatrice spostato aggiunta movimenti direttamente nella tabella</li>
 </ul>
-<h3 id="aggiunte-2">Aggiunte</h3>
+<h3 id="aggiunte-3">Aggiunte</h3>
 <ul>
 <li>Tabella con elenco contratti in attesa di firma nella dashboard admin</li>
 </ul>
 <h2 id="v170small23022020small">v 1.7.0 - <small>23/02/2020</small></h2>
-<h3 id="aggiunte-3">Aggiunte</h3>
+<h3 id="aggiunte-4">Aggiunte</h3>
 <ul>
 <li>Campo "IBAN", "BIC" e "Note" nel report excel delle richieste</li>
 <li>Aggiunto campo "Tipologia Provvigioni squadra" in caso di agente con subagenti</li>
@@ -61,13 +65,13 @@ module.exports = `<h2 id="v188small15042020small">v 1.8.8 - <small>15/04/2020</s
 <li>Modale che mostra i clienti permette di vedere anche i sottoclienti di un subagente</li>
 </ul>
 <h2 id="v163small06022020small">v 1.6.3 - <small>06/02/2020</small></h2>
-<h3 id="aggiunte-4">Aggiunte</h3>
+<h3 id="aggiunte-5">Aggiunte</h3>
 <ul>
 <li>Pulsanti per scaricare il preventivo corrente</li>
 <li>Menù per il download delle ricevute nell'elenco movimenti</li>
 </ul>
 <h2 id="v162small28012020small">v 1.6.2 - <small>28/01/2020</small></h2>
-<h3 id="aggiunte-5">Aggiunte</h3>
+<h3 id="aggiunte-6">Aggiunte</h3>
 <ul>
 <li>Barra di ricerca nell'elenco degli utenti</li>
 <li>Barra di navigazione in mobile</li>
@@ -78,7 +82,7 @@ module.exports = `<h2 id="v188small15042020small">v 1.8.8 - <small>15/04/2020</s
 <li>Lettura tabelle in mobile </li>
 </ul>
 <h2 id="v161small05012021small">v 1.6.1 - <small>05/01/2021</small></h2>
-<h3 id="aggiunte-6">Aggiunte</h3>
+<h3 id="aggiunte-7">Aggiunte</h3>
 <ul>
 <li>Transizioni al cambio delle pagine</li>
 <li>Aggiunta lista dei cambiamenti per ogni versione</li>
@@ -90,7 +94,7 @@ module.exports = `<h2 id="v188small15042020small">v 1.8.8 - <small>15/04/2020</s
 <li>Cambiato popup comunicazioni chat, da schermo intero a popup normale</li>
 </ul>
 <h2 id="v160small05012021small">v 1.6.0 - <small>05/01/2021</small></h2>
-<h3 id="aggiunte-7">Aggiunte</h3>
+<h3 id="aggiunte-8">Aggiunte</h3>
 <ul>
 <li>Sezione "Gold / Global club" in anagrafica utente</li>
 <li>Pulsante "Riscossione gold" in pagina richieste</li>
@@ -101,7 +105,7 @@ module.exports = `<h2 id="v188small15042020small">v 1.8.8 - <small>15/04/2020</s
 <li>Grafico dashboard agenti e clienti - ora mostra anche 6 mesi futuri </li>
 </ul>
 <h2 id="v150small04012021small">v 1.5.0 - <small>04/01/2021</small></h2>
-<h3 id="aggiunte-8">Aggiunte</h3>
+<h3 id="aggiunte-9">Aggiunte</h3>
 <ul>
 <li>Campo "metodo pagamento iniziale"</li>
 <li>Campo "investimento iniziale in oro"</li>
