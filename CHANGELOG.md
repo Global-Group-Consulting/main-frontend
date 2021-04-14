@@ -5,6 +5,9 @@
 - Anagrafica, campi obbligatori solo se non bozza.
 - Aggiornata tabella richieste da evadere in dashboard
 
+### aggiunte
+- Aggiunto possibilità di trasferimento provvigioni da agente di riferimento a subagente 
+
 ## v 1.8.7 - <small>12/04/2020</small>
 ### Miglioramenti
 - Aggiornata pagina del profilo degli utenti

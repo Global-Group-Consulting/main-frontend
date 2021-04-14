@@ -1,59 +1,62 @@
 <template>
-  <v-data-table
-    class="data-table"
-    :headers="headers"
-    :items="items"
-    :items-per-page="itemsPerPage"
-    :item-class="itemClass"
-    :footer-props="{
+<!--  <div style="position:relative;">-->
+    <v-data-table
+      class="data-table"
+      :headers="headers"
+      :items="items"
+      :items-per-page="itemsPerPage"
+      :item-class="itemClass"
+      :footer-props="{
       itemsPerPageOptions
     }"
-    :loading="loading"
-    :hide-default-footer="items.length <= itemsPerPage"
-    :no-data-text="$t(noDataText)"
-    :dense="dense"
-    @click:row="$emit('click:row', $event)"
-    :locale="$i18n.locale"
-    :options="options"
-  >
-    <!-- Dynamic item templates -->
-    <template v-for="col in headers" v-slot:[`item.${col.value}`]="{ item, value }">
-      <slot :name="'item.' + col.value" v-bind:item="item" v-bind:value="value">
-        {{ item[col.value] }}
-      </slot>
-    </template>
+      :loading="loading"
+      :hide-default-footer="items.length <= itemsPerPage"
+      :no-data-text="$t(noDataText)"
+      :dense="dense"
+      @click:row="$emit('click:row', $event)"
+      :locale="$i18n.locale"
+      :options="options"
+    >
+      <!-- Dynamic item templates -->
+      <template v-for="col in headers" v-slot:[`item.${col.value}`]="{ item, value }">
+        <slot :name="'item.' + col.value" v-bind:item="item" v-bind:value="value">
+          {{ item[col.value] }}
+        </slot>
+      </template>
 
-    <template v-slot:item.contractNumber="{ item }">
-      {{ $options.filters.contractNumberFormatter(item.contractNumber) }}
-    </template>
+      <template v-slot:item.contractNumber="{ item }">
+        {{ $options.filters.contractNumberFormatter(item.contractNumber) }}
+      </template>
 
-    <template v-slot:item.validated_at="{ item }">
+      <template v-slot:item.validated_at="{ item }">
       <span class="text-no-wrap">
         {{ $options.filters.dateFormatter(item.validated_at, true) }}
       </span>
-    </template>
+      </template>
 
-    <template v-slot:item.created_at="{ item }">
+      <template v-slot:item.created_at="{ item }">
       <span class="text-no-wrap">
         {{ $options.filters.dateFormatter(item.created_at, true) }}
       </span>
-    </template>
+      </template>
 
-    <template v-slot:item.completed_at="{ item }">
+      <template v-slot:item.completed_at="{ item }">
       <span class="text-no-wrap">
         {{ $options.filters.dateFormatter(item.completed_at, true) }}
       </span>
-    </template>
+      </template>
 
-    <template v-slot:item.updated_at="{ item }">
+      <template v-slot:item.updated_at="{ item }">
       <span class="text-no-wrap">
         {{ $options.filters.dateFormatter(item.updated_at, true) }}
       </span>
-    </template>
+      </template>
 
-    <template v-slot:no-data="{item}">
-    </template>
-  </v-data-table>
+      <template v-slot:no-data="{item}">
+      </template>
+    </v-data-table>
+<!--    <div class="table-overlay"></div>-->
+<!--  </div>-->
 </template>
 
 <script>
@@ -182,7 +185,31 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.table-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  display: none;
+  /*
+  */
+}
+
 .data-table::v-deep {
+
+  .v-data-table__wrapper {
+    /*background-image: linear-gradient(to right, white, white), linear-gradient(to right, white, white), linear-gradient(to right, rgba(0, 0, 20, .50), rgba(255, 255, 255, 0)), linear-gradient(to left, rgba(0, 0, 20, .50), rgba(255, 255, 255, 0));
+
+    background-position: left center, right center, left center, right center;
+    background-repeat: no-repeat;
+    background-color: white;
+    background-size: 20px 100%, 20px 100%, 10px 100%, 10px 100%;
+    background-attachment: local, local, scroll, scroll;*/
+  }
+
   .v-data-table__mobile-table-row:nth-child(odd) {
     background-color: #f7f7f7;
     display: inline-block;

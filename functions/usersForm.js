@@ -25,7 +25,7 @@ import AgentTeamType from "~/enums/AgentTeamType";
 
 import {kebabCase} from "lodash"
 
-export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $auth}, refs) {
+export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $auth, $v}, refs) {
   /**
    * @type {import('@vue/composition-api').Ref<Partial<import("../@types/UserFormData").UserDataSchema>>}
    */
@@ -45,6 +45,8 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
   const userIsPersonaGiuridica = computed(() => +formData.value.personType === PersonTypes.GIURIDICA)
   const userType = computed(() => [UserRoles.CLIENTE, UserRoles.AGENTE].includes(formData.value.role) ? "user" : "admin")
   const beforeConfirm = ref(false)
+  const dirtyForms = ref({})
+
 
   /**
    * @type {import('@vue/composition-api').ComputedRef<{
@@ -118,6 +120,17 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
     return result
   }
 
+  function resetDirtyState() {
+    const formRefKeys = Object.keys(refs)
+
+    // Recover all error messages from all forms
+    for (const key of formRefKeys) {
+      if (key.startsWith("dynamicForm_") && refs[key].length) {
+        refs[key][0].$v?.$reset()
+      }
+    }
+  }
+
   /**
    * To use in case an account is in status INCOMPLETE.
    * When saving ask the AGENT if it has corrected the invalid fields
@@ -169,10 +182,16 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
 
       $alerts.toastSuccess("user-update-success")
 
+      resetDirtyState()
+
       return true
     } catch (error) {
       $alerts.error(error)
     }
+  }
+
+  function updateDirtyForms(state, tab) {
+    $set(dirtyForms.value, tab.title, state)
   }
 
   return {
@@ -191,6 +210,8 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
     showReferenceAgent,
     onSaveClick,
     permissions,
-    validateAll
+    validateAll,
+    updateDirtyForms,
+    dirtyForms
   }
 }

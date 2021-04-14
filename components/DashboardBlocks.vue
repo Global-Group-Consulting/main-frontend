@@ -71,7 +71,9 @@ export default {
             cancelBtn: "dialogs.commissionsAddDialog.btn-cancel",
             confirmBtn: "dialogs.commissionsAddDialog.btn-send"
           },
-          data: {}
+          data: {
+            user: props.dashboardData.user
+          }
         });
       },
       showMovementsList() {

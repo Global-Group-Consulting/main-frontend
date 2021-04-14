@@ -29,20 +29,21 @@ interface FormContext extends Vue {
 }
 
 function isRequired(formContext: FormContext): boolean {
+  const isNew = !formContext.formData.id
   const accountStatus = formContext.formData.account_status
   const userRole = formContext.formData.role
   const beforeConfirm = formContext.beforeConfirm
 
   /*
   Required = false se
-  - account_status === BOZZA
+  - account_status === BOZZA -o- isNew
     E
     - NOT beforeConfirm
 
   OPPURE
   - userRole è amministrativo
    */
-  return !((accountStatus === AccountStatuses.DRAFT && !beforeConfirm)
+  return !(((accountStatus === AccountStatuses.DRAFT || isNew) && !beforeConfirm)
     || [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(userRole))
 }
 

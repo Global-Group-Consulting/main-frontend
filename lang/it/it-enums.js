@@ -109,6 +109,8 @@ export default {
     "totalDeposit": "Provvigione deposito mensile",
     "annualDeposit": "Provvigione deposito annuale",
     "manualAdd": "Aggiunta manuale",
+    "manualTransfer": "Trasferimento dal proprio agente",
+    "manualTransferDoner": "Trasferimento verso agente",
     "commissionsReinvestment": "Reinvestimento provvigioni",
     "commissionsCollected": "Riscossione provvigioni",
     "cancelCommissionsCollected": "Annullamento riscossione provvigioni",

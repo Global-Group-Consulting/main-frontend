@@ -1,10 +1,23 @@
 <template>
   <div>
     <portal to="dialog-content">
+      <v-layout v-if="canTransferFromAgent">
+        <v-radio-group row v-model="formData.commissionType"
+                       style="width: 100%; text-align: center">
+          <v-radio :value="$enums.CommissionType.MANUAL_ADD" label="Aggiungi provvigioni"/>
+          <v-radio :value="$enums.CommissionType.MANUAL_TRANSFER" label="Trasferisci provvigioni dall'agente"/>
+        </v-radio-group>
+      </v-layout>
+
       <dynamic-fieldset :schema="formSchema"
                         v-model="formData"
+                        v-if="formData.commissionType"
                         ref="dialogForm"
-                        fill-row></dynamic-fieldset>
+                        fill-row/>
+
+      <v-alert v-else type="info" outlined>
+        E' necessario prima selezionare da dove aggiungere le provvigioni.
+      </v-alert>
     </portal>
 
     <portal to="dialog-actions-right">
@@ -20,6 +33,7 @@
         text
         @click="onConfirm"
         :loading="gLoading"
+        :disabled="!formData.commissionType"
       >
         {{ $t(dialogData.texts.confirmBtn) }}
       </v-btn>
@@ -28,14 +42,21 @@
 </template>
 
 <script lang="ts">
-import {Vue, Component} from "vue-property-decorator"
+import {Vue, Component, Watch} from "vue-property-decorator"
 import CommissionsAddSchema from "~/config/forms/commissionsAddSchema"
+import DynamicFieldset from "~/components/DynamicFieldset.vue";
 
-@Component({})
+@Component({
+  components: {DynamicFieldset: DynamicFieldset as any}
+})
 export default class CommissionsAddDialog extends Vue {
   public formData = {
     amountChange: null,
-    notes: ""
+    amountAvailable: null,
+    notes: "",
+    commissionType: this.canTransferFromAgent ? "" : this.$enums.CommissionType.MANUAL_ADD,
+    referenceAgentData: this.refAgentData,
+    referenceAgent: this.refAgentId
   }
 
   $refs!: {
@@ -47,7 +68,27 @@ export default class CommissionsAddDialog extends Vue {
   }
 
   get formSchema() {
-    return CommissionsAddSchema()
+    return CommissionsAddSchema(this.formData)
+  }
+
+  get canTransferFromAgent() {
+    // If the user is an agent and is the reference agent
+    return this.$auth.user.role === this.$enums.UserRoles.AGENTE
+      && this.dialogData.data.user?.referenceAgent === this.$auth.user.id
+  }
+
+  get refAgentData() {
+    const agentData = this.dialogData.data.user?.referenceAgentData || ""
+
+    if (!agentData) {
+      return ""
+    }
+
+    return this.$options?.filters?.userFormatter(agentData)
+  }
+
+  get refAgentId() {
+    return this.dialogData.data.user?.referenceAgent || ""
   }
 
   close() {
@@ -83,6 +124,19 @@ export default class CommissionsAddDialog extends Vue {
       });
     } catch (er) {
       this.$alerts.error(er)
+    }
+  }
+
+  @Watch('formData.commissionType', {immediate: true})
+  async onCommissionTypeChange(value: string) {
+    if (value !== this.$enums.CommissionType.MANUAL_TRANSFER) {
+      return
+    }
+
+    try {
+      this.formData.amountAvailable = await this.$apiCalls.fetchCommissionsAvailable(this.dialogData.data.user.referenceAgent)
+    } catch (e) {
+      console.error(e)
     }
   }
 }
