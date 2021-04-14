@@ -63,6 +63,7 @@ export default class CommissionsListTable extends Vue {
       CommissionType.ANNUAL_DEPOSIT,
       CommissionType.TOTAL_DEPOSIT,
       CommissionType.MANUAL_ADD,
+      CommissionType.MANUAL_TRANSFER,
     ].includes(item.commissionType)
       ? "+"
       : "-";

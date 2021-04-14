@@ -74,6 +74,7 @@ export default class Profile extends Vue {
     }
   }
   agentDashboardData: any = {
+    user: null,
     blocks: {
       monthCommissions: 0,
       reinvestedCommissions: 0,
@@ -160,6 +161,7 @@ export default class Profile extends Vue {
         const resultCommissions = await this.$apiCalls.fetchCommissionsStatus({userId: this.userId});
 
         this.agentDashboardData.blocks = resultCommissions.blocks
+        this.agentDashboardData.user = this.userData
       }
     } catch (er) {
       this.$alerts.error(er)

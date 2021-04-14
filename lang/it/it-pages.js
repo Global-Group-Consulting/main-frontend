@@ -148,9 +148,9 @@ export default {
     monthCommissions: "Provvigioni guadagnate",
     reinvestedCommissions: "Provvigioni reinvestite",
     collectedCommissions: "Provvigioni riscosse",
-    clientsTotalDeposit: "Versamenti dei clienti nell'ultimo anno",
+    clientsTotalDeposit: "Versamenti dei clienti nell'anno in corso",
     collectCommissions: "Preleva",
-    addCommissions: "Aggiungi / Regala"
+    addCommissions: "Aggiungi / Trasferisci"
   },
   calculator: {
     title: "Preventivi"
