@@ -10,6 +10,9 @@
           :items="tab.data"
           table-key="users"
           schema="usersSchema"
+          :options="{
+              sortBy: ['accountStatusOrdered', 'firstName', 'lastName'],
+            }"
           :loading="loading"
           :condition="+$enums.UserRoles.get(tab.id).index"
         >
@@ -349,10 +352,13 @@ export default class UsersListTable extends Vue {
     this.loading = true
 
     try {
-      let usersList: any[] = []
+      let usersList: any[] = [];
+      let listToEmit: any[] = []
 
       if (this.$auth.user.id !== this.userId || this.$auth.user.role === this.$enums.UserRoles.AGENTE) {
         usersList = await this.$apiCalls.getClientsList(this.userId)
+
+        listToEmit = usersList;
 
         for (const user of usersList) {
           if (user.id === this.userId) {
@@ -366,10 +372,16 @@ export default class UsersListTable extends Vue {
 
         for (const group of usersList) {
           this.usersData[this.getRoleName(+group.id)].push(...group.data)
+          listToEmit.push(...group.data)
         }
       }
 
+      this.$emit("updatedUsersList", listToEmit.map(user => {
 
+        user.accountStatusOrdered = this.$enums.AccountStatuses.get(user.account_status).order
+
+        return user
+      }))
     } catch (e) {
       console.error(e)
     }

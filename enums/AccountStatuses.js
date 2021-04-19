@@ -45,6 +45,7 @@ class AccountStatuses extends BasicEnum {
     this.data = {
       [this.DRAFT]: {
         id: "draft",
+        order: 4
       },
       [this.CREATED]: {
         id: "created",
@@ -63,15 +64,18 @@ class AccountStatuses extends BasicEnum {
       [this.VALIDATED]: {
         id: "validated",
         color: "#FFEE58",
-        roles: [UserRoles.CLIENTE]
+        roles: [UserRoles.CLIENTE],
+        order: 3
       },
       [this.APPROVED]: {
         id: "approved",
-        color: "#cddc39"
+        color: "#cddc39",
+        order: 2
       },
       [this.ACTIVE]: {
         id: "active",
-        color: "#8bc34a"
+        color: "#8bc34a",
+        order: 1
       },
     }
   }

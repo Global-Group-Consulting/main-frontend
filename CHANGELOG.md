@@ -4,9 +4,12 @@
 ### Miglioramenti
 - Anagrafica, campi obbligatori solo se non bozza.
 - Aggiornata tabella richieste da evadere in dashboard
+- Permette di approvare richieste in lavorazione da altri admin
 
 ### aggiunte
-- Aggiunto possibilità di trasferimento provvigioni da agente di riferimento a subagente 
+- Aggiunto possibilità di trasferimento provvigioni da agente di riferimento a subagente
+- In fase di approvazione richiesta, permette di cambiare l'importo di quest'ultima
+- Aggiunti blocchi riepilogativi in elenco utenti relativi agli stati
 
 ## v 1.8.7 - <small>12/04/2020</small>
 ### Miglioramenti

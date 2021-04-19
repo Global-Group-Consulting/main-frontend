@@ -1,4 +1,9 @@
 import UserRoles from "~/enums/UserRoles";
+import AccountStatuses from "~/enums/AccountStatuses";
+
+function getAccountStatusColor(status: string) {
+  return AccountStatuses.get(status).color || "#c1c1c1"
+}
 
 export default {
   deposit: {
@@ -86,6 +91,30 @@ export default {
     value: "clientsTotalDeposit",
     // actionText: "collectedCommissions",
     // action: "collectInterests"
-  }
+  },
+  draft: {
+    title: "draft",
+    icon: "mdi-account-outline",
+    color: getAccountStatusColor("draft"),
+    value: "draft",
+  },
+  pendingSignature: {
+    title: "pendingSignature",
+    icon: "mdi-account-edit",
+    color: getAccountStatusColor("validated"),
+    value: "pendingSignature",
+  },
+  pendingFirstAccess: {
+    title: "pendingFirstAccess",
+    icon: "mdi-account-arrow-right",
+    color: getAccountStatusColor("approved"),
+    value: "pendingFirstAccess",
+  },
+  active: {
+    title: "active",
+    icon: "mdi-account-check",
+    color: getAccountStatusColor("active"),
+    value: "active",
+  },
 
 }

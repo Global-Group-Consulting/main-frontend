@@ -8,10 +8,15 @@
 
         <div style="width: 100%">
           <v-card-title class="pb-0 text-no-wrap">
-            €
-            {{
-              $options.filters.moneyFormatter(dashboardData.blocks[block.value])
-            }}
+            <template v-if="!formatAsInt">
+              €
+              {{
+                $options.filters.moneyFormatter(dashboardData.blocks[block.value])
+              }}
+            </template>
+            <template v-else>
+              {{ dashboardData.blocks[block.value] }}
+            </template>
           </v-card-title>
           <v-card-text>
             {{ $t(`pages.${page}.${block.title}`) }}
@@ -40,6 +45,7 @@ import DashboardBlocksList from "../config/blocks/dashboardBlocks.ts";
 import RoleBasedConfig from "../config/roleBasedConfig";
 import UserRoles from "../enums/UserRoles";
 import CommissionsAddDialog from "~/components/dialogs/CommissionsAddDialog";
+import roleBasedConfig from "~/config/roleBasedConfig";
 
 export default {
   name: "DashboardBlocks",
@@ -53,6 +59,7 @@ export default {
       default: "dashboard",
       type: String
     },
+    formatAsInt: Boolean,
     readonly: Boolean,
     includeCommissionsAddDialog: Boolean
   },
@@ -93,11 +100,9 @@ export default {
     const blocksList = computed(() => {
       const userRole = props.forRole || +$auth.user.role;
       const roleName = UserRoles.getIdName(userRole);
+      const colDefaultBlocks = _get(RoleBasedConfig, `defaults.blocks.${props.page}.blocks`);
 
-      const blocks = _get(
-        RoleBasedConfig,
-        `${roleName}.blocks.${props.page}.blocks`
-      );
+      let blocks = _get(RoleBasedConfig, `${roleName}.blocks.${props.page}.blocks`, colDefaultBlocks);
 
       if (!blocks) {
         console.warn("Can't find config for " + roleName)

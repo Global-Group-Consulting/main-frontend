@@ -52,7 +52,11 @@ export default {
     'title': 'Elenco degli utenti',
     'subtitle': '',
     'btn-add-user': 'Aggiungi utente',
-    'btn-filter-data': 'Filtra i dati'
+    'btn-filter-data': 'Filtra i dati',
+    "draft": "Bozza",
+    "pendingSignature": "Attesa firma contratto",
+    "pendingFirstAccess": "Attesa primo accesso",
+    "active": "Attivi",
   },
   usersId: {
     'title': 'Anagrafica',

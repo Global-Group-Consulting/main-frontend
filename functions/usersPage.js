@@ -7,6 +7,7 @@ import roleBasedConfig from '@/config/roleBasedConfig'
 import availableTableColumns from '@/config/tables/usersSchema'
 import UserRoles from "../enums/UserRoles"
 import Permissions from "./permissions"
+import AccountStatuses from "~/enums/AccountStatuses";
 
 export default function (root) {
   const {$apiCalls, $alerts, $enums, $set, $store} = root
