@@ -6,6 +6,7 @@
     :items="items"
     :items-per-page="itemsPerPage"
     :item-class="getItemClass"
+    :options="{sortBy: sortBy, sortDesc: sortDesc}"
     v-bind="$attrs"
     v-on="$listeners"
   >
@@ -125,6 +126,12 @@ export default {
     itemsPerPage: {
       type: Number,
       default: 10
+    },
+    sortBy: {
+      type: Array
+    },
+    sortDesc: {
+      type: Array
     }
     // condition: String // serve per decidere se mostrare una colonna, in base all'array passato come configurazione
   },

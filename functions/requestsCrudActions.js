@@ -2,6 +2,7 @@ import RequestTypes from "../enums/RequestTypes"
 import RequestStatus from "../enums/RequestStatus"
 import moment from "moment";
 import jsFileDownload from "js-file-download";
+import {ref, watch} from "@vue/composition-api";
 
 /**
  *
@@ -46,16 +47,80 @@ export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n, 
     const currentRequest = request.value ?? request
 
     try {
+      const alertData = {
+        type: $i18n.t(
+          "enums.RequestTypes." +
+          $enums.RequestTypes.get(currentRequest.type).id
+        ),
+        amount:
+          $enums.CurrencyType.get(currentRequest.currency).symbol +
+          " " +
+          $options.filters.moneyFormatter(currentRequest.amount),
+        user: $options.filters.userFormatter(currentRequest.user)
+      }
       await $alerts.askBeforeAction({
         key: "approve-request",
         preConfirm: async (value) => {
-          await $apiCalls.acceptRequest(currentRequest, moment(value, "DD/MM/YYYY", true).toDate());
+          const amountInput = document.getElementById("req_amountChange")
+          const amount = +amountInput.cleave.getRawValue()
+
+          await $apiCalls.acceptRequest(currentRequest, moment(value, "DD/MM/YYYY", true).toDate(), amount);
         },
         settings: {
+          html: $i18n.t(`alerts.approve-request-text`, alertData) +
+            `<input id="req_amountChange" class="swal2-input" placeholder="Importo" value="${$options.filters.moneyFormatter(currentRequest.amount)}">`,
+          focusConfirm: false,
+          onOpen: (htmlElement) => {
+            const inputAmount = htmlElement.querySelector("#req_amountChange");
+
+            inputAmount.cleave = new Cleave(inputAmount, {
+              numeral: true,
+              delimiter: '.',
+              numeralPositiveOnly: true,
+              numeralDecimalMark: ',',
+              numeralDecimalScale: 2
+            })
+
+            inputAmount.addEventListener("keydown", function (e) {
+              if (e.key === ".") {
+                e.preventDefault()
+
+                if (!e.target.value.includes(",")) {
+                  e.target.value += ","
+                }
+              }
+            })
+            inputAmount.addEventListener("blur", function (e) {
+              /** @type  {string} */
+              let value = e.target.value
+              const selectionStart = inputAmount.selectionStart
+
+              if (value === "") {
+                value = "0,00"
+              }
+
+              if (!value.includes(",")) {
+                value += ",";
+              }
+
+              let decimals = value.slice(value.indexOf(","))
+
+              while (decimals.length <= 2) {
+                value += "0";
+
+                decimals = value.slice(value.indexOf(","));
+              }
+
+              if (value !== e.target.value) {
+                inputAmount.value = value;
+              }
+            })
+          },
+
           input: "text",
           inputValue: $moment().format("DD/MM/YYYY"),
           inputPlaceholder: $i18n.t("forms.payment-doc-date"),
-          inputValidator: (value) => {
+          inputValidator: (value, a, b) => {
             if (!value) {
               return $i18n.t("validators.required")
             }
@@ -98,17 +163,7 @@ export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n, 
             }
           }
         },
-        data: {
-          type: $i18n.t(
-            "enums.RequestTypes." +
-            $enums.RequestTypes.get(currentRequest.type).id
-          ),
-          amount:
-            $enums.CurrencyType.get(currentRequest.currency).symbol +
-            " " +
-            $options.filters.moneyFormatter(currentRequest.amount),
-          user: $options.filters.userFormatter(currentRequest.user)
-        }
+        data: alertData
       });
 
       return true

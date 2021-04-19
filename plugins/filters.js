@@ -130,6 +130,15 @@ export function moneyFormatter(value, formatBrite = false, avoidNull = false) {
   return formatted.split(',')[0] + (decimals ? ',' + decimals : '')
 }
 
+export function moneyParser(value) {
+  const numeralFormatter = new Cleave.NumeralFormatter()
+  numeralFormatter.delimiter = '.'
+  numeralFormatter.numeralPositiveOnly = true
+  numeralFormatter.numeralDecimalMark = ','
+
+  return numeralFormatter.format(value)
+}
+
 export function regionFormatter(value, list) {
   const region = list.find(_region => _region.value === value)
 
@@ -152,6 +161,7 @@ Vue.filter('dateFormatter', dateFormatter)
 Vue.filter('dateHourFormatter', dateHourFormatter)
 Vue.filter('datePickerFormatter', datePickerFormatter)
 Vue.filter('moneyFormatter', moneyFormatter)
+Vue.filter('moneyParser', moneyParser)
 Vue.filter('percentageFormatter', percentageFormatter)
 Vue.filter('contractNumberFormatter', contractNumberFormatter)
 Vue.filter('regionFormatter', regionFormatter)

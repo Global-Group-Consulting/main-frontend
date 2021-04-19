@@ -200,6 +200,14 @@ const defaults = {
         "depositCollected",
       ]
     },
+    users: {
+      blocks: [
+        "active",
+        "pendingFirstAccess",
+        "pendingSignature",
+        "draft",
+      ]
+    }
   }
 }
 
