@@ -27,7 +27,7 @@ export default {
     'alert-reject-reason': "La richiesta è stata rifiutata per il seguente motivo:<br>",
     'alert-cancel-reason': "La richiesta è stata annullata in data {date} con il seguente motivo:<br>",
     'alert-connected-communication': "Alla richiesta è associata una comunicazione.",
-    'alert-in-progress': "Questa richiesta è stata presa in carico da {firstName} {lastName}."
+    'alert-in-progress': "Questa richiesta è stata presa in carico da <strong>{firstName} {lastName}</strong>."
   },
   communicationDialog: {
     'you': "Me",
