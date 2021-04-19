@@ -3,6 +3,13 @@
     <v-flex>
       <page-header page-name="users"></page-header>
 
+      <dashboard-blocks :dashboard-data="usersDataBlocks"
+                        class="mb-6"
+                        readonly
+                        page="users"
+                        format-as-int
+      ></dashboard-blocks>
+
       <page-toolbar always-visible :actions-list="actionsList">
         <template v-slot:right-block>
           <div class="d-flex">
@@ -29,7 +36,8 @@
       </page-toolbar>
 
       <users-list-table :user-id="$auth.user.id" :filters-active="filtersActive"
-                        @filtersClean="filtersClean">
+                        @filtersClean="filtersClean"
+                        @updatedUsersList="onUpdatedUsersList">
 
       </users-list-table>
       <!--      <v-tabs v-model="currentTab">
@@ -370,10 +378,13 @@ import Mark from "mark.js"
 import ClientsListDialog from "../../components/dialogs/ClientsListDialog";
 import {UsersPermissions} from "../../functions/acl/enums/users.permissions";
 import UsersListTable from "../../components/table/UsersListTable";
+import DashboardBlocks from "../../components/DashboardBlocks";
+import AccountStatuses from "../../enums/AccountStatuses";
 
 export default {
   name: "index",
   components: {
+    DashboardBlocks,
     UsersListTable,
     ClientsListDialog,
     PageToolbar,
@@ -489,6 +500,22 @@ export default {
       return selectedTable ? $enums.UserRoles.get(selectedTable.id).color : ""
     })
 
+    const usersDataBlocks = reactive({
+      blocks: {
+        draft: 0,
+        pendingSignature: 0,
+        pendingFirstAccess: 0,
+        active: 0
+      }
+    })
+
+    function onUpdatedUsersList(data) {
+      usersDataBlocks.blocks.draft = data.filter(user => user.account_status === AccountStatuses.DRAFT).length
+      usersDataBlocks.blocks.pendingSignature = data.filter(user => user.account_status === AccountStatuses.VALIDATED).length
+      usersDataBlocks.blocks.pendingFirstAccess = data.filter(user => user.account_status === AccountStatuses.APPROVED).length
+      usersDataBlocks.blocks.active = data.filter(user => user.account_status === AccountStatuses.ACTIVE).length
+    }
+
     function filtersClean() {
       filters.generic = ""
     }
@@ -591,7 +618,9 @@ export default {
       actionsList,
       filtersClean,
       showClientsList,
-      getInitials
+      getInitials,
+      usersDataBlocks,
+      onUpdatedUsersList
     };
   },
   data() {

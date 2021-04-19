@@ -35,6 +35,7 @@ export default function (context) {
 
             if (type.value === context.$enums.RequestTypes.VERSAMENTO
               || type.value === context.$enums.RequestTypes.COMMISSION_MANUAL_ADD
+              || type.value === context.$enums.RequestTypes.COMMISSION_MANUAL_TRANSFER
               || (type.value === context.$enums.RequestTypes.RISC_PROVVIGIONI && context.$auth.user.role !== context.$enums.UserRoles.AGENTE)
               || reqGold
             ) {

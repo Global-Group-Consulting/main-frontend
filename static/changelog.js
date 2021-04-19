@@ -3,10 +3,13 @@ module.exports = `<h2 id="v188small15042020small">v 1.8.8 - <small>15/04/2020</s
 <ul>
 <li>Anagrafica, campi obbligatori solo se non bozza.</li>
 <li>Aggiornata tabella richieste da evadere in dashboard</li>
+<li>Permette di approvare richieste in lavorazione da altri admin</li>
 </ul>
 <h3 id="aggiunte">aggiunte</h3>
 <ul>
-<li>Aggiunto possibilità di trasferimento provvigioni da agente di riferimento a subagente </li>
+<li>Aggiunto possibilità di trasferimento provvigioni da agente di riferimento a subagente</li>
+<li>In fase di approvazione richiesta, permette di cambiare l'importo di quest'ultima</li>
+<li>Aggiunti blocchi riepilogativi in elenco utenti relativi agli stati</li>
 </ul>
 <h2 id="v187small12042020small">v 1.8.7 - <small>12/04/2020</small></h2>
 <h3 id="miglioramenti-1">Miglioramenti</h3>

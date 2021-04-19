@@ -149,12 +149,13 @@ export default {
     "altro": "Altro",
   },
   'ClubPacks': {
+    "unsubscribed": "Non iscritto",
     "basic": "Basic",
     "fast": "Fast",
     "premium": "Premium",
   },
   'ClubMovementTypes': {
-    "interest_recapitalized": "Ricapitalizzazione interessi",
+    "interest_recapitalized": "Ricapitalizzazione",
     "deposit_added": "Aggiunta manuale",
     "deposit_removed": "Rimozione manuale",
     "deposit_transferred": "Trasferimento tra utenti",

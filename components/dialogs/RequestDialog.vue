@@ -30,10 +30,10 @@
           <strong>{{ formData.cancelReason }}</strong>
         </template>
 
-        <template
-          v-else-if="formData.status === $enums.RequestStatus.LAVORAZIONE"
-        >
+        <template v-else-if="formData.status === $enums.RequestStatus.LAVORAZIONE">
           <template v-if="showConversatinLink">
+            <p v-if="!ownByCurrentUser" class="mb-1" v-html="$t('dialogs.requests.alert-in-progress',formData.conversation.creator)"/>
+
             {{ $t("dialogs.requests.alert-connected-communication") }}
             <v-btn
               link
@@ -41,6 +41,7 @@
               x-small
               :href="'/communications#' + conversationId"
               target="__blank"
+              v-if="ownByCurrentUser"
             >
               <v-icon x-small>mdi-open-in-new</v-icon>
               {{ $t("dialogs.requests.btn-go-to-conversation") }}
@@ -71,7 +72,8 @@
             {{ $t("dialogs.requests.btn-reject") }}
           </v-btn>
           <v-btn text color="success" @click="onApprove">
-            <template v-if="[$enums.RequestTypes.VERSAMENTO].includes(formData.type) && formData.status === $enums.RequestStatus.NUOVA">
+            <template
+              v-if="[$enums.RequestTypes.VERSAMENTO].includes(formData.type) && formData.status === $enums.RequestStatus.NUOVA">
               <v-icon>mdi-wechat</v-icon>
               {{ $t("dialogs.requests.btn-chat") }}
             </template>
@@ -231,20 +233,18 @@ export default {
     const showConversatinLink = computed(() => {
       return (
         formData.value.conversation &&
-        formData.value.conversation?.watchersIds?.includes($auth.user.id)
+        (formData.value.conversation?.watchersIds?.includes($auth.user.id) || $auth.user.role === $enums.UserRoles.ADMIN)
       );
     });
 
-    const canApprove = computed(() => {
-      const isNewRequest =
-        $enums.RequestStatus.NUOVA === +formData.value.status;
-      const isInProgress =
-        $enums.RequestStatus.LAVORAZIONE === +formData.value.status;
-      const ownByAdmin =
-        isInProgress &&
-        $auth.user.id === formData.value.conversation.createdById;
+    const ownByCurrentUser = computed(() => $auth.user.id === formData.value?.conversation?.createdById)
 
-      return (isNewRequest || ownByAdmin) && permissions.userType === "admin";
+    const canApprove = computed(() => {
+      const isNewRequest = $enums.RequestStatus.NUOVA === +formData.value.status;
+      const isInProgress = $enums.RequestStatus.LAVORAZIONE === +formData.value.status;
+      // const ownByAdmin = isInProgress && ownByCurrentUser.value;
+
+      return (isNewRequest || isInProgress) && permissions.userType === "admin";
     });
 
     async function onDelete() {
@@ -329,7 +329,8 @@ export default {
       conversationId,
       showAlert,
       showConversatinLink,
-      canApprove
+      canApprove,
+      ownByCurrentUser
     };
   },
   data() {

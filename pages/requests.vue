@@ -174,23 +174,23 @@ export default class Requests extends Vue {
       title: this.$t(`pages.requests.tableNuova-title`),
       color: "blue",
       icon: "mdi-timer-sand",
-      sortBy: "created_at",
-      sortDesc: true
+      sortBy: ["created_at", "user"],
+      sortDesc: [true]
     },
     {
       id: "lavorazione",
       title: this.$t(`pages.requests.tableLavorazione-title`),
       color: "warning",
       icon: "mdi-sitemap",
-      sortBy: "created_at",
-      sortDesc: true
+      sortBy: ["updated_at", "created_at", "user"],
+      sortDesc: [true]
     },
     {
       id: "accettata",
       title: this.$t(`pages.requests.tableAccettata-title`),
       color: "green",
       icon: "mdi-check-all",
-      sortBy: ["completed_at", "created_at"],
+      sortBy: ["completed_at", "created_at", "user"],
       sortDesc: [true, false],
       multiSort: true
     },
@@ -199,7 +199,7 @@ export default class Requests extends Vue {
       title: this.$t(`pages.requests.tableRifiutata-title`),
       color: "red",
       icon: "mdi-close-box-multiple-outline",
-      sortBy: ["completed_at", "created_at"],
+      sortBy: ["completed_at", "created_at", "user"],
       sortDesc: [true, false],
       multiSort: true
     }
