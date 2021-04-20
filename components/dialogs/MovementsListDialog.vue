@@ -36,7 +36,7 @@
           :type="listImported ? 'success' : 'info'"
           class="text-center"
           outlined
-          v-if="movements.list.value.length === 0 || listImported"
+          v-if="canImportMovements"
         >
           <template v-if="!listImported">
             {{ $t("dialogs.movementsList.alert-no-data", user) }}
@@ -99,7 +99,7 @@ import AccountStatuses from "../../enums/AccountStatuses";
 export default {
   components: {MovementsListTable, FileUploader},
   setup(props, {root, emit}) {
-    const {$auth, $alerts, $apiCalls} = root;
+    const {$auth, $alerts, $apiCalls, $i18n} = root;
     const {useGetters: dialogUseGetters} = createNamespacedHelpers("dialog");
     const {dialogData} = dialogUseGetters(["dialogData"]);
     const movementsFn = MovementsFn(root);
@@ -113,7 +113,7 @@ export default {
     const canImportMovements = [
       UserRoles.SERV_CLIENTI,
       UserRoles.ADMIN
-    ].includes(+$auth.user.role); //$auth.user.superAdmin;
+    ].includes(+$auth.user.role) && user.account_status === AccountStatuses.DRAFT; //$auth.user.superAdmin;
 
     const canImportContract = [
       UserRoles.SERV_CLIENTI,
@@ -144,16 +144,31 @@ export default {
     }
 
     async function onImportListClick(file) {
+      let overwrite = false
+
       try {
+        if(movementsFn.list.value.length > 0){
+          await $alerts.ask({
+            type: "warning",
+            title: "ATTENZIONE!!!",
+            html: $i18n.t("dialogs.movementsList.alert-overwrite-movements"),
+            confirmButtonText: $i18n.t("dialogs.movementsList.btn-overwrite"),
+          });
+
+          overwrite = true
+        }
+
         await $alerts.askBeforeAction({
           key: "movements-import",
           preConfirm: async () => {
             const result = await $apiCalls.importMovementsList({
               fileToImport: file,
-              userId: user.id
+              userId: user.id,
+              overwrite
             });
 
             // store the received data in the current list so that can be shown to the user
+            root.$set(movementsFn.list, "value", []);
             root.$set(movementsFn.list, "value", result);
 
             listImported.value = true;

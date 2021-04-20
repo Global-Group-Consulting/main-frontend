@@ -64,14 +64,16 @@ export default {
   },
   movementsList: {
     'title': 'Elenco dei movimenti',
-    'alert-no-data': "Al momento, l'utente {firstName} {lastName} non ha ancora alcun movimento.",
+    'alert-no-data': "",
     'alert-no-contract': "Al momento, l'utente {firstName} {lastName} non ha ancora un contratto attivo. Nel caso in cui l'utente abbia sottoscritto un contratto cartaceo, è possibile importarlo, scegliendo il file pdf e premendo su 'Importa contratto'.",
-    'alert-import-data': "Tuttavia, è possibile importare la lista dei movimenti precedenti da un file \".csv\". Per procedere, sceglire il file da importare e premere sul pulsante 'Importa lista'.",
+    'alert-import-data': "E' possibile importare la lista dei movimenti precedenti dell'utente {firstName} {lastName} da un file \".csv\". Per procedere, scegliere il file da importare e premere sul pulsante 'Importa lista'.",
     'alert-import-success': "L'operazione di importazione è andata a buon fine. La invitiamo a controllare l'esattezza dei dati importati.",
     'alert-import-contract-success': "Contratto importato correttamente. Questo sarà visibile nella sezione relativa al contratto.",
+    'alert-overwrite-movements': "L'utente ha già dei movimenti presenti. Continuando l'importazione i movimenti precedenti verranno eliminati e ricreati in base al file importato.<br>Siete sicuri di voler continuare?<br><strong>L'operazione non sarà reversibile!</strong>",
     'file-placeholder': "Scegli un file...",
     'btn-cancel': 'Chiudi',
     'btn-import': 'Importa lista',
+    'btn-overwrite': 'Si, sovrascrivi',
     'btn-import-contract': 'Importa contratto',
   },
   changelog: {

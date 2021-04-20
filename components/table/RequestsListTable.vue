@@ -128,10 +128,12 @@ export default {
       default: 10
     },
     sortBy: {
-      type: Array
+      type: Array,
+      default: () => []
     },
     sortDesc: {
-      type: Array
+      type: Array,
+      default: () => []
     }
     // condition: String // serve per decidere se mostrare una colonna, in base all'array passato come configurazione
   },
