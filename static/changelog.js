@@ -4,6 +4,7 @@ module.exports = `<h2 id="v188small15042020small">v 1.8.8 - <small>15/04/2020</s
 <li>Anagrafica, campi obbligatori solo se non bozza.</li>
 <li>Aggiornata tabella richieste da evadere in dashboard</li>
 <li>Permette di approvare richieste in lavorazione da altri admin</li>
+<li>Permette di reimportare e sovrascrivere i movimenti di un utente in BOZZA</li>
 </ul>
 <h3 id="aggiunte">aggiunte</h3>
 <ul>

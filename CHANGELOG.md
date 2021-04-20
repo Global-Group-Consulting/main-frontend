@@ -5,6 +5,7 @@
 - Anagrafica, campi obbligatori solo se non bozza.
 - Aggiornata tabella richieste da evadere in dashboard
 - Permette di approvare richieste in lavorazione da altri admin
+- Permette di reimportare e sovrascrivere i movimenti di un utente in BOZZA
 
 ### aggiunte
 - Aggiunto possibilità di trasferimento provvigioni da agente di riferimento a subagente
