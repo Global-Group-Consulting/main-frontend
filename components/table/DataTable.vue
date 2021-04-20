@@ -7,8 +7,8 @@
       :items-per-page="itemsPerPage"
       :item-class="itemClass"
       :footer-props="{
-      itemsPerPageOptions
-    }"
+        itemsPerPageOptions
+      }"
       :loading="loading"
       :hide-default-footer="items.length <= itemsPerPage"
       :no-data-text="$t(noDataText)"
