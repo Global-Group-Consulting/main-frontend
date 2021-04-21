@@ -4,6 +4,7 @@ import {RequestsPermissions} from "~/functions/acl/enums/requests.permissions";
 import {AclPermissions} from "~/functions/acl/enums/acl.permissions";
 import {ClubPermissions} from "~/functions/acl/enums/club.permissions";
 import {CalculatorPermissions} from "~/functions/acl/enums/calculator.permissions";
+import permissions from "~/functions/permissions";
 
 export interface DrawerEntry {
   id?: string
@@ -94,11 +95,11 @@ export default function (context: Vue): DrawerEntry[] {
           permissions: [ClubPermissions.CLUB_READ]
         }, {
           id: 'club',
-          text: 'club',
-          icon: 'mdi-diamond-stone',
+          text: 'club-self',
+          icon: 'mdi-diamond-outline',
           link: '/club/' + context.$auth.user.id,
           permissions: [ClubPermissions.BRITES_SELF_READ],
-          if: context.$auth.user.gold
+          if: context.$auth.user.gold && !context.$acl.checkPermissions([ClubPermissions.CLUB_READ])
         }
       ]
     },
