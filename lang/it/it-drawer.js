@@ -9,6 +9,7 @@ export default {
   'utilities': 'Utilità',
   'calculator': 'Preventivi',
   'club': 'Global Club',
+  'club-self': 'Il mio Club',
   'comunications': 'Comunicazioni',
   'acl': 'Ruoli e permessi',
   'advanced': "Avanzate",
