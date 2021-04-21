@@ -43,9 +43,7 @@
           </template>
 
           <template v-if="canImportMovements && !listImported">
-            <p class="mt-2">
-              {{ $t("dialogs.movementsList.alert-import-data", user) }}
-            </p>
+            <p class="mt-2" v-html="$t('dialogs.movementsList.alert-import-data', user)"/>
 
             <div class="d-flex justify-center">
               <file-uploader
