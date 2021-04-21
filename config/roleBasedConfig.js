@@ -159,6 +159,7 @@ const defaults = {
       columns: [
         'amountChange',
         'createdAt',
+        'semesterId',
         'movementType',
         'deposit',
         'depositOld',

@@ -56,17 +56,25 @@
           <span :class="getMovementColor(item)">
             B {{ value | moneyFormatter(true) }}</span>
         </template>
+
         <template v-slot:item.deposit="{item, value}">
           <strong>B {{ value | moneyFormatter(true) }}</strong>
         </template>
+
         <template v-slot:item.depositOld="{item, value}">
           B {{ value | moneyFormatter(true) }}
         </template>
+
+        <template v-slot:item.semesterId="{item, value}">
+          {{ value ? formatTabSemester(+value.split("_")[0], +value.split("_")[1]) : "" }}
+        </template>
+
         <template v-slot:item.movementType="{item, value}">
           <v-chip :color="$enums.ClubMovementTypes.get(value).color" small>
             {{ $t(`enums.ClubMovementTypes.` + value) }}
           </v-chip>
         </template>
+
         <template v-slot:item.notes="{item, value}">
           <v-tooltip bottom v-if="value">
             <template v-slot:activator="{ on }">
@@ -80,14 +88,12 @@
       </data-table>
 
       <brite-add-dialog v-if="$store.getters['dialog/dialogId'] === 'BriteAddDialog'"
-                        @briteAdded="onBriteAdded"></brite-add-dialog>
+                        @briteAdded="onBriteAdded"/>
 
-      <brite-use-dialog v-if="$store.getters['dialog/dialogId'] === 'BriteUseDialog'"
-      ></brite-use-dialog>
+      <brite-use-dialog v-if="$store.getters['dialog/dialogId'] === 'BriteUseDialog'"/>
 
       <brite-remove-dialog v-if="$store.getters['dialog/dialogId'] === 'BriteRemoveDialog'"
-                           @briteRemoved="onBriteRemoved"
-      ></brite-remove-dialog>
+                           @briteRemoved="onBriteRemoved"/>
     </v-flex>
   </v-layout>
 </template>
@@ -118,6 +124,7 @@ interface TotalReport {
   totalAmount: number,
   expirations: { amount: number, expiresAt: Moment }[]
 }
+
 
 @Component({
   components: {BriteRemoveDialog, BriteUseDialog, BriteAddDialog, CardBlock, DynamicTabs, DataTable, PageHeader},
@@ -226,10 +233,11 @@ export default class Brite extends Vue {
 
   getCardsList(tab: DynamicTab): CardBlockI[] {
     const canAdd = this.$acl.checkPermissions([ClubPermissions.BRITES_ALL_ADD])
-      && tab.id === this.currentSemester
+      && tab.id !== this.tabsList[this.tabsList.length - 1].id
     const canRemove = this.$acl.checkPermissions([ClubPermissions.BRITES_ALL_ADD])
       && this.$moment().isAfter(tab.useFrom) && this.$moment().isBefore(tab.expiresAt)
     const permissionToUse = this.$acl.checkPermissions([ClubPermissions.BRITES_SELF_USE])
+      && this.$moment().isAfter(tab.useFrom) && this.$moment().isBefore(tab.expiresAt)
     const canUse = true //permissionToUse && this.$moment().isAfter(tab.useFrom) && this.$moment().isBefore(tab.expiresAt)
 
     const toReturn: CardBlockI[] = [{
@@ -289,14 +297,14 @@ export default class Brite extends Vue {
       start: {date: 1, month: 6},
       end: {date: 31, month: 11}
     }
-    let date = this.$moment()
+    let date: Moment = this.$moment()
     let toReturn = {from: this.$moment(), to: this.$moment()}
 
-    if (year < 0) {
+    if (year.toString().length === 4) {
+      date.year(year)
+    } else if (year < 0) {
       date.subtract(Math.abs(year), "year")
-    }
-
-    if (year > 0) {
+    } else if (year > 0) {
       date.add(year, "year")
     }
 
@@ -326,7 +334,7 @@ export default class Brite extends Vue {
       return toReturn.join(" ")
     }
 
-    const fromDate = this.$moment(tab.dates.from)
+    const fromDate: Moment = this.$moment(tab.dates.from)
     const semesterName: string = fromDate.year() + "_" + (fromDate.month() < 6 ? 1 : 2)
 
     if (!this.blocksData[semesterName]) {
@@ -341,6 +349,15 @@ export default class Brite extends Vue {
     return toReturn.join(" ")
   }
 
+  getSemesterReport(semesterId: string): TotalReport {
+    const data = this.blocksData[semesterId];
+
+    return {
+      totalAmount: data.briteAvailable,
+      expirations: []
+    }
+  }
+
   formatTabSemester(year: number, semester: number): string {
     const dates = this.getSemesterDates(year, semester)
 
@@ -350,7 +367,8 @@ export default class Brite extends Vue {
   /**
    * Open a modal that adds new brite to the user
    */
-  onAddBrite() {
+  onAddBrite(card: CardBlockI, tab: DynamicTab) {
+
     this.$store.dispatch("dialog/updateStatus", {
       id: "BriteAddDialog",
       title: this.$t("dialogs.briteAddDialog.title"),
@@ -358,7 +376,7 @@ export default class Brite extends Vue {
         cancelBtn: "dialogs.briteAddDialog.btn-cancel",
         confirmBtn: "dialogs.briteAddDialog.btn-save"
       },
-      data: {}
+      data: tab
     });
   }
 
@@ -385,7 +403,7 @@ export default class Brite extends Vue {
       data: {
         card,
         extraData,
-        totalReport: this.totalReport
+        totalReport: this.getSemesterReport(extraData.id)
       }
     });
   }
