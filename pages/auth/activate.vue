@@ -62,7 +62,7 @@ export default {
         if (countdownTimer.value >= 100) {
           clearInterval(interval);
 
-          $auth.setUserToken(result);
+          $auth.setUserToken(result.token, result.refreshToken);
 
           $router.replace("/", true);
         }

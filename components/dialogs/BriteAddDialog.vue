@@ -29,12 +29,17 @@
 
 import {Component, Vue} from "vue-property-decorator";
 import briteAddSchema from "~/config/forms/briteAddSchema"
+import {DynamicTab} from "~/@types/components/DynamicTab";
 
 @Component({
   components: {}
 })
 export default class BriteAddDialog extends Vue {
-  public formData = {amountChange: null, notes: ""}
+  public formData = {
+    amountChange: null,
+    notes: "",
+    semester: this.tabData.id
+  }
 
   $refs!: {
     dialogForm: any
@@ -46,6 +51,10 @@ export default class BriteAddDialog extends Vue {
 
   get formSchema() {
     return briteAddSchema()
+  }
+
+  get tabData(): DynamicTab {
+    return this.dialogData.data
   }
 
   close() {

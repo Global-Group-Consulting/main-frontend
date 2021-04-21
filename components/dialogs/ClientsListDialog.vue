@@ -30,7 +30,7 @@
           </template>
 
           <template v-slot:item.actions="{item}">
-            <a :href="'/users/' + item.id" target="_blank" class="text-no-wrap">
+            <a :href="'/users/profile/' + item.id" target="_blank" class="text-no-wrap">
               <v-icon small color="primary">mdi-open-in-new</v-icon>
               {{ $t("dialogs.clientsList.btn-open-user") }}
             </a>

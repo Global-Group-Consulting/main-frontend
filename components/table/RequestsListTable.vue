@@ -22,7 +22,7 @@
              class="text-capitalize"
              color="primary"
              @click.stop=""
-             :href="'users/' + item.user.id">
+             :href="'users/profile/' + item.user.id">
         <v-icon small class="mr-2">mdi-open-in-new</v-icon>
         {{ $options.filters.userFormatter(item.user) }}
       </v-btn>
@@ -196,7 +196,7 @@ export default {
     }
 
     function getRefAgentUrl(item) {
-      return 'users/' + item.user?.referenceAgentData?.id
+      return 'users/profile/' + item.user?.referenceAgentData?.id
     }
 
     function getRefAgentName(item) {

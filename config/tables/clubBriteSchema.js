@@ -8,6 +8,7 @@
 const columns = {
   'amountChange': {text: 'tables.club.amountChange', value: 'amountChange', align: "right"},
   'createdAt': {text: 'tables.club.createdAt', value: 'created_at', align: "center"},
+  'semesterId': {text: 'tables.club.semester', value: 'semesterId', align: "center"},
   'deposit': {text: 'tables.club.deposit', value: 'deposit', align: "right", sortable: false},
   'depositOld': {text: 'tables.club.depositOld', value: 'depositOld', align: "right", sortable: false},
   'movementType': {text: 'tables.club.movementType', value: 'movementType', align: "center", sortable: false},
