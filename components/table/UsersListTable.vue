@@ -47,7 +47,7 @@
                    target="_blank"
                    class="text-capitalize"
                    color="primary"
-                   :href="'/users/' + item.referenceAgent">
+                   :href="'/users/profile/' + item.referenceAgent">
               <v-icon small class="mr-2">mdi-open-in-new</v-icon>
               {{ item.referenceAgentData.firstName }} {{ item.referenceAgentData.lastName }}
             </v-btn>
@@ -162,7 +162,7 @@
                target="_blank"
                class="text-capitalize"
                color="primary"
-               :href="'users/' + item.referenceAgent">
+               :href="'users/profile/' + item.referenceAgent">
           <v-icon small class="mr-2">mdi-open-in-new</v-icon>
           {{ item.referenceAgentData.firstName }} {{ item.referenceAgentData.lastName }}
         </v-btn>
