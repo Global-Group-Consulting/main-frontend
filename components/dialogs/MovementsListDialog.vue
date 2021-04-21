@@ -44,7 +44,7 @@
 
           <template v-if="canImportMovements && !listImported">
             <p class="mt-2">
-              {{ $t("dialogs.movementsList.alert-import-data") }}
+              {{ $t("dialogs.movementsList.alert-import-data", user) }}
             </p>
 
             <div class="d-flex justify-center">
