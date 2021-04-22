@@ -35,7 +35,8 @@
       "@nuxtjs/auth",
       "@nuxtjs/auth-next",
       "nuxt-i18n",
-      "@nuxtjs/vuetify"
+      "@nuxtjs/vuetify",
+      "@types/jest"
     ],
     "typeRoots": [
       "./@types",
