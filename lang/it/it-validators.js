@@ -1,5 +1,6 @@
 export default {
   required: 'Questo campo è obbligatorio.',
+  shouldBeRequired: 'Questo campo sarà obbligatorio per attivare l\'utente.',
   requiredIf: 'Questo campo è obbligatorio.',
   email: 'L\'email inserita non è valida.',
   minLength: 'Questo campo deve contenere almeno {min} caratteri.',
