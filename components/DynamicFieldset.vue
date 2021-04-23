@@ -147,27 +147,17 @@ export default {
     const form = ref({});
     const checkedFields = ref([])
 
-    watch(
-      () => props.value,
-      value => {
-        if (!props.schema.value) {
-          // throw new Error("The schema provided is not a reactive element");
-        }
-
-
-        for (let {cols} of props.schema.value || props.schema) {
-          for (let name in cols) {
-            $set(form.value, name, value[name]);
-          }
-        }
-      },
-      {deep: true, immediate: true}
-    );
-
     return {
       form,
       checkedFields
     };
+  },
+  data() {
+    return {
+      lazyUpdateTimer: null,
+      dataToEmit: {},
+      updateDelay: 50
+    }
   },
   computed: {
     errorMessages
@@ -194,7 +184,6 @@ export default {
       let value = this.value[key];
 
       if (!(key in this.value) && field.defaultValue) {
-        debugger
         value = field.defaultValue
         this.value[key] = value
       }
@@ -249,13 +238,12 @@ export default {
       // trigger touch only if must be validated
       mustValidate && this.$v.form[key].$touch();
 
-      this.$emit("input", {
-        ...this.value,
-        [key]: value
-      });
-
-      // announce validation statu only if must be validated
+      // announce validation status only if must be validated
       mustValidate && this.announceStatus();
+
+      this.dataToEmit[key] = value;
+
+      this.emitData()
     },
 
     onInput(key, value) {
@@ -311,6 +299,22 @@ export default {
       this.$scrollTo(firstErrorField[0].$el);
     },
 
+    emitData() {
+      if (this.lazyUpdateTimer) {
+        clearTimeout(this.lazyUpdateTimer);
+      }
+
+      this.lazyUpdateTimer = setTimeout(() => {
+        console.log("timeout emitting event")
+        this.$emit("input", {
+          ...this.value,
+          ...this.dataToEmit
+        });
+
+        this.dataToEmit = {};
+      }, this.updateDelay)
+    },
+
     /**
      * @param {boolean} scrollTo
      * @param {boolean} returnErrors
@@ -338,8 +342,25 @@ export default {
     }
   },
   watch: {
-    "$v.$anyDirty": function(value){
+    "$v.$anyDirty": function (value) {
       this.$emit("formDirty", value)
+    },
+    value: {
+      deep: true,
+      immediate: true,
+      handler: function (val) {
+        console.log("watcher", val)
+
+        if (!this.schema.value) {
+          // throw new Error("The schema provided is not a reactive element");
+        }
+
+        for (let {cols} of this.schema.value || this.schema) {
+          for (let name in cols) {
+            this.$set(this.form, name, val[name]);
+          }
+        }
+      }
     }
   }
 };

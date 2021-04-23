@@ -5,6 +5,7 @@
         :schema="formSchema"
         v-model="formData"
         fill-row
+        immediateUpdate
         ref="loginForm"
         @input="saveStatus($event)"
       />
@@ -36,7 +37,7 @@ import DynamicFieldset from "~/components/DynamicFieldset";
 
 import loginSchema from "~/config/forms/loginSchema";
 
-import { computed, ref } from "@vue/composition-api";
+import {computed, ref} from "@vue/composition-api";
 
 export default {
   layout: "public",
@@ -67,7 +68,7 @@ export default {
       try {
         this.$auth.reset();
 
-        await this.$auth.loginWith("local", { data: this.formData });
+        await this.$auth.loginWith("local", {data: this.formData});
       } catch (e) {
         this.$alerts.error(e);
       }
@@ -89,6 +90,8 @@ export default {
   },
   methods: {
     saveStatus(state) {
+      console.log(state)
+
       this.formValid = !state.invalid;
     }
   }

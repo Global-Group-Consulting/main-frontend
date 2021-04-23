@@ -6,6 +6,7 @@
           :schema="formSchema"
           v-model="formData"
           fill-row
+          immediateUpdate
           ref="form"
           @status="onFormStatusChange"
         />
