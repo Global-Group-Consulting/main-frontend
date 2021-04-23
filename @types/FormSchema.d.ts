@@ -36,6 +36,7 @@ export interface FormSchemaField {
   if?: any,
   items?: Function | any
   disabled?: boolean | Function
+  readonly?: boolean | Function
   hideDetails?: boolean
   falseValue?: boolean
   inputValue?: string | number | boolean

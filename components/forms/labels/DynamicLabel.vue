@@ -30,13 +30,13 @@ import {FormSchemaField, FormSchemaValidations} from "~/@types/FormSchema";
 @Component
 export default class DynamicLabel extends Vue {
   @Prop({required: true, type: Object})
-  public field: FormSchemaField
+  public field!: FormSchemaField
 
   @Prop({required: true, type: String})
-  public fieldKey: string
+  public fieldKey!: string
 
   @Prop({type: Array, default: () => []})
-  public invalidFields: any[]
+  public invalidFields: any[] = []
 
 
   get labelContent() {
