@@ -5,6 +5,8 @@ module.exports = `<h2 id="v188small15042020small">v 1.8.8 - <small>15/04/2020</s
 <li>Aggiornata tabella richieste da evadere in dashboard</li>
 <li>Permette di approvare richieste in lavorazione da altri admin</li>
 <li>Permette di reimportare e sovrascrivere i movimenti di un utente in BOZZA</li>
+<li>Aggiunto simbolo diverso per indicare i campi che momentaneamente non sono obbligatori perchè utente in bozza, ma che
+lo saranno quando si cercherà di attivare l'utente</li>
 </ul>
 <h3 id="aggiunte">aggiunte</h3>
 <ul>

@@ -6,6 +6,8 @@
 - Aggiornata tabella richieste da evadere in dashboard
 - Permette di approvare richieste in lavorazione da altri admin
 - Permette di reimportare e sovrascrivere i movimenti di un utente in BOZZA
+- Aggiunto simbolo diverso per indicare i campi che momentaneamente non sono obbligatori perchè utente in bozza, ma che
+lo saranno quando si cercherà di attivare l'utente
 
 ### aggiunte
 - Aggiunto possibilità di trasferimento provvigioni da agente di riferimento a subagente
