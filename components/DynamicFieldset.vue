@@ -31,29 +31,8 @@
             @input="onInput(key, $event)"
           >
             <template v-slot:label>
-              <component :is="invalidFields.includes(key) ? 'strong' : 'span'"
-                         :class="{'red--text': invalidFields.includes(key)}">
-                {{ getLabel(field.label || key) }}
-              </component>
-
-              <v-tooltip
-                top
-                v-if="field.validations
-                  && (field.validations.required || (field.validations.requiredIf && field.validations.requiredIf.params()))
-                  && !(field.readonly || field.disabled)
-                "
-              >
-                <template v-slot:activator="{ on }">
-                  <strong
-                    class="red--text"
-                    v-on="on"
-                    style="pointer-events: all"
-                  >
-                    *
-                  </strong>
-                </template>
-                <span>{{ $t("validators.required") }}</span>
-              </v-tooltip>
+              <dynamic-label :field="field" :fieldKey="key"
+                             :invalid-fields="invalidFields"/>
             </template>
 
             <template v-slot:prepend v-if="(editMode && !row.disableEditMode) || invalidFields.includes(key)">
@@ -97,13 +76,15 @@ import PhoneInput from "@/components/forms/inputs/PhoneInput";
 
 import {validationRules, errorMessages} from "@/mixins/ValidationsParser";
 import {validationMixin} from "vuelidate";
-import {kebabCase as _kebabCase, get as _get} from "lodash";
+import {get as _get} from "lodash";
 
 import {onMounted, reactive, ref, watch} from "@vue/composition-api";
+import DynamicLabel from "~/components/forms/labels/DynamicLabel";
 
 export default {
   name: "DynamicFieldset",
   components: {
+    DynamicLabel,
     VTextField,
     VSelect,
     VSwitch,
@@ -201,9 +182,7 @@ export default {
 
       return value;
     },
-    getLabel(key) {
-      return this.$t("forms." + _kebabCase(key));
-    },
+
     translateItems(field) {
       if (!field.items) {
         return;
