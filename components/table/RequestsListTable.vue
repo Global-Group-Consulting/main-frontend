@@ -67,7 +67,7 @@
     </template>
 
     <template v-slot:item.type="{ item }">
-      <v-icon color="orange" v-if="item.typeClub">mdi-cards-spade</v-icon>
+      <v-icon color="#b4975a" v-if="item.typeClub">mdi-diamond-outline</v-icon>
 
 
       <span v-html="getTipoRichiesta(item.type, item)"></span>
