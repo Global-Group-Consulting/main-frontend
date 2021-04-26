@@ -32,7 +32,8 @@
 
         <template v-else-if="formData.status === $enums.RequestStatus.LAVORAZIONE">
           <template v-if="showConversatinLink">
-            <p v-if="!ownByCurrentUser" class="mb-1" v-html="$t('dialogs.requests.alert-in-progress',formData.conversation.creator)"/>
+            <p v-if="!ownByCurrentUser" class="mb-1"
+               v-html="$t('dialogs.requests.alert-in-progress',formData.conversation.creator)"/>
 
             {{ $t("dialogs.requests.alert-connected-communication") }}
             <v-btn
@@ -157,7 +158,7 @@ export default {
    * }, emit: function}} param1
    */
   setup(props, {root, emit}) {
-    const {$auth, $apiCalls, $store, $enums} = root;
+    const {$auth, $apiCalls, $store, $enums, $alerts} = root;
     const {useGetters: dialogUseGetters} = createNamespacedHelpers("dialog");
     const {useGetters: userUseGetters} = createNamespacedHelpers("user");
     const {dialogData} = dialogUseGetters(["dialogData"]);
@@ -169,7 +170,9 @@ export default {
       wallet: dialogData.value?.data.wallet || $enums.WalletTypes["DEPOSIT"],
       type: dialogData.value?.data.type || $enums.RequestTypes["VERSAMENTO"],
       availableAmount: dialogData.value?.data.availableAmount || 0,
-      currency: dialogData.value?.data.currency || $enums.CurrencyType["EURO"]
+      currency: dialogData.value?.data.currency || $enums.CurrencyType["EURO"],
+      gold: dialogData.value?.data.gold || false,
+      clubPack: dialogData.value?.data.clubPack || $enums.ClubPacks.UNSUBSCRIBED
     });
 
     const actions = requestsCrudActionsFn(formData, root, emit);

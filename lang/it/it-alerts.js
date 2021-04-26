@@ -165,5 +165,8 @@ export default {
 
   "invalid-form": "Prima di procedere è necessario correggere i seguenti campi: <br><br>{fields}",
 
-  "unsaved-data": "Attenzione, ci sono dati non ancora salvati sulla pagina. Se si procede, i dati non salvati andranno persi. Si desidera continuare?"
+  "unsaved-data": "Attenzione, ci sono dati non ancora salvati sulla pagina. Se si procede, i dati non salvati andranno persi. Si desidera continuare?",
+
+  "club-request-unsubscribed": "Gentile utente, per poter procedere con la sua richiesta è necessario che abbia attivo almeno il pacchetto '<strong>Basic</strong>' de club. " +
+    "<br>Per maggiori informazioni la invitiamo a contattare il Sevizio Clienti."
 }

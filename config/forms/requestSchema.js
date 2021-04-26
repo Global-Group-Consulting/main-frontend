@@ -8,6 +8,7 @@
 
 import RequestTypes from "../../enums/RequestTypes"
 import RequestStatus from "../../enums/RequestStatus"
+import {computed} from "@vue/composition-api";
 
 /**
  *
@@ -19,6 +20,14 @@ export default function (context) {
   const isNew = !context.formData.id
   const readonly = context.dialogData.readonly
   const isCompleted = context.formData.status && ![RequestStatus.NUOVA, RequestStatus.LAVORAZIONE].includes(context.formData.status)
+  const hasWithdrawalPermissions = computed(() => {
+    const userIsGold = context.formData.gold;
+    const userClubUnsubscribed = !context.formData.clubPack || context.formData.clubPack === context.$enums.ClubPacks.UNSUBSCRIBED;
+
+    return !(userIsGold && userClubUnsubscribed);
+  })
+
+  console.log(hasWithdrawalPermissions.value)
 
   return [
     {
@@ -27,7 +36,7 @@ export default function (context) {
           label: "requestType",
           if: (!readonly && !isVersamento) || readonly,
           component: !readonly ? 'v-select' : null,
-          disabled: readonly,
+          disabled: readonly || !hasWithdrawalPermissions.value,
           formatter: readonly ? (value) => context.$i18n.t(`enums.RequestTypes.${context.$enums.RequestTypes.getIdName(value)}`) : null,
           items: !readonly ? context.$enums.RequestTypes.list.reduce((acc, type) => {
             const reqGold = [context.$enums.RequestTypes.RISC_CAPITALE_GOLD, context.$enums.RequestTypes.RISC_INTERESSI_BRITE].includes(type.value)
@@ -161,20 +170,17 @@ export default function (context) {
       }
     },
     /* {
-      cols: {
-        requestAttachment: {
-          component: 'file-uploader',
-          "prepend-icon": "",
-          "prepend-inner-icon": "$file",
-          if: isVersamento,
-          disabled: readonly,
-          files: context.formData.files,
-          validations: isVersamento ? {
-            required: {}
-          } : null
-        },
-      }
-    }, */
+       cols: {
+         requestAttachment: {
+           component: 'file-uploader',
+           "prepend-icon": "",
+           "prepend-inner-icon": "$file",
+           if: isVersamento,
+           disabled: readonly,
+           files: context.formData.files,
+         },
+       }
+     },*/
     {
       cols: {
         notes: {

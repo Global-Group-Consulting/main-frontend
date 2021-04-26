@@ -92,12 +92,13 @@ export default {
     const {dialogData} = dialogUseGetters(["dialogData"]);
     const {availableWallets} = userUseGetters(["availableWallets"]);
     const permissions = permissionsFn(root);
-    const tabsModel = ref(0)
+    const incomingData = computed(() => dialogData.value?.data || {})
+    const tabsModel = ref(incomingData.value.type === $enums.RequestTypes.RISC_CAPITALE_GOLD ? 1 : 0)
 
     const formData = ref({
       ...dialogData.value?.data,
       wallet: $enums.WalletTypes.DEPOSIT,
-      type: $enums.RequestTypes.RISC_INTERESSI_BRITE,
+      type: incomingData.value.type || $enums.RequestTypes.RISC_INTERESSI_BRITE,
       typeClub: tabsModel.value === 0 ? "brite" : "gold",
       availableAmount: dialogData.value?.data.availableAmount || 0,
       currency: dialogData.value?.data.currency || $enums.CurrencyType["EURO"],
