@@ -32,7 +32,7 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
   const formData = ref({
     role: UserRoles.CLIENTE,
     personType: PersonTypes.FISICA,
-    clubPack: ClubPacks.BASIC
+    clubPack: ClubPacks.UNSUBSCRIBED
   })
   const permissions = Permissions({$auth})
   const userIsNew = computed(() => $route.params.id === "new" || !formData.value.id)
