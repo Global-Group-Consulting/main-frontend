@@ -224,7 +224,7 @@ export default class Brite extends Vue {
       toReturn.totalAmount += +entry[1].briteAvailable
       toReturn.expirations.push({
         amount: +entry[1].briteAvailable,
-        expiresAt: this.$moment().set({year, month: semester === 1 ? 0 : 6})
+        expiresAt: this.$moment().set({year, month: (semester === 1 ? 0 : 6), date: 1}).add(18, "months")
       })
     }
 

@@ -84,5 +84,6 @@ export default {
     'createdAt': "Data movimento",
     'notes': "Note",
     'movementType': "Tipologia Movimento",
+    'semester': "Semestre",
   }
 }

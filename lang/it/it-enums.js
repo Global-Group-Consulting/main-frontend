@@ -156,8 +156,8 @@ export default {
   },
   'ClubMovementTypes': {
     "interest_recapitalized": "Ricapitalizzazione",
-    "deposit_added": "Aggiunta manuale",
-    "deposit_removed": "Rimozione manuale",
+    "deposit_added": "Aggiunta",
+    "deposit_removed": "Utilizzo",
     "deposit_transferred": "Trasferimento tra utenti",
     "deposit_collected": "Utilizzo brite",
   },
