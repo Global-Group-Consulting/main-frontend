@@ -78,8 +78,8 @@
         <template v-slot:item.notes="{item, value}">
           <v-tooltip bottom v-if="value">
             <template v-slot:activator="{ on }">
-              <v-btn icon v-on="on">
-                <v-icon>mdi-note</v-icon>
+              <v-btn icon v-on="on" color="primary">
+                <v-icon>mdi-note-text-outline</v-icon>
               </v-btn>
             </template>
             {{ value }}
