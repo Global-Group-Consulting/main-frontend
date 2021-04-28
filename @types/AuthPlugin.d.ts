@@ -8,6 +8,7 @@ export interface AuthPlugin {
   user: UserDataSchema,
 
   fetchUser(): void
+  setUser(user: UserDataSchema): void
 }
 
 declare module 'vue/types/vue' {

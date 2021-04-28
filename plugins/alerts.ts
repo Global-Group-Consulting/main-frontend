@@ -24,7 +24,10 @@ interface AlertSettings {
   showCancelButton?: boolean
   allowOutsideClick?: boolean
   preConfirm?: any
-  showLoaderOnConfirm?: boolean
+  showLoaderOnConfirm?: boolean,
+
+  onOpen?(el: HTMLElement, a: any, b: any): void
+
 }
 
 
@@ -61,6 +64,10 @@ class Alerts {
   constructor(context: Context) {
     this.i18n = context.app.i18n
     this.store = context.app.store
+  }
+
+  close() {
+    Swal.close()
   }
 
   success(settings = {}) {

@@ -118,4 +118,6 @@ export default {
   'target-user': "Utente destinatario",
   'brite-remove-amount': "Importo da rimuovere",
   'brite-remove-notes': "Motivazione",
+  'auto-withdrawl-all': "Preleva tutto alla fine di questo mese",
+  'auto-withdrawl-all-recursively': "Preleva tutto anche nei mesi successivi"
 }

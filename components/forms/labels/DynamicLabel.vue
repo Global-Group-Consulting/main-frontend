@@ -36,7 +36,7 @@ export default class DynamicLabel extends Vue {
   public fieldKey!: string
 
   @Prop({type: Array, default: () => []})
-  public invalidFields: any[] = []
+  public invalidFields!: any[]
 
 
   get labelContent() {

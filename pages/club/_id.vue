@@ -78,8 +78,8 @@
         <template v-slot:item.notes="{item, value}">
           <v-tooltip bottom v-if="value">
             <template v-slot:activator="{ on }">
-              <v-btn icon v-on="on">
-                <v-icon>mdi-note</v-icon>
+              <v-btn icon v-on="on" color="primary">
+                <v-icon>mdi-note-text-outline</v-icon>
               </v-btn>
             </template>
             {{ value }}
@@ -224,7 +224,7 @@ export default class Brite extends Vue {
       toReturn.totalAmount += +entry[1].briteAvailable
       toReturn.expirations.push({
         amount: +entry[1].briteAvailable,
-        expiresAt: this.$moment().set({year, month: semester === 1 ? 0 : 6})
+        expiresAt: this.$moment().set({year, month: (semester === 1 ? 0 : 6), date: 1}).add(18, "months")
       })
     }
 

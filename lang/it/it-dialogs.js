@@ -9,7 +9,9 @@ export default {
     'btn-send': 'Invia',
   },
   requests: {
-    'title-withdrawal': 'Nuova richiesta di riscossione Classic',
+    'title-withdrawal-3': 'Nuova richiesta di prelievo deposit Classic',
+    'title-withdrawal-4': 'Nuova richiesta di riscossione rendite Classic',
+    'title-withdrawal-5': 'Nuova richiesta di riscossione provvigioni',
     'title-withdrawal-gold': 'Nuova richiesta di riscossione Gold',
     'title-deposit': 'Versamento di nuova liquidità',
     'title-details': 'Dettagli richiesta',
@@ -23,11 +25,14 @@ export default {
     'btn-chat': 'Prendi in carico',
     'btn-reject': 'Rifiuta',
     'btn-delete': 'Elimina',
+    'btn-cancel-auto-withdrawl': 'Annulla richiesta automatica',
     'btn-go-to-conversation': 'Vai alla conversazione',
     'alert-reject-reason': "La richiesta è stata rifiutata per il seguente motivo:<br>",
     'alert-cancel-reason': "La richiesta è stata annullata in data {date} con il seguente motivo:<br>",
     'alert-connected-communication': "Alla richiesta è associata una comunicazione.",
-    'alert-in-progress': "Questa richiesta è stata presa in carico da <strong>{firstName} {lastName}</strong>."
+    'alert-in-progress': "Questa richiesta è stata presa in carico da <strong>{firstName} {lastName}</strong>.",
+    'alert-auto-withdrawl': "Questa è una richiesta che verrà gestita automaticamente dal sistema in quanto prevede la riscossione automatica di tutte le provvigioni disponibili l'ultimo giorno del mese.",
+    'alert-auto-withdrawl-recursive': "Questa è una richiesta ricorrente che verrà gestita automaticamente dal sistema in quanto prevede la riscossione automatica mensile delle provvigioni disponibili l'ultimo giorno di ogni mese.",
   },
   communicationDialog: {
     'you': "Me",

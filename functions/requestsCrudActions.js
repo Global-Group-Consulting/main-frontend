@@ -265,6 +265,36 @@ export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n, 
     }
   }
 
+  async function cancelAutoWithdrawlAll() {
+    const currentRequest = request.value ?? request
+
+    try {
+      await $alerts.askBeforeAction({
+        key: "cancel-auto-withdrawl-request",
+        preConfirm: async () => {
+          await $apiCalls.cancelRequest({
+            id: currentRequest.id,
+            reason: "cancelled by user"
+          });
+        },
+        settings: {
+          confirmButtonColor: "red",
+        },
+        data: {
+          type: $i18n.t(
+            "enums.RequestTypes." +
+            $enums.RequestTypes.get(currentRequest.type).id
+          ),
+        }
+      });
+
+      return true
+    } catch (er) {
+      $alerts.error(er)
+      return false
+    }
+  }
+
   async function downloadReceipt(reqId) {
     try {
       const result = await $apiCalls.downloadRequestReceipt(reqId)
@@ -282,6 +312,7 @@ export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n, 
     approve,
     reject,
     cancel,
+    cancelAutoWithdrawlAll,
     downloadReceipt
   }
 }

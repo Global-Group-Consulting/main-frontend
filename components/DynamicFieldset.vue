@@ -21,6 +21,7 @@
             :is="field.component || 'v-text-field'"
             v-bind="field"
             :items="translateItems(field)"
+            :input-value="getValue(field, key)"
             :value="getValue(field, key)"
             :field-key="key"
             :ref="`comp_${key}_${index}_${fieldIndex}`"

@@ -466,7 +466,7 @@ export function clubData(formContext: FormContext): FormSchema[] {
   const gold = formContext.formData.gold
   const userIsNew = !formContext.formData.id
   const hasPermission = formContext.$acl.checkPermissions([ClubPermissions.CLUB_WRITE])
-  const canChange = userIsNew || hasPermission
+  const canChange = userIsNew || (hasPermission && formContext.formData.id !== formContext.$auth.user.id)
 
   return [
     {
@@ -487,7 +487,7 @@ export function clubData(formContext: FormContext): FormSchema[] {
         'clubPack': {
           component: "v-select",
           items: ClubPacks,
-          disabled: !gold || !hasPermission,
+          disabled: !gold || !canChange,
           validations: {
             required: {
               params: () => formContext.formData.gold && hasPermission && isRequired(formContext)
