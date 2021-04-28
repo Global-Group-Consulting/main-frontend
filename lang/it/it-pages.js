@@ -137,7 +137,9 @@ export default {
     'tableLavorazione-title': "In lavorazione",
     'tableAccettata-title': "Accettate",
     'tableRifiutata-title': "Rifiutate",
-    "fileReportName": "Report {date}"
+    "fileReportName": "Report {date}",
+    "autoWithdrawlAll-tooltip": "Riscossione di tutto l'importo disponibile alla fine del mese in corso",
+    "autoWithdrawlAllRecursive-tooltip": "Riscossione ricorrente di tutto l'importo disponibile alla fine di ogni mese"
   },
   signResult: {
     "success-title": "Contratto firmato!",

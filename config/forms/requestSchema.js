@@ -112,12 +112,12 @@ export default function (context) {
       cols: {
         amount: {
           label: "requestAmount",
-          component: 'money-input',
-          disabled: readonly,
+          component: context.formData.autoWithdrawlAll ? '' : 'money-input',
+          disabled: readonly || context.formData.autoWithdrawlAll,
           currency: context.formData.currency,
           showMax: context.formData.wallet === 2,
           maxValue: context.formData.availableAmount,
-          validations: {
+          validations: context.formData.autoWithdrawlAll ? {} : {
             required: {},
             minValue: {
               params: 1
@@ -204,5 +204,18 @@ export default function (context) {
         }
       }
     } */
+    {
+      maxCols: 2,
+      cols: {
+        autoWithdrawlAll: {
+          component: 'v-checkbox',
+          disabled: readonly,
+        },
+        autoWithdrawlAllRecursively: {
+          component: 'v-checkbox',
+          disabled: readonly || !context.formData.autoWithdrawlAll,
+        }
+      }
+    },
   ]
 }

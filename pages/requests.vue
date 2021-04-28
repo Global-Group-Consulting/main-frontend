@@ -205,7 +205,7 @@ export default class Requests extends Vue {
     }
   ]
 
-  get requestsGroups() {
+  get requestsGroups(): Record<"nuova" | "lavorazione" | "accettata" | "rifiutata", any[]> {
     const toReturn: any = {
       nuova: [],
       lavorazione: [],
@@ -266,6 +266,20 @@ export default class Requests extends Vue {
   private async fetchAll() {
     try {
       this.requestsList = await this.$apiCalls.fetchRequests();
+
+      const existsAutoWithdraw = this.requestsGroups.lavorazione.find(req => req.autoWithdrawlAll)
+
+      // If in the list of working request does not exist an autoWithdraw request and the user still has one in its data,
+      // updates the user data
+      if (!existsAutoWithdraw && this.$auth.user.autoWithdrawlAll) {
+        const user = this.$auth.user;
+
+        this.$auth.setUser({
+          ...user,
+          autoWithdrawlAll: null,
+          autoWithdrawlAllRecursively: null
+        })
+      }
     } catch (er) {
       this.$alerts.error(er);
     }
@@ -359,8 +373,22 @@ export default class Requests extends Vue {
   newWithdrawlRequest(type?: number) {
     const reqType = type || this.$enums.RequestTypes.RISC_INTERESSI
 
+    if (this.$auth.user.autoWithdrawlAll) {
+      this.$alerts.info({
+        title: "",
+        html: this.$t("alerts.autoWithdrawl-not-available", {link: "/requests#" + this.$auth.user.autoWithdrawlAll}) as string,
+        onOpen: (el: HTMLElement) => {
+          el.querySelector("a")?.addEventListener("click", () => {
+            this.$alerts.close()
+          })
+        }
+      })
+
+      return
+    }
+
     this.$store.dispatch("dialog/updateStatus", {
-      title: this.$t("dialogs.requests.title-withdrawal-" + reqType ),
+      title: this.$t("dialogs.requests.title-withdrawal-" + reqType),
       id: "RequestDialog",
       data: {
         type: reqType,

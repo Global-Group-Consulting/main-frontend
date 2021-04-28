@@ -36,6 +36,8 @@ export default {
 
   "send-request-title": "",
   "send-request-text": "Sei sicuro di voler inviare la nuova richiesta di <strong>{type}</strong> del valore di <strong>{amount}</strong>?",
+  "send-request-all-text": "Sei sicuro di voler inviare la nuova richiesta di <strong>{type}</strong> del valore che sarà disponibile alle fine del mese?",
+  "send-request-all-recursive-text": "Sei sicuro di voler inviare la nuova richiesta di <strong>{type}</strong> del valore che sarà disponibile alle fine del mese e ti volere che questa operazione si ripeta automaticamente ogni mese?",
   "send-request-confirmBtnText": "Si, invia",
   "send-request-cancelBtnText": "Annulla",
   "send-request-success": "Richiesta inviata correttamente!",
@@ -63,6 +65,12 @@ export default {
   "cancel-request-confirmBtnText": "Si, annulla richiesta",
   "cancel-request-cancelBtnText": "Torna indietro",
   "cancel-request-success": "Richiesta annullata correttamente!",
+
+  "cancel-auto-withdrawl-request-title": "",
+  "cancel-auto-withdrawl-request-text": "Sei sicuro di voler annullare la richiesta automatica di <strong>{type}</strong>.",
+  "cancel-auto-withdrawl-request-confirmBtnText": "Si, annulla richiesta",
+  "cancel-auto-withdrawl-request-cancelBtnText": "Torna indietro",
+  "cancel-auto-withdrawl-request-success": "Richiesta annullata correttamente!",
 
   "approve-request-title": "Approvare la richiesta?",
   "approve-request-text": "Sei sicuro di voler approvare la richiesta di <strong>{type}</strong> del valore di <strong>{amount}</strong> di <strong>{user}</strong>? Continuando, la somma verrà contabilizzata.",
@@ -168,5 +176,7 @@ export default {
   "unsaved-data": "Attenzione, ci sono dati non ancora salvati sulla pagina. Se si procede, i dati non salvati andranno persi. Si desidera continuare?",
 
   "club-request-unsubscribed": "Gentile utente, per poter procedere con la sua richiesta è necessario che abbia attivo almeno il pacchetto '<strong>Basic</strong>' de club. " +
-    "<br>Per maggiori informazioni la invitiamo a contattare il Sevizio Clienti."
+    "<br>Per maggiori informazioni la invitiamo a contattare il Sevizio Clienti.",
+
+  "autoWithdrawl-not-available": "Gentile utente, non è possibile creare nessun altra richiesta di riscossione provvigioni in quanto esiste già una richiesta automatica di riscossione.<br><br><a href='{link}'>Cliccare qui</a> per visualizzare la richiesta automatica esistente."
 }
