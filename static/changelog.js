@@ -3,6 +3,7 @@ module.exports = `<h2 id="v189small28042020small">v 1.8.9 - <small>28/04/2020</s
 <ul>
 <li>Aggiornate icone che indicano le note all'interno delle tabelle</li>
 <li>Sistemato problema con il calcolo dei brite disponibili nel profilo del Club</li>
+<li>Permette di inserire caratteri alfanumerici come numero tessera socio club </li>
 </ul>
 <h3 id="aggiunte">Aggiunte</h3>
 <ul>
