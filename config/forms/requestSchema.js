@@ -40,13 +40,15 @@ export default function (context) {
           formatter: readonly ? (value) => context.$i18n.t(`enums.RequestTypes.${context.$enums.RequestTypes.getIdName(value)}`) : null,
           items: !readonly ? context.$enums.RequestTypes.list.reduce((acc, type) => {
             const reqGold = [context.$enums.RequestTypes.RISC_CAPITALE_GOLD, context.$enums.RequestTypes.RISC_INTERESSI_BRITE].includes(type.value)
+            const isUserGold = context.$auth.user.gold
             let mustHide = false
 
-            if (type.value === context.$enums.RequestTypes.VERSAMENTO
-              || type.value === context.$enums.RequestTypes.COMMISSION_MANUAL_ADD
-              || type.value === context.$enums.RequestTypes.COMMISSION_MANUAL_TRANSFER
+            if ([context.$enums.RequestTypes.VERSAMENTO,
+                context.$enums.RequestTypes.COMMISSION_MANUAL_ADD,
+                context.$enums.RequestTypes.COMMISSION_MANUAL_TRANSFER].includes(type.value)
               || (type.value === context.$enums.RequestTypes.RISC_PROVVIGIONI && context.$auth.user.role !== context.$enums.UserRoles.AGENTE)
               || reqGold
+              || (isUserGold && context.formData.type === context.$enums.RequestTypes.RISC_PROVVIGIONI && type.value !== context.$enums.RequestTypes.RISC_PROVVIGIONI)
             ) {
               mustHide = true
             }
@@ -210,11 +212,13 @@ export default function (context) {
         autoWithdrawlAll: {
           component: 'v-checkbox',
           disabled: readonly,
+          if: context.formData.type === RequestTypes.RISC_PROVVIGIONI
         },
-        autoWithdrawlAllRecursively: {
+        /*autoWithdrawlAllRecursively: {
           component: 'v-checkbox',
           disabled: readonly || !context.formData.autoWithdrawlAll,
-        }
+          if: context.formData.type === RequestTypes.RISC_PROVVIGIONI
+        }*/
       }
     },
   ]

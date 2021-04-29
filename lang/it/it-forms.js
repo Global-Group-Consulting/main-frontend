@@ -15,6 +15,7 @@ export default {
   'business-province': 'Provincia',
   'business-region': 'Regione',
   'business-zip': 'Cap',
+  'iban': 'Iban cliente',
   'contacts': 'Contatti',
   'contract-bic': 'BIC cliente',
   'contract-signed-at': 'Data stipula contratto',

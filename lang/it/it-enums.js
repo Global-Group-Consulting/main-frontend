@@ -48,8 +48,8 @@ export default {
     'risc_provvigioni': 'Riscossione provvigioni',
     'risc_capitale': 'Prelievo deposito',
     'risc_interessi': 'Riscossione rendite (classic)',
-    'risc_interessi_brite': 'Riscossione rendite in Brite',
-    'risc_capitale_gold': 'Prelievo deposito in Oro Fisico',
+    'risc_interessi_brite': 'Riscossione rendite Gold',
+    'risc_capitale_gold': 'Riscossione rendite Gold (Fisico)',
     'commission_manual_add': 'Aggiunta provvigioni manuali ad agente',
   },
   'RequestStatus': {

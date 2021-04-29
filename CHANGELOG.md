@@ -4,6 +4,7 @@
 ### Miglioramenti
 - Aggiornate icone che indicano le note all'interno delle tabelle
 - Sistemato problema con il calcolo dei brite disponibili nel profilo del Club
+- Permette di inserire caratteri alfanumerici come numero tessera socio club 
 
 ### Aggiunte
 - Aggiunta possibilità per gli agenti di creare richiesta automatiche o ricorsive di riscossione delle proprie provvigioni.

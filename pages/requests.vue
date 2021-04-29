@@ -263,6 +263,30 @@ export default class Requests extends Vue {
     return this.userType === "user"
   }
 
+  get toolbarItems() {
+    return {
+      // Utente NON GOLD
+      /*
+      - riscuote interessi / rendite in maniera classica
+      - preleva deposito tramite richiesta chat (come per il versamento)
+      - può versare come succede ora
+       */
+
+      // Utente GOLD
+      /*
+      - riscuotere le rendite / interessi attraverso il dialog gold / club (o tramite brite o oro fisico)
+          - usare lo stesso dialog del versamento ed il flusso deve essere lo stesso che per i versamenti. La richiesta quindi deve essere presa in carico e tramite chat si deve sviluppare.
+      - preleva deposito tramite richiesta chat (come per il versamento)
+      - può versare come succede ora
+       */
+
+      // Agente Gold o NON Gold
+      /*
+      - riscuotere le provvigioni come ora.
+       */
+    }
+  }
+
   private async fetchAll() {
     try {
       this.requestsList = await this.$apiCalls.fetchRequests();
@@ -373,7 +397,18 @@ export default class Requests extends Vue {
   newWithdrawlRequest(type?: number) {
     const reqType = type || this.$enums.RequestTypes.RISC_INTERESSI
 
-    if (this.$auth.user.autoWithdrawlAll) {
+    /*
+
+    Se essite una richiesta automatica però il messaggio non deve comparire
+    perchè l'utente potrebbe voler richiedere altri tipi di riscossione o prelievi
+    se NON è GOLD.
+    In questo caso quindi la voce "richiesta provvigioni"  dovrebbe essere disabilitata
+
+    Se è gold invece non può chiedere altri tipi se non quello dei gold
+
+     */
+
+    if (this.$auth.user.autoWithdrawlAll && this.$auth.user.gold) {
       this.$alerts.info({
         title: "",
         html: this.$t("alerts.autoWithdrawl-not-available", {link: "/requests#" + this.$auth.user.autoWithdrawlAll}) as string,
