@@ -127,14 +127,19 @@ export default {
 
       let toReturn = 0;
 
-      switch (formData.value.type) {
+      // Tutte le richieste di questo dialog hanno come importo disponibile le rendite.
+      // Per il prelievo del deposito occorre usare un altro canale
+
+      /*switch (formData.value.type) {
         case $enums.RequestTypes.RISC_CAPITALE_GOLD:
           toReturn = wallet.value?.deposit ?? 0;
           break;
         case $enums.RequestTypes.RISC_INTERESSI_BRITE:
           toReturn = wallet.value?.interestAmount ?? 0;
           break;
-      }
+      }*/
+
+      toReturn = wallet.value?.interestAmount ?? 0;
 
       return toReturn;
     });
