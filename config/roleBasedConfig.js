@@ -168,11 +168,9 @@ const defaults = {
     },
     requests: {
       columns: [
-        'contractNumber',
+        'amount',
         'user',
         'referenceAgent',
-        'amount',
-        'currency',
         'type',
         'created_at',
         ['updated_at', ["lavorazione"]],

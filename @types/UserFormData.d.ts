@@ -59,6 +59,8 @@ export interface User {
   superAdmin: boolean
   clubCardNumber: string
   clubPack: string
+  autoWithdrawlAll: string | null
+  autoWithdrawlAllRecursively: string | null
 }
 
 export interface UserDataSchema extends User {

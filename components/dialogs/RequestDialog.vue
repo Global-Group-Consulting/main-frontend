@@ -8,6 +8,7 @@
             ? 'info'
             : 'warning'
         "
+        :icon="alertIcon"
         class="mb-0"
         tile
         dense
@@ -17,9 +18,7 @@
           <strong>{{ formData.rejectReason }}</strong>
         </template>
 
-        <template
-          v-else-if="formData.status === $enums.RequestStatus.ANNULLATA"
-        >
+        <template v-else-if="formData.status === $enums.RequestStatus.ANNULLATA">
           <div
             v-html="
               $t('dialogs.requests.alert-cancel-reason', {
@@ -31,30 +30,33 @@
         </template>
 
         <template v-else-if="formData.status === $enums.RequestStatus.LAVORAZIONE">
-          <template v-if="showConversatinLink">
-            <p v-if="!ownByCurrentUser" class="mb-1" v-html="$t('dialogs.requests.alert-in-progress',formData.conversation.creator)"/>
+          <template v-if="!formData.autoWithdrawlAll">
+            <template v-if="showConversatinLink">
+              <p v-if="!ownByCurrentUser" class="mb-1"
+                 v-html="$t('dialogs.requests.alert-in-progress', formData.conversation.creator)"/>
 
-            {{ $t("dialogs.requests.alert-connected-communication") }}
-            <v-btn
-              link
-              outlined
-              x-small
-              :href="'/communications#' + conversationId"
-              target="__blank"
-              v-if="ownByCurrentUser"
-            >
-              <v-icon x-small>mdi-open-in-new</v-icon>
-              {{ $t("dialogs.requests.btn-go-to-conversation") }}
-            </v-btn>
+              {{ $t("dialogs.requests.alert-connected-communication") }}
+              <v-btn
+                link
+                outlined
+                x-small
+                :href="'/communications#' + conversationId"
+                target="__blank"
+                v-if="ownByCurrentUser"
+              >
+                <v-icon x-small>mdi-open-in-new</v-icon>
+                {{ $t("dialogs.requests.btn-go-to-conversation") }}
+              </v-btn>
+            </template>
+
+            <template v-else>
+              {{ $t("dialogs.requests.alert-in-progress", formData.conversation.creator) }}
+            </template>
           </template>
 
+          <!-- Auto withdrawl request type -->
           <template v-else>
-            {{
-              $t(
-                "dialogs.requests.alert-in-progress",
-                formData.conversation.creator
-              )
-            }}
+            {{ $t(`dialogs.requests.alert-auto-withdrawl${formData.autoWithdrawlAllRecursively ? "-recursive" : ''}`) }}
           </template>
         </template>
       </v-alert>
@@ -63,15 +65,15 @@
         dense
         elevation="2"
         color="blue-grey lighten-5"
-        v-if="canApprove"
+        v-if="canApprove || canCancelAutoWithdrawlAll"
       >
         <v-spacer></v-spacer>
         <v-toolbar-items>
-          <v-btn text color="red" @click="onReject">
+          <v-btn text color="red" v-if="canApprove" @click="onReject">
             <v-icon>mdi-close</v-icon>
             {{ $t("dialogs.requests.btn-reject") }}
           </v-btn>
-          <v-btn text color="success" @click="onApprove">
+          <v-btn text color="success" v-if="canApprove" @click="onApprove">
             <template
               v-if="[$enums.RequestTypes.VERSAMENTO].includes(formData.type) && formData.status === $enums.RequestStatus.NUOVA">
               <v-icon>mdi-wechat</v-icon>
@@ -82,8 +84,13 @@
               <v-icon>mdi-check</v-icon>
               {{ $t("dialogs.requests.btn-accept") }}
             </template>
-
           </v-btn>
+
+          <v-btn text color="red" v-if="canCancelAutoWithdrawlAll" @click="onCancelAutoWithdrawlAll">
+            <v-icon>mdi-delete</v-icon>
+            {{ $t("dialogs.requests.btn-cancel-auto-withdrawl") }}
+          </v-btn>
+
         </v-toolbar-items>
         <v-spacer></v-spacer>
       </v-toolbar>
@@ -157,7 +164,7 @@ export default {
    * }, emit: function}} param1
    */
   setup(props, {root, emit}) {
-    const {$auth, $apiCalls, $store, $enums} = root;
+    const {$auth, $apiCalls, $store, $enums, $alerts} = root;
     const {useGetters: dialogUseGetters} = createNamespacedHelpers("dialog");
     const {useGetters: userUseGetters} = createNamespacedHelpers("user");
     const {dialogData} = dialogUseGetters(["dialogData"]);
@@ -169,7 +176,9 @@ export default {
       wallet: dialogData.value?.data.wallet || $enums.WalletTypes["DEPOSIT"],
       type: dialogData.value?.data.type || $enums.RequestTypes["VERSAMENTO"],
       availableAmount: dialogData.value?.data.availableAmount || 0,
-      currency: dialogData.value?.data.currency || $enums.CurrencyType["EURO"]
+      currency: dialogData.value?.data.currency || $enums.CurrencyType["EURO"],
+      gold: dialogData.value?.data.gold || false,
+      clubPack: dialogData.value?.data.clubPack || $enums.ClubPacks.UNSUBSCRIBED
     });
 
     const actions = requestsCrudActionsFn(formData, root, emit);
@@ -244,8 +253,29 @@ export default {
       const isInProgress = $enums.RequestStatus.LAVORAZIONE === +formData.value.status;
       // const ownByAdmin = isInProgress && ownByCurrentUser.value;
 
-      return (isNewRequest || isInProgress) && permissions.userType === "admin";
+      return (isNewRequest || isInProgress) && permissions.userType === "admin" && !formData.value.autoWithdrawlAll;
     });
+
+    const canCancelAutoWithdrawlAll = computed(() => {
+      const isInProgress = $enums.RequestStatus.LAVORAZIONE === +formData.value.status;
+      const isAuthUserRequest = $auth.user.id === formData.value.userId;
+
+      return isInProgress && isAuthUserRequest;
+    })
+
+    const alertIcon = computed(() => {
+      let icon = ""
+
+      if (formData.value.autoWithdrawlAll) {
+        icon = "mdi-infinity"
+      }
+
+      if (formData.value.autoWithdrawlAllRecursively) {
+        icon = "mdi-repeat"
+      }
+
+      return icon
+    })
 
     async function onDelete() {
       const result = await actions.delete(this.formData);
@@ -277,6 +307,24 @@ export default {
       }
     }
 
+    async function onCancelAutoWithdrawlAll() {
+      const result = await actions.cancelAutoWithdrawlAll(formData);
+
+      if (result) {
+        const user = this.$auth.user;
+
+        this.$auth.setUser({
+          ...user,
+          autoWithdrawlAll: null,
+          autoWithdrawlAllRecursively: null
+        })
+
+        this.close();
+
+        emit("requestStatusChanged");
+      }
+    }
+
     watch(
       availableAmount,
       value => {
@@ -296,6 +344,17 @@ export default {
       },
       {immediate: true}
     );
+
+    watch(() => formData.value.autoWithdrawlAll,
+      value => {
+        if (!value) {
+          formData.value.autoWithdrawlAllRecursively = false
+          formData.value.amount = 0;
+        } else {
+          formData.value.amount = "La somma disponibile l'ultimo del mese"
+        }
+      }
+    )
 
     onBeforeMount(async () => {
       /*
@@ -323,6 +382,7 @@ export default {
       onDelete,
       onApprove,
       onReject,
+      onCancelAutoWithdrawlAll,
       permissions,
       dialogData,
       availableWallets,
@@ -330,7 +390,9 @@ export default {
       showAlert,
       showConversatinLink,
       canApprove,
-      ownByCurrentUser
+      ownByCurrentUser,
+      canCancelAutoWithdrawlAll,
+      alertIcon
     };
   },
   data() {
@@ -396,13 +458,36 @@ export default {
           wallet: this.formData.wallet,
           currency: this.formData.currency,
           notes: this.formData.notes,
-          requestAttachment: this.formData.requestAttachment
+          requestAttachment: this.formData.requestAttachment,
+          autoWithdrawlAll: this.formData.autoWithdrawlAll,
+          autoWithdrawlAllRecursively: this.formData.autoWithdrawlAllRecursively
         };
+
+        const reqTypeFormatted = this.$t(
+          "enums.RequestTypes." +
+          this.$enums.RequestTypes.get(data.type).id
+        )
 
         await this.$alerts.askBeforeAction({
           key: "send-request",
+          settings: {
+            html: this.$t(`alerts.send-request${data.autoWithdrawlAll ? `-all${data.autoWithdrawlAllRecursively ? '-recursive' : ''}` : ""}-text`, {
+              ...data,
+              type: reqTypeFormatted
+            })
+          },
           preConfirm: async () => {
             const result = await this.$apiCalls.createRequest(data);
+
+            if (data.autoWithdrawlAll) {
+              const user = this.$auth.user;
+
+              this.$auth.setUser({
+                ...user,
+                autoWithdrawlAll: result.id,
+                autoWithdrawlAllRecursively: data.autoWithdrawlAllRecursively ? result.id : null
+              })
+            }
           },
           data: {
             type: this.$t(
@@ -415,6 +500,7 @@ export default {
               this.$options.filters.moneyFormatter(data.amount)
           }
         });
+
 
         this.$emit("newRequestAdded");
 

@@ -1,5 +1,14 @@
 [comment]: <> (## Non ancora rilasciato)
 
+## v 1.8.9 - <small>28/04/2020</small>
+### Miglioramenti
+- Aggiornate icone che indicano le note all'interno delle tabelle
+- Sistemato problema con il calcolo dei brite disponibili nel profilo del Club
+- Permette di inserire caratteri alfanumerici come numero tessera socio club 
+
+### Aggiunte
+- Aggiunta possibilità per gli agenti di creare richiesta automatiche o ricorsive di riscossione delle proprie provvigioni.
+
 ## v 1.8.8 - <small>15/04/2020</small>
 ### Miglioramenti
 - Anagrafica, campi obbligatori solo se non bozza.
@@ -9,7 +18,7 @@
 - Aggiunto simbolo diverso per indicare i campi che momentaneamente non sono obbligatori perchè utente in bozza, ma che
 lo saranno quando si cercherà di attivare l'utente
 
-### aggiunte
+### Aggiunte
 - Aggiunto possibilità di trasferimento provvigioni da agente di riferimento a subagente
 - In fase di approvazione richiesta, permette di cambiare l'importo di quest'ultima
 - Aggiunti blocchi riepilogativi in elenco utenti relativi agli stati

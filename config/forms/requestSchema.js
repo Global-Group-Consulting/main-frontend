@@ -8,6 +8,7 @@
 
 import RequestTypes from "../../enums/RequestTypes"
 import RequestStatus from "../../enums/RequestStatus"
+import {computed} from "@vue/composition-api";
 
 /**
  *
@@ -19,6 +20,14 @@ export default function (context) {
   const isNew = !context.formData.id
   const readonly = context.dialogData.readonly
   const isCompleted = context.formData.status && ![RequestStatus.NUOVA, RequestStatus.LAVORAZIONE].includes(context.formData.status)
+  const hasWithdrawalPermissions = computed(() => {
+    const userIsGold = context.formData.gold;
+    const userClubUnsubscribed = !context.formData.clubPack || context.formData.clubPack === context.$enums.ClubPacks.UNSUBSCRIBED;
+
+    return !(userIsGold && userClubUnsubscribed);
+  })
+
+  console.log(hasWithdrawalPermissions.value)
 
   return [
     {
@@ -27,17 +36,19 @@ export default function (context) {
           label: "requestType",
           if: (!readonly && !isVersamento) || readonly,
           component: !readonly ? 'v-select' : null,
-          disabled: readonly,
+          disabled: readonly || !hasWithdrawalPermissions.value,
           formatter: readonly ? (value) => context.$i18n.t(`enums.RequestTypes.${context.$enums.RequestTypes.getIdName(value)}`) : null,
           items: !readonly ? context.$enums.RequestTypes.list.reduce((acc, type) => {
             const reqGold = [context.$enums.RequestTypes.RISC_CAPITALE_GOLD, context.$enums.RequestTypes.RISC_INTERESSI_BRITE].includes(type.value)
+            const isUserGold = context.$auth.user.gold
             let mustHide = false
 
-            if (type.value === context.$enums.RequestTypes.VERSAMENTO
-              || type.value === context.$enums.RequestTypes.COMMISSION_MANUAL_ADD
-              || type.value === context.$enums.RequestTypes.COMMISSION_MANUAL_TRANSFER
+            if ([context.$enums.RequestTypes.VERSAMENTO,
+                context.$enums.RequestTypes.COMMISSION_MANUAL_ADD,
+                context.$enums.RequestTypes.COMMISSION_MANUAL_TRANSFER].includes(type.value)
               || (type.value === context.$enums.RequestTypes.RISC_PROVVIGIONI && context.$auth.user.role !== context.$enums.UserRoles.AGENTE)
               || reqGold
+              || (isUserGold && context.formData.type === context.$enums.RequestTypes.RISC_PROVVIGIONI && type.value !== context.$enums.RequestTypes.RISC_PROVVIGIONI)
             ) {
               mustHide = true
             }
@@ -103,12 +114,12 @@ export default function (context) {
       cols: {
         amount: {
           label: "requestAmount",
-          component: 'money-input',
-          disabled: readonly,
+          component: context.formData.autoWithdrawlAll ? '' : 'money-input',
+          disabled: readonly || context.formData.autoWithdrawlAll,
           currency: context.formData.currency,
           showMax: context.formData.wallet === 2,
           maxValue: context.formData.availableAmount,
-          validations: {
+          validations: context.formData.autoWithdrawlAll ? {} : {
             required: {},
             minValue: {
               params: 1
@@ -161,20 +172,17 @@ export default function (context) {
       }
     },
     /* {
-      cols: {
-        requestAttachment: {
-          component: 'file-uploader',
-          "prepend-icon": "",
-          "prepend-inner-icon": "$file",
-          if: isVersamento,
-          disabled: readonly,
-          files: context.formData.files,
-          validations: isVersamento ? {
-            required: {}
-          } : null
-        },
-      }
-    }, */
+       cols: {
+         requestAttachment: {
+           component: 'file-uploader',
+           "prepend-icon": "",
+           "prepend-inner-icon": "$file",
+           if: isVersamento,
+           disabled: readonly,
+           files: context.formData.files,
+         },
+       }
+     },*/
     {
       cols: {
         notes: {
@@ -198,5 +206,20 @@ export default function (context) {
         }
       }
     } */
+    {
+      maxCols: 2,
+      cols: {
+        autoWithdrawlAll: {
+          component: 'v-checkbox',
+          disabled: readonly,
+          if: context.formData.type === RequestTypes.RISC_PROVVIGIONI
+        },
+        /*autoWithdrawlAllRecursively: {
+          component: 'v-checkbox',
+          disabled: readonly || !context.formData.autoWithdrawlAll,
+          if: context.formData.type === RequestTypes.RISC_PROVVIGIONI
+        }*/
+      }
+    },
   ]
 }

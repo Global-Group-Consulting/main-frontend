@@ -128,8 +128,10 @@ export default {
     subtitle: '',
     "btnWithdrawal": "Risc. Classic",
     "btnWithdrawalGold": "Risc. Gold",
+    "btnWithdrawalDepositGold": "Prel. Deposito",
     "btnWithdrawal-tooltip": "Crea una richiesta di Riscossione Classic",
     "btnWithdrawalGold-tooltip": "Crea una richiesta di Riscossione Gold",
+    "btnWithdrawalDepositGold-tooltip": "Crea una richiesta di Prelievo Deposito",
     "btnDeposit": "Versamento",
     "btnDeposit-tooltip": "Versa nuova liquidità",
     "btnDownloadReport": "Scarica Report",
@@ -137,7 +139,9 @@ export default {
     'tableLavorazione-title': "In lavorazione",
     'tableAccettata-title': "Accettate",
     'tableRifiutata-title': "Rifiutate",
-    "fileReportName": "Report {date}"
+    "fileReportName": "Report {date}",
+    "autoWithdrawlAll-tooltip": "Riscossione di tutto l'importo disponibile alla fine del mese in corso",
+    "autoWithdrawlAllRecursive-tooltip": "Riscossione ricorrente di tutto l'importo disponibile alla fine di ogni mese"
   },
   signResult: {
     "success-title": "Contratto firmato!",

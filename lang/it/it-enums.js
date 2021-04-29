@@ -48,8 +48,8 @@ export default {
     'risc_provvigioni': 'Riscossione provvigioni',
     'risc_capitale': 'Prelievo deposito',
     'risc_interessi': 'Riscossione rendite (classic)',
-    'risc_interessi_brite': 'Riscossione rendite in Brite',
-    'risc_capitale_gold': 'Prelievo deposito in Oro Fisico',
+    'risc_interessi_brite': 'Riscossione rendite Gold',
+    'risc_capitale_gold': 'Riscossione rendite Gold (Fisico)',
     'commission_manual_add': 'Aggiunta provvigioni manuali ad agente',
   },
   'RequestStatus': {
@@ -156,8 +156,8 @@ export default {
   },
   'ClubMovementTypes': {
     "interest_recapitalized": "Ricapitalizzazione",
-    "deposit_added": "Aggiunta manuale",
-    "deposit_removed": "Rimozione manuale",
+    "deposit_added": "Aggiunta",
+    "deposit_removed": "Utilizzo",
     "deposit_transferred": "Trasferimento tra utenti",
     "deposit_collected": "Utilizzo brite",
   },

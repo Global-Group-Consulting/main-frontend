@@ -23,7 +23,17 @@
     </template>
 
     <template v-slot:item.commissionType="{ item }">
-      <div v-html="formatCommissionType(item)"></div>
+      <div v-html="formatCommissionType(item)" style="display: inline-block"></div>
+
+      <v-tooltip bottom v-if="item.notes">
+        <template v-slot:activator="{on}">
+          <v-btn v-on="on" icon color="primary">
+            <v-icon>mdi-note-text-outline</v-icon>
+          </v-btn>
+        </template>
+
+        {{ item.notes }}
+      </v-tooltip>
     </template>
 
     <template v-slot:item.commissionPercentage="{ item }">
@@ -70,7 +80,7 @@ export default class CommissionsListTable extends Vue {
     const color = sign === "-" ? "red--text" : "green--text";
 
     return `<span class="text-no-wrap ${color}">€ ${sign}${
-      this.$options?.filters?.moneyFormatter(item.amountChange.toFixed(2)
+      this.$options?.filters?.moneyFormatter((item.amountChange || 0).toFixed(2)
       )}</span>`;
   }
 

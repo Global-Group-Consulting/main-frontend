@@ -92,12 +92,13 @@ export default {
     const {dialogData} = dialogUseGetters(["dialogData"]);
     const {availableWallets} = userUseGetters(["availableWallets"]);
     const permissions = permissionsFn(root);
-    const tabsModel = ref(0)
+    const incomingData = computed(() => dialogData.value?.data || {})
+    const tabsModel = ref(incomingData.value.type === $enums.RequestTypes.RISC_CAPITALE_GOLD ? 1 : 0)
 
     const formData = ref({
       ...dialogData.value?.data,
       wallet: $enums.WalletTypes.DEPOSIT,
-      type: $enums.RequestTypes.RISC_INTERESSI_BRITE,
+      type: incomingData.value.type || $enums.RequestTypes.RISC_INTERESSI_BRITE,
       typeClub: tabsModel.value === 0 ? "brite" : "gold",
       availableAmount: dialogData.value?.data.availableAmount || 0,
       currency: dialogData.value?.data.currency || $enums.CurrencyType["EURO"],
@@ -126,14 +127,19 @@ export default {
 
       let toReturn = 0;
 
-      switch (formData.value.type) {
+      // Tutte le richieste di questo dialog hanno come importo disponibile le rendite.
+      // Per il prelievo del deposito occorre usare un altro canale
+
+      /*switch (formData.value.type) {
         case $enums.RequestTypes.RISC_CAPITALE_GOLD:
           toReturn = wallet.value?.deposit ?? 0;
           break;
         case $enums.RequestTypes.RISC_INTERESSI_BRITE:
           toReturn = wallet.value?.interestAmount ?? 0;
           break;
-      }
+      }*/
+
+      toReturn = wallet.value?.interestAmount ?? 0;
 
       return toReturn;
     });

@@ -14,7 +14,7 @@
             color="red"
             breakpoint="sm"
             icon-name="mdi-cash-minus"
-            @click="newWithdrawlRequest"
+            @click="newWithdrawlRequest($enums.RequestTypes.RISC_INTERESSI)"
           >
             {{ $t("pages.requests.btnWithdrawal") }}
           </tooltip-btn>
@@ -26,7 +26,7 @@
             color="orange"
             breakpoint="sm"
             icon-name="mdi-bank-minus"
-            @click="newWithdrawlRequestGold"
+            @click="newWithdrawlRequestGold($enums.RequestTypes.RISC_INTERESSI_BRITE)"
           >
             {{ $t("pages.requests.btnWithdrawalGold") }}
           </tooltip-btn>
@@ -156,7 +156,7 @@ import UserRoles from "~/enums/UserRoles";
 
 @Component({
   components: {
-    RequestsListTable: RequestsListTable as any ,
+    RequestsListTable: RequestsListTable as any,
     RequestDialogGold: RequestDialogGold as any,
     PageHeader,
   },
@@ -205,7 +205,7 @@ export default class Requests extends Vue {
     }
   ]
 
-  get requestsGroups() {
+  get requestsGroups(): Record<"nuova" | "lavorazione" | "accettata" | "rifiutata", any[]> {
     const toReturn: any = {
       nuova: [],
       lavorazione: [],
@@ -263,9 +263,47 @@ export default class Requests extends Vue {
     return this.userType === "user"
   }
 
+  get toolbarItems() {
+    return {
+      // Utente NON GOLD
+      /*
+      - riscuote interessi / rendite in maniera classica
+      - preleva deposito tramite richiesta chat (come per il versamento)
+      - può versare come succede ora
+       */
+
+      // Utente GOLD
+      /*
+      - riscuotere le rendite / interessi attraverso il dialog gold / club (o tramite brite o oro fisico)
+          - usare lo stesso dialog del versamento ed il flusso deve essere lo stesso che per i versamenti. La richiesta quindi deve essere presa in carico e tramite chat si deve sviluppare.
+      - preleva deposito tramite richiesta chat (come per il versamento)
+      - può versare come succede ora
+       */
+
+      // Agente Gold o NON Gold
+      /*
+      - riscuotere le provvigioni come ora.
+       */
+    }
+  }
+
   private async fetchAll() {
     try {
       this.requestsList = await this.$apiCalls.fetchRequests();
+
+      const existsAutoWithdraw = this.requestsGroups.lavorazione.find(req => req.autoWithdrawlAll)
+
+      // If in the list of working request does not exist an autoWithdraw request and the user still has one in its data,
+      // updates the user data
+      if (!existsAutoWithdraw && this.$auth.user.autoWithdrawlAll) {
+        const user = this.$auth.user;
+
+        this.$auth.setUser({
+          ...user,
+          autoWithdrawlAll: null,
+          autoWithdrawlAllRecursively: null
+        })
+      }
     } catch (er) {
       this.$alerts.error(er);
     }
@@ -357,16 +395,49 @@ export default class Requests extends Vue {
   }
 
   newWithdrawlRequest(type?: number) {
+    const reqType = type || this.$enums.RequestTypes.RISC_INTERESSI
+
+    /*
+
+    Se essite una richiesta automatica però il messaggio non deve comparire
+    perchè l'utente potrebbe voler richiedere altri tipi di riscossione o prelievi
+    se NON è GOLD.
+    In questo caso quindi la voce "richiesta provvigioni"  dovrebbe essere disabilitata
+
+    Se è gold invece non può chiedere altri tipi se non quello dei gold
+
+     */
+
+    if (this.$auth.user.autoWithdrawlAll && this.$auth.user.gold) {
+      this.$alerts.info({
+        title: "",
+        html: this.$t("alerts.autoWithdrawl-not-available", {link: "/requests#" + this.$auth.user.autoWithdrawlAll}) as string,
+        onOpen: (el: HTMLElement) => {
+          el.querySelector("a")?.addEventListener("click", () => {
+            this.$alerts.close()
+          })
+        }
+      })
+
+      return
+    }
+
     this.$store.dispatch("dialog/updateStatus", {
-      title: this.$t("dialogs.requests.title-withdrawal"),
+      title: this.$t("dialogs.requests.title-withdrawal-" + reqType),
       id: "RequestDialog",
       data: {
-        type: type || this.$enums.RequestTypes.RISC_INTERESSI
+        type: reqType,
+        gold: this.$auth.user.gold,
+        clubPack: this.$auth.user.clubPack
       }
     });
   }
 
   newWithdrawlRequestGold(type?: number) {
+    if (!this.checkWithdrawalPermissions()) {
+      return
+    }
+
     this.$store.dispatch("dialog/updateStatus", {
       title: this.$t("dialogs.requests.title-withdrawal-gold"),
       id: "RequestDialogGold",
@@ -377,6 +448,26 @@ export default class Requests extends Vue {
         type: type || this.$enums.RequestTypes.RISC_CAPITALE
       }
     });
+  }
+
+  /**
+   * If the user si gold but doesn't have an active pack or the pack is "UNSUBSCRIBED",
+   * won't let it make any withdrawl request except for hte commissions if an agent.
+   */
+  checkWithdrawalPermissions() {
+    const userIsGold = this.$auth.user.gold;
+    const userClubUnsubscribed = !this.$auth.user.clubPack || this.$auth.user.clubPack === this.$enums.ClubPacks.UNSUBSCRIBED;
+
+    if (userIsGold && userClubUnsubscribed) {
+      this.$alerts.info({
+        title: "",
+        html: this.$t("alerts.club-request-unsubscribed") as string
+      })
+
+      return false
+    }
+
+    return true
   }
 
   openRequestDetails(row: any) {
@@ -419,17 +510,30 @@ export default class Requests extends Vue {
         case "collect_deposit":
         case "collect_interests":
         case "collect_commissions":
-          let type;
+          let type = -1;
 
           if (newType === "collect_deposit") {
-            type = RequestTypes.RISC_CAPITALE;
+            if (!this.canRequestClassic && this.canRequestGold) {
+              type = RequestTypes.RISC_CAPITALE_GOLD
+            } else {
+              type = RequestTypes.RISC_CAPITALE;
+            }
           } else if (newType === "collect_interests") {
-            type = RequestTypes.RISC_INTERESSI;
+            if (!this.canRequestClassic && this.canRequestGold) {
+              type = RequestTypes.RISC_INTERESSI_BRITE
+            } else {
+              type = RequestTypes.RISC_INTERESSI;
+            }
           } else if (newType === "collect_commissions") {
             type = RequestTypes.RISC_PROVVIGIONI;
           }
 
-          this.newWithdrawlRequest(type);
+          if ([RequestTypes.RISC_CAPITALE_GOLD, RequestTypes.RISC_INTERESSI_BRITE].includes(type)) {
+            this.newWithdrawlRequestGold(type)
+          } else {
+            this.newWithdrawlRequest(type);
+          }
+
           break;
         case "collect_gold":
           this.newWithdrawlRequestGold()
