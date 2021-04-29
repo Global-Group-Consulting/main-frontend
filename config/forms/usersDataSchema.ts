@@ -481,7 +481,6 @@ export function clubData(formContext: FormContext): FormSchema[] {
     }, {
       cols: {
         'clubCardNumber': {
-          type: "number",
           disabled: !gold || !canChange
         },
         'clubPack': {
