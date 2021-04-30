@@ -58,6 +58,28 @@ import {Component, Vue, Watch} from "vue-property-decorator";
 import {briteSchema, goldSchema} from "~/config/forms/requestGoldSchema";
 import DynamicFieldset from "~/components/DynamicFieldset.vue";
 import {DynamicForm} from "~/@types/DynamicForm";
+import RequestTypes from "~/enums/RequestTypes";
+import WalletTypes from "~/enums/WalletTypes";
+import CurrencyType from "~/enums/CurrencyType";
+import {moneyFormatter} from "~/plugins/filters";
+
+interface FormData {
+  id?: string
+  amount: number
+  availableAmount: number
+  iban: string
+  clubCardNumber: string
+  userId: string
+  type: number
+  typeClub: "gold" | "brite"
+  wallet: number
+  currency: number
+  notes: string
+  status?: any
+  requestIban?: string
+  requestAmount?: number
+}
+
 
 @Component({
   components: {
@@ -67,7 +89,7 @@ import {DynamicForm} from "~/@types/DynamicForm";
 export default class RequestDialogGold extends Vue {
   readonly: boolean = false;
   currentTab: number = 0;
-  formData: any = {
+  formData: FormData = {
     wallet: this.$enums.WalletTypes.DEPOSIT,
     type: this.incomingData.type || this.$enums.RequestTypes.RISC_INTERESSI_BRITE,
     typeClub: this.currentTab === 0 ? "brite" : "gold",
@@ -75,6 +97,10 @@ export default class RequestDialogGold extends Vue {
     currency: this.incomingData.currency || this.$enums.CurrencyType["EURO"],
     clubCardNumber: this.$auth.user.clubCardNumber,
     requestIban: this.$auth.user.contractIban,
+    amount: 0,
+    iban: "",
+    userId: "",
+    notes: ""
   }
 
   $refs!: {
@@ -106,7 +132,7 @@ export default class RequestDialogGold extends Vue {
     // Per il prelievo del deposito occorre usare un altro canale
 
     /*switch (this.formData.value.type) {
-      case $enums.RequestTypes.RISC_CAPITALE_GOLD:
+      case $enums.RequestTypes.RISC_INTERESSI_GOLD:
         toReturn = wallet.value?.deposit ?? 0;
         break;
       case $enums.RequestTypes.RISC_INTERESSI_BRITE:
@@ -132,9 +158,9 @@ export default class RequestDialogGold extends Vue {
         return;
       }
 
-      const data = {
-        amount: this.formData.requestAmount,
-        iban: this.formData.requestIban,
+      const data: Partial<FormData> = {
+        amount: this.formData.requestAmount || 0,
+        iban: this.formData.requestIban || "",
         clubCardNumber: this.formData.clubCardNumber,
         userId: this.$auth.user.id,
         type: this.formData.type,
@@ -150,14 +176,8 @@ export default class RequestDialogGold extends Vue {
           const result = await this.$apiCalls.createRequest(data);
         },
         data: {
-          type: this.$t(
-            "enums.RequestTypes." +
-            this.$enums.RequestTypes.get(data.type).id
-          ),
-          amount:
-            this.$enums.CurrencyType.get(data.currency).symbol +
-            " " +
-            this.$options.filters?.moneyFormatter(data.amount)
+          type: this.$t("enums.RequestTypes." + this.$enums.RequestTypes.get(data.type).id),
+          amount: this.formatAmountForAlert(data)
         }
       });
 
@@ -169,6 +189,16 @@ export default class RequestDialogGold extends Vue {
     }
   }
 
+  formatAmountForAlert(data: Partial<FormData>): string {
+    let toReturn = "€ " + moneyFormatter(data.amount)
+
+    if (data.typeClub === "brite") {
+      toReturn += ` (B ${moneyFormatter(data.amount * 2, true)})`
+    }
+
+    return toReturn;
+  }
+
   @Watch("availableAmount", {immediate: true})
   onAvailableAmountChange(value: number) {
     this.formData.availableAmount = value;
@@ -176,9 +206,9 @@ export default class RequestDialogGold extends Vue {
 
   @Watch("currentTab", {immediate: true})
   onCurrentTabChange(value: number) {
-    //formData.value.type = type === 0 ? $enums.RequestTypes.RISC_INTERESSI_BRITE : $enums.RequestTypes.RISC_CAPITALE_GOLD;
     this.formData.typeClub = (value === 0) ? "brite" : "gold"
     this.formData.currency = (value === 0) ? this.$enums.CurrencyType.BRITE : this.$enums.CurrencyType.GOLD
+    this.formData.type = (value === 0) ? this.$enums.RequestTypes.RISC_INTERESSI_BRITE : this.$enums.RequestTypes.RISC_INTERESSI_GOLD;
   }
 
   async beforeMount() {

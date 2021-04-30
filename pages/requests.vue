@@ -5,80 +5,80 @@
         page-name="requests"
       ></page-header>
 
-      <page-toolbar>
-        <template slot="center-block">
-          <tooltip-btn
-            v-if="canRequestClassic"
-            :tooltip="$t('pages.requests.btnWithdrawal-tooltip')"
-            text
-            color="red"
-            breakpoint="sm"
-            icon-name="mdi-cash-minus"
-            @click="newWithdrawlRequest($enums.RequestTypes.RISC_INTERESSI)"
-          >
-            {{ $t("pages.requests.btnWithdrawal") }}
-          </tooltip-btn>
+      <page-toolbar :actions-list="actionsList">
+        <!--        <template slot="center-block">
+                  <tooltip-btn
+                    v-if="canRequestClassic"
+                    :tooltip="$t('pages.requests.btnWithdrawal-tooltip')"
+                    text
+                    color="red"
+                    breakpoint="sm"
+                    icon-name="mdi-cash-minus"
+                    @click="newWithdrawlRequest($enums.RequestTypes.RISC_INTERESSI)"
+                  >
+                    {{ $t("pages.requests.btnWithdrawal") }}
+                  </tooltip-btn>
 
-          <tooltip-btn
-            v-if="canRequestGold"
-            :tooltip="$t('pages.requests.btnWithdrawalGold-tooltip')"
-            text
-            color="orange"
-            breakpoint="sm"
-            icon-name="mdi-bank-minus"
-            @click="newWithdrawlRequestGold($enums.RequestTypes.RISC_INTERESSI_BRITE)"
-          >
-            {{ $t("pages.requests.btnWithdrawalGold") }}
-          </tooltip-btn>
+                  <tooltip-btn
+                    v-if="canRequestGold"
+                    :tooltip="$t('pages.requests.btnWithdrawalGold-tooltip')"
+                    text
+                    color="orange"
+                    breakpoint="sm"
+                    icon-name="mdi-bank-minus"
+                    @click="newWithdrawlRequestGold($enums.RequestTypes.RISC_INTERESSI_BRITE)"
+                  >
+                    {{ $t("pages.requests.btnWithdrawalGold") }}
+                  </tooltip-btn>
 
-          <tooltip-btn
-            v-if="canDeposit"
-            :tooltip="$t('pages.requests.btnDeposit-tooltip')"
-            text
-            color="green"
-            breakpoint="sm"
-            icon-name="mdi-cash-plus"
-            @click="newDepositRequest"
-          >
-            {{ $t("pages.requests.btnDeposit") }}
-          </tooltip-btn>
+                  <tooltip-btn
+                    v-if="canDeposit"
+                    :tooltip="$t('pages.requests.btnDeposit-tooltip')"
+                    text
+                    color="green"
+                    breakpoint="sm"
+                    icon-name="mdi-cash-plus"
+                    @click="newDepositRequest"
+                  >
+                    {{ $t("pages.requests.btnDeposit") }}
+                  </tooltip-btn>
 
-          <v-menu offset-y
-                  transition="slide-y-transition"
-                  v-if="permissions.userType === 'admin'"
-                  :close-on-content-click="true"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                color="primary"
-                text
-                v-bind="attrs"
-                v-on="on"
-              >
-                <v-icon class="mr-2">mdi-download</v-icon>
-                {{ $t("pages.requests.btnDownloadReport") }}
+                  <v-menu offset-y
+                          transition="slide-y-transition"
+                          v-if="permissions.userType === 'admin'"
+                          :close-on-content-click="true"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        color="primary"
+                        text
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        <v-icon class="mr-2">mdi-download</v-icon>
+                        {{ $t("pages.requests.btnDownloadReport") }}
 
-                <v-icon class="">mdi-chevron-down</v-icon>
-              </v-btn>
-            </template>
+                        <v-icon class="">mdi-chevron-down</v-icon>
+                      </v-btn>
+                    </template>
 
-            <v-card>
-              <v-list>
-                <v-list-item @click="onDownloadReportClick()">
-                  <v-list-item-title>{{ getLastMonth() }}</v-list-item-title>
-                </v-list-item>
-                <v-list-item @click="onDownloadReportClick(2)">
-                  <v-list-item-title>{{ getLastMonth(2) }}</v-list-item-title>
-                </v-list-item>
-                <v-list-item @click="onDownloadReportClick(3)">
-                  <v-list-item-title>{{ getLastMonth(3) }}</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-card>
+                    <v-card>
+                      <v-list>
+                        <v-list-item @click="onDownloadReportClick()">
+                          <v-list-item-title>{{ getLastMonth() }}</v-list-item-title>
+                        </v-list-item>
+                        <v-list-item @click="onDownloadReportClick(2)">
+                          <v-list-item-title>{{ getLastMonth(2) }}</v-list-item-title>
+                        </v-list-item>
+                        <v-list-item @click="onDownloadReportClick(3)">
+                          <v-list-item-title>{{ getLastMonth(3) }}</v-list-item-title>
+                        </v-list-item>
+                      </v-list>
+                    </v-card>
 
 
-          </v-menu>
-        </template>
+                  </v-menu>
+                </template>-->
       </page-toolbar>
 
       <v-tabs v-model="currentTab">
@@ -153,9 +153,12 @@ import {contractNumberFormatter, dateFormatter, moneyFormatter, userFormatter} f
 import {Moment} from "moment";
 import {computed} from "@vue/composition-api";
 import UserRoles from "~/enums/UserRoles";
+import {DynamicTab} from "~/@types/components/DynamicTab";
+import {ActionItem} from "~/@types/ActionItem";
 
 @Component({
   components: {
+    PageToolbar,
     RequestsListTable: RequestsListTable as any,
     RequestDialogGold: RequestDialogGold as any,
     PageHeader,
@@ -227,7 +230,137 @@ export default class Requests extends Vue {
     return toReturn;
   }
 
-  get actionsList() {
+  get actionsList(): ActionItem[] {
+    // Utente NON GOLD
+    /*
+    - riscuote interessi / rendite in maniera classica
+    - preleva deposito tramite richiesta chat (come per il versamento)
+    - può versare come succede ora
+     */
+
+    // Utente GOLD
+    /*
+    - riscuotere le rendite / interessi attraverso il dialog gold / club (o tramite brite o oro fisico)
+        - usare lo stesso dialog del versamento ed il flusso deve essere lo stesso che per i versamenti. La richiesta quindi deve essere presa in carico e tramite chat si deve sviluppare.
+    - preleva deposito tramite richiesta chat (come per il versamento)
+    - può versare come succede ora
+     */
+
+    // Agente Gold o NON Gold
+    /*
+    - riscuotere le provvigioni come ora.
+     */
+    return [
+
+      /*{
+        title: this.$t("pages.requests.btnDeposit")
+      },*/
+
+      {
+        text: "request-withdrawl-deposit",
+        tooltip: "request-withdrawl-deposit-tooltip",
+        icon: "mdi-bank-minus",
+        click: () => this.newWithdrawlRequest(this.$enums.RequestTypes.RISC_CAPITALE),
+        if: this.canWithdrawl,
+        options: {
+          color: "red"
+        }
+      },
+      {
+        text: "request-withdrawl-classic",
+        tooltip: "request-withdrawl-classic-tooltip",
+        icon: "mdi-cash-minus",
+        click: () => this.newWithdrawlRequest(this.$enums.RequestTypes.RISC_INTERESSI),
+        if: this.canRequestClassic,
+        options: {
+          color: "orange"
+        }
+      },
+      {
+        text: "request-withdrawl-club",
+        tooltip: "request-withdrawl-club-tooltip",
+        icon: "mdi-cash-minus",
+        click: () => this.newWithdrawlRequestGold(this.$enums.RequestTypes.RISC_INTERESSI_BRITE),
+        if: this.canRequestGold,
+        options: {
+          color: "orange"
+        }
+      },
+      {
+        text: "request-deposit-new",
+        tooltip: "request-deposit-new-tooltip",
+        icon: "mdi-cash-plus",
+        click: this.newDepositRequest,
+        if: this.canDeposit,
+        options: {
+          color: "green"
+        }
+      },
+      /*
+      <v-menu offset-y
+                          transition="slide-y-transition"
+                          v-if="permissions.userType === 'admin'"
+                          :close-on-content-click="true"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        color="primary"
+                        text
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        <v-icon class="mr-2">mdi-download</v-icon>
+                        {{ $t("pages.requests.btnDownloadReport") }}
+
+                        <v-icon class="">mdi-chevron-down</v-icon>
+                      </v-btn>
+                    </template>
+
+                    <v-card>
+                      <v-list>
+                        <v-list-item @click="onDownloadReportClick()">
+                          <v-list-item-title>{{ getLastMonth() }}</v-list-item-title>
+                        </v-list-item>
+                        <v-list-item @click="onDownloadReportClick(2)">
+                          <v-list-item-title>{{ getLastMonth(2) }}</v-list-item-title>
+                        </v-list-item>
+                        <v-list-item @click="onDownloadReportClick(3)">
+                          <v-list-item-title>{{ getLastMonth(3) }}</v-list-item-title>
+                        </v-list-item>
+                      </v-list>
+                    </v-card>
+
+
+                  </v-menu>
+      */
+      {
+        text: "request-download-report",
+        // icon: "mdi-chevron-down",
+        if: this.canDownloadReport,
+        options: {
+          color: "primary"
+        },
+        menuOptions: [
+          {
+            text: this.getLastMonth(0),
+            click: () => this.onDownloadReportClick(0)
+          },
+          {
+            text: this.getLastMonth(),
+            click: () => this.onDownloadReportClick()
+          },
+          {
+            text: this.getLastMonth(2),
+            click: () => this.onDownloadReportClick(2)
+          },
+          {
+            text: this.getLastMonth(3),
+            click: () => this.onDownloadReportClick(3)
+          }
+        ]
+      }
+    ]
+    /*
     return [
       {
         if: this.permissions.addRequest,
@@ -240,7 +373,7 @@ export default class Requests extends Vue {
           text: true
         }
       }
-    ]
+    ]*/
   }
 
   get dialogState() {
@@ -251,40 +384,24 @@ export default class Requests extends Vue {
     return [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(+this.$auth.user.role) ? "admin" : "user"
   }
 
+  get canWithdrawl() {
+    return this.userType === "user"
+  }
+
   get canRequestClassic() {
     return this.userType === "user" && !this.$auth.user.gold
   }
 
   get canRequestGold() {
-    return this.userType === "user"
+    return this.userType === "user" && this.$auth.user.gold
   }
 
   get canDeposit() {
     return this.userType === "user"
   }
 
-  get toolbarItems() {
-    return {
-      // Utente NON GOLD
-      /*
-      - riscuote interessi / rendite in maniera classica
-      - preleva deposito tramite richiesta chat (come per il versamento)
-      - può versare come succede ora
-       */
-
-      // Utente GOLD
-      /*
-      - riscuotere le rendite / interessi attraverso il dialog gold / club (o tramite brite o oro fisico)
-          - usare lo stesso dialog del versamento ed il flusso deve essere lo stesso che per i versamenti. La richiesta quindi deve essere presa in carico e tramite chat si deve sviluppare.
-      - preleva deposito tramite richiesta chat (come per il versamento)
-      - può versare come succede ora
-       */
-
-      // Agente Gold o NON Gold
-      /*
-      - riscuotere le provvigioni come ora.
-       */
-    }
+  get canDownloadReport() {
+    return this.userType === "admin"
   }
 
   private async fetchAll() {
@@ -313,7 +430,9 @@ export default class Requests extends Vue {
     const now = this.$moment()
     let rightMonth = now.date() > 15 ? now : now.subtract(1, "months")
 
-    if (months) {
+    if (months === 0) {
+      rightMonth = now.add(1, "months")
+    } else if (months) {
       rightMonth = now.subtract(months - 1, "months")
     }
 
@@ -355,12 +474,12 @@ export default class Requests extends Vue {
       data: {
         type: this.$enums.MessageTypes.CONVERSATION,
         subject: this.$t(
-          "dialogs.communicationNewDialog.subject-new-deposit",
+          `dialogs.communicationNewDialog.subject-new-${request.type === RequestTypes.RISC_CAPITALE ? "withdrawl" : "deposit"}`,
           {date: dateFormatter(request.created_at)}
         ),
         receiver: request.user.id,
         message: this.$t(
-          "dialogs.communicationNewDialog.message-new-deposit",
+          `dialogs.communicationNewDialog.message-new-${request.type === RequestTypes.RISC_CAPITALE ? "withdrawl" : "deposit"}`,
           {
             firstName: request.user.firstName,
             lastName: request.user.lastName,
@@ -514,7 +633,7 @@ export default class Requests extends Vue {
 
           if (newType === "collect_deposit") {
             if (!this.canRequestClassic && this.canRequestGold) {
-              type = RequestTypes.RISC_CAPITALE_GOLD
+              type = RequestTypes.RISC_INTERESSI_GOLD
             } else {
               type = RequestTypes.RISC_CAPITALE;
             }
@@ -528,7 +647,7 @@ export default class Requests extends Vue {
             type = RequestTypes.RISC_PROVVIGIONI;
           }
 
-          if ([RequestTypes.RISC_CAPITALE_GOLD, RequestTypes.RISC_INTERESSI_BRITE].includes(type)) {
+          if ([RequestTypes.RISC_INTERESSI_GOLD, RequestTypes.RISC_INTERESSI_BRITE].includes(type)) {
             this.newWithdrawlRequestGold(type)
           } else {
             this.newWithdrawlRequest(type);

@@ -49,7 +49,7 @@
               </v-btn>
             </template>
 
-            <template v-else>
+            <template v-else-if="$store.getters['user/userIsAdmin']">
               {{ $t("dialogs.requests.alert-in-progress", formData.conversation.creator) }}
             </template>
           </template>
@@ -75,7 +75,7 @@
           </v-btn>
           <v-btn text color="success" v-if="canApprove" @click="onApprove">
             <template
-              v-if="[$enums.RequestTypes.VERSAMENTO].includes(formData.type) && formData.status === $enums.RequestStatus.NUOVA">
+              v-if="[$enums.RequestTypes.VERSAMENTO, $enums.RequestTypes.RISC_CAPITALE].includes(formData.type) && formData.status === $enums.RequestStatus.NUOVA">
               <v-icon>mdi-wechat</v-icon>
               {{ $t("dialogs.requests.btn-chat") }}
             </template>
@@ -145,6 +145,7 @@ import {admin} from "../../config/roleBasedConfig";
 import WalletTypes from "../../enums/WalletTypes";
 import RequestStatus from "../../enums/RequestStatus";
 import RequestTypes from "../../enums/RequestTypes";
+import {moneyFormatter} from "~/plugins/filters";
 
 export default {
   name: "RequestDialog",
@@ -206,7 +207,7 @@ export default {
 
       switch (formData.value.type) {
         case $enums.RequestTypes.RISC_CAPITALE:
-        case $enums.RequestTypes.RISC_CAPITALE_GOLD:
+        case $enums.RequestTypes.RISC_INTERESSI_GOLD:
         case $enums.RequestTypes.VERSAMENTO:
           toReturn = wallet.value?.deposit ?? 0;
           break;
@@ -246,7 +247,7 @@ export default {
       );
     });
 
-    const ownByCurrentUser = computed(() => $auth.user.id === formData.value?.conversation?.createdById)
+    const ownByCurrentUser = computed(() => [formData.value?.conversation?.createdById, formData.value?.conversation?.directedToId].includes($auth.user.id))
 
     const canApprove = computed(() => {
       const isNewRequest = $enums.RequestStatus.NUOVA === +formData.value.status;
@@ -259,12 +260,13 @@ export default {
     const canCancelAutoWithdrawlAll = computed(() => {
       const isInProgress = $enums.RequestStatus.LAVORAZIONE === +formData.value.status;
       const isAuthUserRequest = $auth.user.id === formData.value.userId;
+      const reqHasAutoWithdrawl = formData.value.autoWithdrawlAll
 
-      return isInProgress && isAuthUserRequest;
+      return isInProgress && isAuthUserRequest && reqHasAutoWithdrawl;
     })
 
     const alertIcon = computed(() => {
-      let icon = ""
+      let icon = null
 
       if (formData.value.autoWithdrawlAll) {
         icon = "mdi-infinity"
@@ -473,7 +475,8 @@ export default {
           settings: {
             html: this.$t(`alerts.send-request${data.autoWithdrawlAll ? `-all${data.autoWithdrawlAllRecursively ? '-recursive' : ''}` : ""}-text`, {
               ...data,
-              type: reqTypeFormatted
+              type: reqTypeFormatted,
+              amount: "€ " + moneyFormatter(data.amount)
             })
           },
           preConfirm: async () => {

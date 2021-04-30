@@ -24,16 +24,48 @@
         <v-spacer></v-spacer>
 
         <slot name="center-block">
-          <tooltip-btn v-for="(action, i) of centerActionsList" :key="`c-${i}`"
-                       :tooltip="action.tooltip ? $t(`actions.${action.tooltip}`) : ''"
-                       v-bind="prepareOptions(action.options)"
-                       :icon-name="action.icon"
-                       @click="onClick(action, $event)"
-                       :disabled="action.disabled"
-                       v-if="('if' in action ? action.if : true)"
-          >
-            {{ $t(`actions.${action.text}`) }}
-          </tooltip-btn>
+          <template v-for="(action, i) of centerActionsList"
+                    v-if="('if' in action ? action.if : true)">
+            <tooltip-btn :tooltip="action.tooltip ? $t(`actions.${action.tooltip}`) : ''"
+                         v-bind="prepareOptions(action.options)"
+                         :icon-name="action.icon"
+                         @click="onClick(action, $event)"
+                         :disabled="action.disabled"
+                         v-if="!action.menuOptions"
+            >
+              {{ $t(`actions.${action.text}`) }}
+            </tooltip-btn>
+
+            <v-menu offset-y
+                    transition="slide-y-transition"
+                    v-if="action.menuOptions"
+                    :close-on-content-click="true"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  v-bind="prepareOptions(action.options, attrs)"
+                  text
+                  v-on="on"
+                  :disabled="action.disabled"
+                >
+                  <v-icon class="mr-2" v-if="">{{ action.icon }}</v-icon>
+
+                  {{ $t(`actions.${action.text}`) }}
+
+                  <v-icon class="">mdi-chevron-down</v-icon>
+                </v-btn>
+              </template>
+
+              <v-card>
+                <v-list>
+                  <v-list-item v-for="(menuItem, index) in action.menuOptions" @click="onClick(menuItem, $event)"
+                               :key="'menu_' +  index">
+                    <v-list-item-title>{{ menuItem.text }}</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-card>
+            </v-menu>
+          </template>
         </slot>
 
         <v-spacer></v-spacer>
@@ -91,10 +123,10 @@ export default defineComponent({
         return action.position === "right" && !action.onlyInMobile
       }))
 
-    function prepareOptions(newSettings: ActionItemOptions) {
+    function prepareOptions(newSettings: ActionItemOptions, attrs: any) {
       const defaults = {text: true}
 
-      return newSettings ? Object.assign({}, defaults, newSettings) : defaults
+      return newSettings ? Object.assign({}, defaults, attrs, newSettings) : defaults
     }
 
     function onClick(item: ActionItem, $event: any) {

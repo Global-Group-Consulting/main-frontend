@@ -49,7 +49,7 @@ export default {
     'risc_capitale': 'Prelievo deposito',
     'risc_interessi': 'Riscossione rendite (classic)',
     'risc_interessi_brite': 'Riscossione rendite Gold',
-    'risc_capitale_gold': 'Riscossione rendite Gold (Fisico)',
+    'risc_interessi_gold': 'Riscossione rendite Gold (Fisico)',
     'commission_manual_add': 'Aggiunta provvigioni manuali ad agente',
   },
   'RequestStatus': {
@@ -65,7 +65,8 @@ export default {
   },
   'CurrencyType': {
     'euro': 'Euro',
-    'brite': 'Brite'
+    'brite': 'Brite',
+    'gold': 'Gold'
   },
   'MovementTypes': {
     "initialDeposit": "Versamento iniziale",
