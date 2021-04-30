@@ -6,9 +6,6 @@
  * @property { {data : {type: number}, readonly: boolean} } dialogData
  */
 
-import RequestTypes from "../../enums/RequestTypes"
-import RequestStatus from "../../enums/RequestStatus"
-
 /**
  *
  * @param {ComputedContext} context

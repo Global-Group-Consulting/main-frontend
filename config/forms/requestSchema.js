@@ -9,6 +9,67 @@
 import RequestTypes from "../../enums/RequestTypes"
 import RequestStatus from "../../enums/RequestStatus"
 import {computed} from "@vue/composition-api";
+import UserRoles from "~/enums/UserRoles";
+
+function getRequestTypeList(list, context) {
+  const userType = [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(+context.$auth.user.role) ? "admin" : "user"
+
+  // const canDeposit = context.canDeposit;
+  const canRequestGold = userType === "user" && context.$auth.user.gold;
+  const canRequestClassic = userType === "user" && !context.$auth.user.gold;
+  const isAgent = context.$auth.user.role === UserRoles.AGENTE;
+
+  const data = list.filter((el) => {
+    let mustReturn = false
+
+    if (canRequestClassic && [RequestTypes.RISC_INTERESSI].includes(el.value)) {
+      mustReturn = true
+    } else if (canRequestGold) {
+      // return [RequestTypes.RISC_INTERESSI_BRITE, RequestTypes.RISC_INTERESSI_GOLD].includes(el.value)
+    }
+
+    if (isAgent && [RequestTypes.RISC_PROVVIGIONI].includes(el.value)) {
+      mustReturn = true
+    }
+
+    /* if (el.value === RequestTypes.RISC_CAPITALE) {
+       mustReturn = true
+     }*/
+
+    return mustReturn
+  })
+
+  return data.map(el => {
+    el.text = context.$i18n.t(`enums.RequestTypes.${el.text}`)
+
+    return el
+  })
+
+  /* return list.reduce((acc, type) => {
+     const reqGold = [RequestTypes.RISC_INTERESSI_GOLD, RequestTypes.RISC_INTERESSI_BRITE].includes(type.value)
+     const isUserGold = context.$auth.user.gold
+     let mustHide = false
+
+     if ([RequestTypes.VERSAMENTO,
+         RequestTypes.COMMISSION_MANUAL_ADD,
+         RequestTypes.COMMISSION_MANUAL_TRANSFER].includes(type.value)
+       || (type.value === RequestTypes.RISC_PROVVIGIONI && context.$auth.user.role !== UserRoles.AGENTE)
+       || reqGold
+       || (isUserGold && context.formData.type === RequestTypes.RISC_PROVVIGIONI && type.value !== RequestTypes.RISC_PROVVIGIONI)
+     ) {
+       mustHide = true
+     }
+
+     if (!mustHide) {
+       type.text = context.$i18n.t(`enums.RequestTypes.${type.text}`)
+
+       acc.push(type)
+     }
+
+     return acc
+   }, [])*/
+}
+
 
 /**
  *
@@ -16,7 +77,9 @@ import {computed} from "@vue/composition-api";
  * @returns {import("../../@types/FormSchema").FormSchema[]}
  */
 export default function (context) {
-  const isVersamento = context.dialogData && [context.$enums.RequestTypes.VERSAMENTO, context.$enums.RequestTypes.COMMISSION_MANUAL_ADD].includes(context.dialogData.data?.type)
+  const isVersamento = context.dialogData
+    && [context.$enums.RequestTypes.VERSAMENTO, context.$enums.RequestTypes.COMMISSION_MANUAL_ADD, context.$enums.RequestTypes.RISC_CAPITALE]
+      .includes(context.dialogData.data?.type)
   const isNew = !context.formData.id
   const readonly = context.dialogData.readonly
   const isCompleted = context.formData.status && ![RequestStatus.NUOVA, RequestStatus.LAVORAZIONE].includes(context.formData.status)
@@ -27,8 +90,6 @@ export default function (context) {
     return !(userIsGold && userClubUnsubscribed);
   })
 
-  console.log(hasWithdrawalPermissions.value)
-
   return [
     {
       cols: {
@@ -38,29 +99,7 @@ export default function (context) {
           component: !readonly ? 'v-select' : null,
           disabled: readonly || !hasWithdrawalPermissions.value,
           formatter: readonly ? (value) => context.$i18n.t(`enums.RequestTypes.${context.$enums.RequestTypes.getIdName(value)}`) : null,
-          items: !readonly ? context.$enums.RequestTypes.list.reduce((acc, type) => {
-            const reqGold = [context.$enums.RequestTypes.RISC_CAPITALE_GOLD, context.$enums.RequestTypes.RISC_INTERESSI_BRITE].includes(type.value)
-            const isUserGold = context.$auth.user.gold
-            let mustHide = false
-
-            if ([context.$enums.RequestTypes.VERSAMENTO,
-                context.$enums.RequestTypes.COMMISSION_MANUAL_ADD,
-                context.$enums.RequestTypes.COMMISSION_MANUAL_TRANSFER].includes(type.value)
-              || (type.value === context.$enums.RequestTypes.RISC_PROVVIGIONI && context.$auth.user.role !== context.$enums.UserRoles.AGENTE)
-              || reqGold
-              || (isUserGold && context.formData.type === context.$enums.RequestTypes.RISC_PROVVIGIONI && type.value !== context.$enums.RequestTypes.RISC_PROVVIGIONI)
-            ) {
-              mustHide = true
-            }
-
-            if (!mustHide) {
-              type.text = context.$i18n.t(`enums.RequestTypes.${type.text}`)
-
-              acc.push(type)
-            }
-
-            return acc
-          }, []) : null
+          items: !readonly ? getRequestTypeList(context.$enums.RequestTypes.list, context) : null
         },
       }
     },
@@ -73,7 +112,7 @@ export default function (context) {
           disabled: true,
           formatter: (value) => context.$i18n.t(`enums.WalletTypes.${context.$enums.WalletTypes.getIdName(value)}`),
           if: context.$enums.UserRoles.CLIENTE !== context.$auth.user.role
-            && context.formData.type !== context.$enums.RequestTypes.VERSAMENTO
+            && ![context.$enums.RequestTypes.VERSAMENTO, context.$enums.RequestTypes.RISC_CAPITALE].includes(context.formData.type)
         },
       }
     },
@@ -106,7 +145,7 @@ export default function (context) {
           disabled: true,
           component: 'money-input',
           currency: context.formData.currency,
-          if: (!readonly && !isVersamento) || readonly,
+          if: (!readonly && (!isVersamento || context.formData.type === RequestTypes.RISC_CAPITALE )) || readonly,
         }
       }
     },

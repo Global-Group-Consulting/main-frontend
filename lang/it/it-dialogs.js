@@ -52,6 +52,8 @@ export default {
     "title-handle-new-deposit": "Comunicazione versamento nuovo deposito",
     "subject-new-deposit": "Comunicazione nuova richiesta di versamento - {date}",
     "message-new-deposit": "Gentile {firstName} {lastName},\nla sua richiesta è stata presa in carico.",
+    "subject-new-withdrawl": "Comunicazione nuova richiesta di prelievo deposito - {date}",
+    "message-new-withdrawl": "Gentile {firstName} {lastName},\n",
     "your-agent": "Il tuo agente",
     'btn-cancel': "Annulla",
     'btn-send': "Invia"

@@ -1,7 +1,7 @@
 class BasicEnum {
   constructor(enumName) {
     /**
-     * @type {Object.<string, {index?: number, id: string, text?: string}>}
+     * @type {Object.<string, {index?: number, id: string, text?: string, symbol?: string}>}
      */
     this.data = {}
 

@@ -29,7 +29,7 @@ export const mutations = {
 }
 
 export const actions = {
-  async updateWallets({ commit }, { data, apiCalls }) {
+  async updateWallets({commit}, {data, apiCalls}) {
     try {
       commit("UPDATE_WALLETS", emptyWallets)
 
@@ -64,5 +64,8 @@ export const getters = {
   },
   availableWallets(state) {
     return state.wallets
+  },
+  userIsAdmin: (state, getters, rootState) => {
+    return [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(rootState.auth.user.role)
   }
 }

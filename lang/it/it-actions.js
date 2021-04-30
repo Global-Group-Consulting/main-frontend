@@ -23,4 +23,13 @@ export default {
   "import-contract-tooltip": "",
   "import-movements": "Importa Movimenti",
   "import-movements-tooltip": "",
+  "request-deposit-new": "Versamento",
+  "request-deposit-new-tooltip": "Versa nuova liquidità",
+  "request-withdrawl-classic": "Risc. Classic",
+  "request-withdrawl-classic-tooltip": "Crea una richiesta di Riscossione Classic",
+  "request-withdrawl-club": "Risc. Gold",
+  "request-withdrawl-club-tooltip": "Crea una richiesta di Riscossione Gold",
+  "request-withdrawl-deposit": "Prel. Deposito",
+  "request-withdrawl-deposit-tooltip": "Crea una richiesta di Prelievo Deposito",
+  "request-download-report": "Scarica Report",
 }
