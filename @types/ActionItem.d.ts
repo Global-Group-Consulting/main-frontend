@@ -17,7 +17,7 @@ export interface ActionItem {
    * Indicated if this element must be shown only in the mobile menu
    */
   onlyInMobile?: Boolean,
-  menuOptions: {
+  menuOptions?: {
     text: string
     icon?: string
     options?: ActionItemOptions

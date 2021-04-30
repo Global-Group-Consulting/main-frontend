@@ -192,8 +192,8 @@ export default class RequestDialogGold extends Vue {
   formatAmountForAlert(data: Partial<FormData>): string {
     let toReturn = "€ " + moneyFormatter(data.amount)
 
-    if (data.typeClub === "brite") {
-      toReturn += ` (B ${moneyFormatter(data.amount * 2, true)})`
+    if (data && data.typeClub === "brite") {
+      toReturn += ` (B ${moneyFormatter((data.amount || 0) * 2, true)})`
     }
 
     return toReturn;

@@ -342,19 +342,19 @@ export default class Requests extends Vue {
         },
         menuOptions: [
           {
-            text: this.getLastMonth(0),
+            text: this.getLastMonth(0) as string,
             click: () => this.onDownloadReportClick(0)
           },
           {
-            text: this.getLastMonth(),
+            text: this.getLastMonth() as string,
             click: () => this.onDownloadReportClick()
           },
           {
-            text: this.getLastMonth(2),
+            text: this.getLastMonth(2) as string,
             click: () => this.onDownloadReportClick(2)
           },
           {
-            text: this.getLastMonth(3),
+            text: this.getLastMonth(3) as string,
             click: () => this.onDownloadReportClick(3)
           }
         ]
