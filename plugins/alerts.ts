@@ -206,7 +206,7 @@ class Alerts {
    * @return {Promise<void>}
    * @param payload
    */
-  async askBeforeAction(payload: { key: string, preConfirm: any, data: any, settings: AlertSettings }) {
+  async askBeforeAction(payload: { key: string, preConfirm: any, data?: any, settings?: AlertSettings }) {
     const {key, preConfirm, data, settings} = payload
     const title = this.i18n.t(`alerts.${key}-title`, data) as string
     const html = this.i18n.t(`alerts.${key}-text`, data) as string

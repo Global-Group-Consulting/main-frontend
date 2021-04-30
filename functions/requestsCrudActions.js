@@ -40,7 +40,7 @@ export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n, 
   }
 
   async function approve(requestData) {
-    if (requestData.type === RequestTypes.VERSAMENTO && requestData.status === RequestStatus.NUOVA) {
+    if ([RequestTypes.VERSAMENTO, RequestTypes.RISC_CAPITALE].includes(requestData.type) && requestData.status === RequestStatus.NUOVA) {
       return emit("requestStartWorking", requestData);
     }
 
