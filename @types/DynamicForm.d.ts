@@ -1,5 +1,5 @@
 export interface DynamicForm {
   reset(): void;
 
-  validate(scrollTo: boolean, returnErrors: boolean): Promise<boolean | any[]>
+  validate(scrollTo?: boolean, returnErrors?: boolean): Promise<boolean | any[]>
 }

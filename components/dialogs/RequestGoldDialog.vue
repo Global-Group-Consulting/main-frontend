@@ -25,7 +25,7 @@
               <v-card flat class="py-10" light>
                 <v-card-text>
                   <dynamic-fieldset
-                    ref="request-form"
+                    ref="dialogForm"
                     :schema="formSchema"
                     v-model="formData"
                     fill-row
@@ -54,7 +54,7 @@
 </template>
 
 <script lang="ts">
-import {Component, Vue, Watch,} from "vue-property-decorator";
+import {Component, Vue, Watch} from "vue-property-decorator";
 import {briteSchema, goldSchema} from "~/config/forms/requestGoldSchema";
 import DynamicFieldset from "~/components/DynamicFieldset.vue";
 import {DynamicForm} from "~/@types/DynamicForm";
@@ -78,7 +78,7 @@ export default class RequestDialogGold extends Vue {
   }
 
   $refs!: {
-    "request-form": DynamicForm
+    dialogForm: HTMLElement
   }
 
   get dialogData() {
@@ -118,7 +118,7 @@ export default class RequestDialogGold extends Vue {
   }
 
   get formElement(): DynamicForm {
-    return this.$refs["request-form"]
+    return this.$refs.dialogForm as any
   }
 
   onClose() {
@@ -157,7 +157,7 @@ export default class RequestDialogGold extends Vue {
           amount:
             this.$enums.CurrencyType.get(data.currency).symbol +
             " " +
-            this.$options.filters.moneyFormatter(data.amount)
+            this.$options.filters?.moneyFormatter(data.amount)
         }
       });
 
@@ -178,6 +178,7 @@ export default class RequestDialogGold extends Vue {
   onCurrentTabChange(value: number) {
     //formData.value.type = type === 0 ? $enums.RequestTypes.RISC_INTERESSI_BRITE : $enums.RequestTypes.RISC_CAPITALE_GOLD;
     this.formData.typeClub = (value === 0) ? "brite" : "gold"
+    this.formData.currency = (value === 0) ? this.$enums.CurrencyType.BRITE : this.$enums.CurrencyType.GOLD
   }
 
   async beforeMount() {

@@ -1,11 +1,12 @@
-import { BasicEnum } from '@/classes/BasicEnum'
+import {BasicEnum} from "~/classes/BasicEnum";
 
 class CurrencyType extends BasicEnum {
-  constructor () {
-    super('CurrencyType')
+  public EURO = 1
+  public BRITE = 2
+  public GOLD = 3
 
-    this.EURO = 1
-    this.BRITE = 2
+  constructor() {
+    super('CurrencyType')
 
     this.data = {
       [this.EURO]: {
@@ -15,7 +16,11 @@ class CurrencyType extends BasicEnum {
       [this.BRITE]: {
         id: 'brite',
         symbol: 'B'
-      }
+      },
+      [this.GOLD]: {
+        id: 'gold',
+        symbol: 'Au'
+      },
     }
   }
 }
