@@ -55,7 +55,6 @@ function briteSchema(context) {
           disabled: true
         },
         clubCardNumber: {
-          type: "number",
           disabled: !!context.formData.clubCardNumber,
           validations: {
             required: {},

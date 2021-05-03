@@ -13,8 +13,8 @@
                            :tooltip="$t('pages.club.brite.changeActivePack')"></tooltip-btn>
             </v-col>
             <v-col lg="6" cols="12">
-              <div>{{ $t("pages.club.brite.totalUsableBrite") }}: <strong>B
-                {{ totalReport.totalAmount|moneyFormatter(true) }}</strong></div>
+              <div>{{ $t("pages.club.brite.totalUsableBrite") }}: <strong>
+                Br' {{ totalReport.totalAmount|moneyFormatter(true) }}</strong></div>
               <ul class="pl-4" style="list-style: none; font-size: 20px; line-height: 1;">
                 <li v-for="(entry, i) of totalReport.expirations" :key="i"
                     v-html="$t('pages.club.brite.totalExpiresAt', {
@@ -54,15 +54,15 @@
                   :items="tableData">
         <template v-slot:item.amountChange="{item, value}">
           <span :class="getMovementColor(item)">
-            B {{ value | moneyFormatter(true) }}</span>
+            Br' {{ value | moneyFormatter(true) }}</span>
         </template>
 
         <template v-slot:item.deposit="{item, value}">
-          <strong>B {{ value | moneyFormatter(true) }}</strong>
+          <strong>Br' {{ value | moneyFormatter(true) }}</strong>
         </template>
 
         <template v-slot:item.depositOld="{item, value}">
-          B {{ value | moneyFormatter(true) }}
+          Br' {{ value | moneyFormatter(true) }}
         </template>
 
         <template v-slot:item.semesterId="{item, value}">
@@ -258,7 +258,7 @@ export default class Brite extends Vue {
       /*  actionText: canRemove ? this.$t("pages.club.brite.tabs.removeBrite") : null,
         action: this.onRemoveBrite,
         actionDisabled: (card: CardBlockI, tab: DynamicTab) => {
-          return card.value === "B 0"
+          return card.value === "Br' 0"
         },*/
     }, {
       id: "briteAvailable",
@@ -268,7 +268,7 @@ export default class Brite extends Vue {
       actionText: canRemove ? this.$t("pages.club.brite.tabs.removeBrite") : (permissionToUse ? this.$t("pages.club.brite.tabs.use") : ''),
       action: canRemove ? this.onRemoveBrite : this.onUseBrite,
       actionDisabled: (card: CardBlockI, tab: DynamicTab) => {
-        return !canUse || card.value === "B 0"
+        return !canUse || card.value === "Br' 0"
       },
       color: "#7cb342"
     }]
@@ -327,7 +327,7 @@ export default class Brite extends Vue {
   }
 
   getCardValue(card: CardBlockI, tab: DynamicTab) {
-    const toReturn = ["B"]
+    const toReturn = ["Br'"]
 
     if (!tab.dates || !tab.dates.from) {
       toReturn.push("0")
