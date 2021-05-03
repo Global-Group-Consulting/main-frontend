@@ -193,7 +193,7 @@ export default class RequestDialogGold extends Vue {
     let toReturn = "€ " + moneyFormatter(data.amount)
 
     if (data && data.typeClub === "brite") {
-      toReturn += ` (B ${moneyFormatter((data.amount || 0) * 2, true)})`
+      toReturn += ` (Br' ${moneyFormatter((data.amount || 0) * 2, true)})`
     }
 
     return toReturn;

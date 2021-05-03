@@ -73,7 +73,7 @@ export default {
     "depositAdded": "Nuovo Versamento",
     "interestRecapitalized": "Ricapitalizzazione mensile",
     "interestCollected": "Riscossione interessi",
-    "depositCollected": "Riscossione capitale",
+    "depositCollected": "Prelievo deposito",
     "commissionCollected": "Riscossione provvigioni",
     "cancelInterestCollected": "Annullamento riscossione interessi",
     "cancelDepositCollected": "Annullamento riscossione capitale",
