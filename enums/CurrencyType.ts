@@ -15,7 +15,7 @@ class CurrencyType extends BasicEnum {
       },
       [this.BRITE]: {
         id: 'brite',
-        symbol: 'B'
+        symbol: 'Br\''
       },
       [this.GOLD]: {
         id: 'gold',
