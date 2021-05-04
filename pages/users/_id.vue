@@ -505,7 +505,7 @@ export default {
           userRole: userForm.formData.value.role
         }
       });
-    };
+    }
 
     function openMovementsList() {
       root.$store.dispatch("dialog/updateStatus", {
@@ -521,7 +521,7 @@ export default {
           user: userForm.formData.value
         }
       });
-    };
+    }
 
     function onAccountStatusChanged(userData) {
       $set(userForm.formData.value, "account_status", userData.account_status);
@@ -766,6 +766,8 @@ export default {
         userForm.formData.value = await $apiCalls.fetchUserDetails(
           $route.params.id
         );
+
+        userForm.initialEmail.value = userForm.formData.value.email
 
         /*if (userId !== "new" && [$enums.UserRoles.AGENTE, $enums.UserRoles.CLIENTE].includes(+userForm.formData.value.role)) {
           const result = await $apiCalls.dashboardFetch(userForm.formData.value.id);

@@ -8,6 +8,7 @@
 
 ### Aggiunte
 - Aggiunta possibilità per gli agenti di creare richiesta automatiche o ricorsive di riscossione delle proprie provvigioni.
+- Permette ai superadmin di modificare le email degli utenti
 
 ## v 1.8.8 - <small>15/04/2020</small>
 ### Miglioramenti

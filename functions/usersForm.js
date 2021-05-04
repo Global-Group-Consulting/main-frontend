@@ -34,6 +34,7 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
     personType: PersonTypes.FISICA,
     clubPack: ClubPacks.UNSUBSCRIBED
   })
+  const initialEmail = ref("");
   const permissions = Permissions({$auth})
   const userIsNew = computed(() => $route.params.id === "new" || !formData.value.id)
   const userRole = computed(() => formData.value.role)
@@ -46,6 +47,7 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
   const userType = computed(() => [UserRoles.CLIENTE, UserRoles.AGENTE].includes(formData.value.role) ? "user" : "admin")
   const beforeConfirm = ref(false)
   const dirtyForms = ref({})
+  const emailChanged = computed(() => initialEmail.value !== formData.value.email)
 
 
   /**
@@ -129,6 +131,8 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
         refs[key][0].$v?.$reset()
       }
     }
+
+    initialEmail.value = formData.value.email
   }
 
   /**
@@ -140,6 +144,13 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
   async function askIfDataIsComplete() {
     return await $alerts.askBeforeAction({
       key: "confirm-updated-incomplete-data",
+      data: formData.value
+    });
+  }
+
+  async function askIfWantToChangeEmail() {
+    return await $alerts.askBeforeAction({
+      key: "confirm-email-change",
       data: formData.value
     });
   }
@@ -161,8 +172,18 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
       delete data.files
       delete data.referenceAgentData
 
+      if (!data.incompleteData) {
+        data.incompleteData = {}
+      }
+
       if (formData.value.account_status === AccountStatuses.INCOMPLETE) {
         await askIfDataIsComplete()
+
+        data.incompleteData.completed = true
+      }
+
+      if (emailChanged.value) {
+        await askIfWantToChangeEmail()
 
         data.incompleteData.completed = true
       }
@@ -198,6 +219,7 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
     formData,
     formTabs,
     formSchemas,
+    initialEmail,
     beforeConfirm,
     userIsNew,
     userRole,
@@ -212,6 +234,7 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
     permissions,
     validateAll,
     updateDirtyForms,
-    dirtyForms
+    dirtyForms,
+    emailChanged
   }
 }

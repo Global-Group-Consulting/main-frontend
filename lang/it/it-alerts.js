@@ -113,6 +113,11 @@ export default {
   "confirm-updated-incomplete-data-confirmBtnText": "Si, corretto",
   "confirm-updated-incomplete-data-cancelBtnText": "Annulla",
 
+  "confirm-email-change-title": "Vuoi cambiare anche l'email?",
+  "confirm-email-change-text": "L'email dell'utente è stata cambiata. Procedendo, questa verrà salvata insieme agli altri dati.<br>Siete sicuri di aver inserito un email valida?",
+  "confirm-email-change-confirmBtnText": "Si, confermo",
+  "confirm-email-change-cancelBtnText": "Annulla",
+
   "validate-user-title": "Convalidare l'account?",
   "validate-user-text": "Sei sicuro di voler convalidare e quindi confermare l'account dell'utente {firstName} {lastName}? Procedendo, l'utente e l'amministrazione riceveranno il contratto finale da firmare.",
   "validate-user-confirmBtnText": "Si, convalida account",
