@@ -8,6 +8,7 @@ module.exports = `<h2 id="v189small28042020small">v 1.8.9 - <small>28/04/2020</s
 <h3 id="aggiunte">Aggiunte</h3>
 <ul>
 <li>Aggiunta possibilità per gli agenti di creare richiesta automatiche o ricorsive di riscossione delle proprie provvigioni.</li>
+<li>Permette ai superadmin di modificare le email degli utenti</li>
 </ul>
 <h2 id="v188small15042020small">v 1.8.8 - <small>15/04/2020</small></h2>
 <h3 id="miglioramenti-1">Miglioramenti</h3>
