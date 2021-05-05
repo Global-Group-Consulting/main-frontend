@@ -135,6 +135,8 @@ import {Component, Vue, Watch} from "vue-property-decorator";
 import DynamicFieldset from "~/components/DynamicFieldset.vue";
 import requestSchema from "~/config/forms/requestSchema";
 import requestsCrudActionsFn from "~/functions/requestsCrudActions";
+import {moneyFormatter} from "~/plugins/filters";
+import {DynamicForm} from "~/@types/DynamicForm";
 
 interface FormData {
   wallet: number
@@ -146,17 +148,20 @@ interface FormData {
   status: number
   requestState: number
   id: string
-  autoWithdrawlAll: string | null
-  autoWithdrawlAllRecursively: string | null
+  autoWithdrawlAllRecursively: any
+  autoWithdrawlAll: any
   conversation: any
+  requestAttachment: any
   amount: number | string
   rejectReason: string
   completed_at: string
   cancelReason: string
+  notes: string
+  userId: string
 }
 
 @Component({
-  components: {DynamicFieldset},
+  components: {DynamicFieldset: DynamicFieldset as any},
 })
 export default class RequestDialog extends Vue {
   formData: FormData = {
@@ -172,7 +177,7 @@ export default class RequestDialog extends Vue {
   dataLoaded = false
 
   $refs!: {
-    dialogForm: HTMLElement
+    dialogForm: HTMLElement & DynamicForm
   }
 
   get dialogData() {
@@ -319,12 +324,12 @@ export default class RequestDialog extends Vue {
   }
 
   async onDelete() {
-    const result = await this.actions.delete(this.formData);
+    const result = await this.actions.delete();
 
     if (result) {
       this.close();
 
-      this.emit("requestDeleted");
+      this.$emit("requestDeleted");
     }
   }
 
@@ -334,17 +339,17 @@ export default class RequestDialog extends Vue {
     if (result) {
       this.close();
 
-      this.emit("requestStatusChanged");
+      this.$emit("requestStatusChanged");
     }
   }
 
   async onReject() {
-    const result = await this.actions.reject(this.formData);
+    const result = await this.actions.reject();
 
     if (result) {
       this.close();
 
-      this.emit("requestStatusChanged");
+      this.$emit("requestStatusChanged");
     }
   }
 
@@ -362,7 +367,7 @@ export default class RequestDialog extends Vue {
 
       this.close();
 
-      this.emit("requestStatusChanged");
+      this.$emit("requestStatusChanged");
     }
   }
 
@@ -393,10 +398,10 @@ export default class RequestDialog extends Vue {
             ...data,
             type: reqTypeFormatted,
             amount: "€ " + moneyFormatter(data.amount)
-          })
+          }) as string
         },
         preConfirm: async () => {
-          const result = await this.$apiCalls.createRequest(data);
+          const result: any = await this.$apiCalls.createRequest(data);
 
           if (data.autoWithdrawlAll) {
             const user = this.$auth.user;
@@ -416,7 +421,7 @@ export default class RequestDialog extends Vue {
           amount:
             this.$enums.CurrencyType.get(data.currency).symbol +
             " " +
-            this.$options.filters.moneyFormatter(data.amount)
+            moneyFormatter(data.amount)
         }
       });
 
@@ -465,7 +470,7 @@ export default class RequestDialog extends Vue {
       return;
     }
 
-    const data = {};
+    const data: any = {};
 
     if (this.$store.getters["user/userIsAdmin"]) {
       data.userId = this.formData.userId;
