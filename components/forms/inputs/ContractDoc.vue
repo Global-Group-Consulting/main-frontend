@@ -12,7 +12,7 @@
           </v-btn>
         </template>
 
-        <signing-logs-popup :user-id="userId"></signing-logs-popup>
+        <signing-logs-popup :user-id="userId" />
       </v-menu>
     </div>
 
