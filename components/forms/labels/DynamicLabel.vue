@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="d-inline-block">
     <component :is="invalidFields.includes(fieldKey) ? 'strong' : 'span'"
                :class="{'red&#45;&#45;text': invalidFields.includes(fieldKey)}">
       {{ labelContent }}
