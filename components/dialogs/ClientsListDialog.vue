@@ -106,13 +106,13 @@ export default defineComponent({
     const usersList: UserDataSchema[] = dialogData.value.data.usersList;
     const agent: UserDataSchema = dialogData.value.data.agent;
     const tab: Ref<number> = ref(0)
-    const tabsList: Ref<TabInstance[]> = ref([
+    const tabsList: Ref<any[]> = ref([
       {
         id: agent.id,
         title: `${agent.firstName} ${agent.lastName}`,
         tableData: usersList,
         referenceAgent: agent.referenceAgent
-      }
+      } as  TabInstance
     ])
 
 
