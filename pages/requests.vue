@@ -158,6 +158,8 @@ import {ActionItem} from "~/@types/ActionItem";
 
 @Component({
   components: {
+    CommunicationNewDialog: CommunicationNewDialog as any,
+    RequestDialog: RequestDialog as any,
     PageToolbar,
     RequestsListTable: RequestsListTable as any,
     RequestDialogGold: RequestDialogGold as any,
@@ -296,43 +298,7 @@ export default class Requests extends Vue {
           color: "green"
         }
       },
-      /*
-      <v-menu offset-y
-                          transition="slide-y-transition"
-                          v-if="permissions.userType === 'admin'"
-                          :close-on-content-click="true"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        color="primary"
-                        text
-                        v-bind="attrs"
-                        v-on="on"
-                      >
-                        <v-icon class="mr-2">mdi-download</v-icon>
-                        {{ $t("pages.requests.btnDownloadReport") }}
 
-                        <v-icon class="">mdi-chevron-down</v-icon>
-                      </v-btn>
-                    </template>
-
-                    <v-card>
-                      <v-list>
-                        <v-list-item @click="onDownloadReportClick()">
-                          <v-list-item-title>{{ getLastMonth() }}</v-list-item-title>
-                        </v-list-item>
-                        <v-list-item @click="onDownloadReportClick(2)">
-                          <v-list-item-title>{{ getLastMonth(2) }}</v-list-item-title>
-                        </v-list-item>
-                        <v-list-item @click="onDownloadReportClick(3)">
-                          <v-list-item-title>{{ getLastMonth(3) }}</v-list-item-title>
-                        </v-list-item>
-                      </v-list>
-                    </v-card>
-
-
-                  </v-menu>
-      */
       {
         text: "request-download-report",
         // icon: "mdi-chevron-down",
@@ -360,20 +326,6 @@ export default class Requests extends Vue {
         ]
       }
     ]
-    /*
-    return [
-      {
-        if: this.permissions.addRequest,
-        tooltip: "$t('pages.requests.btnWithdrawal-tooltip')",
-        color: "red",
-        breakpoint: "sm",
-        iconName: "mdi-cash-minus",
-        click: this.newWithdrawlRequest,
-        options: {
-          text: true
-        }
-      }
-    ]*/
   }
 
   get dialogState() {
@@ -601,11 +553,12 @@ export default class Requests extends Vue {
       id: "RequestDialog",
       readonly: true,
       data: {
-        ...row,
+        id: row.id
+        /*...row,
         currency: +row.currency,
         status: +row.status,
         type: +row.type,
-        wallet: +row.wallet
+        wallet: +row.wallet*/
       }
     });
   }

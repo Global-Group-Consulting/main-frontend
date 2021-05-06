@@ -1,7 +1,7 @@
 import {Moment} from "moment";
 
 export interface DynamicTab {
-  id: "briteTotal" | "briteUsed" | "briteAvailable" | string
+  id: "briteTotal" | "briteUsed" | "briteAvailable" | string | number
   title?: string
   data?: any[]
   updateMethod?: string

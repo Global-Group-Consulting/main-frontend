@@ -1,17 +1,14 @@
-import { BasicEnum } from '../classes/BasicEnum'
-/**
- * @enum
- */
+import {BasicEnum} from '~/classes/BasicEnum'
+
 class UserRoles extends BasicEnum {
+  public SUPER_ADMIN = 0
+  public ADMIN = 1
+  public SERV_CLIENTI = 2
+  public AGENTE = 3
+  public CLIENTE = 4
 
   constructor() {
     super('UserRoles')
-
-    this.SUPER_ADMIN = 0
-    this.ADMIN = 1
-    this.SERV_CLIENTI = 2
-    this.AGENTE = 3
-    this.CLIENTE = 4
 
     this.data = {
       [this.SUPER_ADMIN]: {

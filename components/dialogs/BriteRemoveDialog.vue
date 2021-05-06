@@ -80,7 +80,7 @@ export default class BriteRemoveDialog extends Vue {
       await this.$alerts.askBeforeAction({
         key: "brite-remove",
         preConfirm: async () => {
-          const result = await $apiCalls.clubRemoveBrites(userId, this.formData, semesterId);
+          const result = await $apiCalls.clubRemoveBrites(userId, this.formData, semesterId.toString());
 
           this.$emit("briteRemoved", result)
           this.onClose();

@@ -1,16 +1,14 @@
-import RequestTypes from "../enums/RequestTypes"
-import RequestStatus from "../enums/RequestStatus"
 import moment from "moment";
 import jsFileDownload from "js-file-download";
-import {ref, watch} from "@vue/composition-api";
 
 /**
  *
  * @param {*} request
  * @param {{}} param1
+ * @param {any} [emit]
  * @param {import("../@types/AlertsPlugin").AlertsPlugin} param1.$alerts
  */
-export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n, $moment}, emit) {
+export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n, $moment, $emit}, emit) {
   async function deleteFn() {
     const currentRequest = request.value ?? request
 
@@ -39,23 +37,25 @@ export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n, 
     }
   }
 
-  async function approve(requestData) {
-    if ([RequestTypes.VERSAMENTO, RequestTypes.RISC_CAPITALE].includes(requestData.type) && requestData.status === RequestStatus.NUOVA) {
-      return emit("requestStartWorking", requestData);
+  async function approve(requestData, emitCallback) {
+    if ([$enums.RequestTypes.VERSAMENTO, $enums.RequestTypes.RISC_CAPITALE].includes(requestData.type)
+      && requestData.status === $enums.RequestStatus.NUOVA) {
+
+      if (emitCallback) {
+        return emitCallback()
+      }
+
+      return $emit("requestStartWorking", requestData);
     }
 
     const currentRequest = request.value ?? request
 
     try {
       const alertData = {
-        type: $i18n.t(
-          "enums.RequestTypes." +
-          $enums.RequestTypes.get(currentRequest.type).id
-        ),
-        amount:
-          $enums.CurrencyType.get(currentRequest.currency).symbol +
-          " " +
-          $options.filters.moneyFormatter(currentRequest.amount),
+        type: $i18n.t("enums.RequestTypes." + $enums.RequestTypes.get(currentRequest.type).id),
+        amount: $enums.CurrencyType.get(currentRequest.currency).symbol
+          + " "
+          + $options.filters.moneyFormatter(currentRequest.amount),
         user: $options.filters.userFormatter(currentRequest.user)
       }
       await $alerts.askBeforeAction({

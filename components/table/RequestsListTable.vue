@@ -95,7 +95,11 @@
         </v-tooltip>
       </span>
 
-      <v-tooltip v-if="$enums.RequestTypes.COMMISSION_MANUAL_ADD === item.type" bottom>
+      <v-tooltip v-if="$enums.RequestTypes.COMMISSION_MANUAL_ADD === item.type"
+                 bottom
+                 open-on-click
+                 :open-on-hover="false"
+      >
         <template v-slot:activator="{ on }">
           <v-btn icon v-on="on">
             <v-icon>mdi-information</v-icon>
@@ -226,6 +230,22 @@ export default {
       return item.user?.referenceAgentData?.firstName + " " + item.user?.referenceAgentData?.lastName
     }
 
+    async function getTargetUser(item) {
+      if (item.targetUser) {
+        return
+      }
+
+      item.loadingTargetUser = true
+
+      try {
+        item.targetUser = await this.$apiCalls.readRequestTargetUser(item.targetUserId)
+      } catch (er) {
+        this.$alerts.error(er)
+      }
+
+      item.loadingTargetUser = false
+    }
+
     return {
       getItemClass,
       getAmountSign,
@@ -236,7 +256,8 @@ export default {
       onRequestCanceled,
       formatRequestCurrency,
       getRefAgentName,
-      getRefAgentUrl
+      getRefAgentUrl,
+      getTargetUser
     };
   }
 };

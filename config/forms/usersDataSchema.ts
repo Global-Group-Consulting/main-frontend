@@ -520,7 +520,7 @@ export function extraData(formContext: FormContext) {
           formatter: changeRole ? 'numberCasting' :
             (value: string) => formContext.$i18n.t("enums.UserRoles." + UserRoles.getIdName(value)),
           items: changeRole ? formContext.userIsNew ? UserRoles : UserRoles.list.filter(_role => {
-            const roleId = +UserRoles.get(_role.text).index
+            const roleId = +(UserRoles.get(_role.text).index || -1)
             const adminRoles = [UserRoles.ADMIN, UserRoles.SERV_CLIENTI]
 
             if (adminRoles.includes(formContext.userRole)) {
