@@ -98,18 +98,15 @@
       <v-tooltip v-if="$enums.RequestTypes.COMMISSION_MANUAL_ADD === item.type"
                  bottom
                  open-on-click
-                 :open-on-hover="false"
+
       >
         <template v-slot:activator="{ on }">
-          <v-btn icon v-on="on">
+          <v-btn icon @click.stop="getTargetUser(item)" v-on="on">
             <v-icon>mdi-information</v-icon>
           </v-btn>
         </template>
 
-        <template v-if="item.targetUser">
-          Agente destinatario:<br>
-          {{ item.targetUser.firstName }} {{ item.targetUser.lastName }} ({{ item.targetUser.email }})
-        </template>
+        Vedi l'utente destinatario
       </v-tooltip>
     </template>
 
@@ -231,19 +228,20 @@ export default {
     }
 
     async function getTargetUser(item) {
-      if (item.targetUser) {
-        return
+      if (!item.targetUser) {
+        try {
+          item.targetUser = await this.$apiCalls.readRequestTargetUser(item.targetUserId)
+        } catch (er) {
+         return this.$alerts.error(er)
+        }
       }
 
-      item.loadingTargetUser = true
-
-      try {
-        item.targetUser = await this.$apiCalls.readRequestTargetUser(item.targetUserId)
-      } catch (er) {
-        this.$alerts.error(er)
-      }
-
-      item.loadingTargetUser = false
+      this.$alerts.info({
+        title: "",
+        html: `Agente destinatario:<br>
+            ${item.targetUser.firstName} ${item.targetUser.lastName} (${item.targetUser.email})
+            `
+      })
     }
 
     return {
