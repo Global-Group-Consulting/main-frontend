@@ -3,6 +3,7 @@
     :table-key="tableKey"
     schema="requestsSchema"
     light
+    :loading="loading"
     :items="items"
     :items-per-page="itemsPerPage"
     :item-class="getItemClass"
@@ -158,7 +159,8 @@ export default {
     sortDesc: {
       type: Array,
       default: () => []
-    }
+    },
+    loading: Boolean
     // condition: String // serve per decidere se mostrare una colonna, in base all'array passato come configurazione
   },
   setup(props, {root, emit}) {

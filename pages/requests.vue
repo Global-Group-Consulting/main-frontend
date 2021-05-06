@@ -96,6 +96,7 @@
             <requests-list-table
               :condition="table.id"
               :items="requestsGroups[table.id]"
+              :loading="tableDataLoading"
               :sort-by="table.sortBy"
               :sort-desc="table.sortDesc"
               :multi-sort="table.multiSort"
@@ -172,6 +173,7 @@ import {ActionItem} from "~/@types/ActionItem";
 export default class Requests extends Vue {
   public permissions = permissionsFn(this);
   public currentTab = 0
+  public tableDataLoading = false
   public requestsList = []
   public requestsTables = [
     {
@@ -357,6 +359,8 @@ export default class Requests extends Vue {
   }
 
   private async fetchAll() {
+    this.tableDataLoading = true
+
     try {
       this.requestsList = await this.$apiCalls.fetchRequests();
 
@@ -375,6 +379,8 @@ export default class Requests extends Vue {
       }
     } catch (er) {
       this.$alerts.error(er);
+    } finally {
+      this.tableDataLoading = false
     }
   }
 
