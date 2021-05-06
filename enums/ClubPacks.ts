@@ -1,14 +1,14 @@
-import {BasicEnum} from '../classes/BasicEnum'
+import {BasicEnum} from '~/classes/BasicEnum'
 
 /** @enum */
 class ClubPacks extends BasicEnum {
+  public UNSUBSCRIBED = "unsubscribed"
+  public BASIC = "basic"
+  public FAST = "fast"
+  public PREMIUM = "premium"
+
   constructor() {
     super('ClubPacks')
-
-    this.UNSUBSCRIBED = "unsubscribed"
-    this.BASIC = "basic"
-    this.FAST = "fast"
-    this.PREMIUM = "premium"
 
     this.data = {
       [this.UNSUBSCRIBED]: {

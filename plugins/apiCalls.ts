@@ -215,6 +215,19 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
+  async readRequest(id: string) {
+    return await this.get({
+      endPoint: `/api/requests/${id}`
+    })
+  }
+
+  async readRequestTargetUser(id: string) {
+    return await this.get({
+      endPoint: `/api/requests/targetUser/${id}`
+    })
+  }
+
+
   async createRequest(data: any) {
     return await this.post({
       endPoint: `/api/requests`,
@@ -428,14 +441,14 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-   async  commissionsAdd(userId: string, data: any){
+  async commissionsAdd(userId: string, data: any) {
     return await this.post({
       endPoint: `/api/commissions/${userId}/add`,
       body: data
     })
   }
 
-   async clubRemoveBrites(userId: string, data: any, semesterId: string) {
+  async clubRemoveBrites(userId: string, data: any, semesterId: string) {
     return await this.post({
       endPoint: `/api/club/${userId}/remove`,
       body: Object.assign({}, data, {semesterId})

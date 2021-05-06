@@ -63,7 +63,7 @@
 import {computed, onMounted, ref} from "@vue/composition-api";
 import {get as _get} from "lodash";
 
-import UserRoles from "../../enums/UserRoles.js";
+import UserRoles from "../../enums/UserRoles";
 import roleBasedConfig from "../../config/roleBasedConfig";
 
 export default {

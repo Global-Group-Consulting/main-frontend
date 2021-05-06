@@ -40,7 +40,7 @@
               <v-btn text disabled small>Utente attuale</v-btn>
             </div>
 
-            <!-- Case item.referenceAgent is different fron userId and from auth.user.id -  -->
+            <!-- Case item.referenceAgent is different from userId and from auth.user.id -  -->
             <v-btn text
                    v-else-if="item.referenceAgentData && item.referenceAgent !== $auth.user.id && item.referenceAgent !== userId"
                    small
@@ -278,7 +278,6 @@ export default class UsersListTable extends Vue {
   }
 
   get tabsList(): DynamicTab[] {
-
     return [{
       id: this.getRoleName(this.$enums.UserRoles.CLIENTE),
       title: "Clienti",
@@ -352,7 +351,7 @@ export default class UsersListTable extends Vue {
     this.loading = true
 
     try {
-      let usersList: any[] = [];
+      let usersList: any[];
       let listToEmit: any[] = []
 
       if (this.$auth.user.id !== this.userId || this.$auth.user.role === this.$enums.UserRoles.AGENTE) {

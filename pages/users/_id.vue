@@ -328,8 +328,8 @@
 </template>
 
 <script>
-import PageHeader from "@/components/blocks/PageHeader";
-import DynamicFieldset from "@/components/DynamicFieldset";
+import PageHeader from "../../components/blocks/PageHeader";
+import DynamicFieldset from "../../components/DynamicFieldset";
 import UserMessage from "../../components/dialogs/UserMessage";
 import FilePreviewer from "../../components/dialogs/FilePreviewer";
 import StatusChangeDialog from "../../components/dialogs/StatusChangeDialog";
@@ -338,14 +338,13 @@ import MovementsListDialog from "../../components/dialogs/MovementsListDialog";
 import {kebabCase} from "lodash"
 import {onBeforeMount, reactive, ref, computed} from "@vue/composition-api";
 
-import AccountStatuses from "../../enums/AccountStatuses.js";
-import UserRoles from "@/enums/UserRoles.js";
-import userDetails from "@/functions/userDetails";
-import pageBasic from "@/functions/pageBasic";
+import AccountStatuses from "../../enums/AccountStatuses";
+import userDetails from "~/functions/userDetails";
+import pageBasic from "~/functions/pageBasic";
 import usersForm from "../../functions/usersForm";
 import Permissions from "../../functions/permissions";
-import SigningLogsPopup from "@/components/elements/SigningLogsPopup";
-import PageToolbar from "@/components/blocks/PageToolbar";
+import SigningLogsPopup from "~/components/elements/SigningLogsPopup";
+import PageToolbar from "~/components/blocks/PageToolbar";
 import {UsersPermissions} from "../../functions/acl/enums/users.permissions";
 import DashboardBlocks from "../../components/DashboardBlocks";
 
@@ -725,7 +724,6 @@ export default {
 
     const areDirtyForms = computed(() => {
       let result = false;
-
 
 
       for (const entry of Object.entries(userForm.dirtyForms.value)) {

@@ -149,6 +149,10 @@ export function regionFormatter(value, list) {
 }
 
 export function userFormatter(user) {
+  if (!user) {
+    return ""
+  }
+
   return `${capitalize(user.lastName)} ${capitalize(user.firstName)}`
 }
 

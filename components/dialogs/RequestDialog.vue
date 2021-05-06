@@ -123,7 +123,7 @@
       <v-btn text @click="close">
         {{ $t(`dialogs.requests.btn-${isNew ? "cancel" : "close"}`) }}
       </v-btn>
-      <v-btn color="blue darken-1" text @click="onFormSubmit" v-if="isNew">
+      <v-btn color="blue darken-1" text @click="onFormSubmit" v-if="isNew && dataLoaded">
         {{ $t("dialogs.requests.btn-send") }}
       </v-btn>
     </portal>
@@ -143,8 +143,8 @@ interface FormData {
   type: number
   availableAmount: number
   currency: number
-  gold: number
-  clubPack: number
+  gold: boolean
+  clubPack: string
   status: number
   requestState: number
   id: string
@@ -164,14 +164,16 @@ interface FormData {
   components: {DynamicFieldset: DynamicFieldset as any},
 })
 export default class RequestDialog extends Vue {
-  formData: FormData = {
-    ...this.incomingData,
-    wallet: this.incomingData.wallet || this.$enums.WalletTypes["DEPOSIT"],
-    type: this.incomingData.type || this.$enums.RequestTypes["VERSAMENTO"],
-    availableAmount: this.incomingData.availableAmount || 0,
-    currency: this.incomingData.currency || this.$enums.CurrencyType["EURO"],
-    gold: this.incomingData.gold || false,
-    clubPack: this.incomingData.clubPack || this.$enums.ClubPacks.UNSUBSCRIBED
+  formData: Partial<FormData> = {
+    amount: 0,
+    availableAmount: 0,
+    wallet: this.$enums.WalletTypes["DEPOSIT"],
+    type: this.$enums.RequestTypes["VERSAMENTO"],
+    currency: this.$enums.CurrencyType.EURO,
+    gold: false,
+    clubPack: this.$enums.ClubPacks.UNSUBSCRIBED,
+    autoWithdrawlAll: null,
+    autoWithdrawlAllRecursively: false
   }
 
   dataLoaded = false
@@ -189,11 +191,15 @@ export default class RequestDialog extends Vue {
   }
 
   get formSchema() {
-    return requestSchema(this as any)
+    if (this.dataLoaded) {
+      return requestSchema(this as any)
+    }
   }
 
   get actions() {
-    return requestsCrudActionsFn(this.formData, this as any, this.$emit);
+    if (this.dataLoaded) {
+      return requestsCrudActionsFn(this.formData, this as any, this.$emit);
+    }
   }
 
   get wallet() {
@@ -224,7 +230,7 @@ export default class RequestDialog extends Vue {
 
         break;
       case this.$enums.RequestTypes.COMMISSION_MANUAL_ADD:
-        toReturn = this.formData.availableAmount;
+        toReturn = this.formData.availableAmount || 0;
 
         break;
     }
@@ -243,7 +249,7 @@ export default class RequestDialog extends Vue {
       this.$enums.RequestStatus.ANNULLATA
     ];
 
-    return statuses.includes(this.formData.status);
+    return this.formData.status ? statuses.includes(this.formData.status) : false
   }
 
   get showConversationLink() {
@@ -259,6 +265,10 @@ export default class RequestDialog extends Vue {
   }
 
   get canApprove() {
+    if (!this.formData.status) {
+      return false
+    }
+
     const isNewRequest = this.$enums.RequestStatus.NUOVA === +this.formData.status;
     const isInProgress = this.$enums.RequestStatus.LAVORAZIONE === +this.formData.status;
     // const ownByAdmin = isInProgress && ownByCurrentUser.value;
@@ -269,6 +279,10 @@ export default class RequestDialog extends Vue {
   }
 
   get canCancelAutoWithdrawlAll() {
+    if (!this.formData.status) {
+      return false
+    }
+
     const isInProgress = this.$enums.RequestStatus.LAVORAZIONE === +this.formData.status;
     const isAuthUserRequest = this.$auth.user.id === this.formData.userId;
     const reqHasAutoWithdrawl = this.formData.autoWithdrawlAll
@@ -277,13 +291,17 @@ export default class RequestDialog extends Vue {
   }
 
   get canDelete() {
-    return (this.formData.id
+    return this.formData.id
       && this.formData.userId === this.$auth.user.id
       && this.formData.status === this.$enums.RequestStatus.NUOVA
-    );
+
   }
 
   get canEdit() {
+    if (!this.formData.requestState) {
+      return false
+    }
+
     const allowedRoles = [
       this.$enums.UserRoles.ADMIN,
       this.$enums.UserRoles.SERV_CLIENTI
@@ -324,7 +342,7 @@ export default class RequestDialog extends Vue {
   }
 
   async onDelete() {
-    const result = await this.actions.delete();
+    const result = await this.actions?.delete();
 
     if (result) {
       this.close();
@@ -334,7 +352,9 @@ export default class RequestDialog extends Vue {
   }
 
   async onApprove() {
-    const result = await this.actions.approve(this.formData);
+    const result = await this.actions?.approve(this.formData, () => {
+      this.$emit("requestStartWorking", this.formData);
+    });
 
     if (result) {
       this.close();
@@ -344,7 +364,7 @@ export default class RequestDialog extends Vue {
   }
 
   async onReject() {
-    const result = await this.actions.reject();
+    const result = await this.actions?.reject();
 
     if (result) {
       this.close();
@@ -354,7 +374,7 @@ export default class RequestDialog extends Vue {
   }
 
   async onCancelAutoWithdrawlAll() {
-    const result = await this.actions.cancelAutoWithdrawlAll();
+    const result = await this.actions?.cancelAutoWithdrawlAll();
 
     if (result) {
       const user = this.$auth.user;
@@ -459,13 +479,24 @@ export default class RequestDialog extends Vue {
     }
   }
 
-  async beforeMount() {
+  async mounted() {
     /*
     If the request has a status different from new, don't try to fetch the user's wallet
     because it will use the availableAmount stored in the request
     */
-    if (this.formData.status !== this.$enums.RequestStatus.NUOVA && this.formData.id) {
-      setTimeout(() => this.dataLoaded = true, 500)
+    if (this.incomingData.id) {
+      try {
+        const reqData: Record<string, any> = await this.$apiCalls.readRequest(this.incomingData.id)
+
+        for (let key in reqData) {
+          this.$set(this.formData, key, reqData[key])
+        }
+
+        this.dataLoaded = true
+      } catch (er) {
+        this.$alerts.error(er)
+        this.close()
+      }
 
       return;
     }
@@ -477,6 +508,10 @@ export default class RequestDialog extends Vue {
     }
 
     await this.$store.dispatch("user/updateWallets", {apiCalls: this.$apiCalls, data});
+
+    this.formData.type = this.incomingData.type
+    this.formData.gold = this.$auth.user.gold
+    this.formData.clubPack = this.$auth.user.clubPack
 
     this.dataLoaded = true
   }

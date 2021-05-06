@@ -3,6 +3,7 @@
     :table-key="tableKey"
     schema="requestsSchema"
     light
+    :loading="loading"
     :items="items"
     :items-per-page="itemsPerPage"
     :item-class="getItemClass"
@@ -95,17 +96,18 @@
         </v-tooltip>
       </span>
 
-      <v-tooltip v-if="$enums.RequestTypes.COMMISSION_MANUAL_ADD === item.type" bottom>
+      <v-tooltip v-if="$enums.RequestTypes.COMMISSION_MANUAL_ADD === item.type"
+                 bottom
+                 open-on-click
+
+      >
         <template v-slot:activator="{ on }">
-          <v-btn icon v-on="on">
+          <v-btn icon @click.stop="getTargetUser(item)" v-on="on">
             <v-icon>mdi-information</v-icon>
           </v-btn>
         </template>
 
-        <template v-if="item.targetUser">
-          Agente destinatario:<br>
-          {{ item.targetUser.firstName }} {{ item.targetUser.lastName }} ({{ item.targetUser.email }})
-        </template>
+        Vedi l'utente destinatario
       </v-tooltip>
     </template>
 
@@ -157,7 +159,8 @@ export default {
     sortDesc: {
       type: Array,
       default: () => []
-    }
+    },
+    loading: Boolean
     // condition: String // serve per decidere se mostrare una colonna, in base all'array passato come configurazione
   },
   setup(props, {root, emit}) {
@@ -226,6 +229,23 @@ export default {
       return item.user?.referenceAgentData?.firstName + " " + item.user?.referenceAgentData?.lastName
     }
 
+    async function getTargetUser(item) {
+      if (!item.targetUser) {
+        try {
+          item.targetUser = await this.$apiCalls.readRequestTargetUser(item.targetUserId)
+        } catch (er) {
+         return this.$alerts.error(er)
+        }
+      }
+
+      this.$alerts.info({
+        title: "",
+        html: `Agente destinatario:<br>
+            ${item.targetUser.firstName} ${item.targetUser.lastName} (${item.targetUser.email})
+            `
+      })
+    }
+
     return {
       getItemClass,
       getAmountSign,
@@ -236,7 +256,8 @@ export default {
       onRequestCanceled,
       formatRequestCurrency,
       getRefAgentName,
-      getRefAgentUrl
+      getRefAgentUrl,
+      getTargetUser
     };
   }
 };
