@@ -544,7 +544,7 @@ export default class Requests extends Vue {
   openRequestDetails(row: any) {
     let title = this.$t("dialogs.requests.title-details");
 
-    if (this.permissions.userType === "admin") {
+    if (this.permissions.userType === "admin" && row.user) {
       title += ` <small><em>(${userFormatter(row.user)} - ${contractNumberFormatter(row.user.contractNumber)})</em></small>`;
     }
 
