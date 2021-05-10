@@ -21,9 +21,9 @@
       <v-col md="4">
         <v-card>
           <v-card-text class="d-flex">
-            <a href="/GGM_1_21_dashboard.pdf" target="_blank" style="width: 100%">
+            <a href="/magazine/GGM_3_21_Dash.pdf" target="_blank" style="width: 100%">
               <v-img
-                src="/GGM_1_21_dashboard.jpg"
+                src="/magazine/GGM_3_21_Dash.jpg"
                 width="100%"
                 contain
                 class=""
