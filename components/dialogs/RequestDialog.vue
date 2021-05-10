@@ -409,6 +409,26 @@ export default class RequestDialog extends Vue {
         autoWithdrawlAllRecursively: this.formData.autoWithdrawlAllRecursively
       };
 
+      if ((data.amount || 0) <= this.wallet.interestAmount) {
+        try {
+          await this.$alerts.ask({
+            html: `Per l'importo richiesto è consigliabile effettuare una <strong>Riscossione Rendite</strong> riducendo i tempi di attesa.
+            Vuole convertire questa richiesta in Riscossione Rendite?`,
+            confirmButtonText: "Si, converti in Riscossione rendite",
+            cancelButtonText: "No, procedi con Prelievo deposito"
+          })
+
+          await this.close();
+
+          await this.$router.replace("/requests#new_collect_interests")
+
+
+          return
+        } catch (er) {
+          // procede con la richiesta
+        }
+      }
+
       const reqTypeFormatted = this.$t("enums.RequestTypes." + this.$enums.RequestTypes.get(data.type).id)
 
       await this.$alerts.askBeforeAction({
