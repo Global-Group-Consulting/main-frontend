@@ -37,112 +37,112 @@
   </v-row>
 </template>
 
-<script>
-import {ref, computed} from "@vue/composition-api";
+<script lang="ts">
 import {get as _get} from "lodash";
 
-import DashboardBlocksList from "../config/blocks/dashboardBlocks.ts";
-import RoleBasedConfig from "../config/roleBasedConfig";
+import DashboardBlocksList, {BlockAction, BlockData} from "../config/blocks/dashboardBlocks";
+import roleBasedConfig from "../config/roleBasedConfig";
 import UserRoles from "../enums/UserRoles";
-import CommissionsAddDialog from "~/components/dialogs/CommissionsAddDialog";
-import roleBasedConfig from "~/config/roleBasedConfig";
+import CommissionsAddDialog from "../components/dialogs/CommissionsAddDialog.vue";
+import {Component, Prop, Vue} from "vue-property-decorator";
 
-export default {
-  name: "DashboardBlocks",
-  components: {CommissionsAddDialog},
-  props: {
-    dashboardData: {
-      type: Object,
-      required: true
+type BlocksList = keyof typeof DashboardBlocksList
+
+@Component({
+  components: {CommissionsAddDialog: CommissionsAddDialog as any},
+})
+export default class DashboardBlocks extends Vue {
+  @Prop({type: Object, required: true})
+  dashboardData!: any
+
+  @Prop({type: String, default: "dashboard"})
+  page!: string
+
+  @Prop({type: Boolean})
+  formatAsInt!: boolean
+
+  @Prop({type: Boolean})
+  readonly!: boolean
+
+  @Prop({type: Boolean})
+  includeCommissionsAddDialog!: boolean
+
+  @Prop({type: String})
+  forRole!: string
+
+  blocksActions: Record<BlockAction, () => void> = {
+    addDeposit: () => {
+      this.$router.push("/requests#new_add_deposit");
     },
-    page: {
-      default: "dashboard",
-      type: String
+    addCommissions: () => {
+      this.$store.dispatch("dialog/updateStatus", {
+        id: "CommissionsAddDialog",
+        title: this.$t("dialogs.commissionsAddDialog.title"),
+        texts: {
+          cancelBtn: "dialogs.commissionsAddDialog.btn-cancel",
+          confirmBtn: "dialogs.commissionsAddDialog.btn-send"
+        },
+        data: {
+          user: this.dashboardData.user
+        }
+      });
     },
-    formatAsInt: Boolean,
-    readonly: Boolean,
-    includeCommissionsAddDialog: Boolean
-  },
-  setup(props, {root}) {
-    const {$auth, $router, $alerts, $store, $i18n} = root;
+    showMovementsList: () => {
+      this.$router.push("/movements");
+    },
+    collectDeposit: () => {
+      this.$router.push("/requests#new_collect_deposit");
+    },
+    collectInterests: () => {
+      this.$router.push("/requests#new_collect_interests");
+    },
+    collectCommissions: () => {
+      this.$router.push("/requests#new_collect_commissions");
+    }
+  };
 
-    const blocksActions = {
-      addDeposit() {
-        $router.push("/requests#new_add_deposit");
-      },
-      addCommissions() {
-        $store.dispatch("dialog/updateStatus", {
-          id: "CommissionsAddDialog",
-          title: $i18n.t("dialogs.commissionsAddDialog.title"),
-          texts: {
-            cancelBtn: "dialogs.commissionsAddDialog.btn-cancel",
-            confirmBtn: "dialogs.commissionsAddDialog.btn-send"
-          },
-          data: {
-            user: props.dashboardData.user
-          }
-        });
-      },
-      showMovementsList() {
-        $router.push("/movements");
-      },
-      collectDeposit() {
-        $router.push("/requests#new_collect_deposit");
-      },
-      collectInterests() {
-        $router.push("/requests#new_collect_interests");
-      },
-      collectCommissions() {
-        $router.push("/requests#new_collect_commissions");
-      }
-    };
+  get blocksList() {
+    const userRole = this.forRole || +this.$auth.user.role;
+    const roleName: string = UserRoles.getIdName(userRole) as string;
+    const colDefaultBlocks: BlocksList[] = _get(roleBasedConfig, `defaults.blocks.${this.page}.blocks`);
 
-    const blocksList = computed(() => {
-      const userRole = props.forRole || +$auth.user.role;
-      const roleName = UserRoles.getIdName(userRole);
-      const colDefaultBlocks = _get(RoleBasedConfig, `defaults.blocks.${props.page}.blocks`);
+    let blocks: BlocksList[] = _get(roleBasedConfig, `${roleName}.blocks.${this.page}.blocks`, colDefaultBlocks);
 
-      let blocks = _get(RoleBasedConfig, `${roleName}.blocks.${props.page}.blocks`, colDefaultBlocks);
+    if (!blocks) {
+      console.warn("Can't find config for " + roleName)
 
-      if (!blocks) {
-        console.warn("Can't find config for " + roleName)
+      return []
+    }
 
-        return []
+    return blocks.reduce<Partial<BlockData> & { id: any, action: any, actionText: any}[]>((acc, _block) => {
+      const blockObj: BlockData = DashboardBlocksList[_block];
+      let action: BlockAction | null = null
+      let actionText: string | null = null
+
+      if (typeof blockObj.action === "function") {
+        action = blockObj.action(this, this.readonly)
+      } else if (!this.readonly) {
+        action = blockObj.action as BlockAction
       }
 
-      return blocks.reduce((acc, _block) => {
-        const blockObj = DashboardBlocksList[_block];
-        let action
-        let actionText
+      if (typeof blockObj.actionText === "function") {
+        actionText = blockObj.actionText(this, this.readonly)
+      } else if (!this.readonly) {
+        actionText = blockObj.actionText as any
+      }
 
-        if (typeof blockObj.action === "function") {
-          action = blockObj.action(root, props.readonly)
-        } else if (!props.readonly) {
-          action = blockObj.action
-        }
+      acc.push({
+        ...blockObj,
+        id: _block,
+        action: action ? this.blocksActions[action] : null,
+        actionText
+      });
 
-        if (typeof blockObj.actionText === "function") {
-          actionText = blockObj.actionText(root, props.readonly)
-        } else if (!props.readonly) {
-          actionText = blockObj.actionText
-        }
-
-        acc.push({
-          ...blockObj,
-          id: _block,
-          action: blocksActions[action],
-          actionText
-        });
-
-        return acc;
-      }, []);
-    });
-
-    return {
-      blocksList
-    };
+      return acc;
+    }, []);
   }
-};
+
+}
 </script>
 
 <style scoped></style>

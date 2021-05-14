@@ -591,11 +591,11 @@ export default class Requests extends Vue {
           let type = -1;
 
           if (newType === "collect_deposit") {
-            if (!this.canRequestClassic && this.canRequestGold) {
+            /*if (!this.canRequestClassic && this.canRequestGold) {
               type = RequestTypes.RISC_INTERESSI_GOLD
-            } else {
-              type = RequestTypes.RISC_CAPITALE;
-            }
+            } else {*/
+            type = RequestTypes.RISC_CAPITALE;
+            // }
           } else if (newType === "collect_interests") {
             if (!this.canRequestClassic && this.canRequestGold) {
               type = RequestTypes.RISC_INTERESSI_BRITE
