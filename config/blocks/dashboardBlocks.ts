@@ -35,8 +35,8 @@ const data: Record<string, BlockData> = {
     icon: "mdi-chart-timeline-variant",
     color: "green",
     value: "interestAmount",
-    actionText: "movementsList",
-    action: "showMovementsList"
+    actionText: "interestsCollect",
+    action: "collectInterests"
   },
   depositCollected: {
     title: "depositCollected",
@@ -51,8 +51,8 @@ const data: Record<string, BlockData> = {
     icon: "mdi-chart-sankey-variant",
     color: "orange",
     value: "interestsCollected",
-    actionText: "interestsCollect",
-    action: "collectInterests"
+    actionText: "movementsList",
+    action: "showMovementsList"
   },
   monthCommissions: {
     title: "monthCommissions",
