@@ -1,11 +1,27 @@
 import UserRoles from "~/enums/UserRoles";
 import AccountStatuses from "~/enums/AccountStatuses";
 
+export type BlockAction = "addDeposit"
+  | "addCommissions"
+  | "showMovementsList"
+  | "collectDeposit"
+  | "collectInterests"
+  | "collectCommissions"
+
+export interface BlockData {
+  title: string
+  icon?: string
+  color?: string
+  value: string
+  actionText?: string | ((context: Vue, readonly: boolean) => string)
+  action?: null | BlockAction | ((context: Vue, readonly: boolean) => BlockAction)
+}
+
 function getAccountStatusColor(status: string) {
   return AccountStatuses.get(status).color || "#c1c1c1"
 }
 
-export default {
+const data: Record<string, BlockData> = {
   deposit: {
     title: "deposit",
     icon: "mdi-cloud-upload",
@@ -43,7 +59,7 @@ export default {
     icon: "mdi-wallet",
     color: "green",
     value: "monthCommissions",
-    actionText: (context: Vue, readonly = false) => {
+    actionText: (context, readonly = false) => {
       const user = context.$auth.user
 
       const isReferenceAgent = user.hasSubAgents && !user.referenceAgent
@@ -55,14 +71,14 @@ export default {
 
       return "collectCommissions"
     },
-    action: (context: Vue, readonly = false) => {
+    action: (context, readonly = false): any => {
       const user = context.$auth.user
 
       const isReferenceAgent = user.hasSubAgents && !user.referenceAgent
       const userIsAdmin = [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(context.$auth.user.role)
 
       if (readonly) {
-        return isReferenceAgent || userIsAdmin ? "addCommissions" : ""
+        return isReferenceAgent || userIsAdmin ? "addCommissions" : null
       }
 
       return "collectCommissions"
@@ -118,3 +134,6 @@ export default {
   },
 
 }
+
+
+export default data

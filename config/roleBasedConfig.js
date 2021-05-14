@@ -194,8 +194,8 @@ const defaults = {
     dashboard: {
       blocks: [
         "deposit",
-        "interestAmount",
         "interestsCollected",
+        "interestAmount",
         "depositCollected",
       ]
     },
@@ -264,8 +264,8 @@ const admin = {
     dashboard: {
       blocks: [
         "deposit",
-        "interestAmount",
         "interestsCollected",
+        "interestAmount",
         "depositCollected",
       ]
     },
@@ -329,8 +329,8 @@ const servClienti = {
     dashboard: {
       blocks: [
         "deposit",
-        "interestAmount",
         "interestsCollected",
+        "interestAmount",
         "depositCollected",
       ]
     },
@@ -389,8 +389,8 @@ const cliente = {
     dashboard: {
       blocks: [
         "deposit",
-        "interestAmount",
         "interestsCollected",
+        "interestAmount",
         "depositCollected",
       ]
     }
@@ -449,8 +449,8 @@ const agente = {
     dashboard: {
       blocks: [
         "deposit",
-        "interestAmount",
         "interestsCollected",
+        "interestAmount",
         "depositCollected",
       ]
     },
