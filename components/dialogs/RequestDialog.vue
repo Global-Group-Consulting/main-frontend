@@ -409,7 +409,8 @@ export default class RequestDialog extends Vue {
         autoWithdrawlAllRecursively: this.formData.autoWithdrawlAllRecursively
       };
 
-      if ((data.amount || 0) <= this.wallet.interestAmount) {
+      if ((data.amount || 0) <= this.wallet.interestAmount
+        && data.type === this.$enums.RequestTypes.RISC_CAPITALE) {
         try {
           await this.$alerts.ask({
             html: `Per l'importo richiesto è consigliabile effettuare una <strong>Riscossione Rendite</strong> riducendo i tempi di attesa.
@@ -421,7 +422,6 @@ export default class RequestDialog extends Vue {
           await this.close();
 
           await this.$router.replace("/requests#new_collect_interests")
-
 
           return
         } catch (er) {

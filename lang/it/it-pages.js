@@ -4,10 +4,10 @@ export default {
     deposit: "Deposito",
     interests: "Rendite",
     depositAdd: "Versa",
-    depositCollect: "Preleva",
+    depositCollect: "Preleva Deposito",
     depositCollected: "Deposito Prelevato",
     movementsList: "Lista movimenti",
-    interestsCollect: "Riscuoti",
+    interestsCollect: "Riscuoti Rendite",
     interestsCollected: "Rendite Riscosse"
   },
   login: {
