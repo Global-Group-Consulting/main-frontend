@@ -121,6 +121,19 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
+  /**
+   *
+   * @param {{userId: string, suspend: boolean}} data
+   * @returns {Promise<void>}
+   */
+  async userSuspend(data: any) {
+    return await this._call({
+      endPoint: `/api/users/${data.userId}/suspend`,
+      method: "PATCH",
+      body: {status: data.status}
+    })
+  }
+
   async fetchAllUsers() {
     return await this.get({
       endPoint: `/api/users`

@@ -73,6 +73,21 @@
 
               <signing-logs-popup :userId="formData.id"></signing-logs-popup>
             </v-menu>
+
+            <!-- Button for suspending or reactivating a user -->
+            <v-tooltip bottom v-if="canSuspend">
+              <template v-slot:activator="{ on }">
+                <v-btn icon v-on="on" @click="suspendUser"
+                       :color="userIsSuspended ? 'red' : 'primary'">
+                  <v-icon v-if="!userIsSuspended">mdi-account-off</v-icon>
+                  <v-icon v-else>mdi-account-check</v-icon>
+                </v-btn>
+              </template>
+
+              <template v-if="userIsSuspended">Riabilita utente</template>
+              <template v-else>Sospendi utente</template>
+            </v-tooltip>
+
           </div>
         </template>
       </page-header>
@@ -479,6 +494,12 @@ export default {
       return [AccountStatuses.VALIDATED].includes(userForm.formData.value.account_status)
     })
 
+    const userIsSuspended = computed(() => !!userForm.formData.value.suspended)
+
+    const canSuspend = computed(() => [$enums.UserRoles.ADMIN, $enums.UserRoles.SERV_CLIENTI].includes($auth.user.role)
+      && userForm.formData.value.account_status === $enums.AccountStatuses.ACTIVE)
+
+
     function getFormSchema(tab) {
       const schema = userForm.formSchemas[tab.schema];
 
@@ -683,6 +704,25 @@ export default {
       }
     }
 
+    async function suspendUser() {
+      try {
+        await $alerts.askBeforeAction({
+          key: userIsSuspended.value ? "unsuspend-user" : "suspend-user",
+          preConfirm: async () => {
+            const result = await $apiCalls.userSuspend({
+              userId: userForm.formData.value.id,
+              status: !userIsSuspended.value
+            });
+
+            $set(userForm.formData.value, "suspended", result.suspended)
+          },
+          data: userForm.formData.value
+        });
+      } catch (er) {
+        $alerts.error(er);
+      }
+    }
+
     const pageTitle = computed(() => {
       if (userForm.userIsNew.value) {
         return $i18n.t(`pages.usersId.title-new-with-role`, {
@@ -808,7 +848,10 @@ export default {
       askResendContract,
       hasProfile,
       goToUserProfile,
-      areDirtyForms
+      areDirtyForms,
+      userIsSuspended,
+      suspendUser,
+      canSuspend
     };
   },
   computed: {},

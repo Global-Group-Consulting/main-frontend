@@ -32,7 +32,8 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
   const formData = ref({
     role: UserRoles.CLIENTE,
     personType: PersonTypes.FISICA,
-    clubPack: ClubPacks.UNSUBSCRIBED
+    clubPack: ClubPacks.UNSUBSCRIBED,
+    suspended: false
   })
   const initialEmail = ref("");
   const permissions = Permissions({$auth})
