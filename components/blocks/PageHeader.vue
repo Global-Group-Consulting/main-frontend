@@ -21,8 +21,7 @@
     </div>
     <h3
       v-if="pageSubtitle"
-      class="display-1 font-weight-light"
-      style="opacity: 0.5"
+      class="display-1 font-weight-light text-grey blue-grey--text text--lighten-2"
     >
       <slot name="subtitle">
         <div v-html="pageSubtitle"></div>
