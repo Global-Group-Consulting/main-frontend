@@ -176,6 +176,18 @@ export default {
   "resend-contract-cancelBtnText": "Annulla",
   "resend-contract-success": "Contratto creato correttamente e richiesta di firma inviata!",
 
+  "unsuspend-user-title": "Riattivare l'utente?",
+  "unsuspend-user-text": "Sei sicuro di voler riattivare l'utente {firstName} {lastName}? Procedendo, l'utente potrà riaccedere al suo account.",
+  "unsuspend-user-confirmBtnText": "Si, riattiva",
+  "unsuspend-user-cancelBtnText": "Annulla",
+  "unsuspend-user-success": "Utente riattivato correttamente!",
+
+  "suspend-user-title": "Sospendere l'utente?",
+  "suspend-user-text": "Sei sicuro di voler sospendere l'utente {firstName} {lastName}? Procedendo, l'utente non potrà più accedere al suo account personale.",
+  "suspend-user-confirmBtnText": "Si, sospendi",
+  "suspend-user-cancelBtnText": "Annulla",
+  "suspend-user-success": "Utente sospeso correttamente!",
+
   "invalid-form": "Prima di procedere è necessario correggere i seguenti campi: <br><br>{fields}",
 
   "unsaved-data": "Attenzione, ci sono dati non ancora salvati sulla pagina. Se si procede, i dati non salvati andranno persi. Si desidera continuare?",
