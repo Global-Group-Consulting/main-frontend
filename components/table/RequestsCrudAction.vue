@@ -81,7 +81,7 @@ export default {
               emit("rowStatusChanged");
             }
           },
-          if: permissions.userType === "admin"
+          if: permissions.userType === "admin" && props.item.status === $enums.RequestStatus.NUOVA
         },
         {
           value: "reject",
@@ -90,11 +90,11 @@ export default {
               emit("rowStatusChanged");
             }
           },
-          if: permissions.userType === "admin"
+          if: permissions.userType === "admin" && props.item.status === $enums.RequestStatus.NUOVA
         }, {
           value: "downloadReceipt",
           action: async () => await actions.downloadReceipt(props.item.id),
-          if: permissions.userType === "user" && props.item.type === $enums.RequestTypes.VERSAMENTO
+          if: (permissions.userType === "user" || permissions.superAdmin) && props.item.type === $enums.RequestTypes.VERSAMENTO
         }
       ].filter(_entry => {
         return _entry.if;
