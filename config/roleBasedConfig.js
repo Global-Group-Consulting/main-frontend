@@ -175,7 +175,7 @@ const defaults = {
         'created_at',
         ['updated_at', ["lavorazione"]],
         ['completed_at', ["accettata", "rifiutata"]],
-        ['actions', ["nuova"]]
+        ['actions', ["nuova", "accettata"]]
       ]
     },
     requestsDashboard: {
