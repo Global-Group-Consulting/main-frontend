@@ -10377,9 +10377,9 @@ prosemirror-model@1.11.0, prosemirror-model@1.11.2, prosemirror-model@^1.0.0, pr
     orderedmap "^1.1.0"
 
 prosemirror-model@^1.11.2:
-  version "1.14.0"
-  resolved "https://registry.yarnpkg.com/prosemirror-model/-/prosemirror-model-1.14.0.tgz#44042a16942dfc5dcd79daf6ec37b0efcfef53c8"
-  integrity sha512-+9J7YE2qD2lsRgaI5aF7u6LynBoHxb/8sW1gaMKRAhK+yeQ+motBIaxb2GxRWSadDWMOq5haAImSTBo6jDkv2A==
+  version "1.14.1"
+  resolved "https://registry.yarnpkg.com/prosemirror-model/-/prosemirror-model-1.14.1.tgz#d784c67f95a5d66b853e82ff9a87a50353ef9cd5"
+  integrity sha512-vZcbI+24VloFefKZkDnMaEpipL/vSKKPdFiik4KOnTzq3e6AO7+CAOixZ2G/SsfRaYC965XvnOIEbhIQdgki7w==
   dependencies:
     orderedmap "^1.1.0"
 
@@ -12442,7 +12442,7 @@ uuid@^8.3.0:
 
 v-currency-field@^3.1.1:
   version "3.1.1"
-  resolved "https://registry.yarnpkg.com/v-currency-field/-/v-currency-field-3.1.1.tgz"
+  resolved "https://registry.yarnpkg.com/v-currency-field/-/v-currency-field-3.1.1.tgz#d3472aced63008a67d21d249dba5856744d33d48"
   integrity sha512-1Jlk+RmHTX2uFRmN70hX0R2JOKtlNLNTlQZArrAYrFEWvZR34Cii/kNMXptBS97rVXs31tw5nZ11H6+qJI4gvA==
 
 v8-to-istanbul@^7.0.0:
@@ -12533,6 +12533,11 @@ vue-client-only@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/vue-client-only/-/vue-client-only-2.0.0.tgz"
   integrity sha512-arhk1wtWAfLsJyxGMoEYhoBowM87/i6HLSG2LH/03Yog6i2d9JEN1peMP0Ceis+/n9DxdenGYZZTxbPPJyHciA==
+
+vue-currency-input@^1.22.6:
+  version "1.22.6"
+  resolved "https://registry.yarnpkg.com/vue-currency-input/-/vue-currency-input-1.22.6.tgz#1fed0dabb8a46a5537daca9371942f3d4f3a08fc"
+  integrity sha512-BUq8aysiZ1pdRyyWyIgxYz4+PBQwgVeAqxNr8ZOGaudA8YqEv2S5Plze0LjI/pbinX4+ma1sIIzStXZPxMy0/Q==
 
 vue-hot-reload-api@^2.3.0:
   version "2.3.4"
