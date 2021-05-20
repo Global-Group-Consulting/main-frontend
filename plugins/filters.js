@@ -134,6 +134,10 @@ export function moneyFormatter(value, formatBrite = false, avoidNull = false) {
 
 
 export function moneyParser(value) {
+  if (typeof value === "number") {
+    return value
+  }
+
   const numeralFormatter = new Cleave.NumeralFormatter()
   numeralFormatter.delimiter = '.'
   numeralFormatter.numeralPositiveOnly = true

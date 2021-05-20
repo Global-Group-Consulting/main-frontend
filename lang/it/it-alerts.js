@@ -195,5 +195,11 @@ export default {
   "club-request-unsubscribed": "Gentile utente, per poter procedere con la sua richiesta è necessario che abbia attivo almeno il pacchetto '<strong>Basic</strong>' de club. " +
     "<br>Per maggiori informazioni la invitiamo a contattare il Sevizio Clienti.",
 
-  "autoWithdrawl-not-available": "Gentile utente, non è possibile creare nessun altra richiesta di riscossione provvigioni in quanto esiste già una richiesta automatica di riscossione.<br><br><a href='{link}'>Cliccare qui</a> per visualizzare la richiesta automatica esistente."
+  "autoWithdrawl-not-available": "Gentile utente, non è possibile creare nessun altra richiesta di riscossione provvigioni in quanto esiste già una richiesta automatica di riscossione.<br><br><a href='{link}'>Cliccare qui</a> per visualizzare la richiesta automatica esistente.",
+
+  "send-admin-request-title": "",
+  "send-admin-request-text": "Sei sicuro di voler inviare la nuova richiesta di <strong>{type}</strong> del valore di <strong>{amount}</strong> per conto dell'utente <strong>{fullName}</strong>?<br>Questa richiesta verrà automaticamente approvata ed immediatamente contabilizzata.",
+  "send-admin-request-confirmBtnText": "Si, invia",
+  "send-admin-request-cancelBtnText": "Annulla",
+  "send-admin-request-success": "Richiesta inviata correttamente!",
 }
