@@ -4,6 +4,7 @@ interface EnumData {
   text?: string,
   symbol?: string,
   color?: string
+  iconColor?: string
   bgSrc?: string
   hidden?: boolean
   order?: number

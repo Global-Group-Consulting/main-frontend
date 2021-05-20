@@ -75,6 +75,7 @@ export default {
   club: {
     'cardNumber': "N° Tessera",
     'clubPack': "Pacchetto attivo",
+    'gold': "Gold",
     'briteTotal': "Brite Totali",
     'briteUsed': "Brite Usati",
     'briteAvailable': "Brite Disponibili",

@@ -18,14 +18,17 @@ class ClubPacks extends BasicEnum {
       [this.BASIC]: {
         id: "basic",
         color: "#F9FBE7",
+        iconColor: "#a8916a",
       },
       [this.FAST]: {
         id: "fast",
         color: "#FFF176",
+        iconColor: "#d4973b",
       },
       [this.PREMIUM]: {
         id: "premium",
         color: "#F9A825",
+        iconColor: "#F9A825",
       }
     }
   }
