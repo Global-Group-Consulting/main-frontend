@@ -215,13 +215,13 @@ export default class RequestDialog extends Vue {
 
     switch (this.formData.type) {
       case this.$enums.RequestTypes.RISC_CAPITALE:
-      case this.$enums.RequestTypes.RISC_INTERESSI_GOLD:
       case this.$enums.RequestTypes.VERSAMENTO:
         toReturn = this.wallet.deposit ?? 0;
 
         break;
       case this.$enums.RequestTypes.RISC_INTERESSI:
       case this.$enums.RequestTypes.RISC_INTERESSI_BRITE:
+      case this.$enums.RequestTypes.RISC_INTERESSI_GOLD:
         toReturn = this.wallet.interestAmount ?? 0;
 
         break;

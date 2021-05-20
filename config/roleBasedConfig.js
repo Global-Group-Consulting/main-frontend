@@ -14,6 +14,7 @@ const defaults = {
         'lastName',
         'email',
         'accountStatus',
+        'clubPack',
         'commissionsAssigned',
         'actions'
       ]
@@ -40,6 +41,7 @@ const defaults = {
         'contractStatus',
         'role',
         'accountStatus',
+        'clubPack',
         'actions'
       ]
     },
@@ -224,6 +226,7 @@ const admin = {
         ['clientsNumber', [UserRoles.AGENTE]],
         ['contractStatus', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         'accountStatus',
+        'clubPack',
         'actions',
       ]
     },
@@ -293,6 +296,7 @@ const servClienti = {
         ['clientsNumber', [UserRoles.AGENTE]],
         ['contractStatus', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         'accountStatus',
+        'clubPack',
         'actions'
       ]
     },
@@ -410,6 +414,7 @@ const agente = {
         ['commissionsAssigned', [UserRoles.AGENTE]],
         ['contractStatus', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         'accountStatus',
+        'clubPack',
         'actions'
       ]
     },

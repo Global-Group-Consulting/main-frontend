@@ -249,6 +249,14 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
+  async createAdminRequest(data: any) {
+    return await this.post({
+      endPoint: `/api/requests/admin`,
+      body: data,
+      uploadMode: true
+    })
+  }
+
   async deleteRequest(data: any) {
     return await this._call({
       method: "DELETE",

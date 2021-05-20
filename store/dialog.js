@@ -46,6 +46,10 @@ export const mutations = {
     }
     // _merge(state.data, payload)
   },
+  UPDATE_DATA(state, payload) {
+    // state.data = payload
+    _merge(state.data, payload)
+  },
   SET_RETAIN_FOCUS(state, payload) {
     state.data.retainFocus = payload
   }
@@ -78,6 +82,10 @@ export const actions = {
 
   updateRetainFocus({ commit }, payload) {
     commit("SET_RETAIN_FOCUS", payload ?? true)
+  },
+
+  updateData({commit, state}, payload){
+    commit('UPDATE_DATA', payload || {})
   }
 }
 
