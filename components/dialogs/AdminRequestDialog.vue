@@ -137,7 +137,7 @@ export default class AdminRequestDialog extends Vue {
 
       const data = {
         amount: this.formData.amount,
-        userId: this.$auth.user.id,
+        userId: this.user.id,
         type: this.formData.type,
         wallet: this.formData.wallet,
         currency: this.formData.currency,
@@ -179,7 +179,7 @@ export default class AdminRequestDialog extends Vue {
           }) as string
         },
         preConfirm: async () => {
-          await this.$apiCalls.createRequest(data);
+          await this.$apiCalls.createAdminRequest(data);
         },
         data: {
           type: this.$t(

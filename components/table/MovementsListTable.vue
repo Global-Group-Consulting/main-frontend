@@ -105,8 +105,13 @@ export default class MovementsListTable extends Vue {
   }
 
   formatMovementType(item: IMovement) {
+    const reqType = item.requestType;
     const movementId = MovementTypes.get(item.movementType).id;
-    const text = this.$i18n.t(`enums.MovementTypes.${movementId}`);
+    let text = this.$i18n.t(`enums.MovementTypes.${movementId}`);
+
+    if(reqType){
+      text = this.$i18n.t(`enums.RequestTypes.${this.$enums.RequestTypes.getIdName(reqType)}`)
+    }
 
     if (item.movementType === MovementTypes.INTEREST_RECAPITALIZED) {
       return `<strong>${text}</strong>`;
