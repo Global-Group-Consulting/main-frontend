@@ -142,5 +142,11 @@ export default {
   contractTermsCondition: {
     title: "Termini e condizioni",
     "btn-cancel": "Chiudi"
+  },
+  adminRequestDialog: {
+    "title": "Nuova richiesta di <strong>{request}</strong>",
+    "alert-msg": "Questa funzione permette di creare delle richieste per conto dell'utente <strong>{fullName}</strong>. Assicurarsi che quest'ultimo abbia dato il consenso a tale operazione, prima di procedere.<br>La richiesta che verrà creata sarà immediatamente approvata e contabilizzata.",
+    "btn-cancel": "Annulla",
+    "btn-send": "Invia"
   }
 }

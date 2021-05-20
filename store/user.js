@@ -67,5 +67,8 @@ export const getters = {
   },
   userIsAdmin: (state, getters, rootState) => {
     return [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(rootState.auth.user.role)
+  },
+  userIsRealAdmin: (state, getters, rootState) => {
+    return [UserRoles.ADMIN].includes(rootState.auth.user.role)
   }
 }

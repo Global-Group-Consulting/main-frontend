@@ -141,6 +141,23 @@
               Mostra lista clienti
             </v-tooltip>
           </template>
+
+          <template v-slot:item.clubPack="{item, value}">
+            <v-tooltip bottom v-if="item.gold">
+              <template v-slot:activator="{on}">
+                <span v-on="on">
+                  <v-icon v-if="value === $enums.ClubPacks.UNSUBSCRIBED">mdi-diamond-outline</v-icon>
+                  <v-icon v-else :color="$enums.ClubPacks.get(value).iconColor">mdi-diamond-stone</v-icon>
+                </span>
+              </template>
+
+              {{ $t("enums.ClubPacks." + $enums.ClubPacks.getIdName(value)) }}
+            </v-tooltip>
+
+            <span v-else></span>
+
+          </template>
+
         </data-table>
       </template>
 

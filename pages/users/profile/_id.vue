@@ -9,7 +9,7 @@
       <!-- Blocchi resoconto dashboard -->
       <dashboard-blocks :dashboard-data="userDashboardData"
                         class="mb-6"
-                        readonly
+                        :readonly="$auth.user.role !== $enums.UserRoles.ADMIN"
                         v-if="showUserBlocks"
       ></dashboard-blocks>
 
@@ -35,6 +35,9 @@
         </template>
       </dynamic-tabs>
 
+      <admin-request-dialog
+        v-if="$store.getters['user/userIsRealAdmin']
+              && $store.getters['dialog/dialogId'] === 'AdminRequestDialog'"/>
     </v-flex>
   </v-layout>
 </template>
@@ -54,9 +57,11 @@ import DynamicTabs from "~/components/DynamicTabs.vue";
 import {DynamicTab} from "~/@types/components/DynamicTab";
 import PageToolbar from "~/components/blocks/PageToolbar.vue";
 import {ActionItem} from "~/@types/ActionItem";
+import AdminRequestDialog from "~/components/dialogs/AdminRequestDialog.vue";
 
 @Component({
   components: {
+    AdminRequestDialog,
     PageToolbar,
     DynamicTabs, CommissionsListTable, MovementsListTable, UsersListTable, DashboardBlocks, DataTable, PageHeader
   }
@@ -66,6 +71,7 @@ export default class Profile extends Vue {
   movementsFn = MovementsFn(this);
 
   userDashboardData: any = {
+    user: null,
     blocks: {
       deposit: 0,
       interestAmount: 0,
@@ -155,6 +161,7 @@ export default class Profile extends Vue {
         const resultDashboard = await this.$apiCalls.dashboardFetch(this.userId);
 
         this.userDashboardData.blocks = resultDashboard.blocks
+        this.userDashboardData.user = this.userData
       }
 
       if (this.showAgentBlocks) {

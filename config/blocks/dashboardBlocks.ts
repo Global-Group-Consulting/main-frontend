@@ -51,8 +51,16 @@ const data: Record<string, BlockData> = {
     icon: "mdi-chart-sankey-variant",
     color: "orange",
     value: "interestsCollected",
-    actionText: "movementsList",
-    action: "showMovementsList"
+    actionText: (context, readonly = false): any => {
+      const user = context.$auth.user
+
+      return user.role === UserRoles.CLIENTE && !readonly ? "movementsList" : null
+    },
+    action: (context, readonly = false): any => {
+      const user = context.$auth.user
+
+      return user.role === UserRoles.CLIENTE && !readonly ? "showMovementsList" : null
+    }
   },
   monthCommissions: {
     title: "monthCommissions",

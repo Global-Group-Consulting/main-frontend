@@ -5,6 +5,7 @@ import nuxtMoment from './config/nuxtModules/nuxtMoment'
 import nuxtProxy from './config/nuxtModules/nuxtProxy'
 import nuxtVuetify from './config/nuxtModules/nuxtVuetify'
 import nuxtVueScrollTo from './config/nuxtModules/vueScrollTo'
+import nuxtVCurrencyField from './config/nuxtModules/nuxtVCurrencyField'
 
 import * as fs from "fs"
 import * as path from "path"
@@ -118,7 +119,8 @@ export default {
     ['@nuxtjs/auth-next', nuxtAuth],
     ['nuxt-i18n', nuxtI18n],
     ['@nuxtjs/proxy'],
-    ['vue-scrollto/nuxt', nuxtVueScrollTo]
+    ['vue-scrollto/nuxt', nuxtVueScrollTo],
+    ['vue-currency-input/nuxt', nuxtVCurrencyField]
   ],
 
   /*

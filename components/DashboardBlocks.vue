@@ -70,36 +70,13 @@ export default class DashboardBlocks extends Vue {
   @Prop({type: String})
   forRole!: string
 
-  blocksActions: Record<BlockAction, () => void> = {
-    addDeposit: () => {
-      this.$router.push("/requests#new_add_deposit");
-    },
-    addCommissions: () => {
-      this.$store.dispatch("dialog/updateStatus", {
-        id: "CommissionsAddDialog",
-        title: this.$t("dialogs.commissionsAddDialog.title"),
-        texts: {
-          cancelBtn: "dialogs.commissionsAddDialog.btn-cancel",
-          confirmBtn: "dialogs.commissionsAddDialog.btn-send"
-        },
-        data: {
-          user: this.dashboardData.user
-        }
-      });
-    },
-    showMovementsList: () => {
-      this.$router.push("/movements");
-    },
-    collectDeposit: () => {
-      this.$router.push("/requests#new_collect_deposit");
-    },
-    collectInterests: () => {
-      this.$router.push("/requests#new_collect_interests");
-    },
-    collectCommissions: () => {
-      this.$router.push("/requests#new_collect_commissions");
-    }
-  };
+  get authUserIsRealAdmin() {
+    return this.$store.getters["user/userIsRealAdmin"]
+  }
+
+  get userIsGold() {
+    return this.dashboardData.user.gold
+  }
 
   get blocksList() {
     const userRole = this.forRole || +this.$auth.user.role;
@@ -114,7 +91,7 @@ export default class DashboardBlocks extends Vue {
       return []
     }
 
-    return blocks.reduce<Partial<BlockData> & { id: any, action: any, actionText: any}[]>((acc, _block) => {
+    return blocks.reduce<Partial<BlockData> & { id: any, action: any, actionText: any }[]>((acc, _block) => {
       const blockObj: BlockData = DashboardBlocksList[_block];
       let action: BlockAction | null = null
       let actionText: string | null = null
@@ -141,6 +118,67 @@ export default class DashboardBlocks extends Vue {
       return acc;
     }, []);
   }
+
+  openAdminRequestDialog(request: any) {
+    const reqText = this.$enums.RequestTypes.getIdName(request)
+    const reqTranslation = this.$t("enums.RequestTypes." + reqText)
+
+    this.$store.dispatch("dialog/updateStatus", {
+      id: "AdminRequestDialog",
+      title: this.$t("dialogs.adminRequestDialog.title", {request: reqTranslation}),
+      texts: {
+        cancelBtn: "dialogs.adminRequestDialog.btn-cancel",
+        confirmBtn: "dialogs.adminRequestDialog.btn-send"
+      },
+      data: {
+        user: this.dashboardData.user,
+        type: request
+      }
+    });
+  }
+
+  blocksActions: Record<BlockAction, () => void> = {
+    addDeposit: () => {
+      if (this.authUserIsRealAdmin) {
+        return this.openAdminRequestDialog(this.$enums.RequestTypes.VERSAMENTO)
+      }
+
+      this.$router.push("/requests#new_add_deposit");
+    },
+    addCommissions: () => {
+      this.$store.dispatch("dialog/updateStatus", {
+        id: "CommissionsAddDialog",
+        title: this.$t("dialogs.commissionsAddDialog.title"),
+        texts: {
+          cancelBtn: "dialogs.commissionsAddDialog.btn-cancel",
+          confirmBtn: "dialogs.commissionsAddDialog.btn-send"
+        },
+        data: {
+          user: this.dashboardData.user
+        }
+      });
+    },
+    showMovementsList: () => {
+      this.$router.push("/movements");
+    },
+    collectDeposit: () => {
+      if (this.authUserIsRealAdmin) {
+        return this.openAdminRequestDialog(this.$enums.RequestTypes.RISC_CAPITALE)
+      }
+
+      this.$router.push("/requests#new_collect_deposit");
+    },
+    collectInterests: () => {
+      if (this.authUserIsRealAdmin) {
+        return this.openAdminRequestDialog(this.userIsGold ? this.$enums.RequestTypes.RISC_INTERESSI_BRITE : this.$enums.RequestTypes.RISC_INTERESSI)
+      }
+
+      this.$router.push("/requests#new_collect_interests");
+    },
+    collectCommissions: () => {
+      this.$router.push("/requests#new_collect_commissions");
+    }
+  };
 
 }
 </script>

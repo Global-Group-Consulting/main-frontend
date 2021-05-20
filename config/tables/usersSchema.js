@@ -10,6 +10,8 @@ export default {
   'role': {text: 'tables.role', value: 'role', align: "center"},
   'clientsNumber': {text: 'tables.clients-number', value: 'clientsCount', align: 'center'},
 
+  'clubPack': {text: 'tables.club.gold', value: 'clubPack', align: 'center'},
+
   'signDocSent': {text: 'tables.sign-doc-sent', value: 'signDocSent', align: 'center'},
   'signDocViewed': {text: 'tables.sign-doc-viewed', value: 'signDocViewed', align: 'center'},
   'signDocSigned': {text: 'tables.sign-doc-signed', value: 'signDocSigned', align: 'center'},
