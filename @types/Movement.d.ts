@@ -8,6 +8,7 @@ export interface IMovement {
 
   // Tipologia di movimento (versamento, reinvestimento, ecc.)
   movementType: number,
+  requestType: number,
 
   commissionType: string,
 
