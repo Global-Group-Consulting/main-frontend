@@ -291,11 +291,15 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async downloadRequestReceipt(reqId: string) {
+  async downloadRequestReceipt(reqId: string, type: "movement" | "request") {
     return await this._call({
       method: "GET",
-      endPoint: `/api/docs/receipt/deposit?id=${reqId}`,
-      downloadMode: true
+      endPoint: `/api/docs/receipt/deposit`,
+      downloadMode: true,
+      params: {
+        id: reqId,
+        type: type
+      }
     })
   }
 

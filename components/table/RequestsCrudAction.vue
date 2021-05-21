@@ -94,7 +94,9 @@ export default {
         }, {
           value: "downloadReceipt",
           action: async () => await actions.downloadReceipt(props.item.id),
-          if: (permissions.userType === "user" || permissions.superAdmin) && props.item.type === $enums.RequestTypes.VERSAMENTO
+          if: (permissions.userType === "user" || permissions.superAdmin)
+            && props.item.type === $enums.RequestTypes.VERSAMENTO
+            && props.item.status === $enums.RequestStatus.ACCETTATA
         }
       ].filter(_entry => {
         return _entry.if;
