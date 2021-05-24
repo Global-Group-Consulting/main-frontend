@@ -82,18 +82,18 @@ export default class TimePickerRange extends Vue {
   max!: string;
 
   menuOpen: boolean = false;
-  start = null;
-  end = null;
+  start: any = null;
+  end: any = null;
 
   $refs!: {
     menu: any
   }
 
-  get valueToReturn() {
+  get valueToReturn(): string[] {
     return [this.start, this.end]
   }
 
-  set valueToReturn(value) {
+  set valueToReturn(value: string[]) {
     if (!value) {
       return
     }

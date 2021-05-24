@@ -62,7 +62,7 @@ interface SettingData {
 }
 
 @Component({
-  components: {DynamicFieldset, PageHeader},
+  components: {DynamicFieldset: DynamicFieldset as any, PageHeader},
   meta: {
     permissions: [SettingPermissions.SETTINGS_ALL_READ, SettingPermissions.SETTINGS_SELF_READ]
   },
@@ -72,11 +72,11 @@ export default class Settings extends Vue {
   public userSettingsData: any = {};
 
   $refs!: {
-    globalSettingsForm: typeof DynamicFieldset
+    globalSettingsForm: any
   }
 
   get formGlobalSchema() {
-    return globalSettings(this)
+    return globalSettings(this as any)
   }
 
   get storedGlobalSettings() {
@@ -103,9 +103,9 @@ export default class Settings extends Vue {
       return
     }
 
-    const data: any[] = Object.entries(this.globalSettingsData).reduce((acc, entry) => {
-      const key = entry[0];
-      const value = entry[1];
+    const data: any[] = Object.entries(this.globalSettingsData).reduce<any[]>((acc, entry) => {
+      const key: string = entry[0];
+      const value: any = entry[1];
 
       acc.push({
         name: key,
@@ -116,9 +116,12 @@ export default class Settings extends Vue {
     }, [])
 
     try {
-      const result = await this.$apiCalls.saveSettings(data);
+      const result: any = await this.$apiCalls.saveSettings(data);
 
-      await this.$store.dispatch("settings/updateSettings", {data: Object.values(result), type: SettingTypes.GLOBAL})
+      await this.$store.dispatch("settings/updateSettings", {
+        data: Object.values(result),
+        type: SettingTypes.GLOBAL
+      })
     } catch (er) {
       this.$alerts.error(er)
     }
