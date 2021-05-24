@@ -139,10 +139,10 @@ class Alerts {
       if (this.i18n.te('errors.' + errData.message)) {
         text = this.i18n.t('errors.' + errData.message)
       } else {
-        text += '<br>' + errData.message
+        text += '<br><br>' + errData.message
       }
     } else if (errData && errData.error) {
-      text += '<br>' + JSON.stringify(errData.error)
+      text += '<br><br>' + JSON.stringify(errData.error)
     }
 
     const defaultSettings = {
