@@ -25,6 +25,7 @@
             :value="getValue(field, key)"
             :field-key="key"
             :ref="`comp_${key}_${index}_${fieldIndex}`"
+            :hint="field.hasOwnProperty('hint') ? $t('forms.' + field.hint) : null"
             :error-messages="errorMessages[key]"
             :class="{ 'edit-mode': editMode && !row.disableEditMode }"
             :edit-mode="editMode && !row.disableEditMode"
@@ -66,6 +67,8 @@
 <script>
 import {VTextField, VTextarea, VSelect, VFileInput, VSwitch} from "vuetify/lib";
 import DatePicker from "@/components/forms/inputs/DatePicker";
+import TimePicker from "@/components/forms/inputs/TimePicker";
+import TimePickerRange from "@/components/forms/inputs/TimePickerRange";
 import MoneyInput from "@/components/forms/inputs/MoneyInput";
 import FileUploader from "@/components/forms/inputs/FileUploader";
 import ReceiversCombobox from "@/components/forms/inputs/ReceiversCombobox";
@@ -90,6 +93,8 @@ export default {
     VSelect,
     VSwitch,
     DatePicker,
+    TimePicker,
+    TimePickerRange,
     VFileInput,
     VTextarea,
     MoneyInput,
@@ -172,7 +177,7 @@ export default {
 
       if (field.formatter) {
         if (typeof field.formatter === "function") {
-          value = field.formatter(value);
+          value = field.formatter(value, this.value);
         } else if (this.$options.filters[field.formatter]) {
           value = this.$options.filters[field.formatter](
             value,
