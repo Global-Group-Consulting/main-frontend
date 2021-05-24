@@ -28,7 +28,7 @@ export type FormSchemaValidations = Partial<Record<ValidatorRules, {
 }>>
 
 export interface FormSchemaField {
-  component?: "v-select" | "date-picker" | "file-uploader"
+  component?: "v-select" | "date-picker" | "time-picker" | "time-picker-range" | "file-uploader"
     | "agent-commissions-select" | "contract-doc" | "money-input" | "phone-input"
     | "v-switch" | "v-autocomplete" | "v-textarea" | "",
   label?: string,
@@ -38,6 +38,8 @@ export interface FormSchemaField {
   disabled?: boolean | Function
   readonly?: boolean | Function
   hideDetails?: boolean
+  hint?: string
+  persistentHint?: boolean
   falseValue?: boolean
   inputValue?: string | number | boolean
   type?: string
