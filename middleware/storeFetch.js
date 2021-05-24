@@ -1,9 +1,15 @@
-export default async function ({store}) {
-  const storedEnums = store.state.enums
+import moment from "moment";
+
+export default async function (app) {
+  const {store, $auth} = app
 
   await store.restored
 
+  const storedEnums = store.state.enums
+  const storedSettings = store.state.settings
+
   const maxOld = null
+  const settingsLastFetch = storedSettings.lastFetch
   const lastFetch = storedEnums.lastFetch
   const toFetch = []
 
@@ -12,6 +18,21 @@ export default async function ({store}) {
     toFetch.push("regions")
     toFetch.push("provinces")
   }
+
+  if (!settingsLastFetch
+    || Object.keys(storedSettings.globalSettings).length === 0) {
+    toFetch.push("settings")
+  } else if (settingsLastFetch) {
+    const lastFetchMoment = moment(settingsLastFetch)
+    const diff = lastFetchMoment.diff(moment(), "minutes")
+
+    console.log(lastFetchMoment.diff(moment(), "minutes"))
+    // If the Settings where fetched more than 5 minutes ago.
+    if (diff > 5 || diff < -5) {
+      toFetch.push("settings")
+    }
+  }
+
 
   if (!lastFetch.countries || storedEnums.countries.length === 0) {
     toFetch.push("countries")
@@ -30,4 +51,5 @@ export default async function ({store}) {
   if (toFetch.includes("countries")) store.dispatch('enums/getCountries')
   if (toFetch.includes("regions")) store.dispatch('enums/getRegions')
   if (toFetch.includes("provinces")) store.dispatch('enums/getProvinces')
+  if (toFetch.includes("settings")) store.dispatch("settings/fetchSettings", $auth.user)
 }
