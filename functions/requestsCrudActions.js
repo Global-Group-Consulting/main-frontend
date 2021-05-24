@@ -297,7 +297,7 @@ export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n, 
 
   async function downloadReceipt(reqId) {
     try {
-      const result = await $apiCalls.downloadRequestReceipt(reqId)
+      const result = await $apiCalls.downloadRequestReceipt(reqId, "request")
 
       jsFileDownload(result.data, result.headers["x-file-name"]);
       return true

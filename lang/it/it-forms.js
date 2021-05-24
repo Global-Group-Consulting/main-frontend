@@ -32,6 +32,7 @@ export default {
   'contract-doc-sign-log': "Autenticazione firma contratto",
   'contract-terms-condition': "Termini e Condizioni",
   'contract-terms-condition-open': "Visualizza termini e condizioni",
+  'contract-notes': "Note riscossione",
   'currency-type': 'Valuta di scambio',
   'doc-expiration': 'Data scadenza documento',
   'doc-number': 'Numero documento',
@@ -120,5 +121,14 @@ export default {
   'brite-remove-amount': "Importo da rimuovere",
   'brite-remove-notes': "Motivazione",
   'auto-withdrawl-all': "Preleva tutto alla fine di questo mese",
-  'auto-withdrawl-all-recursively': "Preleva tutto anche nei mesi successivi"
+  'auto-withdrawl-all-recursively': "Preleva tutto anche nei mesi successivi",
+
+  //settings
+  'requests-block-time': "Intervallo creazione richieste",
+  'requests-block-time-hint': `Fasce orarie all'interno delle quali gli utenti possono creare richieste di vario genere.`,
+
+  'requests-block-time-critic-days': "Intervallo creazione rich. giorni 15 e 30 del mese",
+  'requests-block-time-critic-days-hint': "Fasce orarie all'interno delle quali gli utenti possono creare richieste di vario genere, valide per i soli giorni della ricapitalizzazione e blocco provvigioni agenti.",
+
+  'maintenance-mode': "Modalità manutenzione"
 }

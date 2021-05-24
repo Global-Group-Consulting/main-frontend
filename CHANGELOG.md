@@ -1,5 +1,17 @@
 [comment]: <> (## Non ancora rilasciato)
 
+## v 1.8.10 - <small>21/05/2020</small>
+### Miglioramenti
+- Sistemato bug che non permetteva il download delle integrazioni.
+- Aggiornati componenti interni dell'applicazione (campo valuta, tabelle, pagina richieste)
+
+### Aggiunte
+- Possibilità agli admin di creare richieste per conto del cliente.
+- Colonna gold in tabella utenti che indica il Club Pack di un utente.
+- Sezione "Impostazioni" per gestire le configurazioni di tutta l'applicazione.
+- Impostazioni per settare la fascia oraria in cui è possibile operara all'interno del sistema.
+- Impostazione che permette di forzare tutta l'app (indipendentemente dalla fascia oraria e dai diritti dell'utente) in modalità "sola lettura".
+
 ## v 1.8.9 - <small>28/04/2020</small>
 ### Miglioramenti
 - Aggiornate icone che indicano le note all'interno delle tabelle

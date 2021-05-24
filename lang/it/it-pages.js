@@ -189,5 +189,9 @@ export default {
         removeBrite: "Rimuovi",
       },
     }
+  },
+  settings: {
+    title: "Impostazioni",
+    globalSettings: "Configurazioni globali"
   }
 }
