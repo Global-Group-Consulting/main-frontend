@@ -57,6 +57,14 @@
         </div>
       </v-list>
 
+      <v-list>
+        <div v-for="item in BottomDrawerEntries" :key="item.id">
+          <drawer-item v-if="item.type !== 'group'" :data="item"/>
+
+          <drawer-group v-else :data="item"/>
+        </div>
+      </v-list>
+
       <v-list v-if="!permanentDrawer">
         <v-divider></v-divider>
         <v-list-item @click="account.vieMyProfile">
@@ -89,8 +97,8 @@
             </small>
           </v-list-item-action>
 
-          <v-list-item-content >
-            <v-list-item-title  v-if="canSeeChangelog">
+          <v-list-item-content>
+            <v-list-item-title v-if="canSeeChangelog">
               Mostra dettagli
             </v-list-item-title>
           </v-list-item-content>
@@ -121,7 +129,7 @@
 
 <script>
 import {mapGetters, mapState} from "vuex";
-import drawerItems from "~/config/drawerEntries";
+import drawerItems, {BottomDrawerEntries} from "~/config/drawerEntries";
 import DrawerItem from "~/components/drawer/DrawerItem.vue";
 import DrawerGroup from "~/components/drawer/DrawerGroup.vue";
 import ChangelogDialog from "~/components/dialogs/ChangelogDialog.vue";
@@ -148,6 +156,7 @@ export default {
   },
   computed: {
     drawerItems,
+    BottomDrawerEntries,
     ...mapGetters({
       userMustActivate: "user/mustActivate"
     }),
