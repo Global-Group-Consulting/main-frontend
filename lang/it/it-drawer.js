@@ -8,6 +8,7 @@ export default {
   'requests': 'Richieste',
   'utilities': 'Utilità',
   'calculator': 'Preventivi',
+  'settings': 'Impostazioni',
   'club': 'Global Club',
   'club-self': 'Il mio Club',
   'comunications': 'Comunicazioni',

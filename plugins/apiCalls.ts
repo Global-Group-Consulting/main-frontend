@@ -480,6 +480,24 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
+  async readGlobalSettings() {
+    return await this.get({
+      endPoint: "/api/settings"
+    })
+  }
+
+  async readUserSettings(userId: string) {
+    return await this.get({
+      endPoint: "/api/settings/" + userId
+    })
+  }
+
+  async saveSettings(data: any) {
+    return await this.post({
+      endPoint: "/api/settings",
+      body: data
+    })
+  }
 }
 
 const apiCallsPlugin: Plugin = (context, inject) => {
