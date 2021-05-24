@@ -41,8 +41,13 @@
 import {Component, Prop, Vue, Watch} from "vue-property-decorator";
 import {moneyFormatter} from "~/plugins/filters";
 import {setValue, getValue} from "vue-currency-input";
+import { CurrencyDirective } from 'vue-currency-input'
 
-@Component({})
+@Component({
+  directives: {
+    currency: CurrencyDirective
+  }
+})
 export default class MoneyInput extends Vue {
   @Prop({type: Number})
   value!: number
@@ -73,7 +78,7 @@ export default class MoneyInput extends Vue {
   public directiveOptions: any = {
     autoDecimalMode: false,
     distractionFree: false,
-    currency: false
+    currency: null
   }
 
   get prefix() {
