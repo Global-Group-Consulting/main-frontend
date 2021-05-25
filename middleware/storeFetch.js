@@ -19,17 +19,19 @@ export default async function (app) {
     toFetch.push("provinces")
   }
 
-  if (!settingsLastFetch
-    || Object.keys(storedSettings.globalSettings).length === 0) {
-    toFetch.push("settings")
-  } else if (settingsLastFetch) {
-    const lastFetchMoment = moment(settingsLastFetch)
-    const diff = lastFetchMoment.diff(moment(), "minutes")
-
-    console.log(lastFetchMoment.diff(moment(), "minutes"))
-    // If the Settings where fetched more than 5 minutes ago.
-    if (diff > 5 || diff < -5) {
+  if ($auth.loggedIn) {
+    if (!settingsLastFetch
+      || Object.keys(storedSettings.globalSettings).length === 0) {
       toFetch.push("settings")
+    } else if (settingsLastFetch) {
+      const lastFetchMoment = moment(settingsLastFetch)
+      const diff = lastFetchMoment.diff(moment(), "minutes")
+
+      console.log(lastFetchMoment.diff(moment(), "minutes"))
+      // If the Settings where fetched more than 5 minutes ago.
+      if (diff > 5 || diff < -5) {
+        toFetch.push("settings")
+      }
     }
   }
 

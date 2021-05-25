@@ -69,6 +69,8 @@ export default {
         this.$auth.reset();
 
         await this.$auth.loginWith("local", {data: this.formData});
+
+        await this.$store.dispatch("settings/fetchSettings", this.$auth.user)
       } catch (e) {
         this.$alerts.error(e);
       }
