@@ -145,7 +145,7 @@ export default function (context) {
           disabled: true,
           component: 'money-input',
           currency: context.formData.currency,
-          if: (!readonly && (!isVersamento || context.formData.type === RequestTypes.RISC_CAPITALE )) || readonly,
+          if: (!readonly && (!isVersamento || context.formData.type === RequestTypes.RISC_CAPITALE)) || readonly,
         }
       }
     },
@@ -210,18 +210,19 @@ export default function (context) {
         },
       }
     },
-    /* {
-       cols: {
-         requestAttachment: {
-           component: 'file-uploader',
-           "prepend-icon": "",
-           "prepend-inner-icon": "$file",
-           if: isVersamento,
-           disabled: readonly,
-           files: context.formData.files,
-         },
-       }
-     },*/
+    {
+      cols: {
+        requestAttachment: {
+          component: 'file-uploader',
+          "prepend-icon": "",
+          "prepend-inner-icon": "$file",
+          if: (readonly && context.formData.files && context.formData.files.length > 0) || (!readonly && context.formData.type === context.$enums.RequestTypes.VERSAMENTO),
+          disabled: readonly,
+          previewOnly: readonly,
+          files: context.formData.files,
+        },
+      }
+    },
     {
       cols: {
         notes: {
