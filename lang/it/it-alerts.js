@@ -177,13 +177,13 @@ export default {
   "resend-contract-success": "Contratto creato correttamente e richiesta di firma inviata!",
 
   "unsuspend-user-title": "Riattivare l'utente?",
-  "unsuspend-user-text": "Sei sicuro di voler riattivare l'utente {firstName} {lastName}? Procedendo, l'utente potrà riaccedere al suo account.",
+  "unsuspend-user-text": "Sei sicuro di voler riattivare l'utente <strong>{firstName} {lastName}</strong>? Procedendo, l'utente potrà riaccedere al suo account.",
   "unsuspend-user-confirmBtnText": "Si, riattiva",
   "unsuspend-user-cancelBtnText": "Annulla",
   "unsuspend-user-success": "Utente riattivato correttamente!",
 
   "suspend-user-title": "Sospendere l'utente?",
-  "suspend-user-text": "Sei sicuro di voler sospendere l'utente {firstName} {lastName}? Procedendo, l'utente non potrà più accedere al suo account personale.",
+  "suspend-user-text": "Sei sicuro di voler sospendere l'utente <strong>{firstName} {lastName}</strong>? Procedendo, l'utente <strong>non</strong> potrà più accedere al suo account personale.",
   "suspend-user-confirmBtnText": "Si, sospendi",
   "suspend-user-cancelBtnText": "Annulla",
   "suspend-user-success": "Utente sospeso correttamente!",
