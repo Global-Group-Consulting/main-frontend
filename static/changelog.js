@@ -3,6 +3,7 @@ module.exports = `<h2 id="v1810small21052020small">v 1.8.10 - <small>21/05/2020<
 <ul>
 <li>Sistemato bug che non permetteva il download delle integrazioni.</li>
 <li>Aggiornati componenti interni dell'applicazione (campo valuta, tabelle, pagina richieste)</li>
+<li>Nella tabella utenti, sotto "Stato Account", mostra se un utente è sospeso. Al click apre l'anagrafica.</li>
 </ul>
 <h3 id="aggiunte">Aggiunte</h3>
 <ul>

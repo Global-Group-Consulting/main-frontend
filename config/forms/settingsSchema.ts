@@ -21,7 +21,7 @@ export function globalSettings(context: Vue): FormSchema[] {
           component: "time-picker-range",
           hint: "requests-block-time-critic-days-hint",
           persistentHint: true,
-          max: "18:00",
+          max: "20:00",
           min: "5:00"
         }
       }

@@ -61,6 +61,7 @@ export interface User {
   clubPack: string
   autoWithdrawlAll: string | null
   autoWithdrawlAllRecursively: string | null
+  suspended: boolean
 }
 
 export interface UserDataSchema extends User {

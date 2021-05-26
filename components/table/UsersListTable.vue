@@ -54,17 +54,7 @@
           </template>
 
           <template v-slot:item.account_status="{ item }">
-            <v-chip
-              small
-              :color="$enums.AccountStatuses.get(item.account_status).color"
-            >
-              {{
-                $t(
-                  "enums.AccountStatuses." +
-                  $enums.AccountStatuses.getIdName(item.account_status)
-                )
-              }}
-            </v-chip>
+            <cell-user-account-status :item="item"></cell-user-account-status>
           </template>
 
           <template v-slot:item.actions="{ item }">
@@ -186,17 +176,7 @@
       </template>
 
       <template v-slot:filterTable_account_status="{ item }">
-        <v-chip
-          small
-          :color="$enums.AccountStatuses.get(item.account_status).color"
-        >
-          {{
-            $t(
-              "enums.AccountStatuses." +
-              $enums.AccountStatuses.getIdName(item.account_status)
-            )
-          }}
-        </v-chip>
+        <cell-user-account-status :item="item"></cell-user-account-status>
       </template>
 
       <template v-slot:filterTable_role="{ item }">
@@ -275,9 +255,10 @@ import DataTable from "../table/DataTable.vue";
 import SigningLogsPopup from "../elements/SigningLogsPopup.vue";
 import UsersCrudActions from "~/components/table/UsersCrudActions.vue";
 import ClientsListDialog from "~/components/dialogs/ClientsListDialog.vue";
+import CellUserAccountStatus from "~/components/table/CellsTemplates/CellUserAccountStatus.vue";
 
 @Component({
-  components: {ClientsListDialog, UsersCrudActions, SigningLogsPopup, DataTable, DynamicTabs}
+  components: {CellUserAccountStatus, ClientsListDialog, UsersCrudActions, SigningLogsPopup, DataTable, DynamicTabs}
 })
 export default class UsersListTable extends Vue {
   @Prop({type: String, required: true})
