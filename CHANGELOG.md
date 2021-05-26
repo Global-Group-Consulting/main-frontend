@@ -4,6 +4,7 @@
 ### Miglioramenti
 - Sistemato bug che non permetteva il download delle integrazioni.
 - Aggiornati componenti interni dell'applicazione (campo valuta, tabelle, pagina richieste)
+- Nella tabella utenti, sotto "Stato Account", mostra se un utente è sospeso. Al click apre l'anagrafica.
 
 ### Aggiunte
 - Possibilità agli admin di creare richieste per conto del cliente.
