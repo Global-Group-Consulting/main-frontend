@@ -50,7 +50,8 @@ export default {
     'risc_interessi': 'Riscossione rendite (classic)',
     'risc_interessi_brite': 'Riscossione rendite Gold',
     'risc_interessi_gold': 'Riscossione rendite Gold (Fisico)',
-    'commission_manual_add': 'Aggiunta provvigioni manuali ad agente',
+    'commission_manual_add': 'Aggiunta manuale provvigioni ad agente',
+    'commission_manual_transfer': 'Trasferimento manuale provvigioni tra Agenti',
   },
   'RequestStatus': {
     'nuova': "Da Evadere",

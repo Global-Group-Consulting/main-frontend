@@ -22,7 +22,7 @@
             v-bind="field"
             :items="translateItems(field)"
             :input-value="getValue(field, key)"
-            :value="getValue(field, key)"
+            :value="field.component === 'v-switch' ? null : getValue(field, key)"
             :field-key="key"
             :ref="`comp_${key}_${index}_${fieldIndex}`"
             :hint="field.hasOwnProperty('hint') ? $t('forms.' + field.hint) : null"
@@ -170,7 +170,7 @@ export default {
     getValue(field, key) {
       let value = this.value[key];
 
-      if (!(key in this.value) && field.defaultValue) {
+      if (!(key in this.value) && ("defaultValue" in field)) {
         value = field.defaultValue
         this.value[key] = value
       }

@@ -1,12 +1,15 @@
-export default {
+/**
+ * @type {Record<string, import("~/@types/config/TableSchema").TableSchema>}
+ */
+const schema = {
   'contractNumber': {text: 'tables.contract-number', value: 'contractNumber'},
   'firstName': {text: 'tables.first-name', value: 'firstName'},
   'lastName': {text: 'tables.last-name', value: 'lastName'},
   'email': {text: 'tables.email', value: 'email'},
   'accountStatus': {text: 'tables.account-status', value: 'account_status'},
-  'referenceAgent': {text: 'tables.reference-agent', value: 'referenceAgent'},
+  'referenceAgent': {text: 'tables.reference-agent', value: 'referenceAgent', component: "CellUserReferenceAgent"},
   'validatedAt': {text: 'tables.validated-at', value: 'validated_at'},
-  'contractStatus': {text: 'tables.contract-status', value: 'contractSignedAt'},
+  'contractStatus': {text: 'tables.contract-status', value: 'contractSignedAt', component: "CellUserContractStatus"},
   'role': {text: 'tables.role', value: 'role', align: "center"},
   'clientsNumber': {text: 'tables.clients-number', value: 'clientsCount', align: 'center'},
 
@@ -36,3 +39,5 @@ export default {
     width: '1%'
   }
 }
+
+export default schema

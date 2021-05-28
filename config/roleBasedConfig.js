@@ -191,6 +191,19 @@ const defaults = {
         ['updated_at', ["lavorazione"]],
       ]
     },
+    requestsFilter: {
+      columns: [
+        'amount',
+        'user',
+        'referenceAgent',
+        'type',
+        'status',
+        'created_at',
+        'updated_at',
+        'completed_at',
+        'actions'
+      ]
+    },
   },
   blocks: {
     dashboard: {

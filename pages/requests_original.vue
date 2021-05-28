@@ -8,28 +8,33 @@
       <page-toolbar :actions-list="actionsList" filters-schema="requests"
       ></page-toolbar>
 
-      <dynamic-tabs :tabs-list="requestsTabs"
-                    :loading="tableDataLoading"
-                    :filters-fields-map="requestsFiltersFieldsMap"
-                    filters-schema="requestsSchema"
-                    filters-table-key="requestsFilter"
-                    :filters-full-data="Object.values(this.requestsGroups).flat()">
-        <template v-for="table of requestsTabs"
-                  v-slot:[`tabContent_${table.id}`]="{item}">
-          <requests-list-table
-            :condition="table.id"
-            :items="requestsGroups[table.id]"
-            :loading="tableDataLoading"
-            :sort-by="table.sortBy"
-            :sort-desc="table.sortDesc"
-            :multi-sort="table.multiSort"
-            @click:row="openRequestDetails"
-            @refetchData="onRefetchData"
-            @requestStartWorking="onRequestStartWorking"
-            :items-per-page="25"
-          ></requests-list-table>
-        </template>
-      </dynamic-tabs>
+      <v-tabs v-model="currentTab">
+        <v-tab v-for="table of requestsTables" :key="table.id">
+          <v-icon class="mr-2" small :color="requestsTables[currentTab].id === table.id ? table.color : ''">
+            {{ table.icon }}
+          </v-icon>
+          {{ table.title }} ({{ requestsGroups[table.id].length }})
+        </v-tab>
+      </v-tabs>
+
+      <v-card class="overflow-hidden">
+        <v-tabs-items v-model="currentTab" touchless>
+          <v-tab-item v-for="table of requestsTables" :key="table.id">
+            <requests-list-table
+              :condition="table.id"
+              :items="requestsGroups[table.id]"
+              :loading="tableDataLoading"
+              :sort-by="table.sortBy"
+              :sort-desc="table.sortDesc"
+              :multi-sort="table.multiSort"
+              @click:row="openRequestDetails"
+              @refetchData="onRefetchData"
+              @requestStartWorking="onRequestStartWorking"
+              :items-per-page="25"
+            ></requests-list-table>
+          </v-tab-item>
+        </v-tabs-items>
+      </v-card>
     </v-flex>
 
     <request-dialog
@@ -78,14 +83,9 @@ import {computed} from "@vue/composition-api";
 import UserRoles from "~/enums/UserRoles";
 import {DynamicTab} from "~/@types/components/DynamicTab";
 import {ActionItem} from "~/@types/ActionItem";
-import DynamicTabs from "~/components/DynamicTabs.vue";
-import DataTable from "~/components/table/DataTable.vue";
-import {requestsFiltersFieldsMap} from "~/config/forms/filters/requestsFiltersSchema";
 
 @Component({
   components: {
-    DataTable,
-    DynamicTabs,
     CommunicationNewDialog: CommunicationNewDialog as any,
     RequestDialog: RequestDialog as any,
     PageToolbar,
@@ -102,7 +102,42 @@ export default class Requests extends Vue {
   public currentTab = 0
   public tableDataLoading = false
   public requestsList = []
-
+  public requestsTables = [
+    {
+      id: "nuova",
+      title: this.$t(`pages.requests.tableNuova-title`),
+      color: "blue",
+      icon: "mdi-timer-sand",
+      sortBy: ["created_at", "user"],
+      sortDesc: [true]
+    },
+    {
+      id: "lavorazione",
+      title: this.$t(`pages.requests.tableLavorazione-title`),
+      color: "warning",
+      icon: "mdi-sitemap",
+      sortBy: ["updated_at", "created_at", "user"],
+      sortDesc: [true]
+    },
+    {
+      id: "accettata",
+      title: this.$t(`pages.requests.tableAccettata-title`),
+      color: "green",
+      icon: "mdi-check-all",
+      sortBy: ["completed_at", "created_at", "user"],
+      sortDesc: [true, false],
+      multiSort: true
+    },
+    {
+      id: "rifiutata",
+      title: this.$t(`pages.requests.tableRifiutata-title`),
+      color: "red",
+      icon: "mdi-close-box-multiple-outline",
+      sortBy: ["completed_at", "created_at", "user"],
+      sortDesc: [true, false],
+      multiSort: true
+    }
+  ]
 
   get requestsGroups(): Record<"nuova" | "lavorazione" | "accettata" | "rifiutata", any[]> {
     const toReturn: any = {
@@ -124,49 +159,6 @@ export default class Requests extends Vue {
     });
 
     return toReturn;
-  }
-
-  get requestsTabs(): DynamicTab[] {
-    return [
-      {
-        id: "nuova",
-        title: this.$t(`pages.requests.tableNuova-title`) as string,
-        color: "blue",
-        icon: "mdi-timer-sand",
-        sortBy: ["created_at", "user"],
-        sortDesc: [true]
-      },
-      {
-        id: "lavorazione",
-        title: this.$t(`pages.requests.tableLavorazione-title`) as string,
-        color: "warning",
-        icon: "mdi-sitemap",
-        sortBy: ["updated_at", "created_at", "user"],
-        sortDesc: [true]
-      },
-      {
-        id: "accettata",
-        title: this.$t(`pages.requests.tableAccettata-title`) as string,
-        color: "green",
-        icon: "mdi-check-all",
-        sortBy: ["completed_at", "created_at", "user"],
-        sortDesc: [true, false],
-        multiSort: true
-      },
-      {
-        id: "rifiutata",
-        title: this.$t(`pages.requests.tableRifiutata-title`) as string,
-        color: "red",
-        icon: "mdi-close-box-multiple-outline",
-        sortBy: ["completed_at", "created_at", "user"],
-        sortDesc: [true, false],
-        multiSort: true
-      }
-    ]
-  }
-
-  get requestsFiltersFieldsMap() {
-    return requestsFiltersFieldsMap
   }
 
   get actionsList(): ActionItem[] {
@@ -317,10 +309,6 @@ export default class Requests extends Vue {
     } finally {
       this.tableDataLoading = false
     }
-  }
-
-  getRequestName(req: number | string) {
-    return this.$enums.RequestStatus.getIdName(+req)
   }
 
   getLastMonth(months?: number, returnMoment = false): Moment | string {

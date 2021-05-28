@@ -130,5 +130,20 @@ export default {
   'requests-block-time-critic-days': "Intervallo creazione rich. giorni 15 e 30 del mese",
   'requests-block-time-critic-days-hint': "Fasce orarie all'interno delle quali gli utenti possono creare richieste di vario genere, valide per i soli giorni della ricapitalizzazione e blocco provvigioni agenti.",
 
-  'maintenance-mode': "Modalità manutenzione"
+  'maintenance-mode': "Modalità manutenzione",
+
+  'filters-name': "Nome o Cognome",
+  'filters-contract-status': "Stato contratto",
+  'filters-account-status': "Stato account",
+  'filters-club-pack': "Pacchetto gold",
+  'filters-gold': "Investimenti Gold",
+  'filters-account-suspended': "Account sospeso",
+  'filters-role': "Ruolo",
+  'filters-contract-id': "Id Contratto",
+  'filters-user': "Utente",
+  'filters-request-status': "Stato richiesta",
+  'filters-reference-agent': "Agente di riferimento",
+  'filters-creation-date': "Data creazione",
+  'filters-completed-date': "Data conclusione",
+  'filters-auto-withdrawl-all': "Risc. provvigioni automatiche",
 }

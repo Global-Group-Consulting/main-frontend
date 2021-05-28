@@ -42,6 +42,7 @@ export interface FormSchemaField {
   persistentHint?: boolean
   falseValue?: boolean
   inputValue?: string | number | boolean
+  defaultValue?: any
   type?: string
   files?: any[],
   clearable?: boolean,

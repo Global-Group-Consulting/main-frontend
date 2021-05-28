@@ -6,6 +6,7 @@ import drawer from '~/lang/it/it-drawer'
 import enums from '~/lang/it/it-enums'
 import errors from '~/lang/it/it-errors'
 import forms from '~/lang/it/it-forms'
+import filters from '~/lang/it/it-filters'
 import menus from '~/lang/it/it-menus'
 import pages from '~/lang/it/it-pages'
 import tables from '~/lang/it/it-tables'
@@ -20,6 +21,7 @@ export default {
   enums,
   errors,
   forms,
+  filters,
   menus,
   pages,
   tables,

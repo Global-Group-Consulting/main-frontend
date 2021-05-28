@@ -11,24 +11,6 @@
     v-bind="$attrs"
     v-on="$listeners"
   >
-    <template v-slot:item.user.contractNumber="{ item }">
-      <template v-if="item.user">
-        {{ $options.filters.contractNumberFormatter(item.user.contractNumber) }}
-      </template>
-    </template>
-
-    <template v-slot:item.user="{ item }">
-      <v-btn text v-if="item.user && item.user.id" small
-             target="_blank"
-             class="text-capitalize"
-             color="primary"
-             @click.stop=""
-             :href="'users/profile/' + item.user.id">
-        <v-icon small class="mr-2">mdi-open-in-new</v-icon>
-        {{ $options.filters.userFormatter(item.user) }}
-      </v-btn>
-    </template>
-
     <template v-slot:item.actions="{ item }">
       <requests-crud-actions
         :item="item"
@@ -37,101 +19,6 @@
         @rowCanceled="onRequestCanceled"
         @requestStartWorking="$emit('requestStartWorking', item)"
       ></requests-crud-actions>
-    </template>
-
-    <template v-slot:item.amount="{ item }">
-      <v-flex class="d-flex">
-        <!--        <v-tooltip v-if="item.initialMovement" bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-btn icon v-on="on">
-                      <v-icon color="blue">mdi-new-box</v-icon>
-                    </v-btn>
-                  </template>
-
-                  {{ item.notes }}
-                </v-tooltip>-->
-
-        <span style="flex: 1"></span>
-
-        <span :class="getAmountClass(getAmountSign(item.type))"
-              class="text-no-wrap"
-              v-if="!item.autoWithdrawlAll || item.autoWithdrawlAllRevoked">
-          {{ getAmountSign(item.type) }}
-          € {{ $options.filters.moneyFormatter(item.amount) }}
-        </span>
-
-        <v-tooltip v-else bottom>
-          <template v-slot:activator="{ on }">
-            <v-btn text rounded v-on="on" color="primary">
-              <v-icon v-if="item.autoWithdrawlAllRecursively">mdi-repeat</v-icon>
-              <v-icon>mdi-infinity</v-icon>
-            </v-btn>
-          </template>
-
-          {{ $t(`pages.requests.autoWithdrawlAll${item.autoWithdrawlAllRecursively ? 'Recursive' : ''}-tooltip`) }}
-        </v-tooltip>
-
-      </v-flex>
-    </template>
-
-    <template v-slot:item.currency="{ item }">
-      {{ formatRequestCurrency(item.currency) }}
-    </template>
-
-    <template v-slot:item.type="{ item }">
-      <v-icon color="#b4975a" v-if="item.typeClub">mdi-diamond-outline</v-icon>
-
-      <span v-html="getTipoRichiesta(item.type, item)"></span>
-
-      <span v-if="item.autoWithdrawlAll">
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on }">
-            <v-btn text rounded v-on="on" color="primary">
-              <v-icon v-if="item.autoWithdrawlAllRecursively">mdi-repeat</v-icon>
-              <v-icon>mdi-infinity</v-icon>
-            </v-btn>
-          </template>
-
-          {{ $t(`pages.requests.autoWithdrawlAll${item.autoWithdrawlAllRecursively ? 'Recursive' : ''}-tooltip`) }}
-        </v-tooltip>
-      </span>
-
-      <v-tooltip v-if="$enums.RequestTypes.COMMISSION_MANUAL_ADD === item.type"
-                 bottom
-                 open-on-click
-
-      >
-        <template v-slot:activator="{ on }">
-          <v-btn icon @click.stop="getTargetUser(item)" v-on="on">
-            <v-icon>mdi-information</v-icon>
-          </v-btn>
-        </template>
-
-        Vedi l'utente destinatario
-      </v-tooltip>
-    </template>
-
-    <template v-slot:item.user.referenceAgentData="{item}">
-      <v-btn text v-if="item.user && item.user.referenceAgentData" small
-             target="_blank"
-             class="text-capitalize"
-             color="primary"
-             @click.stop=""
-             :href="getRefAgentUrl(item)">
-        <v-icon small class="mr-2">mdi-open-in-new</v-icon>
-        {{ getRefAgentName(item) }}
-      </v-btn>
-    </template>
-
-    <template v-slot:item.status="{item, value}">
-      <v-chip small
-              :outlined="!item.initialMovement"
-              :dark="item.initialMovement"
-              :color="$enums.RequestStatus.get(value).color"
-      >
-        {{ $t("enums.RequestStatus." + $enums.RequestStatus.getIdName(value)) }}
-      </v-chip>
-
     </template>
   </data-table>
 </template>

@@ -2,7 +2,10 @@
   <div>
     <dynamic-tabs :tabs-list="tabsList"
                   :loading="loading"
-                  :filters-active="filtersActive"
+                  :filters-fields-map="usersFiltersFieldsMap"
+                  filters-schema="usersSchema"
+                  filters-table-key="usersFilter"
+                  :filters-full-data="Object.values(this.usersData).flat()"
                   @filtersClean="$emit('filtersClean')">
       <template v-for="tab of tabsList"
                 v-slot:[`tabContent_${tab.id}`]="{item}">
@@ -64,39 +67,6 @@
             />
           </template>
 
-          <template v-slot:item.contractSignedAt="{item}">
-            <div v-if="item.contractSignedAt">
-              <template v-if="!item.contractImported">
-
-                <v-menu offset-y left :close-on-content-click="false">
-                  <template v-slot:activator="{ on, attrs }">
-                    <a v-on="on" v-bind="attrs" class="text-decoration-underline-dotted">
-                      {{ $t("tables.contract-signed") }}
-                    </a>
-                  </template>
-
-                  <signing-logs-popup :userId="item.id"></signing-logs-popup>
-                </v-menu>
-              </template>
-
-              <template v-else>
-                <v-tooltip bottom>
-                  <template v-slot:activator="{on}">
-                    <a v-on="on" class="text-decoration-underline-dotted">
-                      {{ $t("tables.contract-imported") }}
-                    </a>
-                  </template>
-                  <span>{{
-                      $t("tables.contract-imported-at", {date: $options.filters.dateHourFormatter(item.contractSignedAt)})
-                    }}</span>
-                </v-tooltip>
-              </template>
-            </div>
-
-            <div v-else class="red--text">
-              {{ $t("tables.contract-not-signed") }}
-            </div>
-          </template>
 
           <template v-slot:item.commissionsAssigned="{item, value}">
             <div class="mx-n1">
@@ -164,7 +134,7 @@
         </v-tooltip>
       </template>
 
-      <template v-slot:filterTable_referenceAgent="{item}">
+<!--      <template v-slot:filterTable_referenceAgent="{item}">
         <v-btn text v-if="item.referenceAgentData" small
                target="_blank"
                class="text-capitalize"
@@ -173,7 +143,7 @@
           <v-icon small class="mr-2">mdi-open-in-new</v-icon>
           {{ item.referenceAgentData.firstName }} {{ item.referenceAgentData.lastName }}
         </v-btn>
-      </template>
+      </template>-->
 
       <template v-slot:filterTable_account_status="{ item }">
         <cell-user-account-status :item="item"></cell-user-account-status>
@@ -201,42 +171,6 @@
         />
       </template>
 
-      <template v-slot:filterTable_contractSignedAt="{item}">
-        <div v-if="![$enums.UserRoles.ADMIN, $enums.UserRoles.SERV_CLIENTI].includes(+item.role)">
-          <div v-if="item.contractSignedAt">
-            <template v-if="!item.contractImported">
-
-              <v-menu offset-y left>
-                <template v-slot:activator="{ on, attrs }">
-                  <a v-on="on" v-bind="attrs" class="text-decoration-underline-dotted">
-                    {{ $t("tables.contract-signed") }}
-                  </a>
-                </template>
-
-                <signing-logs-popup :user-id="item.id"></signing-logs-popup>
-              </v-menu>
-            </template>
-
-            <template v-else>
-              <v-tooltip bottom>
-                <template v-slot:activator="{on}">
-                  <a v-on="on" class="text-decoration-underline-dotted">
-                    {{ $t("tables.contract-imported") }}
-                  </a>
-                </template>
-                <span>{{
-                    $t("tables.contract-imported-at", {date: $options.filters.dateHourFormatter(item.contractSignedAt)})
-                  }}</span>
-              </v-tooltip>
-            </template>
-          </div>
-
-          <div v-else class="red&#45;&#45;text">
-            {{ $t("tables.contract-not-signed") }}
-          </div>
-        </div>
-      </template>
-
     </dynamic-tabs>
 
     <clients-list-dialog v-if="$store.getters['dialog/dialogId'] === 'ClientsListDialog'"
@@ -256,6 +190,7 @@ import SigningLogsPopup from "../elements/SigningLogsPopup.vue";
 import UsersCrudActions from "~/components/table/UsersCrudActions.vue";
 import ClientsListDialog from "~/components/dialogs/ClientsListDialog.vue";
 import CellUserAccountStatus from "~/components/table/CellsTemplates/CellUserAccountStatus.vue";
+import {usersFiltersFieldsMap} from "~/config/forms/filters/usersFiltersSchema";
 
 @Component({
   components: {CellUserAccountStatus, ClientsListDialog, UsersCrudActions, SigningLogsPopup, DataTable, DynamicTabs}
@@ -293,6 +228,10 @@ export default class UsersListTable extends Vue {
       title: "Admin",
       data: this.usersData[this.getRoleName(this.$enums.UserRoles.ADMIN)]
     }].filter(el => el.data && el.data.length > 0)
+  }
+
+  get usersFiltersFieldsMap() {
+    return usersFiltersFieldsMap
   }
 
   getRoleName(role: number | string) {

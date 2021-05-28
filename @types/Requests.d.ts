@@ -10,6 +10,7 @@ export interface RequestFormData {
   id: string
   autoWithdrawlAllRecursively: any
   autoWithdrawlAll: any
+  autoWithdrawlAllRevoked: any
   conversation: any
   requestAttachment: any
   amount: number | string
@@ -18,4 +19,6 @@ export interface RequestFormData {
   cancelReason: string
   notes: string
   userId: string
+  typeClub: any
+  initialMovement: any
 }

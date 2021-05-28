@@ -10,29 +10,30 @@
                         format-as-int
       ></dashboard-blocks>
 
-      <page-toolbar always-visible :actions-list="actionsList">
-        <template v-slot:right-block>
-          <div class="d-flex">
-            <v-text-field class="align-center" hide-details
-                          placeholder="Cerca..." v-model.lazy="filters.generic">
+      <page-toolbar always-visible :actions-list="actionsList" filters-schema="users"
+                    @appliedFilters="onAppliedFilter">
+        <!--        <template v-slot:right-block>
+                  <div class="d-flex">
+                    <v-text-field class="align-center" hide-details
+                                  placeholder="Cerca..." v-model.lazy="filters.generic">
 
-              <template v-slot:append>
-                <transition name="fadeRight" mode="out-in">
-                  <v-btn icon @click="filtersClean"
-                         v-if="filtersActive.length"
-                         style="animation-duration: 0.5s"
-                         small>
-                    <v-icon small>mdi-filter-remove</v-icon>
-                  </v-btn>
+                      <template v-slot:append>
+                        <transition name="fadeRight" mode="out-in">
+                          <v-btn icon @click="filtersClean"
+                                 v-if="filtersActive.length"
+                                 style="animation-duration: 0.5s"
+                                 small>
+                            <v-icon small>mdi-filter-remove</v-icon>
+                          </v-btn>
 
-                  <v-icon v-if="!filtersActive.length"
-                          style="animation-duration: 0.5s">mdi-magnify
-                  </v-icon>
-                </transition>
-              </template>
-            </v-text-field>
-          </div>
-        </template>
+                          <v-icon v-if="!filtersActive.length"
+                                  style="animation-duration: 0.5s">mdi-magnify
+                          </v-icon>
+                        </transition>
+                      </template>
+                    </v-text-field>
+                  </div>
+                </template>-->
       </page-toolbar>
 
       <users-list-table :user-id="$auth.user.id" :filters-active="filtersActive"
@@ -117,6 +118,8 @@ import UsersListTable from "../../components/table/UsersListTable";
 import DashboardBlocks from "../../components/DashboardBlocks";
 import AccountStatuses from "../../enums/AccountStatuses";
 
+import {usersFiltersFieldsMap} from "../../config/forms/filters/usersFiltersSchema";
+
 export default {
   name: "index",
   components: {
@@ -177,39 +180,55 @@ export default {
 
     let markInstance = null;
 
-    const filters = reactive({
-      generic: "",
-      /*firstName: "",
-      lastName: "",
-      email: "",*/
-    })
+    const filters = ref({})
     const filteredData = computed(() => {
       const result = []
 
-      const filterValue = filters.generic.toLowerCase().trim().split(" ")
 
-      const filterRegex = new RegExp(filterValue.reduce((acc, curr) => {
-        if (curr) {
-          const val = curr.trim()
+      //const filterValue = filters.generic.toLowerCase().trim().split(" ")
 
-          if (val) {
-            acc.push(val)
-          }
-        }
+      /*    const filterRegex = new RegExp(filterValue.reduce((acc, curr) => {
+            if (curr) {
+              const val = curr.trim()
 
-        return acc
-      }, []).join("|"), "g")
+              if (val) {
+                acc.push(val)
+              }
+            }
+
+            return acc
+          }, []).join("|"), "g")*/
 
       for (let group of usersPageData.usersList.value) {
         const groupResult = group.data.filter((el) => {
-          const valuesToSearchIn = [el.firstName.toLowerCase(), el.lastName.toLowerCase(), el.email.toLowerCase()]
+          let mustReturn = false;
 
-          return valuesToSearchIn.some((substr) => {
-            /** @type {String[]} */
-            const match = substr.match(filterRegex)
+          // Fort each available field, check the corresponding fields that must be filtered
+          for (let key of Object.keys(usersFiltersFieldsMap)) {
+            //const valuesToSearchIn = [el.firstName.toLowerCase(), el.lastName.toLowerCase(), el.email.toLowerCase()]
+            const valuesToSearchIn = []
 
-            return match && filterRegex.source.split("|").every((currentValue) => match.includes(currentValue))
-          })
+            for (const field of usersFiltersFieldsMap[key]) {
+              let value = el[field]
+
+              if (typeof value === "string") {
+                value = value.toLowerCase()
+              }
+
+              valuesToSearchIn.push(value)
+            }
+
+            valuesToSearchIn.some((substr) => {
+              const match = substr.match(filters.value[key])
+
+              if (match) {
+                mustReturn = match
+              }
+              //return match && filterRegex.source.split("|").every((currentValue) => match.includes(currentValue))
+            })
+          }
+
+          return mustReturn
         })
 
         if (groupResult.length) {
@@ -321,6 +340,10 @@ export default {
          .join("").toUpperCase()*/
     }
 
+    function onAppliedFilter(activeFilters) {
+      filters.value = activeFilters
+    }
+
     watch(filtersActive, (value) => {
       const maxTabs = usersPageData.usersList.value.length
 
@@ -356,7 +379,8 @@ export default {
       showClientsList,
       getInitials,
       usersDataBlocks,
-      onUpdatedUsersList
+      onUpdatedUsersList,
+      onAppliedFilter
     };
   },
   data() {

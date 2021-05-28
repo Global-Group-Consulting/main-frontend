@@ -41,7 +41,7 @@ export interface User {
   contractInitialPaymentMethod: string
   contractInitialPaymentMethodOther: string,
   referenceAgent: string
-  referenceAgentData: string
+  referenceAgentData: any
   accountCreatedAt: string
   accountUpdatedAt: string
   accountActivatedAt: string

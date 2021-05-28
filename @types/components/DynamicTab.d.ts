@@ -8,4 +8,9 @@ export interface DynamicTab {
   dates?: { from: Moment, to: Moment },
   useFrom?: Moment
   expiresAt?: Moment
+  multiSort?: boolean
+  color?: string
+  icon?: string
+  sortBy?: string[]
+  sortDesc?: string[]
 }

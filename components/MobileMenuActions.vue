@@ -66,7 +66,7 @@ export default defineComponent({
         list = props.actionsList
       }
 
-      return list.filter((item: ActionItem) => item.if ?? true)
+      return list.filter((item: ActionItem) => (item.if ?? true) && !item.onlyInDesktop)
     })
 
     function prepareOptions(newSettings: ActionItemOptions) {
@@ -75,7 +75,7 @@ export default defineComponent({
       return newSettings ? Object.assign({}, defaults, newSettings) : defaults
     }
 
-    function onAction(action: ActionItem, event:any) {
+    function onAction(action: ActionItem, event: any) {
       if (action.click) {
         action.click(event, action)
       }

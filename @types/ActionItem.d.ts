@@ -7,6 +7,7 @@ export interface ActionItemOptions {
 
 export interface ActionItem {
   text: string
+  html?: string
   tooltip?: string
   position?: "left" | "center" | "right"
   icon?: string
@@ -17,6 +18,7 @@ export interface ActionItem {
    * Indicated if this element must be shown only in the mobile menu
    */
   onlyInMobile?: Boolean,
+  onlyInDesktop?: Boolean,
   menuOptions?: {
     text: string
     icon?: string
