@@ -80,6 +80,7 @@ export default {
     "cancelDepositCollected": "Annullamento prelievo deposito",
     "cancelCommissionCollected": "Annullamento riscossione provvigioni",
     "commissionsReinvestment": "Reinvestimento provvigioni",
+    "commissionsCancellation": "Storno provvigioni",
   },
   "MessageTypes": {
     'newsletter': "Newsletter",

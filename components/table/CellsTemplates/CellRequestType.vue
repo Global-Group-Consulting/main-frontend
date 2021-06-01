@@ -40,7 +40,7 @@ export default class CellRequestType extends Vue {
   @Prop({type: Object, required: true})
   public item!: RequestFormData
 
-  getTipoRichiesta(_id) {
+  getTipoRichiesta(_id: any) {
     const id = this.$enums.RequestTypes.get(_id).id;
     const isInitialMovement = this.item.initialMovement
 
@@ -50,7 +50,7 @@ export default class CellRequestType extends Vue {
   async getTargetUser() {
     if (!this.item.targetUser) {
       try {
-        this.item.targetUser = await this.$apiCalls.readRequestTargetUser(item.targetUserId)
+        this.item.targetUser = await this.$apiCalls.readRequestTargetUser(this.item.targetUserId)
       } catch (er) {
         return this.$alerts.error(er)
       }

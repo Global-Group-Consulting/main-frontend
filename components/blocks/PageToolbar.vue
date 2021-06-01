@@ -26,7 +26,7 @@
 
     <dynamic-filters v-if="includeFilters"
                      :schema="filtersSchema" :expand="filtersExpand"
-                     ></dynamic-filters>
+    ></dynamic-filters>
 
     <mobile-menu-actions :actions-list="actionsList"></mobile-menu-actions>
   </v-sheet>
@@ -52,10 +52,12 @@ export default class PageToolbar extends Vue {
   @Prop({type: String})
   filtersSchema!: string
 
-  filtersExpand: boolean = true
-
   get includeFilters() {
     return !!this.filtersSchema;
+  }
+
+  get filtersExpand() {
+    return this.$store.getters["filters/expanded"];
   }
 
   get countActiveFilters(): number {
@@ -90,7 +92,7 @@ export default class PageToolbar extends Vue {
         text: "",
         html: this.$t("actions.filters-btn") + (this.countActiveFilters ? ` (${this.countActiveFilters})` : ''),
         icon: this.filtersExpand ? "mdi-filter-minus-outline" : "mdi-filter-menu",
-        click: () => this.filtersExpand = !this.filtersExpand,
+        click: () => this.$store.dispatch("filters/updateExpanded", !this.filtersExpand), //this.filtersExpand = !this.filtersExpand,
         onlyInDesktop: true,
       })
     }

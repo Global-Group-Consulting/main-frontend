@@ -22,7 +22,9 @@
       <slot :name="'item.' + col.value" v-bind:item="item" v-bind:value="value">
         <template v-if="col.component">
           <component :is="col.component"
-                     :item="item"></component>
+                     :item="item"
+                     :value="value"
+                     :tableData="items"></component>
         </template>
         <template v-else>
           {{ item[col.value] }}

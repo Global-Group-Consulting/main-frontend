@@ -56,9 +56,6 @@ export default function (): FormSchema[] {
           clearable: true,
           items: UserRoles
         },
-      },
-    }, {
-      cols: {
         contractStatus: {
           component: "v-select",
           label: "filters-contract-status",
@@ -90,13 +87,9 @@ export default function (): FormSchema[] {
           label: "filters-club-pack",
           clearable: true,
           items: ClubPacks
-        }
-      }
-    }, {
-      cols: {
+        },
         contractId: {
           label: "filters-contract-id",
-
         },
         gold: {
           component: "v-switch",
@@ -110,7 +103,7 @@ export default function (): FormSchema[] {
           falseValue: false,
           defaultValue: false
         },
-      }
-    }
+      },
+    },
   ]
 }

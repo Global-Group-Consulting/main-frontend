@@ -34,7 +34,6 @@ export default class CellUserReferenceAgent extends Vue {
   public item!: any
 
   get user(): User {
-    debugger
     if ("user" in this.item) {
       return this.item.user
     }

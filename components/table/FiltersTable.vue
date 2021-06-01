@@ -12,8 +12,7 @@
 
 <script lang="ts">
 import {Component, Prop, Vue, Watch} from "vue-property-decorator";
-import {usersFiltersFieldsMap} from "~/config/forms/filters/usersFiltersSchema";
-import {User} from "~/@types/UserFormData";
+import {get as _get} from "lodash"
 
 import DataTable from "./DataTable.vue";
 
@@ -32,8 +31,9 @@ export default class FiltersTable extends Vue {
   @Prop({type: Object})
   filtersMap!: any // Oggetto con la mappa dei filtri
 
-  @Prop({type: Array})
-  dataToFilter!: any[]
+  get dataToFilter() {
+    return this.$store.getters["filters/dataToFilter"];
+  }
 
   get activeFilters() {
     return this.$store.getters["filters/activeFilters"]
@@ -57,7 +57,6 @@ export default class FiltersTable extends Vue {
         // Chiavi mappate dove cercare nei dati dell'utente
         const mappedKeysToSearchIn: string[] | ((data: any, searchValue: any) => boolean) = this.filtersMap[activeKey];
 
-
         // Valore da ricercare per la chiave corente
         const filterValue = this.activeFilters[activeKey];
 
@@ -77,7 +76,7 @@ export default class FiltersTable extends Vue {
             const type = typeof filterValue;
 
             // Valore presente del dato da ricercare che corrisponde alla mappedKey
-            let dataValue = data[mappedKey];
+            let dataValue = _get(data, mappedKey);
 
             if (type === "boolean" && !dataValue) {
               dataValue = false

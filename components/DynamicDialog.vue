@@ -85,7 +85,6 @@ export default {
   name: "DynamicDialog",
   setup() {
     onUnmounted(() => {
-      console.log("asdsadasdas");
     });
   },
   data() {

@@ -136,6 +136,7 @@ export default {
   'filters-contract-status': "Stato contratto",
   'filters-account-status': "Stato account",
   'filters-club-pack': "Pacchetto gold",
+  'filters-club-card-number': "Num. Tessera",
   'filters-gold': "Investimenti Gold",
   'filters-account-suspended': "Account sospeso",
   'filters-role': "Ruolo",
@@ -146,4 +147,6 @@ export default {
   'filters-creation-date': "Data creazione",
   'filters-completed-date': "Data conclusione",
   'filters-auto-withdrawl-all': "Risc. provvigioni automatiche",
+  'filters-money-min': "Importo Minimo",
+  'filters-money-max': "Importo Massimo",
 }

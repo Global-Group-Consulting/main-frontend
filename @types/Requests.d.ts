@@ -1,3 +1,5 @@
+import {User} from "~/@types/UserFormData";
+
 export interface RequestFormData {
   wallet: number
   type: number
@@ -15,10 +17,14 @@ export interface RequestFormData {
   requestAttachment: any
   amount: number | string
   rejectReason: string
+  created_at: string
   completed_at: string
   cancelReason: string
   notes: string
   userId: string
+  user: User
   typeClub: any
   initialMovement: any
+  targetUser: User
+  targetUserId: string
 }

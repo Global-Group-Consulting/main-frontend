@@ -10,8 +10,7 @@
                         format-as-int
       ></dashboard-blocks>
 
-      <page-toolbar always-visible :actions-list="actionsList" filters-schema="users"
-                    @appliedFilters="onAppliedFilter">
+      <page-toolbar always-visible :actions-list="actionsList" filters-schema="users">
         <!--        <template v-slot:right-block>
                   <div class="d-flex">
                     <v-text-field class="align-center" hide-details
@@ -92,9 +91,6 @@
         </v-fab-transition>
       </v-row>
 
-      <!--      <clients-list-dialog
-              v-if="$store.getters['dialog/dialogId'] === 'ClientsListDialog'"
-            ></clients-list-dialog>-->
     </v-flex>
   </v-layout>
 </template>

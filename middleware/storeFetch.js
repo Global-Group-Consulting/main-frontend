@@ -27,7 +27,7 @@ export default async function (app) {
       const lastFetchMoment = moment(settingsLastFetch)
       const diff = lastFetchMoment.diff(moment(), "minutes")
 
-      console.log(lastFetchMoment.diff(moment(), "minutes"))
+      //console.log(lastFetchMoment.diff(moment(), "minutes"))
       // If the Settings where fetched more than 5 minutes ago.
       if (diff > 5 || diff < -5) {
         toFetch.push("settings")

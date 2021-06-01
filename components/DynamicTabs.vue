@@ -46,7 +46,6 @@
             <filters-table :table-key="filtersTableKey"
                            :schema="filtersSchema"
                            :filters-map="filtersFieldsMap"
-                           :data-to-filter="filtersFullData"
             ></filters-table>
           </v-tab-item>
         </v-tabs-items>
@@ -96,9 +95,6 @@ export default class DynamicTabs extends Vue {
   @Prop({type: Object})
   filtersFieldsMap!: any
 
-  @Prop({type: Array})
-  filtersFullData!: any[]
-
   public currentTab = this.value
   public lastTab = this.currentTab
 
@@ -114,15 +110,13 @@ export default class DynamicTabs extends Vue {
     return this.$store.getters["filters/areActiveFilters"]
   }
 
-  get countFilteredData() {
-    return this.$store.getters["filters/countFilteredData"]
-  }
-
   filtersClean() {
     this.$store.dispatch("filters/updatePage", {
       page: this.$route.path,
       activeFilters: null
     })
+
+    this.$store.dispatch("filters/updateExpanded", false);
   }
 
   getTabColor(tab: any) {

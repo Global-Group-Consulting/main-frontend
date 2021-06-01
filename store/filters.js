@@ -3,7 +3,9 @@ import Vue from "vue"
 
 export const state = () => ({
   pages: {},
-  filteredData: []
+  filteredData: [],
+  dataToFilter: [],
+  expanded: false
 })
 
 export const mutations = {
@@ -18,6 +20,14 @@ export const mutations = {
 
   SET_FILTERED_DATA(state, payload) {
     state.filteredData = [...payload];
+  },
+
+  SET_DATA_TO_FILTER(state, payload) {
+    state.dataToFilter = [...payload]
+  },
+
+  SET_EXPANDED(state, payload) {
+    state.expanded = payload;
   }
 }
 
@@ -42,15 +52,25 @@ export const actions = {
   },
 
   updateFilteredData({commit, state}, payload) {
-    commit("SET_FILTERED_DATA", payload)
+    commit("SET_FILTERED_DATA", payload || [])
+  },
+
+  updateDataToFilter({commit, state}, payload) {
+    commit("SET_DATA_TO_FILTER", payload || [])
+  },
+
+  updateExpanded({commit}, payload = false) {
+    commit("SET_EXPANDED", payload)
   },
 
   resetAll({commit, state}, payload) {
     commit('SET_PAGE', {
       page: payload.page,
-      activeFilters: {}
+      activeFilters: {},
+      dataToFilter: []
     })
-    commit("SET_FILTERED_DATA", [])
+    commit("SET_FILTERED_DATA", []);
+    commit("SET_EXPANDED", false)
   }
 }
 
@@ -74,4 +94,12 @@ export const getters = {
   countFilteredData(state, getters) {
     return getters.filteredData ? getters.filteredData.length : 0
   },
+
+  dataToFilter(state) {
+    return state.dataToFilter
+  },
+
+  expanded(state) {
+    return state.expanded
+  }
 }

@@ -28,10 +28,12 @@ export type FormSchemaValidations = Partial<Record<ValidatorRules, {
 }>>
 
 export interface FormSchemaField {
-  component?: "v-select" | "date-picker" | "time-picker" | "time-picker-range" | "file-uploader"
-    | "agent-commissions-select" | "contract-doc" | "money-input" | "phone-input"
+  component?: "v-select" | "date-picker" | "date-picker-range" | "time-picker" | "time-picker-range" | "file-uploader"
+    | "agent-commissions-select" | "contract-doc" | "money-input" | "money-input-range" | "phone-input"
     | "v-switch" | "v-autocomplete" | "v-textarea" | "",
   label?: string,
+  minLabel?: string,
+  maxLabel?: string,
   formatter?: Formatters | Function,
   if?: any,
   items?: Function | any
@@ -53,6 +55,9 @@ export interface FormSchemaField {
   onlyBrite?: boolean,
   currency?: number,
   autoGrow?: boolean,
+  range?: boolean,
+  startByYear?: boolean,
+  chipVersion?: boolean,
   rows?: number,
   validations?: FormSchemaValidations
 }

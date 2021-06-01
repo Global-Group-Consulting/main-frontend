@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div v-if="existsData">
     <dynamic-tabs :tabs-list="tabsList"
                   :loading="loading"
                   :filters-fields-map="usersFiltersFieldsMap"
                   filters-schema="usersSchema"
                   filters-table-key="usersFilter"
-                  :filters-full-data="Object.values(this.usersData).flat()"
-                  @filtersClean="$emit('filtersClean')">
+                  :outlined="true">
+
       <template v-for="tab of tabsList"
                 v-slot:[`tabContent_${tab.id}`]="{item}">
         <data-table
@@ -19,167 +19,19 @@
           :loading="loading"
           :condition="+$enums.UserRoles.get(tab.id).index"
         >
-          <template v-slot:item.superAdmin="{ item }">
-            <v-tooltip right v-if="item.superAdmin">
-              <template v-slot:activator="{ on, attrs }">
-                <v-icon v-on="on" v-bind="attrs" class="d-inline-block"
-                >mdi-diamond-stone
-                </v-icon
-                >
-              </template>
-
-              <span>Super Admin</span>
-            </v-tooltip>
-          </template>
-
-          <template v-slot:item.referenceAgent="{item}">
-            <!-- Case item.referenceAgent is same as userId and is the same as auth.user.id - Tu -->
-            <div v-if="item.referenceAgent === $auth.user.id && item.referenceAgent === userId">
-              <v-btn text disabled small>Tu</v-btn>
-            </div>
-
-            <!-- Case item.referenceAgent is same as userId but is different from auth.user.id - Utente attuale -->
-            <div v-else-if="item.referenceAgent !== $auth.user.id && item.referenceAgent === userId">
-              <v-btn text disabled small>Utente attuale</v-btn>
-            </div>
-
-            <!-- Case item.referenceAgent is different from userId and from auth.user.id -  -->
-            <v-btn text
-                   v-else-if="item.referenceAgentData && item.referenceAgent !== $auth.user.id && item.referenceAgent !== userId"
-                   small
-                   target="_blank"
-                   class="text-capitalize"
-                   color="primary"
-                   :href="'/users/profile/' + item.referenceAgent">
-              <v-icon small class="mr-2">mdi-open-in-new</v-icon>
-              {{ item.referenceAgentData.firstName }} {{ item.referenceAgentData.lastName }}
-            </v-btn>
-          </template>
-
-          <template v-slot:item.account_status="{ item }">
-            <cell-user-account-status :item="item"></cell-user-account-status>
-          </template>
-
-          <template v-slot:item.actions="{ item }">
-            <users-crud-actions
-              :item="item"
-              @userDeleted="onUserDeleted(item, tab.data)"
-            />
-          </template>
-
-
-          <template v-slot:item.commissionsAssigned="{item, value}">
-            <div class="mx-n1">
-              <v-tooltip bottom v-for="(comm, i) of value" :key="i">
-                <template v-slot:activator="{ on }">
-                  <v-chip x-small
-                          class="mx-1"
-                          v-on="on">
-                    {{ getInitials($t("enums.CommissionType." + comm.name), comm) }}
-                  </v-chip>
-                </template>
-                {{ $t("enums.CommissionType." + comm.name) }}
-              </v-tooltip>
-
-            </div>
-          </template>
-
-          <template v-slot:item.clientsCount="{item, value}">
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-btn text
-                       @click="showClientsList(item)"
-                       :disabled="!+value"
-                       v-on="on"
-                       small
-                       color="primary">
-                  <v-icon small class="mr-2" v-if="+value === 1">mdi-account</v-icon>
-                  <v-icon small class="mr-2" v-else>mdi-account-multiple</v-icon>
-                  {{ +value || 0 }}
-                </v-btn>
-              </template>
-              Mostra lista clienti
-            </v-tooltip>
-          </template>
-
-          <template v-slot:item.clubPack="{item, value}">
-            <v-tooltip bottom v-if="item.gold">
-              <template v-slot:activator="{on}">
-                <span v-on="on">
-                  <v-icon v-if="value === $enums.ClubPacks.UNSUBSCRIBED">mdi-diamond-outline</v-icon>
-                  <v-icon v-else :color="$enums.ClubPacks.get(value).iconColor">mdi-diamond-stone</v-icon>
-                </span>
-              </template>
-
-              {{ $t("enums.ClubPacks." + $enums.ClubPacks.getIdName(value)) }}
-            </v-tooltip>
-
-            <span v-else></span>
-
-          </template>
-
         </data-table>
-      </template>
-
-      <template v-slot:filterTable_superAdmin="{ item }">
-        <v-tooltip right v-if="item.superAdmin">
-          <template v-slot:activator="{ on, attrs }">
-            <v-icon v-on="on" v-bind="attrs" class="d-inline-block"
-            >mdi-diamond-stone
-            </v-icon
-            >
-          </template>
-
-          <span>Super Admin</span>
-        </v-tooltip>
-      </template>
-
-<!--      <template v-slot:filterTable_referenceAgent="{item}">
-        <v-btn text v-if="item.referenceAgentData" small
-               target="_blank"
-               class="text-capitalize"
-               color="primary"
-               :href="'users/profile/' + item.referenceAgent">
-          <v-icon small class="mr-2">mdi-open-in-new</v-icon>
-          {{ item.referenceAgentData.firstName }} {{ item.referenceAgentData.lastName }}
-        </v-btn>
-      </template>-->
-
-      <template v-slot:filterTable_account_status="{ item }">
-        <cell-user-account-status :item="item"></cell-user-account-status>
-      </template>
-
-      <template v-slot:filterTable_role="{ item }">
-        <v-chip
-          small
-          dark
-          :color="$enums.UserRoles.get(item.role).color"
-        >
-          {{
-            $t(
-              "enums.UserRoles." +
-              $enums.UserRoles.getIdName(item.role)
-            )
-          }}
-        </v-chip>
-      </template>
-
-      <template v-slot:filterTable_actions="{ item }">
-        <users-crud-actions
-          :item="item"
-          @userDeleted="onUserDeleted(item, group)"
-        />
       </template>
 
     </dynamic-tabs>
 
-    <clients-list-dialog v-if="$store.getters['dialog/dialogId'] === 'ClientsListDialog'"
-    />
+    <clients-list-dialog v-if="$store.getters['dialog/dialogId'] === 'ClientsListDialog'"/>
   </div>
+
+  <div v-else>Nessun utente disponibile...</div>
 </template>
 
 <script lang="ts">
-import {Component, Prop, Vue} from "vue-property-decorator";
+import {Component, Prop, Vue, Watch} from "vue-property-decorator";
 
 import {User} from "~/@types/UserFormData";
 import {DynamicTab} from "~/@types/components/DynamicTab";
@@ -232,6 +84,18 @@ export default class UsersListTable extends Vue {
 
   get usersFiltersFieldsMap() {
     return usersFiltersFieldsMap
+  }
+
+  get existsData() {
+    const data = this.tabsList.reduce((acc, curr) => {
+      if (curr.data) {
+        acc.push(...curr.data)
+      }
+
+      return acc;
+    }, [])
+
+    return data.length > 0
   }
 
   getRoleName(role: number | string) {
@@ -323,6 +187,11 @@ export default class UsersListTable extends Vue {
     }
 
     this.loading = false
+  }
+
+  @Watch("usersData", {deep: true})
+  onUserDataChange(value: any) {
+    this.$store.dispatch("filters/updateDataToFilter", Object.values(value).flat())
   }
 
   // @ts-ignore

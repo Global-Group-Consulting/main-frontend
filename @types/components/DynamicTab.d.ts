@@ -12,5 +12,5 @@ export interface DynamicTab {
   color?: string
   icon?: string
   sortBy?: string[]
-  sortDesc?: string[]
+  sortDesc?: string[] | boolean[]
 }

@@ -13,7 +13,8 @@
                     :filters-fields-map="requestsFiltersFieldsMap"
                     filters-schema="requestsSchema"
                     filters-table-key="requestsFilter"
-                    :filters-full-data="Object.values(this.requestsGroups).flat()">
+                    outlined
+                    >
         <template v-for="table of requestsTabs"
                   v-slot:[`tabContent_${table.id}`]="{item}">
           <requests-list-table
@@ -570,6 +571,11 @@ export default class Requests extends Vue {
     if (!value) {
       window.location.hash = ""
     }
+  }
+
+  @Watch("requestsList")
+  onRequestsListChange(value: any[]) {
+    this.$store.dispatch("filters/updateDataToFilter", value)
   }
 
   async beforeMount() {

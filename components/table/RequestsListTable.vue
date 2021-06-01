@@ -26,9 +26,10 @@
 <script>
 import RequestsCrudActions from "../../components/table/RequestsCrudAction";
 import tableHeadersFn from "../../functions/tablesHeaders";
+import DataTable from "~/components/table/DataTable";
 
 export default {
-  components: {RequestsCrudActions},
+  components: {DataTable, RequestsCrudActions},
   props: {
     items: Array,
     tableKey: {

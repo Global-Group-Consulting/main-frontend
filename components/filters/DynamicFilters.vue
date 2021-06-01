@@ -18,7 +18,7 @@
         <v-card-actions class="justify-center grey lighten-4">
           <v-btn color="primary" @click="applyFilters">{{ $t("filters.filter-btn") }}</v-btn>
 
-          <v-btn @click="resetFilters">{{ $t("filters.cancel-btn") }}</v-btn>
+          <v-btn @click="onClearClick">{{ $t("filters.cancel-btn") }}</v-btn>
         </v-card-actions>
       </v-card>
 
@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import {Component, Prop, Vue} from "vue-property-decorator";
+import {Component, Prop, Vue, Watch} from "vue-property-decorator";
 import {CollapseTransition} from "@ivanv/vue-collapse-transition"
 import DynamicFieldset from "../DynamicFieldset.vue";
 
@@ -60,7 +60,11 @@ export default class DynamicFilters extends Vue {
   get formSchema(): FormSchema[] {
     let schema = this.schema ? schemas[this.schema + "FiltersSchema"] : null
 
-    return schema ? schema() : schema
+    return schema ? schema.call(this) : schema
+  }
+
+  get storedActiveFilters() {
+    return this.$store.getters["filters/activeFilters"];
   }
 
   resetFilters() {
@@ -75,11 +79,6 @@ export default class DynamicFilters extends Vue {
     for (let key of Object.keys(this.activeFilters)) {
       this.activeFilters[key] = fields[key]?.defaultValue ?? null
     }
-
-    this.$store.dispatch("filters/updatePage", {
-      page: this.$route.path,
-      activeFilters: null
-    })
   }
 
   applyFilters() {
@@ -101,6 +100,19 @@ export default class DynamicFilters extends Vue {
     })
   }
 
+  onClearClick() {
+    this.$store.dispatch("filters/updatePage", {
+      page: this.$route.path,
+      activeFilters: null
+    })
+  }
+
+  @Watch("storedActiveFilters")
+  onStoredActiveFiltersChange(value) {
+    if (!value || Object.keys(value).length === 0) {
+      this.resetFilters()
+    }
+  }
 }
 </script>
 

@@ -45,22 +45,26 @@ export default {
       const {id} = props.item;
       const path = "/users/" + id
 
-      if (event.ctrlKey) {
-        return window.open(path, "_blank")
-      }
+      window.open(path, "_blank")
 
-      $router.push(path);
+      /* if (event.ctrlKey) {
+         return window.open(path, "_blank")
+       }
+
+       $router.push(path);*/
     };
 
     const onProfileClick = function (event) {
       const {id} = props.item;
       const path = "/users/profile/" + id
 
-      if (event.ctrlKey) {
+      window.open(path, "_blank")
+
+      /*if (event.ctrlKey) {
         return window.open(path, "_blank")
       }
 
-      $router.push(path);
+      $router.push(path);*/
     }
 
     const onDeleteClick = async () => {
