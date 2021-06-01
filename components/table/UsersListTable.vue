@@ -87,7 +87,7 @@ export default class UsersListTable extends Vue {
   }
 
   get existsData() {
-    const data = this.tabsList.reduce((acc, curr) => {
+    const data = this.tabsList.reduce((acc: any[], curr) => {
       if (curr.data) {
         acc.push(...curr.data)
       }

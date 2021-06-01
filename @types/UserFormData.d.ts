@@ -63,6 +63,7 @@ export interface User {
   autoWithdrawlAllRecursively: string | null
   suspended: boolean
   clientsCount: number
+  commissionsAssigned: any
 }
 
 export interface UserDataSchema extends User {
