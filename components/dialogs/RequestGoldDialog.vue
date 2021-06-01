@@ -28,6 +28,7 @@
                     ref="dialogForm"
                     :schema="formSchema"
                     v-model="formData"
+                    immediate-update
                     fill-row
                   />
                 </v-card-text>

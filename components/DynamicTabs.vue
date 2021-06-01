@@ -2,14 +2,19 @@
   <div>
     <v-tabs v-model="currentTab">
       <v-tab v-for="(tab, i) of tabsList" :key="i">
+        <v-icon class="mr-2" small
+                :color="getTabColor(tab)">
+          {{ tab.icon }}
+        </v-icon>
+
         {{ tab.title }}
       </v-tab>
 
       <transition-group name="fadeRight" tag="div" class="d-flex">
-        <v-tab :key="99" v-if="filtersActive.length">
+        <v-tab :key="99" v-if="filteredData">
           <v-icon class="mr-2">mdi-magnify</v-icon>
 
-          Risultati ricerca
+          Risultati ricerca ({{ filteredData.length }})
 
           <v-btn icon small @click="filtersClean" class="ml-2">
             <v-icon small>
@@ -30,25 +35,18 @@
             :outlined="outlined">
       <v-card-text :class="cardTextClass">
         <v-tabs-items :value="currentTab">
+          <!-- Renders all tabs -->
           <v-tab-item v-for="(tab, i) of tabsList" :key="i">
             <slot :name="'tabContent_' + tab.id" v-bind:item="tab"></slot>
             <slot v-bind:item="tab"></slot>
           </v-tab-item>
 
-          <v-tab-item :key="99" v-if="filtersActive.length">
-            <data-table
-              :items="filteredData"
-              :items-per-page="25"
-              table-key="usersFilter"
-              schema="usersSchema"
-              light
-              id="searchTableResults"
-            >
-              <template v-for="key of filterTableKeys"
-                        v-slot:[`item.${key}`]="{ item, value }">
-                <slot :name="'filterTable_' + key" :item="item" :value="value"/>
-              </template>
-            </data-table>
+          <!-- Renders filters tabs -->
+          <v-tab-item :key="99" v-if="filteredData">
+            <filters-table :table-key="filtersTableKey"
+                           :schema="filtersSchema"
+                           :filters-map="filtersFieldsMap"
+            ></filters-table>
           </v-tab-item>
         </v-tabs-items>
       </v-card-text>
@@ -61,9 +59,10 @@ import {Vue, Component, Prop, Watch} from 'vue-property-decorator'
 import DataTable from "~/components/table/DataTable.vue";
 import {computed, reactive, ref, watch} from "@vue/composition-api";
 import {DynamicTab} from "~/@types/components/DynamicTab";
+import FiltersTable from "~/components/table/FiltersTable.vue";
 
 @Component({
-  components: {DataTable}
+  components: {FiltersTable, DataTable}
 })
 export default class DynamicTabs extends Vue {
   @Prop({required: true, type: Array})
@@ -84,8 +83,17 @@ export default class DynamicTabs extends Vue {
   @Prop({type: Boolean, default: false})
   public loading!: string
 
-  @Prop({type: Array, default: () => []})
-  public filtersActive!: any[]
+  /*  @Prop({type: Array, default: () => null})
+    public filteredData!: any[] | null*/
+
+  @Prop({type: String})
+  filtersTableKey!: string
+
+  @Prop({type: String})
+  filtersSchema!: string
+
+  @Prop({type: Object})
+  filtersFieldsMap!: any
 
   public currentTab = this.value
   public lastTab = this.currentTab
@@ -95,63 +103,37 @@ export default class DynamicTabs extends Vue {
   }
 
   get filteredData() {
-    const result = []
-
-    const filterValue = this.filtersActive[0]?.generic.toLowerCase().trim().split(" ")
-
-    const filterRegex = new RegExp(filterValue.reduce((acc: string[], curr: string) => {
-      if (curr) {
-        const val = curr.trim()
-
-        if (val) {
-          acc.push(val)
-        }
-      }
-
-      return acc
-    }, []).join("|"), "g")
-
-    console.log(filterRegex)
-
-    for (let el of this.tabsData) {
-      const valuesToSearchIn = [el.firstName.toLowerCase(), el.lastName.toLowerCase(), el.email.toLowerCase()]
-
-      const resFound = valuesToSearchIn.some((substr) => {
-        /** @type {String[]} */
-        const match = substr.match(filterRegex)
-
-        return match && filterRegex.source.split("|").every((currentValue) => match.includes(currentValue))
-      })
-
-      if (resFound) {
-        result.push(el)
-      }
-    }
-
-    return result
+    return this.$store.getters["filters/filteredData"]
   }
 
-  get filterTableKeys() {
-    const data = this.tabsData[0]
-    const toReturn = ["actions"]
-
-    if (!data) {
-      return toReturn
-    }
-
-    return toReturn.concat(Object.keys(data))
+  get areActiveFilters() {
+    return this.$store.getters["filters/areActiveFilters"]
   }
 
   filtersClean() {
-    this.$emit("filtersClean")
-    // must emit an event
+    this.$store.dispatch("filters/updatePage", {
+      page: this.$route.path,
+      activeFilters: null
+    })
+
+    this.$store.dispatch("filters/updateExpanded", false);
   }
 
-  @Watch('filtersActive')
-  onFiltersActiveChange(value: any) {
+  getTabColor(tab: any) {
+    const activeTabData = this.tabsList[this.currentTab];
+
+    if (!activeTabData) {
+      return
+    }
+
+    return activeTabData.id === tab.id ? tab.color : ''
+  }
+
+  @Watch('areActiveFilters')
+  onFiltersActiveChange(value: boolean) {
     const maxTabs = this.tabsList.length
 
-    if (value.length > 0) {
+    if (value) {
       if (this.currentTab !== maxTabs) {
         this.lastTab = this.currentTab
         this.currentTab = maxTabs

@@ -1,149 +1,110 @@
 <template>
-  <div>
-    <v-toolbar class="mb-10"
-               flat
-               rounded
-               outlined
+  <v-sheet class="mb-10" color="white"
+           rounded outlined elevation="2">
+    <v-toolbar flat
                dense
                v-if="$vuetify.breakpoint.smAndUp || alwaysVisible"
     >
       <v-toolbar-items class="flex-fill">
         <slot name="left-block">
-          <tooltip-btn v-for="(action, i) of leftActionsList" :key="`l-${i}`"
-                       :tooltip="$t(`actions.${action.tooltip}`)"
-                       v-bind="prepareOptions(action.options)"
-                       :icon-name="action.icon"
-                       @click="onClick(action, $event)"
-                       :disabled="action.disabled"
-                       v-if="('if' in action ? action.if : true)"
-          >
-            {{ $t(`actions.${action.text}`) }}
-          </tooltip-btn>
+          <page-toolbar-single-slot :actions-list="leftActionsList"/>
         </slot>
 
         <v-spacer></v-spacer>
 
         <slot name="center-block">
-          <template v-for="(action, i) of centerActionsList"
-                    v-if="('if' in action ? action.if : true)">
-            <tooltip-btn :tooltip="action.tooltip ? $t(`actions.${action.tooltip}`) : ''"
-                         v-bind="prepareOptions(action.options)"
-                         :icon-name="action.icon"
-                         @click="onClick(action, $event)"
-                         :disabled="action.disabled"
-                         v-if="!action.menuOptions"
-            >
-              {{ $t(`actions.${action.text}`) }}
-            </tooltip-btn>
-
-            <v-menu offset-y
-                    transition="slide-y-transition"
-                    v-if="action.menuOptions"
-                    :close-on-content-click="true"
-            >
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  v-bind="prepareOptions(action.options, attrs)"
-                  text
-                  v-on="on"
-                  :disabled="action.disabled"
-                >
-                  <v-icon class="mr-2" v-if="">{{ action.icon }}</v-icon>
-
-                  {{ $t(`actions.${action.text}`) }}
-
-                  <v-icon class="">mdi-chevron-down</v-icon>
-                </v-btn>
-              </template>
-
-              <v-card>
-                <v-list>
-                  <v-list-item v-for="(menuItem, index) in action.menuOptions" @click="onClick(menuItem, $event)"
-                               :key="'menu_' +  index">
-                    <v-list-item-title>{{ menuItem.text }}</v-list-item-title>
-                  </v-list-item>
-                </v-list>
-              </v-card>
-            </v-menu>
-          </template>
+          <page-toolbar-single-slot :actions-list="centerActionsList"/>
         </slot>
 
         <v-spacer></v-spacer>
 
         <slot name="right-block">
-          <tooltip-btn v-for="(action, i) of rightActionsList" :key="`r-${i}`"
-                       :tooltip="$t(`actions.${action.tooltip}`)"
-                       v-bind="prepareOptions(action.options)"
-                       :icon-name="action.icon"
-                       @click="onClick(action, $event)"
-                       :disabled="action.disabled"
-                       v-if="('if' in action ? action.if : true)"
-          >
-            {{ $t(`actions.${action.text}`) }}
-          </tooltip-btn>
+          <page-toolbar-single-slot :actions-list="rightActionsList"/>
         </slot>
       </v-toolbar-items>
-
     </v-toolbar>
 
+    <dynamic-filters v-if="includeFilters"
+                     :schema="filtersSchema" :expand="filtersExpand"
+    ></dynamic-filters>
+
     <mobile-menu-actions :actions-list="actionsList"></mobile-menu-actions>
-  </div>
+  </v-sheet>
 </template>
 
 <script lang="ts">
-import {computed, defineComponent} from "@vue/composition-api"
+import {Component, Prop, Vue} from "vue-property-decorator";
 import {ActionItem, ActionItemOptions} from "~/@types/ActionItem";
+import DynamicFilters from "~/components/filters/DynamicFilters.vue";
+import MobileMenuActions from "~/components/MobileMenuActions.vue";
+import PageToolbarSingleSlot from "~/components/blocks/pageToolbar/PageToolbarSingleSlot.vue";
 
-export default defineComponent({
-  name: "PageToolbar",
-  props: {
-    alwaysVisible: {
-      type: Boolean,
-      default: false
-    },
-    actionsList: {
-      type: Array as () => ActionItem[],
-      default: () => [],
-    }
-  },
-  setup(props, {root}) {
-    const {$vuetify} = root
-    const leftActionsList = computed<ActionItem[]>(() => props.actionsList
+@Component({
+  components: {PageToolbarSingleSlot, MobileMenuActions, DynamicFilters}
+})
+export default class PageToolbar extends Vue {
+  @Prop({type: Boolean, default: false})
+  public alwaysVisible!: boolean;
+
+  @Prop({type: Array as () => ActionItem[], default: () => [],})
+  public actionsList!: ActionItem[];
+
+  @Prop({type: String})
+  filtersSchema!: string
+
+  get includeFilters() {
+    return !!this.filtersSchema;
+  }
+
+  get filtersExpand() {
+    return this.$store.getters["filters/expanded"];
+  }
+
+  get countActiveFilters(): number {
+    return this.$store.getters["filters/countActiveFilters"]
+  }
+
+  get leftActionsList(): ActionItem[] {
+    return this.actionsList
       .filter((action: ActionItem) => {
           return action.position === "left" && !action.onlyInMobile
         }
-      ))
-    const centerActionsList = computed<ActionItem[]>(() => props.actionsList
+      )
+  }
+
+  get centerActionsList(): ActionItem[] {
+    return this.actionsList
       .filter((action: ActionItem) => {
           return (action.position === "center" || !action.position) && !action.onlyInMobile
         }
-      ))
-    const rightActionsList = computed<ActionItem[]>(() => props.actionsList
+      )
+  }
+
+  get rightActionsList(): ActionItem[] {
+    const toReturn: ActionItem[] = this.actionsList
       .filter((action: ActionItem) => {
         return action.position === "right" && !action.onlyInMobile
-      }))
+      })
 
-    function prepareOptions(newSettings: ActionItemOptions, attrs: any) {
-      const defaults = {text: true}
-
-      return newSettings ? Object.assign({}, defaults, attrs, newSettings) : defaults
+    if (this.includeFilters) {
+      // By default adds filter button, only if there is a schema to use
+      toReturn.push({
+        text: "",
+        html: this.$t("actions.filters-btn") + (this.countActiveFilters ? ` (${this.countActiveFilters})` : ''),
+        icon: this.filtersExpand ? "mdi-filter-minus-outline" : "mdi-filter-menu",
+        click: () => this.$store.dispatch("filters/updateExpanded", !this.filtersExpand), //this.filtersExpand = !this.filtersExpand,
+        onlyInDesktop: true,
+      })
     }
 
-    function onClick(item: ActionItem, $event: any) {
-      if (item.click) {
-        item.click($event, item)
-      }
-    }
-
-    return {
-      prepareOptions,
-      leftActionsList,
-      centerActionsList,
-      rightActionsList,
-      onClick
-    }
+    return toReturn
   }
-})
+
+  onAppliedFilter(activeFilters: any) {
+    this.$emit("appliedFilters", activeFilters)
+  }
+
+}
 </script>
 
 <style scoped>

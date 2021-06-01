@@ -32,4 +32,5 @@ export default {
   "request-withdrawl-deposit": "Prel. Deposito",
   "request-withdrawl-deposit-tooltip": "Crea una richiesta di Prelievo Deposito",
   "request-download-report": "Scarica Report",
+  "filters-btn": "Filtri"
 }

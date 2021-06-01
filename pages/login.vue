@@ -92,7 +92,7 @@ export default {
   },
   methods: {
     saveStatus(state) {
-      console.log(state)
+      //console.log(state)
 
       this.formValid = !state.invalid;
     }

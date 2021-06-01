@@ -3,31 +3,26 @@
     <v-flex>
       <page-header page-name="club"></page-header>
 
-      <data-table schema="clubSchema"
-                  table-key="club"
-                  :items="tableData">
-        <template v-slot:item.clubPack="{ item, value }">
-          <v-chip :color="$enums.ClubPacks.get(value).color" small>
-            {{ $t(`enums.ClubPacks.` + value) }}
-          </v-chip>
-        </template>
+      <page-toolbar always-visible
+                    :actions-list="[]"
+                    filters-schema="club"/>
 
-        <template v-slot:item.britesTotal="{ item, value }">
-          {{ (value || 0) | moneyFormatter(true) }}
+      <dynamic-tabs :tabs-list="tabsList"
+                    :filters-fields-map="filtersFieldsMap"
+                    filters-schema="clubSchema"
+                    filters-table-key="clubFilter"
+                    outlined>
+        <template v-slot:tabContent_users="{item}">
+          <data-table schema="clubSchema"
+                      table-key="club"
+                      :items="item.data">
+            <template v-slot:item.actions="{ item, value }">
+              <menu-list :menu-options="crudMenuOptions" :item="item"></menu-list>
+            </template>
+          </data-table>
         </template>
+      </dynamic-tabs>
 
-        <template v-slot:item.britesUsed="{ item, value }">
-          {{ (value || 0) | moneyFormatter(true) }}
-        </template>
-
-        <template v-slot:item.britesAvailable="{ item, value }">
-          {{ (value || 0) | moneyFormatter(true) }}
-        </template>
-
-        <template v-slot:item.actions="{ item, value }">
-          <menu-list :menu-options="crudMenuOptions" :item="item"></menu-list>
-        </template>
-      </data-table>
     </v-flex>
   </v-layout>
 </template>
@@ -40,10 +35,13 @@ import {User} from "~/@types/UserFormData";
 import MenuList from "~/components/elements/MenuList.vue";
 import {MenuListItem} from "~/@types/components/MenuListItem";
 import {ClubPermissions} from "~/functions/acl/enums/club.permissions";
-
+import DynamicTabs from "~/components/DynamicTabs.vue";
+import {DynamicTab} from "~/@types/components/DynamicTab";
+import PageToolbar from "~/components/blocks/PageToolbar.vue";
+import {clubFiltersFieldsMap} from "~/config/forms/filters/clubFiltersSchema";
 
 @Component({
-  components: {MenuList, DataTable, PageHeader},
+  components: {PageToolbar, DynamicTabs, MenuList, DataTable, PageHeader},
   meta: {
     permissions: [ClubPermissions.CLUB_READ]
   }
@@ -51,17 +49,33 @@ import {ClubPermissions} from "~/functions/acl/enums/club.permissions";
 export default class Club extends Vue {
   public tableData: User[] = []
 
+  get tabsList(): DynamicTab[] {
+    return [
+      {
+        id: "users",
+        title: "Utenti",
+        data: this.tableData,
+      },
+    ]
+  }
+
+  get filtersFieldsMap() {
+    return clubFiltersFieldsMap;
+  }
+
   public crudMenuOptions: MenuListItem[] = [{
     value: "show-brite-account",
-    action: (item: User) => this.$router.push("club/" + item.id)
+    action: (item: User) => window.open("club/" + item.id, "_blank")
   }, {
     value: "show-user-account",
-    action: (item: User) => this.$router.push("users/" + item.id)
+    action: (item: User) => window.open("users/" + item.id, "_blank")
   }]
 
   async beforeMount() {
     try {
-      this.tableData = await this.$apiCalls.fetchClubUsers()
+      this.tableData = await this.$apiCalls.fetchClubUsers();
+
+      await this.$store.dispatch("filters/updateDataToFilter", this.tableData);
     } catch (e) {
       this.$alerts.error(e)
     }

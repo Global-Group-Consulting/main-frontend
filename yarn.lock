@@ -1743,6 +1743,11 @@
   resolved "https://registry.yarnpkg.com/@istanbuljs/schema/-/schema-0.1.3.tgz#e45e384e4b8ec16bce2fd903af78450f6bf7ec98"
   integrity sha512-ZXRY4jNvVgSVQ8DL3LTcakaAtXwTVUxE81hslsyD2AtoXW/wVob10HkOJ1X/pAlcI7D+2YoZKg5do8G/w6RYgA==
 
+"@ivanv/vue-collapse-transition@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@ivanv/vue-collapse-transition/-/vue-collapse-transition-1.0.2.tgz#4190944156eabfae45f9e0b3fcc6179c477a0ed7"
+  integrity sha512-eWEameFXJM/1khcoKbITvKjYYXDP1WKQ/Xf9ItJVPoEjCiOdocR3AgDAERzDrNNg4oWK28gRGi+0ft8Te27zxw==
+
 "@jest/console@^26.6.2":
   version "26.6.2"
   resolved "https://registry.yarnpkg.com/@jest/console/-/console-26.6.2.tgz#4e04bc464014358b03ab4937805ee36a0aeb98f2"

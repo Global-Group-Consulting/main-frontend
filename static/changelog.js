@@ -12,6 +12,7 @@ module.exports = `<h2 id="v1810small21052020small">v 1.8.10 - <small>21/05/2020<
 <li>Sezione "Impostazioni" per gestire le configurazioni di tutta l'applicazione.</li>
 <li>Impostazioni per settare la fascia oraria in cui è possibile operara all'interno del sistema.</li>
 <li>Impostazione che permette di forzare tutta l'app (indipendentemente dalla fascia oraria e dai diritti dell'utente) in modalità "sola lettura".</li>
+<li>Sistema di filtri nell'elenco utenti, richieste e club</li>
 </ul>
 <h2 id="v189small28042020small">v 1.8.9 - <small>28/04/2020</small></h2>
 <h3 id="miglioramenti-1">Miglioramenti</h3>

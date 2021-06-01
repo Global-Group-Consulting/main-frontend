@@ -1,62 +1,70 @@
 <template>
-<!--  <div style="position:relative;">-->
-    <v-data-table
-      class="data-table"
-      :headers="headers"
-      :items="items"
-      :items-per-page="itemsPerPage"
-      :item-class="itemClass"
-      :footer-props="{
+  <!--  <div style="position:relative;">-->
+  <v-data-table
+    class="data-table"
+    :headers="headers"
+    :items="items"
+    :items-per-page="itemsPerPage"
+    :item-class="itemClass"
+    :footer-props="{
         itemsPerPageOptions
       }"
-      :loading="loading"
-      :hide-default-footer="items.length <= itemsPerPage"
-      :no-data-text="$t(noDataText)"
-      :dense="dense"
-      @click:row="$emit('click:row', $event)"
-      :locale="$i18n.locale"
-      :options="options"
-    >
-      <!-- Dynamic item templates -->
-      <template v-for="col in headers" v-slot:[`item.${col.value}`]="{ item, value }">
-        <slot :name="'item.' + col.value" v-bind:item="item" v-bind:value="value">
+    :loading="loading"
+    :hide-default-footer="items.length <= itemsPerPage"
+    :no-data-text="$t(noDataText)"
+    :dense="dense"
+    @click:row="$emit('click:row', $event)"
+    :locale="$i18n.locale"
+    :options="options"
+  >
+    <!-- Dynamic item templates -->
+    <template v-for="col in headers" v-slot:[`item.${col.value}`]="{ item, value }">
+      <slot :name="'item.' + col.value" v-bind:item="item" v-bind:value="value">
+        <template v-if="col.component">
+          <component :is="col.component"
+                     :item="item"
+                     :value="value"
+                     :tableData="items"></component>
+        </template>
+        <template v-else>
           {{ item[col.value] }}
-        </slot>
-      </template>
+        </template>
+      </slot>
+    </template>
 
-      <template v-slot:item.contractNumber="{ item }">
-        {{ $options.filters.contractNumberFormatter(item.contractNumber) }}
-      </template>
+    <template v-slot:item.contractNumber="{ item }">
+      {{ $options.filters.contractNumberFormatter(item.contractNumber) }}
+    </template>
 
-      <template v-slot:item.validated_at="{ item }">
+    <template v-slot:item.validated_at="{ item }">
       <span class="text-no-wrap">
         {{ $options.filters.dateFormatter(item.validated_at, true) }}
       </span>
-      </template>
+    </template>
 
-      <template v-slot:item.created_at="{ item }">
+    <template v-slot:item.created_at="{ item }">
       <span class="text-no-wrap">
         {{ $options.filters.dateFormatter(item.created_at, true) }}
       </span>
-      </template>
+    </template>
 
-      <template v-slot:item.completed_at="{ item }">
+    <template v-slot:item.completed_at="{ item }">
       <span class="text-no-wrap">
         {{ $options.filters.dateFormatter(item.completed_at, true) }}
       </span>
-      </template>
+    </template>
 
-      <template v-slot:item.updated_at="{ item }">
+    <template v-slot:item.updated_at="{ item }">
       <span class="text-no-wrap">
         {{ $options.filters.dateFormatter(item.updated_at, true) }}
       </span>
-      </template>
+    </template>
 
-      <template v-slot:no-data="{item}">
-      </template>
-    </v-data-table>
-<!--    <div class="table-overlay"></div>-->
-<!--  </div>-->
+    <template v-slot:no-data="{item}">
+    </template>
+  </v-data-table>
+  <!--    <div class="table-overlay"></div>-->
+  <!--  </div>-->
 </template>
 
 <script>
@@ -65,8 +73,12 @@ import {get as _get} from "lodash";
 
 import UserRoles from "../../enums/UserRoles";
 import roleBasedConfig from "../../config/roleBasedConfig";
+import CellComponents from "./CellsTemplates"
 
 export default {
+  components: {
+    ...CellComponents
+  },
   props: {
     items: {
       type: Array,
