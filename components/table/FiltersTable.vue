@@ -48,7 +48,7 @@ export default class FiltersTable extends Vue {
     const activeFiltersKeys = Object.keys(this.activeFilters)
 
     // Prendo tutti i dati disponibili e attivo il filter
-    const filteredData = this.dataToFilter.filter((data) => {
+    const filteredData = this.dataToFilter.filter((data: any) => {
       const matchedFilters = []
 
       // per ogni chiave presente in activeFilters

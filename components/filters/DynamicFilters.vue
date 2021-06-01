@@ -108,7 +108,7 @@ export default class DynamicFilters extends Vue {
   }
 
   @Watch("storedActiveFilters")
-  onStoredActiveFiltersChange(value) {
+  onStoredActiveFiltersChange(value: any) {
     if (!value || Object.keys(value).length === 0) {
       this.resetFilters()
     }
