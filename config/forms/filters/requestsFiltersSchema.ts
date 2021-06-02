@@ -12,7 +12,7 @@ function getDistinctUsers(requests: RequestFormData[]): SelectOption[] {
   const toReturn: Record<string, SelectOption> = {};
 
   requests.forEach((request) => {
-    if (!request.user) {
+    if (!request.user || !request.user.id) {
       return
     }
 
