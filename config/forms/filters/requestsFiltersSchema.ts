@@ -33,7 +33,7 @@ function getDistinctRefAgents(requests: RequestFormData[]): SelectOption[] {
   const toReturn: Record<string, SelectOption> = {};
 
   requests.forEach((request) => {
-    if (!request.user || !request.user.referenceAgent) {
+    if (!request.user || !request.user.referenceAgent || !request.user.referenceAgentData.id) {
       return
     }
 
