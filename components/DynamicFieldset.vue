@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import {VTextField, VTextarea, VSelect, VFileInput, VSwitch} from "vuetify/lib";
+import {VTextField, VTextarea, VSelect, VFileInput, VSwitch, VAutocomplete} from "vuetify/lib";
 import DatePicker from "@/components/forms/inputs/DatePicker";
 import DatePickerRange from "@/components/forms/inputs/DatePickerRange";
 import TimePicker from "@/components/forms/inputs/TimePicker";
@@ -100,6 +100,7 @@ export default {
     TimePickerRange,
     VFileInput,
     VTextarea,
+    VAutocomplete,
     MoneyInput,
     MoneyInputRange,
     FileUploader,
