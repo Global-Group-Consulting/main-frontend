@@ -5,7 +5,7 @@
         page-name="requests"
       ></page-header>
 
-      <page-toolbar :actions-list="actionsList" filters-schema="requests"
+      <page-toolbar :actions-list="actionsList" filters-schema="requests" always-visible
       ></page-toolbar>
 
       <dynamic-tabs :tabs-list="requestsTabs"
@@ -14,7 +14,7 @@
                     filters-schema="requestsSchema"
                     filters-table-key="requestsFilter"
                     outlined
-                    >
+      >
         <template v-for="table of requestsTabs"
                   v-slot:[`tabContent_${table.id}`]="{item}">
           <requests-list-table
@@ -83,6 +83,8 @@ import DynamicTabs from "~/components/DynamicTabs.vue";
 import DataTable from "~/components/table/DataTable.vue";
 import {requestsFiltersFieldsMap} from "~/config/forms/filters/requestsFiltersSchema";
 
+type RequestGroups = "nuova" | "lavorazione" | "accettata" | "rifiutata";
+
 @Component({
   components: {
     DataTable,
@@ -105,7 +107,7 @@ export default class Requests extends Vue {
   public requestsList = []
 
 
-  get requestsGroups(): Record<"nuova" | "lavorazione" | "accettata" | "rifiutata", any[]> {
+  get requestsGroups(): Record<RequestGroups, any[]> {
     const toReturn: any = {
       nuova: [],
       lavorazione: [],
@@ -131,7 +133,7 @@ export default class Requests extends Vue {
     return [
       {
         id: "nuova",
-        title: this.$t(`pages.requests.tableNuova-title`) as string,
+        title: this.$t(`pages.requests.tableNuova-title`) as string + this.countTabData("nuova"),
         color: "blue",
         icon: "mdi-timer-sand",
         sortBy: ["created_at", "user"],
@@ -139,7 +141,7 @@ export default class Requests extends Vue {
       },
       {
         id: "lavorazione",
-        title: this.$t(`pages.requests.tableLavorazione-title`) as string,
+        title: this.$t(`pages.requests.tableLavorazione-title`) as string + this.countTabData("lavorazione"),
         color: "warning",
         icon: "mdi-sitemap",
         sortBy: ["updated_at", "created_at", "user"],
@@ -147,7 +149,7 @@ export default class Requests extends Vue {
       },
       {
         id: "accettata",
-        title: this.$t(`pages.requests.tableAccettata-title`) as string,
+        title: this.$t(`pages.requests.tableAccettata-title`) as string + this.countTabData("accettata"),
         color: "green",
         icon: "mdi-check-all",
         sortBy: ["completed_at", "created_at", "user"],
@@ -156,7 +158,7 @@ export default class Requests extends Vue {
       },
       {
         id: "rifiutata",
-        title: this.$t(`pages.requests.tableRifiutata-title`) as string,
+        title: this.$t(`pages.requests.tableRifiutata-title`) as string + this.countTabData("rifiutata"),
         color: "red",
         icon: "mdi-close-box-multiple-outline",
         sortBy: ["completed_at", "created_at", "user"],
@@ -292,6 +294,18 @@ export default class Requests extends Vue {
 
   get canDownloadReport() {
     return this.userType === "admin"
+  }
+
+  private countTabData(tabId: RequestGroups) {
+    const toReturn = [];
+
+    const dataLength = this.requestsGroups[tabId].length;
+
+    if (dataLength) {
+      toReturn.push(` (${dataLength})`);
+    }
+
+    return toReturn.join("")
   }
 
   private async fetchAll() {

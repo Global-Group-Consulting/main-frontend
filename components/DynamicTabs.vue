@@ -8,6 +8,7 @@
         </v-icon>
 
         {{ tab.title }}
+        <template v-if="tab.data"> ({{ tab.data.length }})</template>
       </v-tab>
 
       <transition-group name="fadeRight" tag="div" class="d-flex">

@@ -21,14 +21,17 @@ class RequestStatus extends BasicEnum {
       },
       [this.ACCETTATA]: {
         id: 'accettata',
-        text: 'Accettata'
+        text: 'Accettata',
+        color: "#64b421"
       },
       [this.RIFIUTATA]: {
         id: 'rifiutata',
-        text: 'Rifiutata'
+        text: 'Rifiutata',
+        color: "#ff0000"
       },
       [this.ANNULLATA]: {
         id: 'annullata',
+        color: "#aaa219"
       }
     }
   }
