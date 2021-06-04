@@ -16,6 +16,8 @@ import CellRequestAmount from "./CellRequestAmount.vue";
 import CellRequestStatus from "./CellRequestStatus.vue";
 import CellRequestType from "./CellRequestType.vue";
 
+import CellCurrency from "./CellCurrency.vue";
+
 export default {
   CellUserAccountStatus,
   CellUserName,
@@ -33,4 +35,5 @@ export default {
   CellBriteValue,
   CellRequestStatus,
   CellRequestType,
+  CellCurrency
 }
