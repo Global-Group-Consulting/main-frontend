@@ -25,6 +25,13 @@ export function globalSettings(context: Vue): FormSchema[] {
           min: "5:00"
         }
       }
-    }
+    },
+    {
+      cols: {
+        clubRequestNotifyEmail: {
+          label: "filters-club-request-notify-email"
+        }
+      }
+    },
   ]
 }
