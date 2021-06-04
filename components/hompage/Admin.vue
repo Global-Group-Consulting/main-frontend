@@ -1,13 +1,13 @@
 <template>
   <v-layout column>
-<!--    <v-card width="100%" class="text-center mb-5">
-      <v-card-text>
-        <chart-lines
-          :labels="dashboardChart.labels"
-          :datasets="chartsAdminDataset"
-        />
-      </v-card-text>
-    </v-card>-->
+    <!--    <v-card width="100%" class="text-center mb-5">
+          <v-card-text>
+            <chart-lines
+              :labels="dashboardChart.labels"
+              :datasets="chartsAdminDataset"
+            />
+          </v-card-text>
+        </v-card>-->
 
     <!-- <v-card class="mb-5">
        <v-card-title class="p-relative">
@@ -69,6 +69,24 @@
       </v-card-text>
     </v-card>-->
 
+    <v-row class="">
+      <v-col v-for="(el, key) of totalCardsData" :key="key" md="3" sm="6">
+        <dashboard-card :card-data="el"></dashboard-card>
+      </v-col>
+    </v-row>
+
+    <v-row class="">
+      <v-col v-for="(el, key) of newUsersTotalCardsData" :key="key" md="3" sm="6">
+        <dashboard-card :card-data="el" format-as-int></dashboard-card>
+      </v-col>
+    </v-row>
+
+    <v-row class="">
+      <v-col v-for="(el, key) of usersStatusTotalsCardData" :key="key">
+        <dashboard-card :card-data="el" format-as-int></dashboard-card>
+      </v-col>
+    </v-row>
+
     <v-card class="mb-5">
       <v-card-title class="p-relative">
         <v-icon>mdi-fire</v-icon>
@@ -102,9 +120,12 @@ import {SignRequestLog} from "~/@types/SignRequest";
 import {WebhooksCall} from "~/@types/SignRequest/Webhooks";
 import {User} from "~/@types/UserFormData";
 import SigningLogsPopup from "~/components/elements/SigningLogsPopup.vue";
+import DashboardBlocks from "~/components/DashboardBlocks.vue";
+import DashboardCard from "~/components/dashboard/DashboardCard.vue";
+import {BlockData} from "~/config/blocks/dashboardBlocks";
 
 @Component({
-  components: {SigningLogsPopup, DataTable, ChartLines, RequestsListTable},
+  components: {DashboardCard, DashboardBlocks, SigningLogsPopup, DataTable, ChartLines, RequestsListTable},
 })
 export default class Admin extends Vue {
 
@@ -112,7 +133,26 @@ export default class Admin extends Vue {
   public dashboardData = {
     validatedUsers: [],
     pendingRequests: [],
-    pendingSignatures: []
+    pendingSignatures: [],
+    totals: {
+      deposit: 0,
+      interests: 0,
+      withdrewDeposit: 0,
+      withdrewInterests: 0
+    },
+    newUsers: {
+      thisMonth: 0,
+      last3Months: 0,
+      last6Months: 0,
+      last12Months: 0,
+    },
+    usersStatus: {
+      draft: 0,
+      active: 0,
+      pendingAccess: 0,
+      pendingSignature: 0,
+      suspended: 0
+    }
   }
 
   get pendingUsers() {
@@ -126,6 +166,89 @@ export default class Admin extends Vue {
 
       return set;
     });
+  }
+
+  get totalCardsData(): BlockData[] {
+    return [
+      {
+        title: "Deposito",
+        value: this.dashboardData.totals.deposit,
+        icon: "mdi-cloud-upload",
+        color: "blue"
+      }, {
+        title: "Interessi",
+        value: this.dashboardData.totals.interests,
+        icon: "mdi-chart-timeline-variant",
+        color: "green",
+      }, {
+        title: "Deposito prelevato",
+        value: this.dashboardData.totals.withdrewDeposit,
+        icon: "mdi-cloud-download",
+        color: "red",
+      }, {
+        title: "Interessi riscossi",
+        value: this.dashboardData.totals.withdrewInterests,
+        icon: "mdi-chart-sankey-variant",
+        color: "orange",
+      }
+    ]
+  }
+
+  get newUsersTotalCardsData(): BlockData[] {
+    return [
+      {
+        title: "Mese corrente",
+        value: this.dashboardData.newUsers.thisMonth,
+        icon: "mdi-user",
+        color: "blue"
+      }, {
+        title: "Ultimi 3 mesi",
+        value: this.dashboardData.newUsers.last3Months,
+        icon: "mdi-user",
+        // color: "green",
+      }, {
+        title: "Ultimi 6 mesi",
+        value: this.dashboardData.newUsers.last6Months,
+        icon: "mdi-user",
+        // color: "red",
+      }, {
+        title: "Ultimi 12 mesi",
+        value: this.dashboardData.newUsers.last12Months,
+        icon: "mdi-user",
+        // color: "orange",
+      }
+    ]
+  }
+
+  get usersStatusTotalsCardData(): BlockData[] {
+    return [
+      {
+        title: "Attivi",
+        value: this.dashboardData.usersStatus.active,
+        icon: "mdi-user",
+        color: "blue"
+      }, {
+        title: "Attesa accesso",
+        value: this.dashboardData.usersStatus.pendingAccess,
+        icon: "mdi-user",
+        // color: "green",
+      }, {
+        title: "Attesa firma contratto",
+        value: this.dashboardData.usersStatus.pendingSignature,
+        icon: "mdi-user",
+        // color: "red",
+      }, {
+        title: "Sospesi",
+        value: this.dashboardData.usersStatus.suspended,
+        icon: "mdi-user",
+        // color: "orange",
+      }, {
+        title: "Bozza",
+        value: this.dashboardData.usersStatus.draft,
+        icon: "mdi-user",
+        // color: "orange",
+      }
+    ]
   }
 
   openRequest(request: any) {
@@ -154,9 +277,10 @@ export default class Admin extends Vue {
   async mounted() {
     const result = await this.$apiCalls.dashboardFetch();
 
-    // root.$set(dashboardData, "validatedUsers", result.validatedUsers || []);
-    this.dashboardData.pendingRequests = result.pendingRequests
-    // this.dashboardData.pendingSignatures = result.pendingSignatures
+    this.dashboardData.pendingRequests = result.pendingRequests || []
+    result.totals && (this.dashboardData.totals = result.totals);
+    result.newUsers && (this.dashboardData.newUsers = result.newUsers);
+    result.usersStatus && (this.dashboardData.usersStatus = result.usersStatus);
   }
 
 }
