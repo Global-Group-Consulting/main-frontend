@@ -26,7 +26,8 @@
 
       <!-- Dashboard agente se agente -->
 
-      <dynamic-tabs :tabs-list="tabsList">
+      <dynamic-tabs :tabs-list="tabsList"
+                    outlined>
         <template v-for="tab of tabsList"
                   v-slot:[`tabContent_${tab.id}`]="{item}">
           <component :is="tab.id + '-list-table'"

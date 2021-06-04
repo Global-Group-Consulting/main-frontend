@@ -41,7 +41,7 @@ export interface User {
   contractInitialPaymentMethod: string
   contractInitialPaymentMethodOther: string,
   referenceAgent: string
-  referenceAgentData: string
+  referenceAgentData: any
   accountCreatedAt: string
   accountUpdatedAt: string
   accountActivatedAt: string
@@ -62,6 +62,8 @@ export interface User {
   autoWithdrawlAll: string | null
   autoWithdrawlAllRecursively: string | null
   suspended: boolean
+  clientsCount: number
+  commissionsAssigned: any
 }
 
 export interface UserDataSchema extends User {

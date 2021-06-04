@@ -180,7 +180,7 @@ export default class MoneyInput extends Vue {
 
   @Watch("value",)
   onValueChange(value: number) {
-    console.log("watch")
+    //console.log("watch")
 
     if (this.$refs.textInput) {
       setValue(this.$refs.textInput, value);

@@ -12,6 +12,7 @@
 - Sezione "Impostazioni" per gestire le configurazioni di tutta l'applicazione.
 - Impostazioni per settare la fascia oraria in cui è possibile operara all'interno del sistema.
 - Impostazione che permette di forzare tutta l'app (indipendentemente dalla fascia oraria e dai diritti dell'utente) in modalità "sola lettura".
+- Sistema di filtri nell'elenco utenti, richieste e club
 
 ## v 1.8.9 - <small>28/04/2020</small>
 ### Miglioramenti

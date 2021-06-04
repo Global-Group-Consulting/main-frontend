@@ -34,7 +34,7 @@ export default {
     toggleDrawer() {
       this.drawerModel = !this.drawerModel;
     }
-  }
+  },
 };
 </script>
 

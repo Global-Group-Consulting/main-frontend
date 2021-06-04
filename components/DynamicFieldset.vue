@@ -22,7 +22,7 @@
             v-bind="field"
             :items="translateItems(field)"
             :input-value="getValue(field, key)"
-            :value="getValue(field, key)"
+            :value="field.component === 'v-switch' ? null : getValue(field, key)"
             :field-key="key"
             :ref="`comp_${key}_${index}_${fieldIndex}`"
             :hint="field.hasOwnProperty('hint') ? $t('forms.' + field.hint) : null"
@@ -65,11 +65,13 @@
 </template>
 
 <script>
-import {VTextField, VTextarea, VSelect, VFileInput, VSwitch} from "vuetify/lib";
+import {VTextField, VTextarea, VSelect, VFileInput, VSwitch, VAutocomplete} from "vuetify/lib";
 import DatePicker from "@/components/forms/inputs/DatePicker";
+import DatePickerRange from "@/components/forms/inputs/DatePickerRange";
 import TimePicker from "@/components/forms/inputs/TimePicker";
 import TimePickerRange from "@/components/forms/inputs/TimePickerRange";
 import MoneyInput from "@/components/forms/inputs/MoneyInput";
+import MoneyInputRange from "@/components/forms/inputs/MoneyInputRange";
 import FileUploader from "@/components/forms/inputs/FileUploader";
 import ReceiversCombobox from "@/components/forms/inputs/ReceiversCombobox";
 import ContractDoc from "@/components/forms/inputs/ContractDoc";
@@ -93,11 +95,14 @@ export default {
     VSelect,
     VSwitch,
     DatePicker,
+    DatePickerRange,
     TimePicker,
     TimePickerRange,
     VFileInput,
     VTextarea,
+    VAutocomplete,
     MoneyInput,
+    MoneyInputRange,
     FileUploader,
     ReceiversCombobox,
     ContractDoc,
@@ -170,7 +175,7 @@ export default {
     getValue(field, key) {
       let value = this.value[key];
 
-      if (!(key in this.value) && field.defaultValue) {
+      if (!(key in this.value) && ("defaultValue" in field)) {
         value = field.defaultValue
         this.value[key] = value
       }
@@ -215,7 +220,7 @@ export default {
     update(key, value) {
       const mustValidate = !!this.$v.form[key];
 
-      console.log("UPDATING", key);
+      //console.log("UPDATING", key);
 
       // stores the new value
       this.form[key] = value;
@@ -290,7 +295,7 @@ export default {
       }
 
       this.lazyUpdateTimer = setTimeout(() => {
-        console.log("timeout emitting event")
+        //console.log("timeout emitting event")
         this.$emit("input", {
           ...this.value,
           ...this.dataToEmit
@@ -334,7 +339,7 @@ export default {
       deep: true,
       immediate: true,
       handler: function (val) {
-        console.log("watcher", val)
+        //console.log("watcher", val)
 
         if (!this.schema.value) {
           // throw new Error("The schema provided is not a reactive element");

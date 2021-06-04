@@ -122,6 +122,8 @@ export default class Settings extends Vue {
         data: Object.values(result),
         type: SettingTypes.GLOBAL
       })
+
+      this.$alerts.toastSuccess("settings-update-success")
     } catch (er) {
       this.$alerts.error(er)
     }

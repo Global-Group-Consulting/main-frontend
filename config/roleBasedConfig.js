@@ -150,7 +150,19 @@ const defaults = {
         'lastName',
         'email',
         'clubPack',
-        // 'role',
+        'briteTotal',
+        'briteUsed',
+        'briteAvailable',
+        'actions'
+      ]
+    },
+    clubFilter: {
+      columns: [
+        'clubCardNumber',
+        'firstName',
+        'lastName',
+        'email',
+        'clubPack',
         'briteTotal',
         'briteUsed',
         'briteAvailable',
@@ -191,6 +203,19 @@ const defaults = {
         ['updated_at', ["lavorazione"]],
       ]
     },
+    requestsFilter: {
+      columns: [
+        'amount',
+        'user',
+        'referenceAgent',
+        'type',
+        'status',
+        'created_at',
+        'updated_at',
+        'completed_at',
+        'actions'
+      ]
+    },
   },
   blocks: {
     dashboard: {
@@ -226,7 +251,7 @@ const admin = {
         ['clientsNumber', [UserRoles.AGENTE]],
         ['contractStatus', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         'accountStatus',
-        'clubPack',
+        ['clubPack', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         'actions',
       ]
     },
@@ -296,7 +321,7 @@ const servClienti = {
         ['clientsNumber', [UserRoles.AGENTE]],
         ['contractStatus', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         'accountStatus',
-        'clubPack',
+        ['clubPack', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         'actions'
       ]
     },
