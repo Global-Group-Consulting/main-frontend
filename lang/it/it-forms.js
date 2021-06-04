@@ -149,4 +149,5 @@ export default {
   'filters-auto-withdrawl-all': "Risc. provvigioni automatiche",
   'filters-money-min': "Importo Minimo",
   'filters-money-max': "Importo Massimo",
+  'filters-club-request-notify-email': "Email da notificare per nuove Richieste Club",
 }
