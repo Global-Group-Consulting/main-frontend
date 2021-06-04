@@ -1,5 +1,6 @@
 export default {
-  "user-update-success": "Dati dell'utente aggiornati correttmanete",
+  "user-update-success": "Dati dell'utente aggiornati correttamente",
+  "settings-update-success": "Impostazioni aggiornate correttamente",
 
   "delete-user-title": "Eliminare l'utente?",
   "delete-user-text": "Sei sicuro di voler eliminare l'utente {firstName} {lastName}? L'operazione sarà irreversibile.",

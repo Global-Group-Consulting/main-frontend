@@ -36,6 +36,7 @@ const schema = {
     text: 'tables.request-currency',
     value: 'currency',
     align: 'center',
+    component: "CellCurrency"
   },
   'actions': {
     text: '',
