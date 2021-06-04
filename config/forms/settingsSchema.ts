@@ -29,7 +29,10 @@ export function globalSettings(context: Vue): FormSchema[] {
     {
       cols: {
         clubRequestNotifyEmail: {
-          label: "filters-club-request-notify-email"
+          label: "filters-club-request-notify-email",
+          validations: {
+            email: {}
+          }
         }
       }
     },
