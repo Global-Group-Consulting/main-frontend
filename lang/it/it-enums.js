@@ -117,7 +117,8 @@ export default {
     "commissionsReinvestment": "Reinvestimento provvigioni",
     "commissionsCollected": "Riscossione provvigioni",
     "cancelCommissionsCollected": "Annullamento riscossione provvigioni",
-    "commissionsToReinvest": "Chiusura mese e reinvestimento"
+    "commissionsToReinvest": "Chiusura mese e reinvestimento",
+    "commissionsCancellation": "Storno provvigioni"
   },
   "NotificationTypes": {
     "user_validate": "Utente da validare",
