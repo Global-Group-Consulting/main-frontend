@@ -69,23 +69,72 @@
       </v-card-text>
     </v-card>-->
 
-    <v-row class="">
-      <v-col v-for="(el, key) of totalCardsData" :key="key" md="3" sm="6">
-        <dashboard-card :card-data="el"></dashboard-card>
+    <v-row v-for="(row, rowKey) of rows" :key="rowKey">
+      <v-col v-for="(col, colKey) of row" :key="colKey">
+        <v-card class="flex-fill"  style="height: 100%">
+
+          <v-card-title class="pb-0 text-no-wrap">
+            {{ col.title }}
+          </v-card-title>
+
+          <v-card-text>
+            <v-list>
+              <v-list-item v-for="item of col.items">
+                <!-- Icon -->
+                <v-list-item-avatar>
+                  <v-icon class="grey lighten-3" :color="item.color">{{ item.icon }}</v-icon>
+                </v-list-item-avatar>
+
+                <!-- Content -->
+                <v-list-item-content>
+                  <v-list-item-title class="font-weight-bold">{{ item.value }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ item.title }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-card-text>
+
+          <v-card-actions class="text-right pt-0 transparent">
+
+          </v-card-actions>
+        </v-card>
+
       </v-col>
     </v-row>
 
+    <!--
+
+      Facciamo 3 maxi box:
+      1 - Totali deposito, rendite, riscossioni
+      2 - Totali stati utenti attivi, sospesi, ecc.
+      3 - Totali Provvigioni filtrabili per date (mese in corso, ultimi 3, ultimi 6, ultimi 12)
+        - Totale Provvigioni
+        - Totale Prov. Riscosse
+        - Tot. prov. reinvestite
+
+      Sotto, altri 3 box con i dati sotto indicati
+      -->
+
     <v-row class="">
+      <!--
+
+       qui mostriamo solo i contatori degli utenti, e aggiungiamo un pulsabte che se cliccato
+       mostra un popup con il nome di questi utenti, cliccabili che rimanda a anagrafica o profilo
+
+
+       Classifica agenti con nuovi Clineti
+       se Un cliente non ha agente, associarlo ad un nome generico "Global Group (Senza Agente)"
+
+
+       Classifica agenti con totali versamenti dei Clienti
+       Tutti i versamenti, non solo iniziali. basandosi sempre sul periodo nel quale è sotto quel determinato agente.
+       -->
+
       <v-col v-for="(el, key) of newUsersTotalCardsData" :key="key" md="3" sm="6">
         <dashboard-card :card-data="el" format-as-int></dashboard-card>
       </v-col>
     </v-row>
 
-    <v-row class="">
-      <v-col v-for="(el, key) of usersStatusTotalsCardData" :key="key">
-        <dashboard-card :card-data="el" format-as-int></dashboard-card>
-      </v-col>
-    </v-row>
 
     <v-card class="mb-5">
       <v-card-title class="p-relative">
@@ -123,6 +172,14 @@ import SigningLogsPopup from "~/components/elements/SigningLogsPopup.vue";
 import DashboardBlocks from "~/components/DashboardBlocks.vue";
 import DashboardCard from "~/components/dashboard/DashboardCard.vue";
 import {BlockData} from "~/config/blocks/dashboardBlocks";
+import {moneyFormatter} from "~/plugins/filters/moneyFormatter";
+import AccountStatuses from "~/enums/AccountStatuses";
+
+
+interface LargeCard {
+  title: string
+  items: BlockData[]
+}
 
 @Component({
   components: {DashboardCard, DashboardBlocks, SigningLogsPopup, DataTable, ChartLines, RequestsListTable},
@@ -155,6 +212,109 @@ export default class Admin extends Vue {
     }
   }
 
+  get rows(): LargeCard[][] {
+    return [
+      [
+        // col 1
+        {
+          title: "Resoconto Entrate / Uscite",
+          items: [
+            {
+              title: "Deposito",
+              value: "€ " + moneyFormatter(this.dashboardData.totals.deposit),
+              icon: "mdi-cloud-upload",
+              color: "blue"
+            }, {
+              title: "Rendite",
+              value: "€ " + moneyFormatter(this.dashboardData.totals.interests),
+              icon: "mdi-chart-timeline-variant",
+              color: "green",
+            }, {
+              title: "Rendite riscosse (Classic) ",
+              value: "€ " + moneyFormatter(this.dashboardData.totals.withdrewInterests),
+              icon: "mdi-chart-sankey-variant",
+              color: "orange",
+            },
+            {
+              title: "Rendite riscosse (GOLD)",
+              value: "€ " + moneyFormatter(this.dashboardData.totals.withdrewInterests),
+              icon: "mdi-diamond-stone",
+              color: "#d4973b",
+            }, {
+              title: "Deposito prelevato",
+              value: "€ " + moneyFormatter(this.dashboardData.totals.withdrewDeposit),
+              icon: "mdi-cloud-download",
+              color: "red",
+            },
+          ]
+        },
+
+        // col 2
+        {
+          title: "Resoconto Stato Utenti",
+          items: [
+            {
+              title: "Attivi",
+              value: this.dashboardData.usersStatus.active.toString(),
+              icon: "mdi-account-check",
+              color: this.getAccountStatusColor(AccountStatuses.ACTIVE)
+            }, {
+              title: "Attesa accesso",
+              value: this.dashboardData.usersStatus.pendingAccess.toString(),
+              icon: "mdi-account-arrow-right",
+              color: this.getAccountStatusColor(AccountStatuses.APPROVED),
+            }, {
+              title: "Attesa firma contratto",
+              value: this.dashboardData.usersStatus.pendingSignature.toString(),
+              icon: "mdi-account-edit",
+              color: "#c2b441",
+            }, {
+              title: "Sospesi",
+              value: this.dashboardData.usersStatus.suspended.toString(),
+              icon: "mdi-account-off",
+              color: "red",
+            }, {
+              title: "Bozza",
+              value: this.dashboardData.usersStatus.draft.toString(),
+              icon: "mdi-account-outline",
+              color: this.getAccountStatusColor(AccountStatuses.DRAFT),
+            }
+          ]
+        },
+
+        // col 3,
+        {
+          title: "Resoconto Provvigioni",
+          items: [
+            {
+              title: "Totali",
+              value: "0",
+              icon: "mdi-cash-multiple",
+              color: "primary"
+            }, {
+              title: "Riscosse",
+              value: "0",
+              icon: "mdi-cash-minus",
+              color: "red"
+            }, {
+              title: "Reinvestite",
+              value: "0",
+              icon: "mdi-cash-refund",
+              color: "orange"
+            }
+          ]
+        }
+      ], [
+        //https://preview.keenthemes.com/metronic/vue/demo1/#/dashboard
+        // col 1
+
+        // col 2
+
+        // col 3
+      ]
+    ]
+  }
+
   get pendingUsers() {
     // return pendingUsers.map((group) => group.data[0]);
     return [];
@@ -176,21 +336,27 @@ export default class Admin extends Vue {
         icon: "mdi-cloud-upload",
         color: "blue"
       }, {
-        title: "Interessi",
+        title: "Rendite",
         value: this.dashboardData.totals.interests,
         icon: "mdi-chart-timeline-variant",
         color: "green",
+      }, {
+        title: "Rendite riscosse (Classic) ",
+        value: this.dashboardData.totals.withdrewInterests,
+        icon: "mdi-chart-sankey-variant",
+        color: "orange",
+      },
+      {
+        title: "Rendite riscosse (GOLD)",
+        value: this.dashboardData.totals.withdrewInterests,
+        icon: "mdi-chart-sankey-variant",
+        color: "orange",
       }, {
         title: "Deposito prelevato",
         value: this.dashboardData.totals.withdrewDeposit,
         icon: "mdi-cloud-download",
         color: "red",
-      }, {
-        title: "Interessi riscossi",
-        value: this.dashboardData.totals.withdrewInterests,
-        icon: "mdi-chart-sankey-variant",
-        color: "orange",
-      }
+      },
     ]
   }
 
@@ -249,6 +415,10 @@ export default class Admin extends Vue {
         // color: "orange",
       }
     ]
+  }
+
+  getAccountStatusColor(status: string) {
+    return AccountStatuses.get(status).color || "#c1c1c1"
   }
 
   openRequest(request: any) {
