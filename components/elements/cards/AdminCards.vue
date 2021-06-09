@@ -31,7 +31,8 @@ export default class AdminCards extends Vue {
       deposit: 0,
       interests: 0,
       withdrewDeposit: 0,
-      withdrewInterests: 0
+      withdrewInterests: 0,
+      withdrewInterestsClub: 0
     },
     commissionTotals: {
       total: 0,
@@ -66,7 +67,7 @@ export default class AdminCards extends Vue {
         // col 1
         {
           id: "systemTotals",
-          title: "Resoconto Entrate / Uscite",
+          title: "Entrate / Uscite",
           items: [
             {
               title: "Deposito",
@@ -86,7 +87,7 @@ export default class AdminCards extends Vue {
             },
             {
               title: "Rendite riscosse (GOLD)",
-              value: "€ " + moneyFormatter(this.dashboardData.systemTotals.withdrewInterests),
+              value: "€ " + moneyFormatter(this.dashboardData.systemTotals.withdrewInterestsClub),
               icon: "mdi-diamond-stone",
               color: "#d4973b",
             }, {
@@ -101,7 +102,7 @@ export default class AdminCards extends Vue {
         // col 2
         {
           id: "usersStatus",
-          title: "Resoconto Stato Utenti",
+          title: "Stato Utenti",
           items: [
             {
               title: "Attivi",
@@ -135,7 +136,7 @@ export default class AdminCards extends Vue {
         // col 3,
         {
           id: "commissionsTotals",
-          title: "Resoconto Provvigioni",
+          title: "Provvigioni",
           items: [
             {
               title: "Totali",
@@ -173,11 +174,11 @@ export default class AdminCards extends Vue {
               textIcon: "U3",
               value: this.dashboardData.newUsers.last3Months.toString(),
             }, {
-              title: this.$t("filters.last3Months") as string,
+              title: this.$t("filters.last6Months") as string,
               textIcon: "U6",
               value: this.dashboardData.newUsers.last6Months.toString(),
             }, {
-              title: this.$t("filters.last3Months") as string,
+              title: this.$t("filters.last12Months") as string,
               textIcon: "U12",
               value: this.dashboardData.newUsers.last12Months.toString(),
             }
@@ -189,7 +190,7 @@ export default class AdminCards extends Vue {
         se Un cliente non ha agente, associarlo ad un nome generico "Global Group (Senza Agente)"*/
         {
           id: "agentsNewUsers",
-          title: "Classifica Agenti - Nuovi clienti",
+          title: "Nuovi utenti per agente",
           menu: (card: LargeCard) => this.getMenuActions(card),
           items: this.dashboardData.agentsNewUsers.reduce<BlockData[]>((acc, curr: any) => {
             acc.push({
@@ -208,12 +209,12 @@ export default class AdminCards extends Vue {
         //https://preview.keenthemes.com/metronic/vue/demo1/#/dashboard
         {
           id: "agentsTotalEarnings",
-          title: "Classifica Agenti - Versam.Clienti",
+          title: "Nuovi Versam. per agente",
           menu: (card: LargeCard) => this.getMenuActions(card),
           items: this.dashboardData.agentsTotalEarnings
             .reduce<BlockData[]>((acc, curr: any, currIndex) => {
               acc.push({
-                title: "#" + (currIndex + 1) + "  - " + curr.agent.firstName + " " + curr.agent.lastName,
+                title: curr.agent.firstName + " " + curr.agent.lastName,
                 rawValue: curr.totals[this.dashboardDataFilters.agentsTotalEarnings] || 0,
                 value: "€ " + moneyFormatter(curr.totals[this.dashboardDataFilters.agentsTotalEarnings] || 0),
                 textIcon: curr.agent.firstName.slice(0, 1) + curr.agent.lastName.slice(0, 1),
