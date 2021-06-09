@@ -12,3 +12,13 @@ Cantarell,
 sans-serif;
 
 @import "~sweetalert2/src/sweetalert2";
+
+.swal2-input-label {
+  display: block;
+  margin-bottom: -16px;
+  text-align: left;
+
+  &:first-of-type{
+    margin-top: 16px;
+  }
+}

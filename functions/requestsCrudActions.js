@@ -45,7 +45,8 @@ export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n, 
         return emitCallback()
       }
 
-      return $emit("requestStartWorking", requestData);
+      // Cambiato perchè sembrava esserci un errore con l'$emit che proviene dal root
+      return emit("requestStartWorking", requestData);
     }
 
     const currentRequest = request.value ?? request
@@ -58,22 +59,44 @@ export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n, 
           + $options.filters.moneyFormatter(currentRequest.amount),
         user: $options.filters.userFormatter(currentRequest.user)
       }
+
+      const inputs = [`<label for="req_amountChange" class="swal2-input-label">Importo</label>
+                <input id="req_amountChange" class="swal2-input" placeholder="Importo" value="${$options.filters.moneyFormatter(currentRequest.amount)}">`];
+
+      if (currentRequest.type === $enums.RequestTypes.VERSAMENTO) {
+        inputs.push(`<label for="req_goldAmountChange" class="swal2-input-label">Grammi oro</label>
+                <input id="req_goldAmountChange" class="swal2-input" placeholder="Grammi oro" value="${currentRequest.goldAmount || 0}">`)
+      }
+
+      inputs.push(`<label for="req_goldAmountChange" class="swal2-input-label">Data contabile</label>`)
+
       await $alerts.askBeforeAction({
         key: "approve-request",
         preConfirm: async (value) => {
           const amountInput = document.getElementById("req_amountChange")
-          const amount = +amountInput.cleave.getRawValue()
+          const goldAmountInput = document.getElementById("req_goldAmountChange")
+          const amount = +amountInput?.cleave?.getRawValue()
+          const goldAmount = +goldAmountInput?.cleave?.getRawValue()
 
-          await $apiCalls.acceptRequest(currentRequest, moment(value, "DD/MM/YYYY", true).toDate(), amount);
+          await $apiCalls.acceptRequest(currentRequest, moment(value, "DD/MM/YYYY", true).toDate(), amount, goldAmount);
         },
         settings: {
           html: $i18n.t(`alerts.approve-request-text`, alertData) +
-            `<input id="req_amountChange" class="swal2-input" placeholder="Importo" value="${$options.filters.moneyFormatter(currentRequest.amount)}">`,
+            `<br>${inputs.join()}`,
           focusConfirm: false,
           onOpen: (htmlElement) => {
             const inputAmount = htmlElement.querySelector("#req_amountChange");
+            const inputGoldAmount = htmlElement.querySelector("#req_goldAmountChange");
 
             inputAmount.cleave = new Cleave(inputAmount, {
+              numeral: true,
+              delimiter: '.',
+              numeralPositiveOnly: true,
+              numeralDecimalMark: ',',
+              numeralDecimalScale: 2
+            })
+
+            inputGoldAmount.cleave = new Cleave(inputGoldAmount, {
               numeral: true,
               delimiter: '.',
               numeralPositiveOnly: true,
@@ -113,6 +136,41 @@ export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n, 
 
               if (value !== e.target.value) {
                 inputAmount.value = value;
+              }
+            })
+
+            inputGoldAmount.addEventListener("keydown", function (e) {
+              if (e.key === ".") {
+                e.preventDefault()
+
+                if (!e.target.value.includes(",")) {
+                  e.target.value += ","
+                }
+              }
+            })
+            inputGoldAmount.addEventListener("blur", function (e) {
+              /** @type  {string} */
+              let value = e.target.value
+              const selectionStart = inputGoldAmount.selectionStart
+
+              if (value === "") {
+                value = "0,00"
+              }
+
+              if (!value.includes(",")) {
+                value += ",";
+              }
+
+              let decimals = value.slice(value.indexOf(","))
+
+              while (decimals.length <= 2) {
+                value += "0";
+
+                decimals = value.slice(value.indexOf(","));
+              }
+
+              if (value !== e.target.value) {
+                inputGoldAmount.value = value;
               }
             })
           },
