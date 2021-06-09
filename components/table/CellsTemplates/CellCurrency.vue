@@ -1,6 +1,6 @@
 <template>
   <span>
-    {{ formatRequestCurrency(value) }}
+    {{ formatRequestCurrency(+value) }}
   </span>
 </template>
 
@@ -13,8 +13,8 @@ export default class CellCurrency extends Vue {
   @Prop({type: Object, required: true})
   public item!: any
 
-  @Prop({type: Number, required: true})
-  public value!: number
+  @Prop({type: [Number, String], required: true})
+  public value!: number | string
 
   formatRequestCurrency(value: number) {
     const currencyData = this.$enums.CurrencyType.get(value);
