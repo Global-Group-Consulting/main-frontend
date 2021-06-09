@@ -1,4 +1,5 @@
 import {BasicEnum} from '../classes/BasicEnum'
+import UserRoles from "~/enums/UserRoles";
 
 /**
  * @enum
@@ -35,6 +36,7 @@ class RequestTypes extends BasicEnum {
       // interessi maturati mensilmente
       [this.RISC_PROVVIGIONI]: {
         id: 'risc_provvigioni',
+        reqRoles: [UserRoles.AGENTE, UserRoles.ADMIN, UserRoles.SERV_CLIENTI]
       },
       [this.RISC_INTERESSI_GOLD]: {
         id: 'risc_interessi_gold',
@@ -44,9 +46,11 @@ class RequestTypes extends BasicEnum {
       },
       [this.COMMISSION_MANUAL_ADD]: {
         id: 'commission_manual_add',
+        reqRoles: [UserRoles.AGENTE, UserRoles.ADMIN, UserRoles.SERV_CLIENTI]
       },
       [this.COMMISSION_MANUAL_TRANSFER]: {
         id: 'commission_manual_transfer',
+        reqRoles: [UserRoles.AGENTE, UserRoles.ADMIN, UserRoles.SERV_CLIENTI]
       }
     }
   }

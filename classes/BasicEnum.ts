@@ -8,6 +8,7 @@ interface EnumData {
   bgSrc?: string
   hidden?: boolean
   order?: number
+  reqRoles?: number[]
 }
 
 

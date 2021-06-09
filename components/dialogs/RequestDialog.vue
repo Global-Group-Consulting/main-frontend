@@ -49,9 +49,9 @@
               </v-btn>
             </template>
 
-            <template v-else-if="$store.getters['user/userIsAdmin']">
-              {{ $t("dialogs.requests.alert-in-progress", formData.conversation.creator) }}
-            </template>
+            <p v-else-if="$store.getters['user/userIsAdmin']" class="mb-0"
+               v-html="$t('dialogs.requests.alert-in-progress', formData.conversation.creator)">
+            </p>
           </template>
 
           <!-- Auto withdrawl request type -->

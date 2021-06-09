@@ -65,6 +65,16 @@ export const getters = {
   availableWallets(state) {
     return state.wallets
   },
+
+  userRole: (state, getters, rootState) => {
+    return rootState.auth.user.role
+  },
+  userIsCliente: (state, getters, rootState) => {
+    return [UserRoles.CLIENTE].includes(rootState.auth.user.role)
+  },
+  userIsAgente: (state, getters, rootState) => {
+    return [UserRoles.AGENTE].includes(rootState.auth.user.role)
+  },
   userIsAdmin: (state, getters, rootState) => {
     return [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(rootState.auth.user.role)
   },

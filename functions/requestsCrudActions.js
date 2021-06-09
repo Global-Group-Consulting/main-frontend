@@ -45,7 +45,8 @@ export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n, 
         return emitCallback()
       }
 
-      return $emit("requestStartWorking", requestData);
+      // Cambiato perchè sembrava esserci un errore con l'$emit che proviene dal root
+      return emit("requestStartWorking", requestData);
     }
 
     const currentRequest = request.value ?? request

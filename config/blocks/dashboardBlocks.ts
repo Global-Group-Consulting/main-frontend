@@ -11,8 +11,11 @@ export type BlockAction = "addDeposit"
 export interface BlockData {
   title: string
   icon?: string
+  textIcon?: string
   color?: string
   value: string
+  rawValue?: any
+  page?: string
   actionText?: string | ((context: Vue, readonly: boolean) => string)
   action?: null | BlockAction | ((context: Vue, readonly: boolean) => BlockAction)
 }
