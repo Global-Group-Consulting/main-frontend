@@ -2,7 +2,7 @@ import {MenuListItem} from "~/@types/components/MenuListItem";
 import {BlockData} from "~/config/blocks/dashboardBlocks";
 
 interface LargeCard {
-  id: string,
+  id: string
   title: string
   filter?: string
   menu?: ((card: LargeCard) => MenuListItem[])
