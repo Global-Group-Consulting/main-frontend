@@ -172,6 +172,16 @@ export default function (context) {
     },
     {
       cols: {
+        goldAmount: {
+          type: "number",
+          if: context.$enums.RequestTypes.VERSAMENTO === context.formData.type,
+          disabled: readonly,
+          prefix: "gr.",
+        }
+      }
+    },
+    {
+      cols: {
         created_at: {
           label: "requestCreatedAt",
           component: 'date-picker',
