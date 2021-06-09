@@ -1,5 +1,13 @@
 [comment]: <> (## Non ancora rilasciato)
 
+## v 1.8.11 - <small>TBA</small>
+### Miglioramenti
+- Risolto bug che non permetteva di riscuotere tutti gli interessi maturati
+
+### Aggiunte
+- Statistiche dashboard Admin e Serv. Clienti.
+- Possibilità di indicare i grammi in oro per le richieste di versamento
+
 ## v 1.8.10 - <small>21/05/2020</small>
 ### Miglioramenti
 - Sistemato bug che non permetteva il download delle integrazioni.

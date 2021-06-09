@@ -143,6 +143,7 @@ interface FormData {
   wallet: number
   type: number
   availableAmount: number
+  goldAmount: number
   currency: number
   gold: boolean
   clubPack: string
@@ -167,6 +168,7 @@ interface FormData {
 export default class RequestDialog extends Vue {
   formData: Partial<FormData> = {
     amount: 0,
+    goldAmount: undefined,
     availableAmount: 0,
     wallet: this.$enums.WalletTypes["DEPOSIT"],
     type: this.$enums.RequestTypes["VERSAMENTO"],
@@ -400,6 +402,7 @@ export default class RequestDialog extends Vue {
 
       const data = {
         amount: this.formData.amount,
+        goldAmount: this.formData.goldAmount,
         userId: this.$auth.user.id,
         type: this.formData.type,
         wallet: this.formData.wallet,
