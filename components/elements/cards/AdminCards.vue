@@ -55,7 +55,7 @@ export default class AdminCards extends Vue {
     agentsTotalEarnings: []
   }
 
-  private dashboardDataFilters = {
+  private dashboardDataFilters: Record<string, string> = {
     agentsNewUsers: "thisMonth",
     agentsTotalEarnings: "thisMonth",
   }
@@ -254,7 +254,7 @@ export default class AdminCards extends Vue {
 
 
   async mounted() {
-    const result = await this.$apiCalls.dashboardFetch(null, {
+    const result = await this.$apiCalls.dashboardFetch(undefined, {
       onlyStatistics: true
     });
 
