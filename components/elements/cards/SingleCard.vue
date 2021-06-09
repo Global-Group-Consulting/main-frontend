@@ -21,7 +21,7 @@
     </v-card-title>
 
     <v-card-text>
-      <v-list :max-height="61.5*5" class="overflow-auto">
+      <v-list :max-height="69.5*5" class="overflow-auto">
         <v-list-item v-for="(item, itemIndex) of value.items"
                      :key="'item_' + itemIndex">
           <!-- Icon -->
