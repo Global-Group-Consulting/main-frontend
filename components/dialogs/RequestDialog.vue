@@ -49,9 +49,9 @@
               </v-btn>
             </template>
 
-            <template v-else-if="$store.getters['user/userIsAdmin']">
-              {{ $t("dialogs.requests.alert-in-progress", formData.conversation.creator) }}
-            </template>
+            <p v-else-if="$store.getters['user/userIsAdmin']" class="mb-0"
+               v-html="$t('dialogs.requests.alert-in-progress', formData.conversation.creator)">
+            </p>
           </template>
 
           <!-- Auto withdrawl request type -->
@@ -143,6 +143,7 @@ interface FormData {
   wallet: number
   type: number
   availableAmount: number
+  goldAmount: number
   currency: number
   gold: boolean
   clubPack: string
@@ -167,6 +168,7 @@ interface FormData {
 export default class RequestDialog extends Vue {
   formData: Partial<FormData> = {
     amount: 0,
+    goldAmount: undefined,
     availableAmount: 0,
     wallet: this.$enums.WalletTypes["DEPOSIT"],
     type: this.$enums.RequestTypes["VERSAMENTO"],
@@ -400,6 +402,7 @@ export default class RequestDialog extends Vue {
 
       const data = {
         amount: this.formData.amount,
+        goldAmount: this.formData.goldAmount,
         userId: this.$auth.user.id,
         type: this.formData.type,
         wallet: this.formData.wallet,

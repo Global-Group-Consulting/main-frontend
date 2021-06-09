@@ -1,73 +1,6 @@
 <template>
   <v-layout column>
-<!--    <v-card width="100%" class="text-center mb-5">
-      <v-card-text>
-        <chart-lines
-          :labels="dashboardChart.labels"
-          :datasets="chartsAdminDataset"
-        />
-      </v-card-text>
-    </v-card>-->
-
-    <!-- <v-card class="mb-5">
-       <v-card-title class="p-relative">
-         <v-icon>mdi-file-document-edit-outline</v-icon>
-         {{ this.$t("tables.pending-contract-signature") }}
-
-         <div class="v-alert__border v-alert__border&#45;&#45;bottom blue"></div>
-       </v-card-title>
-
-       <v-card-text>
-                 <data-table
-                   :items="dashboardData.pendingSignatures"
-                   table-key="pendingSignatures"
-                   schema="usersSchema"
-                 >
-                   <template v-slot:item.signDocSent="{item}">
-                     {{ getSignDocSent(item).timestamp | dateHourFormatter }}
-                   </template>
-                   <template v-slot:item.signDocViewed="{item}">
-                     {{ getSignDocViewed(item).timestamp | dateHourFormatter }}
-                   </template>
-                   <template v-slot:item.signDocSigned="{item}">
-                     {{ getSignDocSigned(item).timestamp | dateHourFormatter }}
-                   </template>
-                   <template v-slot:item.signDocLogs="{item}">
-                     <v-menu offset-y open-on-hover bottom>
-                       <template v-slot:activator="{ on, attrs }">
-                         <v-btn icon v-on="on" v-bind="attrs">
-                           <v-icon>mdi-information</v-icon>
-                         </v-btn>
-                       </template>
-
-                       <signing-logs-popup :value="item.signinLogs"></signing-logs-popup>
-                     </v-menu>
-                   </template>
-                   <template v-slot:item.actions="{item}">
-                     <v-menu offset-y>
-                       <template v-slot:activator="{ on }">
-                         <v-btn color="primary" icon v-on="on">
-                           <v-icon>mdi-dots-vertical</v-icon>
-                         </v-btn>
-                       </template>
-                       <v-list>
-                         <v-list-item @click="onSignContractClick(item)">
-                           <v-list-item-title>
-                             {{ $t("menus.sign-contract") }}
-                           </v-list-item-title>
-                         </v-list-item>
-
-                         <v-list-item :to="'/users/' + item.id">
-                           <v-list-item-title>
-                             {{ $t("menus.show-user-account") }}
-                           </v-list-item-title>
-                         </v-list-item>
-                       </v-list>
-                     </v-menu>
-                   </template>
-                 </data-table>
-      </v-card-text>
-    </v-card>-->
+    <admin-cards></admin-cards>
 
     <v-card class="mb-5">
       <v-card-title class="p-relative">
@@ -86,6 +19,7 @@
         >
         </requests-list-table>
       </v-card-text>
+
     </v-card>
   </v-layout>
 </template>
@@ -102,9 +36,22 @@ import {SignRequestLog} from "~/@types/SignRequest";
 import {WebhooksCall} from "~/@types/SignRequest/Webhooks";
 import {User} from "~/@types/UserFormData";
 import SigningLogsPopup from "~/components/elements/SigningLogsPopup.vue";
+import DashboardBlocks from "~/components/DashboardBlocks.vue";
+import DashboardCard from "~/components/dashboard/DashboardCard.vue";
+import {BlockData} from "~/config/blocks/dashboardBlocks";
+import {moneyFormatter} from "~/plugins/filters/moneyFormatter";
+import AccountStatuses from "~/enums/AccountStatuses";
+import {MenuListItem} from "~/@types/components/MenuListItem";
+import MenuList from "~/components/elements/MenuList.vue";
+import TextIcon from "~/components/elements/TextIcon.vue";
+import AdminCards from "~/components/elements/cards/AdminCards.vue";
+
+
 
 @Component({
-  components: {SigningLogsPopup, DataTable, ChartLines, RequestsListTable},
+  components: {
+    AdminCards,
+    TextIcon, DashboardCard, DashboardBlocks, SigningLogsPopup, DataTable, ChartLines, RequestsListTable},
 })
 export default class Admin extends Vue {
 
@@ -112,7 +59,33 @@ export default class Admin extends Vue {
   public dashboardData = {
     validatedUsers: [],
     pendingRequests: [],
-    pendingSignatures: []
+    pendingSignatures: [],
+    systemTotals: {
+      deposit: 0,
+      interests: 0,
+      withdrewDeposit: 0,
+      withdrewInterests: 0
+    },
+    commissionTotals: {
+      total: 0,
+      withdrew: 0,
+      reinvested: 0,
+    },
+    newUsers: {
+      thisMonth: 0,
+      last3Months: 0,
+      last6Months: 0,
+      last12Months: 0,
+    },
+    usersStatus: {
+      draft: 0,
+      active: 0,
+      pendingAccess: 0,
+      pendingSignature: 0,
+      suspended: 0
+    },
+    agentsNewUsers: [],
+    agentsTotalEarnings: []
   }
 
   get pendingUsers() {
@@ -127,6 +100,8 @@ export default class Admin extends Vue {
       return set;
     });
   }
+
+
 
   openRequest(request: any) {
     this.$router.push("/requests#" + request.id);
@@ -154,9 +129,7 @@ export default class Admin extends Vue {
   async mounted() {
     const result = await this.$apiCalls.dashboardFetch();
 
-    // root.$set(dashboardData, "validatedUsers", result.validatedUsers || []);
-    this.dashboardData.pendingRequests = result.pendingRequests
-    // this.dashboardData.pendingSignatures = result.pendingSignatures
+    this.dashboardData.pendingRequests = result.pendingRequests || []
   }
 
 }
