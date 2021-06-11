@@ -1,6 +1,7 @@
 export interface MenuListItem {
   value?: string,
-  action?: Function
+  id?: string
+  action?: (menuItem: any) => void
   if?: boolean
   divider?: boolean
 }
