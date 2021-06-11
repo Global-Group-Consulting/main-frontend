@@ -1,10 +1,13 @@
 import {MenuListItem} from "~/@types/components/MenuListItem";
 import {BlockData} from "~/config/blocks/dashboardBlocks";
+import Vue from "vue";
+import SingleCard from "~/components/elements/cards/SingleCard.vue";
 
 interface LargeCard {
   id: string
   title: string
   filter?: string
+  filterFunction?: (this: SingleCard) => any[]
   menu?: ((card: LargeCard) => MenuListItem[])
   type?: 'inline' | null
   items: BlockData[] | ((card: LargeCard) => BlockData[])

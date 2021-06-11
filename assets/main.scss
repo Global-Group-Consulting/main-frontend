@@ -69,6 +69,11 @@ html, body, #__nuxt, #__layout, .v-application, .v-application--wrap, body.swal2
 }
 
 
+.rotate-180{
+  transform: rotate(180deg);
+}
+
+
 @media #{map-get($display-breakpoints, 'sm-and-down')}{
   .v-slide-group__prev--disabled, .v-slide-group__next--disabled {
     display: none !important;
