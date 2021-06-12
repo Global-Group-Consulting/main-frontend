@@ -108,8 +108,13 @@ export default class MovementsListTable extends Vue {
     const reqType = item.requestType;
     const movementId = MovementTypes.get(item.movementType).id;
     let text = this.$i18n.t(`enums.MovementTypes.${movementId}`);
+    let movementToAvoid = [
+      this.$enums.MovementTypes.CANCEL_INTEREST_COLLECTED,
+      this.$enums.MovementTypes.CANCEL_DEPOSIT_COLLECTED,
+      this.$enums.MovementTypes.CANCEL_COMMISSION_COLLECTED
+    ]
 
-    if(reqType){
+    if (reqType && !movementToAvoid.includes(item.movementType)) {
       text = this.$i18n.t(`enums.RequestTypes.${this.$enums.RequestTypes.getIdName(reqType)}`)
     }
 
