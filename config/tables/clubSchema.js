@@ -27,7 +27,8 @@ const columns = {
     sortable: false,
     align: 'center',
     visible: false,
-    width: '1%'
+    width: '1%',
+    component: "CellUserClubActions"
   }
 }
 

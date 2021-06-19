@@ -70,7 +70,7 @@ import RequestDialogGold from "~/components/dialogs/RequestGoldDialog.vue";
 import PageToolbar from "~/components/blocks/PageToolbar.vue";
 import RequestDialog from "~/components/dialogs/RequestDialog.vue";
 import PageHeader from "~/components/blocks/PageHeader.vue";
-import RequestsCrudActions from "~/components/table/RequestsCrudAction.vue";
+import RequestsCrudActions from "~/components/table/CellsTemplates/RequestsCrudAction.vue";
 import RequestsListTable from "~/components/table/RequestsListTable.vue";
 import CommunicationNewDialog from "~/components/dialogs/CommunicationNewDialog.vue";
 

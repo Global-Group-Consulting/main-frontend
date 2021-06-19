@@ -39,11 +39,11 @@ const schema = {
     component: "CellCurrency"
   },
   'actions': {
-    text: '',
     value: 'actions',
     sortable: false,
     align: 'center',
-    width: '1%'
+    width: '1%',
+    component: "CellRequestActions"
   }
 }
 

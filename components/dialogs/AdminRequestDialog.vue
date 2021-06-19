@@ -42,7 +42,6 @@
 import {Component, Vue, Watch} from "vue-property-decorator";
 import DynamicFieldset from "~/components/DynamicFieldset.vue";
 import requestSchema from "~/config/forms/adminRequestSchema";
-import requestsCrudActionsFn from "~/functions/requestsCrudActions";
 import {moneyFormatter} from "~/plugins/filters";
 import {DynamicForm} from "~/@types/DynamicForm";
 import {User} from "~/@types/UserFormData";

@@ -66,7 +66,7 @@ import RequestDialogGold from "~/components/dialogs/RequestGoldDialog.vue";
 import PageToolbar from "~/components/blocks/PageToolbar.vue";
 import RequestDialog from "~/components/dialogs/RequestDialog.vue";
 import PageHeader from "~/components/blocks/PageHeader.vue";
-import RequestsCrudActions from "~/components/table/RequestsCrudAction.vue";
+import RequestsCrudActions from "~/components/table/CellsTemplates/RequestsCrudAction.vue";
 import RequestsListTable from "~/components/table/RequestsListTable.vue";
 import CommunicationNewDialog from "~/components/dialogs/CommunicationNewDialog.vue";
 
@@ -103,12 +103,16 @@ type RequestGroups = "nuova" | "lavorazione" | "accettata" | "rifiutata";
 export default class Requests extends Vue {
   public permissions = permissionsFn(this);
   public currentTab = 0
-  public tableDataLoading = false
   public requestsList = []
 
 
+  get tableDataLoading() {
+    return this.$store.getters["request/tableDataLoading"];
+  }
+
   get requestsGroups(): Record<RequestGroups, any[]> {
-    const toReturn: any = {
+    return this.$store.getters["requests/requestsGroups"];
+    /*const toReturn: any = {
       nuova: [],
       lavorazione: [],
       accettata: [],
@@ -126,7 +130,7 @@ export default class Requests extends Vue {
       toReturn[groupName].push(richiesta);
     });
 
-    return toReturn;
+    return toReturn;*/
   }
 
   get requestsTabs(): DynamicTab[] {
@@ -309,29 +313,7 @@ export default class Requests extends Vue {
   }
 
   private async fetchAll() {
-    this.tableDataLoading = true
-
-    try {
-      this.requestsList = await this.$apiCalls.fetchRequests();
-
-      const existsAutoWithdraw = this.requestsGroups.lavorazione.find(req => req.autoWithdrawlAll)
-
-      // If in the list of working request does not exist an autoWithdraw request and the user still has one in its data,
-      // updates the user data
-      if (!existsAutoWithdraw && this.$auth.user.autoWithdrawlAll) {
-        const user = this.$auth.user;
-
-        this.$auth.setUser({
-          ...user,
-          autoWithdrawlAll: null,
-          autoWithdrawlAllRecursively: null
-        })
-      }
-    } catch (er) {
-      this.$alerts.error(er);
-    } finally {
-      this.tableDataLoading = false
-    }
+    await this.$store.dispatch("requests/fetchData");
   }
 
   getRequestName(req: number | string) {
@@ -378,7 +360,7 @@ export default class Requests extends Vue {
   }
 
   onRequestStartWorking(request: any) {
-    this.$store.dispatch("dialog/updateStatus", {
+    /*this.$store.dispatch("dialog/updateStatus", {
       id: "CommunicationNewDialog",
       title: this.$t(`dialogs.communicationNewDialog.title-conversation`),
       fullscreen: false,
@@ -400,7 +382,7 @@ export default class Requests extends Vue {
         ),
         request
       }
-    });
+    });*/
   }
 
   async onDownloadReportClick(months?: number) {
@@ -587,10 +569,10 @@ export default class Requests extends Vue {
     }
   }
 
-  @Watch("requestsList")
+  /*@Watch("requestsList")
   onRequestsListChange(value: any[]) {
     this.$store.dispatch("filters/updateDataToFilter", value)
-  }
+  }*/
 
   async beforeMount() {
     await this.fetchAll();

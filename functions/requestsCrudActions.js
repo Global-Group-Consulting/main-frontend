@@ -1,5 +1,6 @@
 import moment from "moment";
 import jsFileDownload from "js-file-download";
+import {contractNumberFormatter, userFormatter} from "~/plugins/filters";
 
 /**
  *
@@ -8,7 +9,7 @@ import jsFileDownload from "js-file-download";
  * @param {any} [emit]
  * @param {import("../@types/AlertsPlugin").AlertsPlugin} param1.$alerts
  */
-export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n, $moment, $emit}, emit) {
+export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n, $moment, $emit, $store}, emit) {
   async function deleteFn() {
     const currentRequest = request.value ?? request
 
@@ -81,8 +82,7 @@ export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n, 
           await $apiCalls.acceptRequest(currentRequest, moment(value, "DD/MM/YYYY", true).toDate(), amount, goldAmount);
         },
         settings: {
-          html: $i18n.t(`alerts.approve-request-text`, alertData) +
-            `<br>${inputs.join()}`,
+          html: $i18n.t(`alerts.approve-request-text`, alertData) + `<br>${inputs.join("")}`,
           focusConfirm: false,
           onOpen: (htmlElement) => {
             const inputAmount = htmlElement.querySelector("#req_amountChange");
@@ -365,12 +365,32 @@ export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n, 
     }
   }
 
+  function openRequest(row) {
+    let title = $i18n.t("dialogs.requests.title-details");
+
+    const userIsAdmin = $store.getters["user/userIsAdmin"];
+
+    if (userIsAdmin && row.user) {
+      title += ` <small><em>(${userFormatter(row.user)} - ${contractNumberFormatter(row.user.contractNumber)})</em></small>`;
+    }
+
+    $store.dispatch("dialog/updateStatus", {
+      title,
+      id: "RequestDialog",
+      readonly: true,
+      data: {
+        id: row.id
+      }
+    });
+  }
+
   return {
     delete: deleteFn,
     approve,
     reject,
     cancel,
     cancelAutoWithdrawlAll,
-    downloadReceipt
+    downloadReceipt,
+    openRequest
   }
 }
