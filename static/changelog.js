@@ -7,6 +7,8 @@ module.exports = `<h2 id="v1811smalltbasmall">v 1.8.11 - <small>TBA</small></h2>
 <ul>
 <li>Statistiche dashboard Admin e Serv. Clienti.</li>
 <li>Possibilità di indicare i grammi in oro per le richieste di versamento</li>
+<li>Aggiunti box statistiche in pagina club</li>
+<li>Aggiunti pulsanti per azioni rapide sempre visibili nelle tabelle</li>
 </ul>
 <h2 id="v1810small21052020small">v 1.8.10 - <small>21/05/2020</small></h2>
 <h3 id="miglioramenti-1">Miglioramenti</h3>
