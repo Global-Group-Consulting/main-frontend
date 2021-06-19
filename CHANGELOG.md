@@ -7,6 +7,8 @@
 ### Aggiunte
 - Statistiche dashboard Admin e Serv. Clienti.
 - Possibilità di indicare i grammi in oro per le richieste di versamento
+- Aggiunti box statistiche in pagina club
+- Aggiunti pulsanti per azioni rapide sempre visibili nelle tabelle
 
 ## v 1.8.10 - <small>21/05/2020</small>
 ### Miglioramenti
