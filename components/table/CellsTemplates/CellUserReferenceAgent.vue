@@ -50,7 +50,7 @@ export default class CellUserReferenceAgent extends Vue {
       return "#"
     }
 
-    return 'users/profile/' + this.refAgentData?.id
+    return '/users/profile/' + this.refAgentData?.id
   }
 
   get refAgentName(): string {

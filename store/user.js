@@ -1,6 +1,7 @@
 import Vue from "vue"
 import UserRoles from '../enums/UserRoles'
 import WalletTypes from "../enums/WalletTypes"
+import {computed} from "@vue/composition-api";
 
 const emptyWallets = [{
   type: WalletTypes.DEPOSIT,
@@ -58,6 +59,10 @@ export const actions = {
 }
 
 export const getters = {
+  current(state, getters, rootState) {
+    return rootState.auth.user;
+  },
+
   mustActivate: (state, getters, rootState) => {
     return +rootState.auth.user.role === +UserRoles.CLIENTE
       && !rootState.auth.user.activatedAt
@@ -68,6 +73,18 @@ export const getters = {
 
   userRole: (state, getters, rootState) => {
     return rootState.auth.user.role
+  },
+  userIsGold: (state, getters, rootState) => {
+    return rootState.auth.user.gold
+  },
+  /**
+   *
+   * @param state
+   * @param getters
+   * @returns {"admin" | "user"}
+   */
+  userType: (state, getters) => {
+    return [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(+getters.userRole) ? "admin" : "user"
   },
   userIsCliente: (state, getters, rootState) => {
     return [UserRoles.CLIENTE].includes(rootState.auth.user.role)
@@ -80,5 +97,23 @@ export const getters = {
   },
   userIsRealAdmin: (state, getters, rootState) => {
     return [UserRoles.ADMIN].includes(rootState.auth.user.role)
-  }
+  },
+  userIsSuperAdmin: (state, getters, rootState) => {
+    return !!rootState.auth.user.superAdmin
+  },
+  canAddUsers: (state, getters) => getters.userRole !== UserRoles.CLIENTE,
+  canAddUsers_admin: (state, getters) => !!getters.userIsSuperAdmin,
+  canAddUsers_servClienti: (state, getters) => !!getters.userIsSuperAdmin,
+  canAddUsers_agente: (state, getters) => getters.userType === "admin" && !!getters.userIsSuperAdmin,
+  canAddUsers_cliente: (state, getters) => getters.userRole !== UserRoles.CLIENTE,
+  canAddRequest: (state, getters) => getters.userType === "user",
+  canAddRequestGold: (state, getters) => getters.userType === "user" && getters.userIsGold,
+  canChangeRole: (state, getters) => !!getters.userIsSuperAdmin,
+  canChangeState: (state, getters) => !!getters.userIsSuperAdmin,
+  canChangeAgenteRif: (state, getters) => getters.userType === "admin",
+  canDeleteUser: (state, getters) => !!getters.userIsSuperAdmin,
+  canSeeSuperAdmins: (state, getters) => !!getters.userIsSuperAdmin,
+  seeAllUsers: (state, getters) => getters.userType === "admin",
+  seeOwnUsers: (state, getters) => getters.userRole === UserRoles.AGENTE,
+  canSeeOtherUsers: (state, getters) => getters.seeAllUsers || getters.seeOwnUsers
 }

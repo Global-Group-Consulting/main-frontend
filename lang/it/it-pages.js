@@ -188,7 +188,11 @@ export default {
         addBrite: "Aggiungi",
         removeBrite: "Rimuovi",
       },
-    }
+    },
+    packUnsubscribed: "Non iscritti",
+    packBasic: "Basic",
+    packFast: "Fast",
+    packPremium: "Premium",
   },
   settings: {
     title: "Impostazioni",

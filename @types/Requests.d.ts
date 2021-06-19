@@ -27,4 +27,6 @@ export interface RequestFormData {
   initialMovement: any
   targetUser: User
   targetUserId: string
+  canCancel: boolean
+  goldAmount: number
 }

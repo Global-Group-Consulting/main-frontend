@@ -5,7 +5,7 @@ import Vue from 'vue'
 
 import ToastedOptions from "../config/vue-toasted"
 import {Context, Plugin} from "@nuxt/types";
-import apiCallsPlugin from "~/plugins/apiCalls";
+import {SweetAlertOptions} from "sweetalert2";
 
 Vue.use(Toasted, ToastedOptions)
 
@@ -14,20 +14,21 @@ interface ErrorData {
   error?: any
 }
 
-interface AlertSettings {
-  title?: string
-  text?: string
-  html?: string
-  icon?: string
-  confirmButtonText?: string
-  cancelButtonText?: string
-  showCancelButton?: boolean
-  allowOutsideClick?: boolean
-  preConfirm?: any
-  showLoaderOnConfirm?: boolean,
+interface AlertSettings extends SweetAlertOptions {
+  /* title?: string
+   text?: string
+   html?: string
+   icon?: any
+   confirmButtonText?: string
+   cancelButtonText?: string
+   showCancelButton?: boolean
+   allowOutsideClick?: boolean
+   preConfirm?: any
+   showLoaderOnConfirm?: boolean
+   confirmButtonColor?: string
 
-  onOpen?(el: HTMLElement, a: any, b: any): void
-
+   onOpen?(el: HTMLElement, a: any, b: any): void
+ */
 }
 
 
@@ -70,7 +71,7 @@ class Alerts {
     Swal.close()
   }
 
-  success(settings = {}) {
+  success(settings: AlertSettings = {}) {
     if (typeof settings === 'string') {
       settings = {
         title: settings
@@ -107,9 +108,9 @@ class Alerts {
   /**
    *
    * @param {any} error
-   * @param {{}} [settings]
+   * @param {AlertSettings} [settings]
    */
-  error(error: any, settings = {}) {
+  error(error: any, settings: AlertSettings = {}) {
     let errData: ErrorData = {}
 
     if (error && error.dismiss === "cancel") {

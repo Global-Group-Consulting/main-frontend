@@ -39,13 +39,12 @@ import {DynamicTab} from "~/@types/components/DynamicTab";
 import DynamicTabs from "../DynamicTabs.vue";
 import DataTable from "../table/DataTable.vue";
 import SigningLogsPopup from "../elements/SigningLogsPopup.vue";
-import UsersCrudActions from "~/components/table/UsersCrudActions.vue";
 import ClientsListDialog from "~/components/dialogs/ClientsListDialog.vue";
 import CellUserAccountStatus from "~/components/table/CellsTemplates/CellUserAccountStatus.vue";
 import {usersFiltersFieldsMap} from "~/config/forms/filters/usersFiltersSchema";
 
 @Component({
-  components: {CellUserAccountStatus, ClientsListDialog, UsersCrudActions, SigningLogsPopup, DataTable, DynamicTabs}
+  components: {CellUserAccountStatus, ClientsListDialog, SigningLogsPopup, DataTable, DynamicTabs}
 })
 export default class UsersListTable extends Vue {
   @Prop({type: String, required: true})
@@ -55,11 +54,20 @@ export default class UsersListTable extends Vue {
   public filtersActive!: any[]
 
   loading: boolean = false;
-  usersData: Record<string, User[]> = {
-    [this.getRoleName(this.$enums.UserRoles.CLIENTE)]: [],
-    [this.getRoleName(this.$enums.UserRoles.AGENTE)]: [],
-    [this.getRoleName(this.$enums.UserRoles.SERV_CLIENTI)]: [],
-    [this.getRoleName(this.$enums.UserRoles.ADMIN)]: []
+
+  /* usersData: Record<string, User[]> = {
+     [this.getRoleName(this.$enums.UserRoles.CLIENTE)]: [],
+     [this.getRoleName(this.$enums.UserRoles.AGENTE)]: [],
+     [this.getRoleName(this.$enums.UserRoles.SERV_CLIENTI)]: [],
+     [this.getRoleName(this.$enums.UserRoles.ADMIN)]: []
+   }*/
+
+  get usersData() {
+    if (this.mustLoadAgentUsers) {
+      return this.$store.getters["users/agentUsersGroups"]
+    } else {
+      return this.$store.getters["users/usersGroups"]
+    }
   }
 
   get tabsList(): DynamicTab[] {
@@ -96,6 +104,10 @@ export default class UsersListTable extends Vue {
     }, [])
 
     return data.length > 0
+  }
+
+  get mustLoadAgentUsers() {
+    return this.$auth.user.id !== this.userId || this.$auth.user.role === this.$enums.UserRoles.AGENTE
   }
 
   getRoleName(role: number | string) {
@@ -155,8 +167,9 @@ export default class UsersListTable extends Vue {
       let usersList: any[];
       let listToEmit: any[] = []
 
-      if (this.$auth.user.id !== this.userId || this.$auth.user.role === this.$enums.UserRoles.AGENTE) {
-        usersList = await this.$apiCalls.getClientsList(this.userId)
+      if (this.mustLoadAgentUsers) {
+        await this.$store.dispatch("users/fetchAgentClients", this.userId);
+        /*usersList = await this.$apiCalls.getClientsList(this.userId)
 
         listToEmit = usersList;
 
@@ -166,22 +179,23 @@ export default class UsersListTable extends Vue {
           }
 
           this.usersData[this.$enums.UserRoles.getIdName(+user.role)].push(user)
-        }
+        }*/
       } else {
-        usersList = await this.$apiCalls.fetchAllUsers()
+        await this.$store.dispatch("users/fetchData");
+        /*usersList = await this.$apiCalls.fetchAllUsers()
 
         for (const group of usersList) {
           this.usersData[this.getRoleName(+group.id)].push(...group.data)
           listToEmit.push(...group.data)
-        }
+        }*/
       }
 
-      this.$emit("updatedUsersList", listToEmit.map(user => {
+      /* this.$emit("updatedUsersList", listToEmit.map(user => {
 
-        user.accountStatusOrdered = this.$enums.AccountStatuses.get(user.account_status).order
+         user.accountStatusOrdered = this.$enums.AccountStatuses.get(user.account_status).order
 
-        return user
-      }))
+         return user
+       }))*/
     } catch (e) {
       console.error(e)
     }
