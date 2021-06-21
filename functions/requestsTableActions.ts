@@ -321,4 +321,37 @@ export class RequestsTableActions {
       return false
     }
   }
+
+  async cancelAutoWithdrawlAll(request: RequestFormData) {
+    if (!request) {
+      throw new Error("Missing request argument");
+    }
+
+    const currentRequest = request
+
+    try {
+      await this.ctx.$alerts.askBeforeAction({
+        key: "cancel-auto-withdrawl-request",
+        preConfirm: async () => {
+          await this.ctx.$apiCalls.cancelRequest({
+            id: currentRequest.id,
+            reason: "cancelled by user"
+          });
+        },
+        settings: {
+          confirmButtonColor: "red",
+        },
+        data: {
+          type: this.ctx.$t("enums.RequestTypes." + RequestTypes.get(currentRequest.type).id
+          ),
+        }
+      });
+
+      return true
+    } catch (er) {
+      this.ctx.$alerts.error(er)
+
+      return false
+    }
+  }
 }

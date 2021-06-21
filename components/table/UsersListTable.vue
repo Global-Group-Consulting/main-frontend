@@ -1,33 +1,43 @@
 <template>
-  <div v-if="existsData">
-    <dynamic-tabs :tabs-list="tabsList"
-                  :loading="loading"
-                  :filters-fields-map="usersFiltersFieldsMap"
-                  filters-schema="usersSchema"
-                  filters-table-key="usersFilter"
-                  :outlined="true">
+  <div>
+    <v-skeleton-loader
+      elevation="1"
+      v-if="showSkeleton"
+      type="table-thead, table-tbody, table-tfoot"
+    ></v-skeleton-loader>
 
-      <template v-for="tab of tabsList"
-                v-slot:[`tabContent_${tab.id}`]="{item}">
-        <data-table
-          :items="tab.data"
-          table-key="users"
-          schema="usersSchema"
-          :options="{
+    <div v-show="!showSkeleton">
+      <div v-if="existsData">
+        <dynamic-tabs :tabs-list="tabsList"
+                      :loading="loading"
+                      :filters-fields-map="usersFiltersFieldsMap"
+                      filters-schema="usersSchema"
+                      filters-table-key="usersFilter"
+                      :outlined="true">
+
+          <template v-for="tab of tabsList"
+                    v-slot:[`tabContent_${tab.id}`]="{item}">
+            <data-table
+              :items="tab.data"
+              table-key="users"
+              schema="usersSchema"
+              :options="{
               sortBy: ['accountStatusOrdered', 'firstName', 'lastName'],
             }"
-          :loading="loading"
-          :condition="+$enums.UserRoles.get(tab.id).index"
-        >
-        </data-table>
-      </template>
+              :loading="loading"
+              :condition="+$enums.UserRoles.get(tab.id).index"
+            >
+            </data-table>
+          </template>
 
-    </dynamic-tabs>
+        </dynamic-tabs>
 
-    <clients-list-dialog v-if="$store.getters['dialog/dialogId'] === 'ClientsListDialog'"/>
+        <clients-list-dialog v-if="$store.getters['dialog/dialogId'] === 'ClientsListDialog'"/>
+      </div>
+
+      <div v-else>Nessun utente disponibile...</div>
+    </div>
   </div>
-
-  <div v-else>Nessun utente disponibile...</div>
 </template>
 
 <script lang="ts">
@@ -108,6 +118,10 @@ export default class UsersListTable extends Vue {
 
   get mustLoadAgentUsers() {
     return this.$auth.user.id !== this.userId || this.$auth.user.role === this.$enums.UserRoles.AGENTE
+  }
+
+  get showSkeleton() {
+    return !this.$store.getters["users/initialized"];
   }
 
   getRoleName(role: number | string) {

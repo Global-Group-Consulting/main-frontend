@@ -1,6 +1,6 @@
 <template>
   <div>
-    <dashboard-blocks :dashboard-data="dashboardData"></dashboard-blocks>
+    <dashboard-blocks :dashboard-data="dashboardData" :loading="loading"></dashboard-blocks>
 
     <v-row class="my-5">
       <v-col sm="12" md="8">
@@ -70,6 +70,8 @@ export default {
         pastRecapitalizations: []
       }
     });
+    const loading = ref(true);
+
 
     const chartsClientDataset = computed(() => {
       const data = {
@@ -149,9 +151,14 @@ export default {
 
       root.$set(dashboardData, "blocks", result.blocks);
       root.$set(dashboardData, "charts", result.charts);
+
+      loading.value = false;
     });
 
-    return {dashboardData, chartsClientDataset, chartsClientLabels};
+    return {
+      dashboardData, chartsClientDataset, chartsClientLabels,
+      loading
+    };
   },
   data() {
     return {

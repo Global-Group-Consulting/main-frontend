@@ -11,7 +11,8 @@ export type RootState = ReturnType<typeof state>
 export const state = () => {
   return {
     data: [] as User[],
-    loadingData: false
+    loadingData: false,
+    initialized: false
   }
 }
 
@@ -21,6 +22,9 @@ export const mutations: MutationTree<RootState> = {
   },
   UPDATE_LOADING_STATE(state, payload: any) {
     state.loadingData = payload
+  },
+  UPDATE_INITIALIZED(state, payload: boolean) {
+    state.initialized = payload
   }
 }
 
@@ -33,11 +37,15 @@ export const actions: ActionTree<RootState, RootState> = {
 
       commit("UPDATE_DATA", usersList);
 
-      this.dispatch("filters/updateDataToFilter", usersList);
+      await this.dispatch("filters/updateDataToFilter", usersList);
     } catch (er) {
       this.$alerts.error(er);
     } finally {
       commit("UPDATE_LOADING_STATE", false);
+
+      setTimeout(() => {
+        commit("UPDATE_INITIALIZED", true);
+      }, 300)
     }
   },
 
@@ -61,5 +69,9 @@ export const getters: GetterTree<RootState, RootState> = {
 
   dataLoading(state) {
     return state.loadingData
+  },
+
+  initialized(state) {
+    return state.initialized;
   }
 }

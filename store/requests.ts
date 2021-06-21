@@ -8,7 +8,8 @@ export type RequestGroups = "nuova" | "lavorazione" | "accettata" | "rifiutata";
 export const state = () => {
   return {
     data: [] as RequestFormData[],
-    loadingData: false
+    loadingData: false,
+    initialized: false
   }
 }
 
@@ -18,6 +19,9 @@ export const mutations: MutationTree<RootState> = {
   },
   UPDATE_LOADING_STATE(state, payload: any) {
     state.loadingData = payload
+  },
+  UPDATE_INITIALIZED(state, payload: boolean) {
+    state.initialized = payload
   }
 }
 
@@ -31,7 +35,7 @@ export const actions: ActionTree<RootState, RootState> = {
 
       commit("UPDATE_DATA", requestsList);
 
-      this.dispatch("filters/updateDataToFilter", requestsList);
+      await this.dispatch("filters/updateDataToFilter", requestsList);
 
       // If in the list of working request does not exist an autoWithdraw request and the user still has one in its data,
       // updates the user data
@@ -48,11 +52,19 @@ export const actions: ActionTree<RootState, RootState> = {
       this.$alerts.error(er);
     } finally {
       commit("UPDATE_LOADING_STATE", false);
+
+      setTimeout(() => {
+        commit("UPDATE_INITIALIZED", true);
+      }, 300)
     }
   }
 }
 
 export const getters: GetterTree<RootState, RootState> = {
+  requestsList(state): RequestFormData[]{
+    return state.data
+  },
+
   requestsGroups(state): Record<RequestGroups, any[]> {
     const toReturn: any = {
       nuova: [],
@@ -77,5 +89,9 @@ export const getters: GetterTree<RootState, RootState> = {
 
   dataLoading(state) {
     return state.loadingData
+  },
+
+  initialized(state) {
+    return state.initialized;
   }
 }

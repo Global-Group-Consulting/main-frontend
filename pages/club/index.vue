@@ -8,6 +8,7 @@
                         readonly
                         page="club"
                         format-as-int
+                        :loading="!$store.getters['clubUsers/initialized']"
       ></dashboard-blocks>
 
       <page-toolbar always-visible
@@ -20,7 +21,13 @@
                     filters-table-key="clubFilter"
                     outlined>
         <template v-slot:tabContent_users="{item}">
-          <data-table schema="clubSchema"
+          <v-skeleton-loader
+            elevation="1"
+            v-if="showSkeleton"
+            type="table-thead, table-tbody, table-tfoot"
+          ></v-skeleton-loader>
+
+          <data-table v-show="!showSkeleton" schema="clubSchema"
                       table-key="club"
                       :items="item.data">
 
@@ -77,6 +84,10 @@ export default class Club extends Vue {
 
   get filtersFieldsMap() {
     return clubFiltersFieldsMap;
+  }
+
+  get showSkeleton() {
+    return !this.$store.getters["clubUsers/initialized"]
   }
 
   async mounted() {

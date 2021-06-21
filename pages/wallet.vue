@@ -5,7 +5,9 @@
     ></page-header>
 
     <dashboard-blocks :dashboard-data="dashboardData"
-                      page="wallet"></dashboard-blocks>
+                      page="wallet"
+                      :loading="loading"
+    ></dashboard-blocks>
 
     <v-row class="my-5">
       <v-col cols="12">
@@ -46,18 +48,21 @@ export default {
       }
     });
 
-
+    const loading = ref(true);
 
     onBeforeMount(async () => {
       const result = await $apiCalls.fetchCommissionsStatus();
 
       root.$set(dashboardData, "blocks", result.blocks);
+
+      loading.value = false;
       // root.$set(commissions, "value", result.list);
     });
 
     return {
       ...pageBasicFn(root, "wallet"),
       dashboardData,
+      loading
       /*commissions,
       formatAmountChange,
       formatCommissionType,
