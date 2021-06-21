@@ -8,6 +8,7 @@
                         readonly
                         page="users"
                         format-as-int
+                        :loading="!$store.getters['users/initialized']"
       ></dashboard-blocks>
 
       <page-toolbar always-visible :actions-list="actionsList" filters-schema="users">

@@ -16,6 +16,7 @@
           @click:row="openRequest"
           tableKey="requestsDashboard"
           :items-per-page="25"
+          :loading="loading"
         >
         </requests-list-table>
       </v-card-text>
@@ -47,11 +48,11 @@ import TextIcon from "~/components/elements/TextIcon.vue";
 import AdminCards from "~/components/elements/cards/AdminCards.vue";
 
 
-
 @Component({
   components: {
     AdminCards,
-    TextIcon, DashboardCard, DashboardBlocks, SigningLogsPopup, DataTable, ChartLines, RequestsListTable},
+    TextIcon, DashboardCard, DashboardBlocks, SigningLogsPopup, DataTable, ChartLines, RequestsListTable
+  },
 })
 export default class Admin extends Vue {
 
@@ -88,6 +89,8 @@ export default class Admin extends Vue {
     agentsTotalEarnings: []
   }
 
+  public loading = true;
+
   get pendingUsers() {
     // return pendingUsers.map((group) => group.data[0]);
     return [];
@@ -100,8 +103,6 @@ export default class Admin extends Vue {
       return set;
     });
   }
-
-
 
   openRequest(request: any) {
     this.$router.push("/requests#" + request.id);
@@ -127,9 +128,15 @@ export default class Admin extends Vue {
   }
 
   async mounted() {
-    const result = await this.$apiCalls.dashboardFetch();
+    try {
+      const result = await this.$apiCalls.dashboardFetch();
 
-    this.dashboardData.pendingRequests = result.pendingRequests || []
+      this.dashboardData.pendingRequests = result.pendingRequests || []
+
+      this.loading = false
+    } catch (er) {
+      this.$alerts.error(er)
+    }
   }
 
 }

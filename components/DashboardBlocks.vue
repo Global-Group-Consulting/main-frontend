@@ -1,7 +1,13 @@
 <template>
   <v-row class="">
-    <v-col v-for="block of blocksList" :key="block.id" md="3" sm="6">
-      <v-card class="flex-fill flex-row d-flex align-start" style="height: 100%">
+    <v-col v-for="(block, i) of blocksList" :key="block.id" md="3" sm="6">
+      <v-skeleton-loader
+        v-if="loading"
+        :elevation="2"
+        type="list-item-avatar-two-line"
+      ></v-skeleton-loader>
+
+      <v-card class="flex-fill flex-row d-flex align-start" style="height: 100%" v-else>
         <v-icon x-large class="ml-3 mt-3" :color="block.color">
           {{ block.icon }}
         </v-icon>
@@ -10,14 +16,13 @@
           <v-card-title class="pb-0 text-no-wrap">
             <template v-if="!formatAsInt">
               €
-              {{
-                $options.filters.moneyFormatter(dashboardData.blocks[block.value])
-              }}
+              {{ $options.filters.moneyFormatter(dashboardData.blocks[block.value]) }}
             </template>
             <template v-else>
               {{ dashboardData.blocks[block.value] }}
             </template>
           </v-card-title>
+
           <v-card-text>
             {{ $t(`pages.${page}.${block.title}`) }}
           </v-card-text>
@@ -44,7 +49,7 @@ import DashboardBlocksList, {BlockAction, BlockData} from "../config/blocks/dash
 import roleBasedConfig from "../config/roleBasedConfig";
 import UserRoles from "../enums/UserRoles";
 import CommissionsAddDialog from "../components/dialogs/CommissionsAddDialog.vue";
-import {Component, Prop, Vue} from "vue-property-decorator";
+import {Component, Prop, Vue, Watch} from "vue-property-decorator";
 
 type BlocksList = keyof typeof DashboardBlocksList
 
@@ -66,6 +71,9 @@ export default class DashboardBlocks extends Vue {
 
   @Prop({type: Boolean})
   includeCommissionsAddDialog!: boolean
+
+  @Prop({type: Boolean, default: true})
+  loading!: boolean
 
   @Prop({type: String})
   forRole!: string
@@ -177,7 +185,7 @@ export default class DashboardBlocks extends Vue {
     },
     collectCommissions: () => {
       this.$router.push("/requests#new_collect_commissions");
-    }
+    },
   };
 
 }

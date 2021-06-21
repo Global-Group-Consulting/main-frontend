@@ -135,9 +135,11 @@
 import {Component, Vue, Watch} from "vue-property-decorator";
 import DynamicFieldset from "~/components/DynamicFieldset.vue";
 import requestSchema from "~/config/forms/requestSchema";
-import requestsCrudActionsFn from "~/functions/requestsCrudActions";
 import {moneyFormatter} from "~/plugins/filters";
 import {DynamicForm} from "~/@types/DynamicForm";
+import {RequestsTableActions} from "~/functions/requestsTableActions";
+import RequestTypes from "~/enums/RequestTypes";
+import RequestStatus from "~/enums/RequestStatus";
 
 interface FormData {
   wallet: number
@@ -185,6 +187,8 @@ export default class RequestDialog extends Vue {
     dialogForm: HTMLElement & DynamicForm
   }
 
+  actions!: RequestsTableActions;
+
   get dialogData() {
     return this.$store.getters["dialog/dialogData"]
   }
@@ -199,11 +203,11 @@ export default class RequestDialog extends Vue {
     }
   }
 
-  get actions() {
-    if (this.dataLoaded) {
-      return requestsCrudActionsFn(this.formData, this as any, this.$emit);
-    }
-  }
+  /* get actions() {
+     if (this.dataLoaded) {
+       return requestsCrudActionsFn(this.formData, this as any, this.$emit);
+     }
+   }*/
 
   get wallet() {
     return this.$store.getters["user/availableWallets"].find((_wallet: any) => _wallet.type === (this.formData.wallet || 1));
@@ -242,7 +246,7 @@ export default class RequestDialog extends Vue {
   }
 
   get conversationId() {
-    return this.incomingData.conversation?.id
+    return this.formData.conversation?.id
   }
 
   get showAlert() {
@@ -265,6 +269,13 @@ export default class RequestDialog extends Vue {
   get ownByCurrentUser() {
     return [this.formData.conversation?.createdById, this.formData.conversation?.directedToId]
       .includes(this.$auth.user.id)
+  }
+
+  get firstMustTakeCharge() {
+    return this.$store.getters["user/userIsAdmin"]
+      && this.formData.status === RequestStatus.NUOVA
+      && [RequestTypes.VERSAMENTO, RequestTypes.RISC_CAPITALE].includes(this.formData.type as number)
+      && [RequestStatus.NUOVA, RequestStatus.LAVORAZIONE].includes(this.formData.status as number)
   }
 
   get canApprove() {
@@ -345,7 +356,7 @@ export default class RequestDialog extends Vue {
   }
 
   async onDelete() {
-    const result = await this.actions?.delete();
+    const result = await this.actions?.delete(this.formData as any);
 
     if (result) {
       this.close();
@@ -355,9 +366,7 @@ export default class RequestDialog extends Vue {
   }
 
   async onApprove() {
-    const result = await this.actions?.approve(this.formData, () => {
-      this.$emit("requestStartWorking", this.formData);
-    });
+    const result = await (!this.firstMustTakeCharge ? this.actions?.approve(this.formData as any) : this.actions?.takeCharge(this.formData as any))
 
     if (result) {
       this.close();
@@ -367,7 +376,7 @@ export default class RequestDialog extends Vue {
   }
 
   async onReject() {
-    const result = await this.actions?.reject();
+    const result = await this.actions?.reject(this.formData as any);
 
     if (result) {
       this.close();
@@ -377,7 +386,7 @@ export default class RequestDialog extends Vue {
   }
 
   async onCancelAutoWithdrawlAll() {
-    const result = await this.actions?.cancelAutoWithdrawlAll();
+    const result = await this.actions?.cancelAutoWithdrawlAll(this.formData as any);
 
     if (result) {
       const user = this.$auth.user;
@@ -504,6 +513,8 @@ export default class RequestDialog extends Vue {
   }
 
   async mounted() {
+    this.actions = new RequestsTableActions(this);
+
     /*
     If the request has a status different from new, don't try to fetch the user's wallet
     because it will use the availableAmount stored in the request
