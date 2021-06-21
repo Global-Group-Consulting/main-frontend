@@ -5,24 +5,39 @@
         <template v-slot:subtitle>
           <v-row>
             <v-col lg="6" cols="12">
-              <span v-html="pageSubTitle"></span>
+              <v-skeleton-loader
+                class="bg-transparent"
+                v-if="showSkeleton"
+                type="card-heading@2"
+              ></v-skeleton-loader>
 
-              <tooltip-btn icon-name="mdi-archive-arrow-up" color="primary"
-                           disabled
-                           icon
-                           :tooltip="$t('pages.club.brite.changeActivePack')"></tooltip-btn>
+              <div v-else>
+                <span v-html="pageSubTitle"></span>
+
+                <tooltip-btn icon-name="mdi-archive-arrow-up" color="primary"
+                             disabled
+                             icon
+                             :tooltip="$t('pages.club.brite.changeActivePack')"></tooltip-btn>
+              </div>
             </v-col>
             <v-col lg="6" cols="12">
-              <div>{{ $t("pages.club.brite.totalUsableBrite") }}: <strong>
-                Br' {{ totalReport.totalAmount|moneyFormatter(true) }}</strong></div>
-              <ul class="pl-4" style="list-style: none; font-size: 20px; line-height: 1;">
-                <li v-for="(entry, i) of totalReport.expirations" :key="i"
-                    v-html="$t('pages.club.brite.totalExpiresAt', {
+              <v-skeleton-loader
+                type="card-heading, list-item-two-line"
+                v-if="showSkeleton"
+              ></v-skeleton-loader>
+
+              <div v-else>
+                <div>{{ $t("pages.club.brite.totalUsableBrite") }}: <strong>
+                  Br' {{ totalReport.totalAmount|moneyFormatter(true) }}</strong></div>
+                <ul class="pl-4" style="list-style: none; font-size: 20px; line-height: 1;">
+                  <li v-for="(entry, i) of totalReport.expirations" :key="i"
+                      v-html="$t('pages.club.brite.totalExpiresAt', {
                               amount: $options.filters.moneyFormatter(entry.amount, true),
                               expiresAt: $options.filters.dateFormatter(entry.expiresAt)
                               })">
-                </li>
-              </ul>
+                  </li>
+                </ul>
+              </div>
             </v-col>
           </v-row>
         </template>
@@ -137,6 +152,7 @@ export default class Brite extends Vue {
   public currentTab: number = this.$moment().month() > 5 ? 3 : 2
   public currentUser: Partial<User> = {}
   public blocksData: Record<string, any> = {}
+  public showSkeleton: boolean = true
 
   get currentSemester(): string {
     return this.$moment().year() + "_" + (this.$moment().month() < 6 ? 1 : 2)
@@ -451,6 +467,10 @@ export default class Brite extends Vue {
       if (blocks) {
         this.blocksData = blocks
       }
+
+      setTimeout(() => {
+        this.showSkeleton = false
+      }, 100)
     } catch (e) {
       this.$alerts.error(e)
     }
@@ -458,6 +478,16 @@ export default class Brite extends Vue {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 
+::v-deep .v-skeleton-loader__card-heading,
+::v-deep .v-skeleton-loader__list-item-two-line {
+  &.v-skeleton-loader__bone {
+    background: transparent !important;
+  }
+
+  .v-skeleton-loader__heading {
+    margin-bottom: 0;
+  }
+}
 </style>

@@ -42,47 +42,30 @@
 import {Component, Prop, Vue} from "vue-property-decorator";
 import {User} from "~/@types/UserFormData";
 import {CrudMenuItem} from "~/@types/Tables/CrudMenuItem";
-import {UsersTableActions} from "~/functions/usersTableActions";
-import UserRoles from "~/enums/UserRoles";
 
 @Component({
   components: {}
 })
-export default class CellUserActions extends Vue {
+export default class CellUserClubActions extends Vue {
   @Prop({type: Object, required: true})
   public item!: User
 
   @Prop({type: Array})
   public tableData!: any
 
-  public actions!: UsersTableActions;
-
   get menuOptions(): CrudMenuItem[] {
     return [
       {
-        value: this.$t("menus.edit") as string,
-        action: async () => this.actions.openEdit(this.item.id),
+        value: this.$t("menus.show-user-account") as string,
+        action: async () => window.open(`users/${this.item.id}`, "_blank"),
         alwaysVisible: true,
         icon: "mdi-square-edit-outline"
       },
       {
-        value: this.$t("menus.profile") as string,
-        action: async () => this.actions.openProfile(this.item.id),
-        if: [UserRoles.AGENTE, UserRoles.CLIENTE].includes(+this.item.role),
+        value: this.$t("menus.show-brite-account") as string,
+        action: async () => window.open(`club/${this.item.id}`, "_blank"),
         alwaysVisible: true,
         icon: "mdi-account-search"
-      },
-      /*{
-        value: "sendCommunication",
-        action: async () => this.actions.sendCommunication(),
-        if: this.item.id !== this.$auth.user.id &&
-          this.item.account_status === AccountStatuses.ACTIVE,
-      },*/
-      {
-        value: "delete",
-        action: async () => this.actions.delete(this.item),
-        if: this.item.id !== this.$auth.user.id && this.$store.getters["user/canDeleteUser"],
-        //divider: true,
       },
     ];
   }
@@ -95,9 +78,6 @@ export default class CellUserActions extends Vue {
     return this.menuOptions.filter(el => !el.alwaysVisible && (el.if ?? true))
   }
 
-  mounted() {
-    this.actions = new UsersTableActions(this)
-  }
 }
 </script>
 

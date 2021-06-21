@@ -11,6 +11,7 @@
                         class="mb-6"
                         :readonly="$auth.user.role !== $enums.UserRoles.ADMIN"
                         v-if="showUserBlocks"
+                        :loading="loading"
       ></dashboard-blocks>
 
       <dashboard-blocks :dashboard-data="agentDashboardData"
@@ -18,6 +19,7 @@
                         readonly
                         includeCommissionsAddDialog
                         v-if="showAgentBlocks"
+                        :loading="loading"
       ></dashboard-blocks>
 
       <div class="mt-10"></div>
@@ -70,6 +72,7 @@ import AdminRequestDialog from "~/components/dialogs/AdminRequestDialog.vue";
 export default class Profile extends Vue {
   userData: User | any = {}
   movementsFn = MovementsFn(this);
+  loading = true
 
   userDashboardData: any = {
     user: null,
@@ -173,6 +176,8 @@ export default class Profile extends Vue {
       }
     } catch (er) {
       this.$alerts.error(er)
+    } finally {
+      this.loading = false
     }
   }
 }

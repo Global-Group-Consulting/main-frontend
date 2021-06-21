@@ -69,8 +69,14 @@ html, body, #__nuxt, #__layout, .v-application, .v-application--wrap, body.swal2
 }
 
 
-.rotate-180{
+.rotate-180 {
   transform: rotate(180deg);
+}
+
+th {
+  &.text-right {
+    direction: rtl;
+  }
 }
 
 

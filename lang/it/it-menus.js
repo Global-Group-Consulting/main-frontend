@@ -1,6 +1,7 @@
 export default {
   "edit": "Visualizza Anagrafica",
   "profile": "Visualizza Profilo",
+  "openRequest": "Visualizza richiesta",
   "delete": "Elimina",
   "sendCommunication": "Invia comunicazione",
   "showRequests": "Mostra richieste",
@@ -21,5 +22,6 @@ export default {
   "last3Month": "Ultimi 3 mesi",
   "show-brite-account": "Visualizza Profilo",
   "show-user-account": "Visualizza Anagrafica",
-  "sign-contract": "Apponi firma finale"
+  "sign-contract": "Apponi firma finale",
+  "takeCharge": "Prendi in carico"
 }

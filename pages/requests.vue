@@ -26,7 +26,6 @@
             :multi-sort="table.multiSort"
             @click:row="openRequestDetails"
             @refetchData="onRefetchData"
-            @requestStartWorking="onRequestStartWorking"
             :items-per-page="25"
           ></requests-list-table>
         </template>
@@ -37,7 +36,6 @@
       @newRequestAdded="onNewRequestAdded"
       @requestDeleted="onRequestDeleted"
       @requestStatusChanged="onRequestStatusChanged"
-      @requestStartWorking="onRequestStartWorking"
       v-if="$store.getters['dialog/dialogId'] === 'RequestDialog'"
     ></request-dialog>
 
@@ -45,7 +43,6 @@
       @newRequestAdded="onNewRequestAdded"
       @requestDeleted="onRequestDeleted"
       @requestStatusChanged="onRequestStatusChanged"
-      @requestStartWorking="onRequestStartWorking"
       v-if="$store.getters['dialog/dialogId'] === 'RequestDialogGold'"
     ></request-dialog-gold>
 
@@ -66,7 +63,6 @@ import RequestDialogGold from "~/components/dialogs/RequestGoldDialog.vue";
 import PageToolbar from "~/components/blocks/PageToolbar.vue";
 import RequestDialog from "~/components/dialogs/RequestDialog.vue";
 import PageHeader from "~/components/blocks/PageHeader.vue";
-import RequestsCrudActions from "~/components/table/RequestsCrudAction.vue";
 import RequestsListTable from "~/components/table/RequestsListTable.vue";
 import CommunicationNewDialog from "~/components/dialogs/CommunicationNewDialog.vue";
 
@@ -82,6 +78,7 @@ import {ActionItem} from "~/@types/ActionItem";
 import DynamicTabs from "~/components/DynamicTabs.vue";
 import DataTable from "~/components/table/DataTable.vue";
 import {requestsFiltersFieldsMap} from "~/config/forms/filters/requestsFiltersSchema";
+import {RequestFormData} from "~/@types/Requests";
 
 type RequestGroups = "nuova" | "lavorazione" | "accettata" | "rifiutata";
 
@@ -103,12 +100,18 @@ type RequestGroups = "nuova" | "lavorazione" | "accettata" | "rifiutata";
 export default class Requests extends Vue {
   public permissions = permissionsFn(this);
   public currentTab = 0
-  public tableDataLoading = false
-  public requestsList = []
 
+  get tableDataLoading() {
+    return this.$store.getters["request/tableDataLoading"];
+  }
+
+  get requestsList(): RequestFormData[] {
+    return this.$store.getters["requests/requestsList"]
+  }
 
   get requestsGroups(): Record<RequestGroups, any[]> {
-    const toReturn: any = {
+    return this.$store.getters["requests/requestsGroups"];
+    /*const toReturn: any = {
       nuova: [],
       lavorazione: [],
       accettata: [],
@@ -126,7 +129,7 @@ export default class Requests extends Vue {
       toReturn[groupName].push(richiesta);
     });
 
-    return toReturn;
+    return toReturn;*/
   }
 
   get requestsTabs(): DynamicTab[] {
@@ -309,29 +312,7 @@ export default class Requests extends Vue {
   }
 
   private async fetchAll() {
-    this.tableDataLoading = true
-
-    try {
-      this.requestsList = await this.$apiCalls.fetchRequests();
-
-      const existsAutoWithdraw = this.requestsGroups.lavorazione.find(req => req.autoWithdrawlAll)
-
-      // If in the list of working request does not exist an autoWithdraw request and the user still has one in its data,
-      // updates the user data
-      if (!existsAutoWithdraw && this.$auth.user.autoWithdrawlAll) {
-        const user = this.$auth.user;
-
-        this.$auth.setUser({
-          ...user,
-          autoWithdrawlAll: null,
-          autoWithdrawlAllRecursively: null
-        })
-      }
-    } catch (er) {
-      this.$alerts.error(er);
-    } finally {
-      this.tableDataLoading = false
-    }
+    await this.$store.dispatch("requests/fetchData");
   }
 
   getRequestName(req: number | string) {
@@ -375,32 +356,6 @@ export default class Requests extends Vue {
 
   onCommunicationAdded() {
     this.fetchAll();
-  }
-
-  onRequestStartWorking(request: any) {
-    this.$store.dispatch("dialog/updateStatus", {
-      id: "CommunicationNewDialog",
-      title: this.$t(`dialogs.communicationNewDialog.title-conversation`),
-      fullscreen: false,
-      readonly: false,
-      data: {
-        type: this.$enums.MessageTypes.CONVERSATION,
-        subject: this.$t(
-          `dialogs.communicationNewDialog.subject-new-${request.type === RequestTypes.RISC_CAPITALE ? "withdrawl" : "deposit"}`,
-          {date: dateFormatter(request.created_at)}
-        ),
-        receiver: request.user.id,
-        message: this.$t(
-          `dialogs.communicationNewDialog.message-new-${request.type === RequestTypes.RISC_CAPITALE ? "withdrawl" : "deposit"}`,
-          {
-            firstName: request.user.firstName,
-            lastName: request.user.lastName,
-            amount: moneyFormatter(request.amount)
-          }
-        ),
-        request
-      }
-    });
   }
 
   async onDownloadReportClick(months?: number) {
@@ -587,10 +542,16 @@ export default class Requests extends Vue {
     }
   }
 
-  @Watch("requestsList")
+  @Watch("requestsList", {deep: true})
+  onRequestsGroupsChange(value: any) {
+    this.onUrlHashChange();
+  }
+
+
+  /*@Watch("requestsList")
   onRequestsListChange(value: any[]) {
     this.$store.dispatch("filters/updateDataToFilter", value)
-  }
+  }*/
 
   async beforeMount() {
     await this.fetchAll();

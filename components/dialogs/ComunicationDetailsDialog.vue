@@ -27,14 +27,16 @@
             v-if="canApproveRequest"
             x-small
             @click="requestReject"
-            >{{ $t("dialogs.communicationDialog.btn-reject-request") }}</v-btn
+          >{{ $t("dialogs.communicationDialog.btn-reject-request") }}
+          </v-btn
           >
           <v-btn
             color="green"
             v-if="canApproveRequest"
             x-small
             @click="requestApprove"
-            >{{ $t("dialogs.communicationDialog.btn-approve-request") }}</v-btn
+          >{{ $t("dialogs.communicationDialog.btn-approve-request") }}
+          </v-btn
           >
         </v-layout>
       </v-alert>
@@ -298,12 +300,11 @@
 </template>
 
 <script>
-import { createNamespacedHelpers } from "vuex-composition-helpers";
+import {createNamespacedHelpers} from "vuex-composition-helpers";
 import jsFileDownload from "js-file-download";
 
 import TextEditor from "@/components/forms/inputs/TextEditor";
 
-import requestsCrudActions from "../../functions/requestsCrudActions";
 
 import {
   watch,
@@ -312,17 +313,18 @@ import {
   onBeforeMount,
   onBeforeUnmount
 } from "@vue/composition-api";
+import {RequestsTableActions} from "../../functions/requestsTableActions";
 
 export default {
   name: "ComunicationDetailsDialog",
   components: {},
-  setup(props, { root, refs, emit }) {
-    const { $enums, $store, $alerts, $apiCalls, $auth, $vuetify } = root;
+  setup(props, {root, refs, emit}) {
+    const {$enums, $store, $alerts, $apiCalls, $auth, $vuetify} = root;
 
     let timerSetAsRead = null;
     let timerReloadData = null;
 
-    let requestActions = ref({ reject: () => {}, approve: () => {} });
+    let requestActions = ref(null);
 
     const showQuoteMenu = ref(false);
     const showQuoteMenuX = ref(0);
@@ -418,7 +420,7 @@ export default {
         }
 
         if (unreadMessages.length > 0) {
-          await $apiCalls.messagesSetAsRead({ ids: unreadMessages });
+          await $apiCalls.messagesSetAsRead({ids: unreadMessages});
           emit("setAsRead", dialogData.value.id);
         }
       }, 2000);
@@ -467,11 +469,7 @@ export default {
     }
 
     async function _initRequestActions() {
-      requestActions.value = requestsCrudActions(
-        dialogData.value.request,
-        root,
-        emit
-      );
+      requestActions.value = new RequestsTableActions(root);
     }
 
     function getSender(message) {
@@ -486,7 +484,7 @@ export default {
     }
 
     function getItemColor(message) {
-      if(message.senderId === $auth.user.id){
+      if (message.senderId === $auth.user.id) {
         return colors.me
       }
 

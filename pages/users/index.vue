@@ -8,36 +8,15 @@
                         readonly
                         page="users"
                         format-as-int
+                        :loading="!$store.getters['users/initialized']"
       ></dashboard-blocks>
 
       <page-toolbar always-visible :actions-list="actionsList" filters-schema="users">
-        <!--        <template v-slot:right-block>
-                  <div class="d-flex">
-                    <v-text-field class="align-center" hide-details
-                                  placeholder="Cerca..." v-model.lazy="filters.generic">
 
-                      <template v-slot:append>
-                        <transition name="fadeRight" mode="out-in">
-                          <v-btn icon @click="filtersClean"
-                                 v-if="filtersActive.length"
-                                 style="animation-duration: 0.5s"
-                                 small>
-                            <v-icon small>mdi-filter-remove</v-icon>
-                          </v-btn>
-
-                          <v-icon v-if="!filtersActive.length"
-                                  style="animation-duration: 0.5s">mdi-magnify
-                          </v-icon>
-                        </transition>
-                      </template>
-                    </v-text-field>
-                  </div>
-                </template>-->
       </page-toolbar>
 
       <users-list-table :user-id="$auth.user.id" :filters-active="filtersActive"
-                        @filtersClean="filtersClean"
-                        @updatedUsersList="onUpdatedUsersList">
+                        @filtersClean="filtersClean">
 
       </users-list-table>
 
@@ -97,7 +76,6 @@
 
 <script>
 import PageHeader from "@/components/blocks/PageHeader";
-import UsersCrudActions from "@/components/table/UsersCrudActions";
 import usersPage from "@/functions/usersPage";
 import pageBasic from "@/functions/pageBasic";
 import {onMounted, computed, ref, reactive, watch} from "@vue/composition-api";
@@ -125,14 +103,13 @@ export default {
     PageToolbar,
     SigningLogsPopup,
     DataTable,
-    UsersCrudActions,
     PageHeader
   },
   meta: {
     permissions: [UsersPermissions.ACL_USERS_TEAM_READ, UsersPermissions.ACL_USERS_ALL_READ]
   },
   setup(props, {root}) {
-    const {$enums, $i18n, $apiCalls, $vuetify, $router, $store, $alerts} = root;
+    const {$enums, $i18n, $apiCalls, $vuetify, $router, $store, $alerts, $auth} = root;
     const currentTab = ref(0);
     const lastTab = ref(0)
     const permissions = Permissions(root);
@@ -251,21 +228,16 @@ export default {
       return selectedTable ? $enums.UserRoles.get(selectedTable.id).color : ""
     })
 
-    const usersDataBlocks = reactive({
-      blocks: {
-        draft: 0,
-        pendingSignature: 0,
-        pendingFirstAccess: 0,
-        active: 0
-      }
-    })
+    const usersDataBlocks = computed(() => {
+      const userIsAgente = $store.getters["user/userIsAgente"];
+      const usersStatistics = $store.getters["users/usersStatistics"];
+      const agentUsersStatistics = $store.getters["users/agentUsersStatistics"];
 
-    function onUpdatedUsersList(data) {
-      usersDataBlocks.blocks.draft = data.filter(user => user.account_status === AccountStatuses.DRAFT).length
-      usersDataBlocks.blocks.pendingSignature = data.filter(user => user.account_status === AccountStatuses.VALIDATED).length
-      usersDataBlocks.blocks.pendingFirstAccess = data.filter(user => user.account_status === AccountStatuses.APPROVED).length
-      usersDataBlocks.blocks.active = data.filter(user => user.account_status === AccountStatuses.ACTIVE).length
-    }
+      return {
+        blocks: userIsAgente ? agentUsersStatistics : usersStatistics
+      }
+    });
+
 
     function filtersClean() {
       filters.generic = ""
@@ -375,7 +347,6 @@ export default {
       showClientsList,
       getInitials,
       usersDataBlocks,
-      onUpdatedUsersList,
       onAppliedFilter
     };
   },

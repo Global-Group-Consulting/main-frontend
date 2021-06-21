@@ -4,7 +4,7 @@
                        class="mb-5"
     /> -->
 
-    <dashboard-blocks :dashboard-data="dashboardData"></dashboard-blocks>
+    <dashboard-blocks :dashboard-data="dashboardData" :loading="loading"></dashboard-blocks>
 
     <v-row class="my-5">
       <v-col sm="12" md="8">
@@ -37,19 +37,19 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import {mapGetters} from "vuex";
 import Grafico from "@/components/charts/Grafico";
 import ActivationWizard from "@/components/hompage/activationWizard/ActivationWizard";
 import clientDashboardChart from "@/config/charts/clientDashboard";
 import DashboardBlocks from "~/components/DashboardBlocks";
 
-import { onBeforeMount, reactive, ref, computed } from "@vue/composition-api";
+import {onBeforeMount, reactive, ref, computed} from "@vue/composition-api";
 
 export default {
   name: "Cliente",
-  components: { DashboardBlocks, Grafico, ActivationWizard },
-  setup(props, { root }) {
-    const { $apiCalls, $options, $moment } = root;
+  components: {DashboardBlocks, Grafico, ActivationWizard},
+  setup(props, {root}) {
+    const {$apiCalls, $options, $moment} = root;
     const monthsToShow = ref(12);
     const dashboardData = reactive({
       blocks: {
@@ -62,6 +62,7 @@ export default {
         pastRecapitalizations: []
       }
     });
+    const loading = ref(true);
 
     const chartsClientDataset = computed(() => {
       const data = {
@@ -141,12 +142,14 @@ export default {
 
       root.$set(dashboardData, "blocks", result.blocks);
       root.$set(dashboardData, "charts", result.charts);
+
+      loading.value = false;
     });
 
-    return { dashboardData, chartsClientDataset, chartsClientLabels };
+    return {dashboardData, chartsClientDataset, chartsClientLabels, loading};
   },
   data() {
-    return { clientDashboardChart };
+    return {clientDashboardChart};
   },
   computed: {
     ...mapGetters({

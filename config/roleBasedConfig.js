@@ -189,7 +189,7 @@ const defaults = {
         'created_at',
         ['updated_at', ["lavorazione"]],
         ['completed_at', ["accettata", "rifiutata"]],
-        ['actions', ["nuova", "accettata"]]
+        'actions'
       ]
     },
     requestsDashboard: {
@@ -232,6 +232,14 @@ const defaults = {
         "pendingFirstAccess",
         "pendingSignature",
         "draft",
+      ]
+    },
+    club: {
+      blocks: [
+        "clubPackPremium",
+        "clubPackFast",
+        "clubPackBasic",
+        "clubPackUnsubscribed",
       ]
     }
   }
@@ -333,7 +341,7 @@ const servClienti = {
         'created_at',
         ['updated_at', ["lavorazione"]],
         ['completed_at', ["accettata", "rifiutata"]],
-        ['actions', ["nuova"]]
+        'actions'
       ]
     },
     movements: {
@@ -384,7 +392,7 @@ const cliente = {
         'created_at',
         ['updated_at', ["lavorazione"]],
         ['completed_at', ["accettata", "rifiutata"]],
-        ['actions', ["nuova", "accettata"]]
+        'actions'
       ]
     },
     movements: {
@@ -451,7 +459,7 @@ const agente = {
         'created_at',
         ['updated_at', ["lavorazione"]],
         ['completed_at', ["accettata", "rifiutata"]],
-        ['actions', ["nuova", "accettata"]]
+        'actions'
       ]
     },
     movements: {

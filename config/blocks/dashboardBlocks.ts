@@ -1,5 +1,6 @@
 import UserRoles from "~/enums/UserRoles";
 import AccountStatuses from "~/enums/AccountStatuses";
+import ClubPacks from "~/enums/ClubPacks";
 
 export type BlockAction = "addDeposit"
   | "addCommissions"
@@ -22,6 +23,33 @@ export interface BlockData {
 
 function getAccountStatusColor(status: string) {
   return AccountStatuses.get(status).color || "#c1c1c1"
+}
+
+const club: Record<string, BlockData> = {
+  clubPackUnsubscribed: {
+    title: "packUnsubscribed",
+    icon: "mdi-diamond-outline",
+    color: ClubPacks.get(ClubPacks.UNSUBSCRIBED).iconColor,
+    value: "packUnsubscribed",
+  },
+  clubPackBasic: {
+    title: "packBasic",
+    icon: "mdi-diamond-stone",
+    color: ClubPacks.get(ClubPacks.BASIC).iconColor,
+    value: "packBasic",
+  },
+  clubPackFast: {
+    title: "packFast",
+    icon: "mdi-diamond-stone",
+    color: ClubPacks.get(ClubPacks.FAST).iconColor,
+    value: "packFast",
+  },
+  clubPackPremium: {
+    title: "packPremium",
+    icon: "mdi-diamond-stone",
+    color: ClubPacks.get(ClubPacks.PREMIUM).iconColor,
+    value: "packPremium",
+  },
 }
 
 const data: Record<string, BlockData> = {
@@ -143,7 +171,7 @@ const data: Record<string, BlockData> = {
     color: getAccountStatusColor("active"),
     value: "active",
   },
-
+  ...club
 }
 
 

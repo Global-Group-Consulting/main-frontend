@@ -5,6 +5,7 @@ import {Plugin} from "@nuxt/types";
 import {enums} from "~/plugins/enums";
 import {AclPermission} from "~/@types/Acl/Permissions";
 import {AclRole} from "~/@types/Acl/Roles";
+import {RequestFormData} from "~/@types/Requests";
 
 
 interface IApiCalls extends ApiCalls {
@@ -264,7 +265,7 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async acceptRequest(data: any, paymentDocDate: any, paymentAmount: number, paymentGoldAmount: number) {
+  async acceptRequest(data: RequestFormData, paymentDocDate: Date, paymentAmount: number, paymentGoldAmount: number) {
     return await this._call({
       method: "PUT",
       endPoint: `/api/requests/${data.id}/approve`,
