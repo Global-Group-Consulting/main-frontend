@@ -1,5 +1,5 @@
-import {computed, reactive} from "@vue/composition-api"
 import UserRoles from "../enums/UserRoles"
+import {computed, reactive} from "@vue/composition-api";
 
 export default function ({$auth}) {
   const userGold = computed(() => $auth.user.gold)

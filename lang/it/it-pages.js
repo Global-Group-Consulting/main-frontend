@@ -158,7 +158,13 @@ export default {
     collectedCommissions: "Provvigioni riscosse",
     clientsTotalDeposit: "Versamenti dei clienti nell'anno in corso",
     collectCommissions: "Preleva",
-    addCommissions: "Aggiungi / Trasferisci"
+    agentBritesTotal: "Brite Accumulati",
+    agentBritesCurrMonth: "Brite Mese corrente",
+    addCommissions: "Aggiungi / Trasferisci",
+    tabs: {
+      commissions: "Provvigioni",
+      agentBrites: "Brite",
+    }
   },
   calculator: {
     title: "Preventivi"

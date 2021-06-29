@@ -11,6 +11,7 @@ export type BlockAction = "addDeposit"
 
 export interface BlockData {
   title: string
+  slotId?: string
   icon?: string
   textIcon?: string
   color?: string
@@ -19,6 +20,10 @@ export interface BlockData {
   page?: string
   actionText?: string | ((context: Vue, readonly: boolean) => string)
   action?: null | BlockAction | ((context: Vue, readonly: boolean) => BlockAction)
+  dropDown?: Record<string, any>
+  onDropDownChange?: (cardData: BlockData, newTab: string) => void
+  currency?: string
+  formatAsInt?: boolean
 }
 
 function getAccountStatusColor(status: string) {

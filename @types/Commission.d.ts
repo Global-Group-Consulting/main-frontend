@@ -1,5 +1,8 @@
 export interface Commission {
   amountChange: number
+  amountEuro: number
+  amountBrite: number
+  briteConversionPercentage: number
   clientId: string
   commissionOnValue: number
   commissionPercentage: number

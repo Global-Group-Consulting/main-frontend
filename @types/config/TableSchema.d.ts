@@ -8,4 +8,5 @@ export interface TableSchema {
   width?: string
   class?: string
   component?: keyof typeof CellComponents
+  componentSettings?: any
 }

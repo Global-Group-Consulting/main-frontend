@@ -15,7 +15,13 @@ export interface RequestFormData {
   autoWithdrawlAllRevoked: any
   conversation: any
   requestAttachment: any
+
   amount: number | string
+  amountOriginal?: number
+  amountBrite?: number
+  amountEuro?: number
+  briteConversionPercentage?: number
+
   rejectReason: string
   created_at: string
   completed_at: string
@@ -29,4 +35,8 @@ export interface RequestFormData {
   targetUserId: string
   canCancel: boolean
   goldAmount: number
+
+  briteMovementId: string
+  movementId: string
+
 }

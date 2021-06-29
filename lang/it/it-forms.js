@@ -130,6 +130,8 @@ export default {
 
   'requests-block-time-critic-days': "Intervallo creazione rich. giorni 15 e 30 del mese",
   'requests-block-time-critic-days-hint': "Fasce orarie all'interno delle quali gli utenti possono creare richieste di vario genere, valide per i soli giorni della ricapitalizzazione e blocco provvigioni agenti.",
+  'requests-amount-message-brite-percent': "Dell'importo richiesto, <strong>saranno prelevati solo € {amount}</strong> mentre il restante <strong>{percent}% (Br' {amountBrite})</strong> verrà convertito in Brite ed aggiunto al relativo wallet.",
+  'requests-amount-message-all-brites': "L'importo inserito è inferiore a € {limit} quindi <strong>verrà interamente convertito in Brite ed aggiunto al relativo wallet</strong>, per un valore di Br' {amountBrite}",
 
   'maintenance-mode': "Modalità manutenzione",
 
@@ -151,4 +153,12 @@ export default {
   'filters-money-min': "Importo Minimo",
   'filters-money-max': "Importo Massimo",
   'filters-club-request-notify-email': "Email da notificare per nuove Richieste Club",
+
+  'settings': {
+    'emails_notifications_label': "Email e notifiche",
+    'agents_requests_label': "Agenti - Riscossione provvigioni",
+
+    'request-min-amount': "Soglia minimo per richieste in €",
+    'request-brite-percentage': "Percentuale da convertire in Brite"
+  }
 }

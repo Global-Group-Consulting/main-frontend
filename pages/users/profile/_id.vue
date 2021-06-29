@@ -5,7 +5,6 @@
         <template v-slot:subtitle>{{ userData.firstName + ' ' + userData.lastName }}</template>
       </page-header>
 
-
       <!-- Blocchi resoconto dashboard -->
       <dashboard-blocks :dashboard-data="userDashboardData"
                         class="mb-6"
@@ -14,6 +13,7 @@
                         :loading="loading"
       ></dashboard-blocks>
 
+      <!--      <agent-wallet-cards :user-id="userData.id" v-if="showAgentBlocks"></agent-wallet-cards>-->
       <dashboard-blocks :dashboard-data="agentDashboardData"
                         page="wallet"
                         readonly
@@ -54,6 +54,7 @@ import {User} from "~/@types/UserFormData";
 import MovementsListTable from "~/components/table/MovementsListTable.vue";
 import UsersListTable from "~/components/table/UsersListTable.vue";
 import CommissionsListTable from "~/components/table/CommissionsListTable.vue";
+import AgentBriteListTable from "~/components/table/AgentBriteListTable.vue";
 
 import MovementsFn from "@/functions/movementsFn.js";
 import DynamicTabs from "~/components/DynamicTabs.vue";
@@ -61,12 +62,16 @@ import {DynamicTab} from "~/@types/components/DynamicTab";
 import PageToolbar from "~/components/blocks/PageToolbar.vue";
 import {ActionItem} from "~/@types/ActionItem";
 import AdminRequestDialog from "~/components/dialogs/AdminRequestDialog.vue";
+import AgentWalletCards from "~/components/elements/cards/AgentWalletCards.vue";
 
 @Component({
   components: {
+    AgentWalletCards,
     AdminRequestDialog,
     PageToolbar,
-    DynamicTabs, CommissionsListTable, MovementsListTable, UsersListTable, DashboardBlocks, DataTable, PageHeader
+    DynamicTabs,
+    AgentBriteListTable, CommissionsListTable, MovementsListTable, UsersListTable,
+    DashboardBlocks, DataTable, PageHeader
   }
 })
 export default class Profile extends Vue {
@@ -141,6 +146,11 @@ export default class Profile extends Vue {
       }, {
         id: "commissions",
         title: "Provvigioni",
+        if: +this.userData.role !== this.$enums.UserRoles.CLIENTE
+      },
+      {
+        id: "agent-brite",
+        title: "Brite Agente",
         if: +this.userData.role !== this.$enums.UserRoles.CLIENTE
       }
     ].filter(el => el.if)

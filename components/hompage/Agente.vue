@@ -44,7 +44,6 @@
 <script>
 import {mapGetters} from "vuex";
 import Grafico from "@/components/charts/Grafico";
-import ActivationWizard from "@/components/hompage/activationWizard/ActivationWizard";
 
 import agentDashboardChart from "@/config/charts/agentDashboard";
 import clientDashboardChart from "@/config/charts/clientDashboard";
@@ -55,7 +54,7 @@ import {onBeforeMount, reactive, ref, computed} from "@vue/composition-api";
 
 export default {
   name: "Cliente",
-  components: {DashboardBlocks, ChartLines, Grafico, ActivationWizard},
+  components: {DashboardBlocks, ChartLines, Grafico},
   setup(props, {root}) {
     const {$apiCalls, $options, $moment} = root;
     const monthsToShow = ref(12);

@@ -10,6 +10,7 @@
     @focus="onFocus"
     @blur="onBlur"
     ref="textInput"
+    :messages="message"
   >
     <template v-slot:label>
       <slot name="label"></slot>
@@ -34,6 +35,10 @@
         MAX
       </v-btn>
     </template>
+
+    <template v-slot:message="{message}">
+      <div v-html="message"></div>
+    </template>
   </v-text-field>
 </template>
 
@@ -41,7 +46,7 @@
 import {Component, Prop, Vue, Watch} from "vue-property-decorator";
 import {moneyFormatter} from "~/plugins/filters";
 import {setValue, getValue} from "vue-currency-input";
-import { CurrencyDirective } from 'vue-currency-input'
+import {CurrencyDirective} from 'vue-currency-input'
 
 @Component({
   directives: {
@@ -65,6 +70,9 @@ export default class MoneyInput extends Vue {
 
   @Prop({type: Number})
   maxValue!: number
+
+  @Prop({type: String})
+  message!: string
 
   $refs!: {
     textInput: any

@@ -11,7 +11,9 @@ import CellUserRole from "./CellUserRole.vue";
 import CellUserSuperAdmin from "./CellUserSuperAdmin.vue";
 import CellUserCommissionsAssigned from "./CellUserCommissionsAssigned.vue";
 import CellUserActions from "./CellUserActions.vue";
+
 import CellBriteValue from "./CellBriteValue.vue";
+import CellEuroValue from "./CellEuroValue.vue";
 
 import CellRequestAmount from "./CellRequestAmount.vue";
 import CellRequestStatus from "./CellRequestStatus.vue";
@@ -19,6 +21,9 @@ import CellRequestType from "./CellRequestType.vue";
 import CellRequestActions from "./CellRequestActions.vue";
 
 import CellCurrency from "./CellCurrency.vue";
+import CellPercentage from "./CellPercentage.vue";
+import CellAgentBriteType from "~/components/table/CellsTemplates/CellAgentBriteType.vue";
+import CellAgentBriteAmount from "~/components/table/CellsTemplates/CellAgentBriteAmount.vue";
 
 export default {
   CellUserAccountStatus,
@@ -39,5 +44,9 @@ export default {
   CellRequestStatus,
   CellRequestType,
   CellRequestActions,
-  CellCurrency
+  CellCurrency,
+  CellPercentage,
+  CellEuroValue,
+  CellAgentBriteType,
+  CellAgentBriteAmount
 }

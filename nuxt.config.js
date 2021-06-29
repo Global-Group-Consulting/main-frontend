@@ -80,7 +80,7 @@ export default {
     './plugins/axios.js',
     './plugins/alerts.ts',
     './plugins/apiCalls.ts',
-    './plugins/filters.js',
+    './plugins/filters.ts',
     './plugins/enums.ts',
     './plugins/mixins.js',
     './plugins/global-components.js',

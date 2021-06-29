@@ -1,25 +1,45 @@
+import {GetterTree, ActionTree, MutationTree} from 'vuex'
+import {RequestFormData} from "~/@types/Requests";
+import RequestStatus from "~/enums/RequestStatus";
+
+export type RootState = ReturnType<typeof state>
+export type RequestGroups = "nuova" | "lavorazione" | "accettata" | "rifiutata";
+
 import Vue from "vue";
 import UserRoles from "~/enums/UserRoles";
 import moment from "moment";
 
 
+export interface GlobalSettings {
+  maintenanceMode: boolean
+  requestsBlockTime: string[]
+  requestsBlockTimeCriticDays: string[]
+  clubRequestNotifyEmail: string
+  requestMinAmount: number
+  requestBritePercentage: number
+}
+
 export const state = () => {
   return {
-    globalSettings: {},
+    globalSettings: {} as GlobalSettings,
     userSettings: {},
     lastFetch: null
   }
 }
 
-export const mutations = {
-  UPDATE_GLOBAL_SETTINGS(state, payload) {
+export const mutations: MutationTree<RootState> = {
+  UPDATE_GLOBAL_SETTINGS(state, payload: any) {
     for (let i in payload) {
-      Vue.set(state.globalSettings, payload[i].name, payload[i].value)
+      if (payload.hasOwnProperty(i)) {
+        Vue.set(state.globalSettings, payload[i].name, payload[i].value)
+      }
     }
   },
   UPDATE_USER_SETTINGS(state, payload) {
     for (let i in payload) {
-      Vue.set(state.userSettings, payload[i].name, payload[i].value)
+      if (payload.hasOwnProperty(i)) {
+        Vue.set(state.userSettings, payload[i].name, payload[i].value)
+      }
     }
   },
   UPDATE_LAST_FETCH(state, payload) {
@@ -27,7 +47,7 @@ export const mutations = {
   }
 }
 
-export const actions = {
+export const actions: ActionTree<RootState, RootState> = {
   /**
    * @param commit
    * @param {{}} data
@@ -61,8 +81,8 @@ export const actions = {
   }
 }
 
-export const getters = {
-  globalSettings(state) {
+export const getters: GetterTree<RootState, RootState> = {
+  globalSettings(state): GlobalSettings {
     return state.globalSettings
   },
   userSettings(state) {
@@ -78,15 +98,10 @@ export const getters = {
     const startTime = moment(timeFrame.start, "HH:mm")
     const endTime = moment(timeFrame.end, "HH:mm")
 
-    if (nowDate.isBefore(startTime) || nowDate.isAfter(endTime)) {
-      return true
-    }
-
-    return false
+    return nowDate.isBefore(startTime) || nowDate.isAfter(endTime);
   },
-  timeFrame(state, getters, rootState) {
-    const authUser = rootState.auth.user
-    const userAdmin = [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(authUser.role)
+  timeFrame(state, getters, rootState, rootGetters) {
+    const userAdmin = rootGetters["user/userIsAdmin"]
     const nowDate = moment()
 
     const criticalDays = [15, nowDate.clone().endOf('month')];

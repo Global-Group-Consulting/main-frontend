@@ -1,74 +1,71 @@
 <template>
   <v-flex>
-    <page-header
-      page-name="wallet"
-    ></page-header>
+    <page-header page-name="wallet"/>
 
-    <dashboard-blocks :dashboard-data="dashboardData"
-                      page="wallet"
-                      :loading="loading"
-    ></dashboard-blocks>
+    <agent-wallet-cards></agent-wallet-cards>
 
-    <v-row class="my-5">
-      <v-col cols="12">
-        <v-card>
+    <dynamic-tabs :tabs-list="tabs"
+                  outlined>
+      <template v-slot:tabContent_commissions="{item}">
+        <commissions-list-table :user-id="$auth.user.id"></commissions-list-table>
+      </template>
 
-          <commissions-list-table :user-id="this.$auth.user.id"></commissions-list-table>
+      <template v-slot:tabContent_agentBrites="{item}">
+        <agent-brite-list-table></agent-brite-list-table>
+      </template>
 
-        </v-card>
-      </v-col>
-    </v-row>
+    </dynamic-tabs>
+
   </v-flex>
 </template>
 
-<script>
-import {onBeforeMount, reactive, ref} from "@vue/composition-api";
-import DashboardBlocks from "@/components/DashboardBlocks";
-import DataTable from "@/components/table/DataTable";
-import PageHeader from "@/components/blocks/PageHeader";
+<script lang="ts">
+import DashboardBlocks from "@/components/DashboardBlocks.vue";
+import DataTable from "@/components/table/DataTable.vue";
+import PageHeader from "@/components/blocks/PageHeader.vue";
 
-import pageBasicFn from "@/functions/pageBasic"
-import {PortfolioPermissions} from "../functions/acl/enums/portfolio.permissions";
-import CommissionsListTable from "../components/table/CommissionsListTable";
+import {PortfolioPermissions} from "~/functions/acl/enums/portfolio.permissions";
+import CommissionsListTable from "../components/table/CommissionsListTable.vue";
+import {Component, Vue} from "vue-property-decorator";
+import RequestDialog from "~/components/dialogs/RequestDialog.vue";
+import {DynamicTab} from "~/@types/components/DynamicTab";
+import DynamicTabs from "~/components/DynamicTabs.vue";
+import AgentBriteListTable from "~/components/table/AgentBriteListTable.vue";
+import DashboardCard from "~/components/dashboard/DashboardCard.vue";
+import AgentWalletCards from "~/components/elements/cards/AgentWalletCards.vue";
 
-export default {
-  name: "wallet",
-  components: {CommissionsListTable, PageHeader, DataTable, DashboardBlocks},
+@Component({
+  components: {
+    AgentWalletCards,
+    DashboardCard,
+    AgentBriteListTable,
+    DynamicTabs,
+    RequestDialog,
+    CommissionsListTable,
+    PageHeader,
+    DataTable,
+    DashboardBlocks
+  },
   meta: {
     permissions: [PortfolioPermissions.ACL_PORTFOLIO_SELF_READ]
-  },
-  setup(props, {root}) {
-    const {$apiCalls, $options, $i18n} = root
-    const dashboardData = reactive({
-      blocks: {
-        monthCommissions: 0,
-        reinvestedCommissions: 0,
-        collectedCommissions: 0,
-        clientsTotalDeposit: 0,
-      }
-    });
-
-    const loading = ref(true);
-
-    onBeforeMount(async () => {
-      const result = await $apiCalls.fetchCommissionsStatus();
-
-      root.$set(dashboardData, "blocks", result.blocks);
-
-      loading.value = false;
-      // root.$set(commissions, "value", result.list);
-    });
-
-    return {
-      ...pageBasicFn(root, "wallet"),
-      dashboardData,
-      loading
-      /*commissions,
-      formatAmountChange,
-      formatCommissionType,
-      getItemClass*/
-    }
   }
+})
+export default class Wallet extends Vue {
+
+  tabs: DynamicTab[] = [
+    {
+      id: "commissions",
+      title: this.$t(`pages.wallet.tabs.commissions`) as string,
+      sortBy: ["created_at"],
+      sortDesc: [true]
+    },
+    {
+      id: "agentBrites",
+      title: this.$t(`pages.wallet.tabs.agentBrites`) as string,
+      sortBy: ["created_at"],
+      sortDesc: [true]
+    },
+  ]
 }
 </script>
 
