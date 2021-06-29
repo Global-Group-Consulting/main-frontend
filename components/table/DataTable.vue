@@ -24,7 +24,10 @@
           <component :is="col.component"
                      :item="item"
                      :value="value"
-                     :tableData="items"></component>
+                     :colConfig="col"
+                     :tableData="items"
+                     v-bind="col.componentSettings"
+          ></component>
         </template>
         <template v-else>
           {{ item[col.value] }}

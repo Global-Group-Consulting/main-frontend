@@ -40,7 +40,12 @@ export default class DynamicLabel extends Vue {
 
 
   get labelContent() {
-    return this.$t("forms." + _kebabCase(this.field.label || this.fieldKey));
+    const lbl = this.field.label || this.fieldKey;
+    const path = ["forms", ...lbl.split(".")]
+
+    path[path.length - 1] = _kebabCase(path[path.length - 1])
+
+    return this.$t(path.join("."));
   }
 
   get isRequired() {

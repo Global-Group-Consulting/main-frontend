@@ -1,30 +1,13 @@
 import Vue from 'vue'
 import moment from 'moment'
-import Cleave from 'cleave.js'
+// @ts-ignore
+import * as Cleave from 'cleave.js/src/Cleave';
 
 import {capitalize, kebabCase, upperFirst as _upperFirst} from "lodash"
 import {moneyFormatter} from "~/plugins/filters/moneyFormatter";
+import {Plugin} from "@nuxt/types";
 
-class BriteConverter {
-  static toBrite(value) {
-    if (!value) {
-      return value
-    }
-
-    const numeralFormatter = new Cleave.NumeralFormatter()
-    const numericValue = numeralFormatter.getRawValue(value.toString())
-
-    console.log(numericValue, numericValue)
-
-    return +numericValue * 2
-  }
-
-  static toEuro(value) {
-    return +value / 2
-  }
-}
-
-export function contractNumberFormatter(value) {
+export function contractNumberFormatter(value: any) {
   if (!value) {
     return ''
   }
@@ -38,7 +21,7 @@ export function contractNumberFormatter(value) {
   return finalValue
 }
 
-export function numberCasting(value) {
+export function numberCasting(value: any) {
   if (!Number.isNaN(+value)) {
     return +value
   }
@@ -46,11 +29,11 @@ export function numberCasting(value) {
   return value
 }
 
-export function percentageFormatter(value) {
+export function percentageFormatter(value: any) {
   return value
 }
 
-export function dateFormatter(value, includeHours, humanFormat) {
+export function dateFormatter(value: any, includeHours?: boolean, humanFormat?: any) {
   if (!value) {
     return ''
   }
@@ -76,11 +59,11 @@ export function dateFormatter(value, includeHours, humanFormat) {
   return toReturn
 }
 
-export function dateHourFormatter(value, humanFormat) {
+export function dateHourFormatter(value: any, humanFormat: any) {
   return dateFormatter(value, true, humanFormat)
 }
 
-export function datePickerFormatter(value) {
+export function datePickerFormatter(value: any) {
   if (!value) {
     return ''
   }
@@ -133,7 +116,7 @@ export function moneyFormatter(value, formatBrite = false, avoidNull = false) {
 }*/
 
 
-export function moneyParser(value) {
+export function moneyParser(value: any) {
   if (typeof value === "number") {
     return value
   }
@@ -146,13 +129,13 @@ export function moneyParser(value) {
   return numeralFormatter.format(value)
 }
 
-export function regionFormatter(value, list) {
-  const region = list.find(_region => _region.value === value)
+export function regionFormatter(value: any, list: any) {
+  const region = list.find((_region: any) => _region.value === value)
 
   return region && region.text ? region.text : value;
 }
 
-export function userFormatter(user) {
+export function userFormatter(user: any) {
   if (!user) {
     return ""
   }
@@ -160,11 +143,11 @@ export function userFormatter(user) {
   return `${capitalize(user.lastName)} ${capitalize(user.firstName)}`
 }
 
-export function formFieldNameFormatter(field) {
+export function formFieldNameFormatter(field: any) {
   return kebabCase(field)
 }
 
-export function upperFirst(value) {
+export function upperFirst(value: any) {
   return _upperFirst(value)
 }
 

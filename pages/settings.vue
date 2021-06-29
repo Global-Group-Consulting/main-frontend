@@ -64,7 +64,7 @@ interface SettingData {
 @Component({
   components: {DynamicFieldset: DynamicFieldset as any, PageHeader},
   meta: {
-    permissions: [SettingPermissions.SETTINGS_ALL_READ, SettingPermissions.SETTINGS_SELF_READ]
+    permissions: [SettingPermissions.SETTINGS_ALL_READ]
   },
 })
 export default class Settings extends Vue {

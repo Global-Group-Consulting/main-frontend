@@ -1,9 +1,5 @@
 <template>
   <div>
-    <!-- <activation-wizard v-if="userMustActivate"
-                       class="mb-5"
-    /> -->
-
     <dashboard-blocks :dashboard-data="dashboardData" :loading="loading"></dashboard-blocks>
 
     <v-row class="my-5">
@@ -39,7 +35,6 @@
 <script>
 import {mapGetters} from "vuex";
 import Grafico from "@/components/charts/Grafico";
-import ActivationWizard from "@/components/hompage/activationWizard/ActivationWizard";
 import clientDashboardChart from "@/config/charts/clientDashboard";
 import DashboardBlocks from "~/components/DashboardBlocks";
 
@@ -47,7 +42,7 @@ import {onBeforeMount, reactive, ref, computed} from "@vue/composition-api";
 
 export default {
   name: "Cliente",
-  components: {DashboardBlocks, Grafico, ActivationWizard},
+  components: {DashboardBlocks, Grafico},
   setup(props, {root}) {
     const {$apiCalls, $options, $moment} = root;
     const monthsToShow = ref(12);

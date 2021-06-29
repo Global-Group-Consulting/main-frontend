@@ -168,6 +168,9 @@ export default {
   'AgentTeamType': {
     "group_percentage": "Percentuale di gruppo",
     "subject_percentage": "Percentuale soggettiva"
+  },
+  'AgentBritesType': {
+    "from_withdrawl": "Da risc. provvigioni",
   }
 }
 
