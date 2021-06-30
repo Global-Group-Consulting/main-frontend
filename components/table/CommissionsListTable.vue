@@ -11,9 +11,9 @@
               sortDesc: [true]
             }"
   >
-    <template v-slot:item.amountChange="{ item }">
+<!--    <template v-slot:item.amountChange="{ item }">
       <div v-html="formatAmountChange(item)"></div>
-    </template>
+    </template>-->
 
     <template v-slot:item.user="{ item }">
       <div v-if="item.user">

@@ -13,6 +13,7 @@ import {Component, Prop, Vue} from "vue-property-decorator";
 import {DynamicTab} from "~/@types/components/DynamicTab";
 import UserRoles from "~/enums/UserRoles";
 import {BlockData} from "~/config/blocks/dashboardBlocks";
+import {moneyFormatter} from "~/plugins/filters";
 
 @Component
 export default class AgentWalletCards extends Vue {
@@ -26,7 +27,11 @@ export default class AgentWalletCards extends Vue {
     blocks: {
       monthCommissions: 0,
       reinvestedCommissions: 0,
-      collectedCommissions: 0,
+      collectedCommissions: {
+        total: 0,
+        totalBrites: 0,
+        totalEuro: 0,
+      },
       clientsTotalDeposit: 0,
       agentBritesTotal: 0,
       agentBritesCurrMonth: 0,
@@ -73,6 +78,7 @@ export default class AgentWalletCards extends Vue {
         icon: "mdi-wallet",
         color: "orange",
         value: this.dashboardData.blocks["reinvestedCommissions"],
+        valueDetails: "",
         dropDown: {
           "reinvestedCommissions": {
             label: this.$t("pages.wallet.reinvestedCommissions")
@@ -84,7 +90,10 @@ export default class AgentWalletCards extends Vue {
         onDropDownChange: (cardData: BlockData, newTab: string) => {
           cardData.title = this.$t("pages.wallet." + newTab) as string;
           cardData.color = newTab === "reinvestedCommissions" ? "orange" : "red";
-          cardData.value = this.dashboardData.blocks[newTab];
+          cardData.value = newTab === "collectedCommissions" ? this.dashboardData.blocks[newTab].total : this.dashboardData.blocks[newTab];
+          cardData.valueDetails = newTab === "collectedCommissions" ? ` (
+            €${moneyFormatter(this.dashboardData.blocks[newTab].totalEuro)} e Br'${moneyFormatter(this.dashboardData.blocks[newTab].totalBrite, true)}
+            )` : "";
         }
       },
       {
