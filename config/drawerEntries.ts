@@ -4,7 +4,6 @@ import {RequestsPermissions} from "~/functions/acl/enums/requests.permissions";
 import {AclPermissions} from "~/functions/acl/enums/acl.permissions";
 import {ClubPermissions} from "~/functions/acl/enums/club.permissions";
 import {CalculatorPermissions} from "~/functions/acl/enums/calculator.permissions";
-import permissions from "~/functions/permissions";
 import {SettingPermissions} from "~/functions/acl/enums/setting.permissions";
 
 export interface DrawerEntry {
@@ -167,6 +166,6 @@ export function BottomDrawerEntries(context: Vue): DrawerEntry[] {
     text: 'settings',
     icon: 'mdi-cog',
     link: '/settings',
-    permissions: [SettingPermissions.SETTINGS_ALL_READ, SettingPermissions.SETTINGS_SELF_READ]
+    permissions: [SettingPermissions.SETTINGS_ALL_READ]
   }]
 }

@@ -67,11 +67,9 @@ import RequestsListTable from "~/components/table/RequestsListTable.vue";
 import CommunicationNewDialog from "~/components/dialogs/CommunicationNewDialog.vue";
 
 import {RequestsPermissions} from "~/functions/acl/enums/requests.permissions";
-import permissionsFn from "~/functions/permissions";
 import RequestTypes from "~/enums/RequestTypes";
 import {contractNumberFormatter, dateFormatter, moneyFormatter, userFormatter} from "~/plugins/filters";
 import {Moment} from "moment";
-import {computed} from "@vue/composition-api";
 import UserRoles from "~/enums/UserRoles";
 import {DynamicTab} from "~/@types/components/DynamicTab";
 import {ActionItem} from "~/@types/ActionItem";
@@ -98,7 +96,6 @@ type RequestGroups = "nuova" | "lavorazione" | "accettata" | "rifiutata";
   },
 })
 export default class Requests extends Vue {
-  public permissions = permissionsFn(this);
   public currentTab = 0
 
   get tableDataLoading() {
@@ -459,7 +456,7 @@ export default class Requests extends Vue {
   openRequestDetails(row: any) {
     let title = this.$t("dialogs.requests.title-details");
 
-    if (this.permissions.userType === "admin" && row.user) {
+    if (this.userType === "admin" && row.user) {
       title += ` <small><em>(${userFormatter(row.user)} - ${contractNumberFormatter(row.user.contractNumber)})</em></small>`;
     }
 

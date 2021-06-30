@@ -27,6 +27,7 @@ export function globalSettings(context: Vue): FormSchema[] {
       }
     },
     {
+      legend: "settings.emails_notifications_label",
       cols: {
         clubRequestNotifyEmail: {
           label: "filters-club-request-notify-email",
@@ -36,5 +37,23 @@ export function globalSettings(context: Vue): FormSchema[] {
         }
       }
     },
+    {
+      legend: "settings.agents_requests_label",
+      cols: {
+        requestMinAmount: {
+          label: "settings.request-min-amount",
+          component: "money-input",
+          showBrite: false
+        },
+        requestBritePercentage: {
+          label: "settings.request-brite-percentage",
+          type: "number",
+          validations: {
+            minValue: {params: 0.1},
+            maxValue: {params: 100}
+          }
+        }
+      }
+    }
   ]
 }

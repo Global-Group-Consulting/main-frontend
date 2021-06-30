@@ -1,4 +1,6 @@
+
 export default {
+  optionsPath: "~/plugins/vuetify.js",
   customVariables: ['~/assets/variables.scss'],
   theme: {
     dark: false,
@@ -7,5 +9,6 @@ export default {
         primary: "#0088FF",
       },
     },
-  }
+  },
+
 }

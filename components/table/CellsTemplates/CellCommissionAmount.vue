@@ -38,12 +38,17 @@ import {moneyFormatter} from "~/plugins/filters/moneyFormatter";
 import CurrencyType from "~/enums/CurrencyType";
 import {template} from "lodash";
 import {TableSchema} from "~/@types/config/TableSchema";
+import CommissionType from "~/enums/CommissionType";
+import {Commission} from "~/@types/Commission";
 
 
 @Component({})
 export default class CellRequestAmount extends Vue {
   @Prop({type: Object, required: true})
-  public item!: RequestFormData
+  public item!: Commission
+
+  @Prop({type: Number})
+  public value!: number
 
   @Prop({type: Object, default: () => ({})})
   public colConfig!: TableSchema
@@ -58,12 +63,13 @@ export default class CellRequestAmount extends Vue {
 
   getAmountSign() {
     if ([
-      this.$enums.RequestTypes.VERSAMENTO,
-      this.$enums.RequestTypes.COMMISSION_MANUAL_ADD,
-    ].includes(this.item.type)) {
+      CommissionType.NEW_DEPOSIT,
+      CommissionType.ANNUAL_DEPOSIT,
+      CommissionType.TOTAL_DEPOSIT,
+      CommissionType.MANUAL_ADD,
+      CommissionType.MANUAL_TRANSFER,
+    ].includes(this.item.commissionType)) {
       return "+"
-    } else if (this.$enums.RequestTypes.COMMISSION_MANUAL_ADD === this.item.type) {
-      return "*"
     } else {
       return "-";
     }
@@ -72,23 +78,25 @@ export default class CellRequestAmount extends Vue {
   getAmountValue() {
     const sign = this.getAmountSign();
     const result = [sign];
-    const eurValue = moneyFormatter(this.item.amount)
-    const brtValue = moneyFormatter(this.item.amountBrite || (+this.item.amount * 2), true)
+    const eurValue = moneyFormatter(this.value)
+    const brtValue = moneyFormatter(this.item.amountBrite || (+this.value * 2), true)
     const eurString = "€ " + eurValue;
     const brtString = "Br' " + brtValue;
 
     let smallText = template("<br><small class='font-italic black--text'>( ${text} )</small>");
     let smallBritePercentText = template("<br><small class='font-italic black--text'>( € ${eurValue} e Br' ${brtValue} )</small>");
 
+    result.push(eurString);
+
+   /*
     if (this.item.currency === CurrencyType.BRITE && (!this.item.briteConversionPercentage || this.item.briteConversionPercentage === 100)) {
       result.push(brtString, smallText({text: eurString}));
     } else {
-      result.push(eurString);
-    }
+    }*/
 
     if (this.item.briteConversionPercentage) {
       if (this.item.briteConversionPercentage === 100) {
-        //result.push(smallText({text: brtString}));
+        result.push(smallText({text: brtString}));
       } else if (this.item.briteConversionPercentage > 0) {
         result.push(smallBritePercentText({eurValue: moneyFormatter(this.item.amountEuro), brtValue}));
       }

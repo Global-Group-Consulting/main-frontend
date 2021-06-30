@@ -86,5 +86,13 @@ export default {
     'notes': "Note",
     'movementType': "Tipologia Movimento",
     'semester': "Semestre",
+  },
+  agentBrite: {
+    "amount-change": "Importo",
+    "deposit": "Deposito totale",
+    "type": "Tipologia provenienza",
+    "request-total": "Importo richiesta",
+    "request-percent": "Perc. calcolata",
+    "created-at": "Data creazione"
   }
 }

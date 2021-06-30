@@ -10,6 +10,7 @@ import RequestTypes from "../../enums/RequestTypes"
 import RequestStatus from "../../enums/RequestStatus"
 import {computed} from "@vue/composition-api";
 import UserRoles from "~/enums/UserRoles";
+import {moneyFormatter} from "~/plugins/filters";
 
 function getRequestTypeList(list, context) {
   const userType = [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(+context.$auth.user.role) ? "admin" : "user"
@@ -32,10 +33,6 @@ function getRequestTypeList(list, context) {
       mustReturn = true
     }
 
-    /* if (el.value === RequestTypes.RISC_CAPITALE) {
-       mustReturn = true
-     }*/
-
     return mustReturn
   })
 
@@ -44,32 +41,39 @@ function getRequestTypeList(list, context) {
 
     return el
   })
-
-  /* return list.reduce((acc, type) => {
-     const reqGold = [RequestTypes.RISC_INTERESSI_GOLD, RequestTypes.RISC_INTERESSI_BRITE].includes(type.value)
-     const isUserGold = context.$auth.user.gold
-     let mustHide = false
-
-     if ([RequestTypes.VERSAMENTO,
-         RequestTypes.COMMISSION_MANUAL_ADD,
-         RequestTypes.COMMISSION_MANUAL_TRANSFER].includes(type.value)
-       || (type.value === RequestTypes.RISC_PROVVIGIONI && context.$auth.user.role !== UserRoles.AGENTE)
-       || reqGold
-       || (isUserGold && context.formData.type === RequestTypes.RISC_PROVVIGIONI && type.value !== RequestTypes.RISC_PROVVIGIONI)
-     ) {
-       mustHide = true
-     }
-
-     if (!mustHide) {
-       type.text = context.$i18n.t(`enums.RequestTypes.${type.text}`)
-
-       acc.push(type)
-     }
-
-     return acc
-   }, [])*/
 }
 
+function getAmountMessage(context) {
+  /**
+   * @type {GlobalSettings}
+   */
+  const settings = context.$store.getters["settings/globalSettings"]
+
+  const amount = context.formData.amount;
+  const amountOfBrite = amount * settings.requestBritePercentage / 100;
+  const percent = settings.requestBritePercentage;
+  const limit = settings.requestMinAmount;
+
+  if (percent === undefined || limit === undefined || context.formData.type !== RequestTypes.RISC_PROVVIGIONI) {
+    return ""
+  }
+
+  let finalAmount = amount;
+  let finalAmountBrite = amountOfBrite;
+
+  if (amount > limit) {
+    finalAmount = amount - amountOfBrite;
+  } else {
+    finalAmountBrite = amount
+  }
+
+  return context.$i18n.t("forms.requests-amount-message-" + (amount > limit ? "brite-percent" : "all-brites"), {
+    amount: moneyFormatter(finalAmount),
+    amountBrite: moneyFormatter(finalAmountBrite * 2, true),
+    percent,
+    limit
+  })
+}
 
 /**
  *
@@ -89,6 +93,7 @@ export default function (context) {
 
     return !(userIsGold && userClubUnsubscribed);
   })
+
 
   return [
     {
@@ -156,7 +161,9 @@ export default function (context) {
           component: context.formData.autoWithdrawlAll ? '' : 'money-input',
           disabled: readonly || context.formData.autoWithdrawlAll,
           currency: context.formData.currency,
+          showBrite: false,
           showMax: context.formData.wallet === 2,
+          message: getAmountMessage(context),
           maxValue: context.formData.availableAmount,
           validations: context.formData.autoWithdrawlAll ? {} : {
             required: {},

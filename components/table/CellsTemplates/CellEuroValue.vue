@@ -1,8 +1,8 @@
 <template>
   <span>
-    <span v-if="showCurrency">Br'</span>
+    {{ (value || 0) | moneyFormatter() }}
 
-    {{ (value || 0) | moneyFormatter(true) }}
+    <span v-if="showCurrency">€</span>
   </span>
 </template>
 
@@ -10,7 +10,7 @@
 import {Component, Prop, Vue} from "vue-property-decorator";
 
 @Component({})
-export default class CellBriteValue extends Vue {
+export default class CellEuroValue extends Vue {
   @Prop({type: Object, required: true})
   public item!: any
 

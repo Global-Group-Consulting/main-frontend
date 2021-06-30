@@ -13,12 +13,14 @@ import MovementTypes from '../enums/MovementTypes'
 import ClubPacks from '../enums/ClubPacks'
 import ClubMovementTypes from '../enums/ClubMovementTypes'
 import CurrencyType from "~/enums/CurrencyType";
+import AgentBritesType from "~/enums/AgentBritesType";
 
 import {Plugin} from "@nuxt/types";
 
 export const enums = {
   AccountStatuses,
   AgentTeamType,
+  AgentBritesType,
   CommissionType,
   CurrencyType,
   ClubPacks,

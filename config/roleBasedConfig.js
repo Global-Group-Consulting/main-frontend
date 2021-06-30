@@ -216,6 +216,17 @@ const defaults = {
         'actions'
       ]
     },
+
+    agentBrite: {
+      columns: [
+        "amount",
+        "type",
+        "requestTotal",
+        "requestPercent",
+        "created_at",
+        "deposit",
+      ]
+    }
   },
   blocks: {
     dashboard: {

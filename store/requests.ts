@@ -61,7 +61,7 @@ export const actions: ActionTree<RootState, RootState> = {
 }
 
 export const getters: GetterTree<RootState, RootState> = {
-  requestsList(state): RequestFormData[]{
+  requestsList(state): RequestFormData[] {
     return state.data
   },
 
