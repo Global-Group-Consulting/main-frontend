@@ -25,6 +25,8 @@ import CellPercentage from "./CellPercentage.vue";
 import CellAgentBriteType from "~/components/table/CellsTemplates/CellAgentBriteType.vue";
 import CellAgentBriteAmount from "~/components/table/CellsTemplates/CellAgentBriteAmount.vue";
 
+import CellCommissionAmount from "~/components/table/CellsTemplates/CellCommissionAmount.vue";
+
 export default {
   CellUserAccountStatus,
   CellUserName,
@@ -48,5 +50,6 @@ export default {
   CellPercentage,
   CellEuroValue,
   CellAgentBriteType,
-  CellAgentBriteAmount
+  CellAgentBriteAmount,
+  CellCommissionAmount
 }

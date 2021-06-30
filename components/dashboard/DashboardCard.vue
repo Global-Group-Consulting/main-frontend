@@ -13,6 +13,8 @@
         <template v-else>
           {{ cardData.value }}
         </template>
+
+        <small class="font-italic font-weight-regular caption" v-if="cardData.valueDetails" v-html="cardData.valueDetails"></small>
       </v-card-title>
 
       <v-card-text>

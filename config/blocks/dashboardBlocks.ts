@@ -16,6 +16,7 @@ export interface BlockData {
   textIcon?: string
   color?: string
   value: string
+  valueDetails?: string
   rawValue?: any
   page?: string
   actionText?: string | ((context: Vue, readonly: boolean) => string)

@@ -2,7 +2,10 @@
  * @type {Record<string, import("~/@types/config/TableSchema").TableSchema>}
  */
 const schema = {
-  "amountChange": {text: 'tables.amount-change', value: 'amountChange', align: "right"},
+  "amountChange": {
+    text: 'tables.amount-change', value: 'amountChange', align: "right",
+    component: "CellCommissionAmount"
+  },
   "commissionType": {text: 'tables.commission-type', value: 'commissionType'},
   "createdAt": {text: 'tables.created-at', value: 'created_at', align: "center"},
   "currMonthCommissions": {text: 'tables.curr-month-commissions', value: 'currMonthCommissions', align: "right"},
