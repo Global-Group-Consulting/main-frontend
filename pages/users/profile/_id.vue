@@ -182,6 +182,7 @@ export default class Profile extends Vue {
         const resultCommissions = await this.$apiCalls.fetchCommissionsStatus({userId: this.userId});
 
         this.agentDashboardData.blocks = resultCommissions.blocks
+        this.agentDashboardData.blocks.collectedCommissions = resultCommissions.blocks.collectedCommissions.total
         this.agentDashboardData.user = this.userData
       }
     } catch (er) {
