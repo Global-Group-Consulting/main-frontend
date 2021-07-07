@@ -339,6 +339,8 @@
       v-if="$store.getters['dialog/dialogId'] === 'MovementsListDialog'"
       @userUpdated="onUserUpdated"
     ></movements-list-dialog>
+
+    <user-role-change-dialog v-if="$store.getters['dialog/dialogId'] === 'UserRoleChangeDialog'"/>
   </v-layout>
 </template>
 
@@ -362,10 +364,12 @@ import SigningLogsPopup from "~/components/elements/SigningLogsPopup";
 import PageToolbar from "~/components/blocks/PageToolbar";
 import {UsersPermissions} from "../../functions/acl/enums/users.permissions";
 import DashboardBlocks from "../../components/DashboardBlocks";
+import UserRoleChangeDialog from "../../components/dialogs/UserRoleChangeDialog";
 
 export default {
   name: "_id",
   components: {
+    UserRoleChangeDialog,
     DashboardBlocks,
     PageToolbar,
     SigningLogsPopup,
@@ -806,6 +810,7 @@ export default {
         );
 
         userForm.initialEmail.value = userForm.formData.value.email
+        userForm.initialRole.value = userForm.formData.value.role
 
         /*if (userId !== "new" && [$enums.UserRoles.AGENTE, $enums.UserRoles.CLIENTE].includes(+userForm.formData.value.role)) {
           const result = await $apiCalls.dashboardFetch(userForm.formData.value.id);
