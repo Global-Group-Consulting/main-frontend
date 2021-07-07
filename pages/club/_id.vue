@@ -30,11 +30,16 @@
                 <div>{{ $t("pages.club.brite.totalUsableBrite") }}: <strong>
                   Br' {{ totalReport.totalAmount|moneyFormatter(true) }}</strong></div>
                 <ul class="pl-4" style="list-style: none; font-size: 20px; line-height: 1;">
-                  <li v-for="(entry, i) of totalReport.expirations" :key="i"
-                      v-html="$t('pages.club.brite.totalExpiresAt', {
+                  <li v-for="(entry, i) of totalReport.expirations" :key="i">
+                    <div v-html="$t('pages.club.brite.totalExpiresAt', {
                               amount: $options.filters.moneyFormatter(entry.amount, true),
                               expiresAt: $options.filters.dateFormatter(entry.expiresAt)
-                              })">
+                              })"/>
+                    <ul class="mb-2" style="list-style: none; font-size: 16px; line-height: 1;">
+                      <li v-for="pack of Object.entries(entry.byPack)" v-if="pack[1] > 0">
+                        {{ $t("enums.ClubPacks." + pack[0]) }} : {{ pack[1] }}
+                      </li>
+                    </ul>
                   </li>
                 </ul>
               </div>
@@ -135,12 +140,13 @@ interface BlockData {
   briteUsed: number
   briteAvailable: number,
   usableFrom: string,
-  expiresAt: string
+  expiresAt: string,
+  byPack: any
 }
 
 interface TotalReport {
   totalAmount: number,
-  expirations: { amount: number, expiresAt: Moment, usableFrom: Moment }[]
+  expirations: { amount: number, expiresAt: Moment, usableFrom: Moment, byPack: any }[]
 }
 
 
@@ -242,11 +248,13 @@ export default class Brite extends Vue {
         continue
       }
 
+      debugger
       toReturn.totalAmount += +entry[1].briteAvailable
       toReturn.expirations.push({
         amount,
         usableFrom,
-        expiresAt
+        expiresAt,
+        byPack: entry[1].byPack
       })
     }
 
