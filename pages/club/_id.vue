@@ -250,7 +250,7 @@ export default class Brite extends Vue {
       })
     }
 
-    toReturn.expirations = sortBy(toReturn.expirations, "expiresAt", function (o: {expiresAt: Moment}) {
+    toReturn.expirations = sortBy(toReturn.expirations, "expiresAt", function (o: any) {
       return o.expiresAt.toDate()
     })
 
