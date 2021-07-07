@@ -1,6 +1,6 @@
 export default {
-  // baseURL: 'http://localhost:3000',
-  proxy: true,
+  //baseURL: process.env.NODE_ENV === 'development' ? process.env.API_URL : null,
+  proxy: process.env.NODE_ENV !== 'development',
   credentials: true,
   debug: process.env.NODE_ENV === 'development'
 }
