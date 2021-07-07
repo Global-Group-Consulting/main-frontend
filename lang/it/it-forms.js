@@ -160,5 +160,9 @@ export default {
 
     'request-min-amount': "Soglia minimo per richieste in €",
     'request-brite-percentage': "Percentuale da convertire in Brite"
+  },
+  'userRoleChange': {
+    "new-agent": "Nuovo agente",
+    "commissions-receiver": "Agente a cui trasferire le provvigioni"
   }
 }

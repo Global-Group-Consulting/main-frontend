@@ -148,5 +148,11 @@ export default {
     "alert-msg": "Questa funzione permette di creare delle richieste per conto dell'utente <strong>{fullName}</strong>. Assicurarsi che quest'ultimo abbia dato il consenso a tale operazione, prima di procedere.<br>La richiesta che verrà creata sarà immediatamente approvata e contabilizzata.",
     "btn-cancel": "Annulla",
     "btn-send": "Invia"
+  },
+  confirmRoleChange: {
+    "title": "Vuoi cambiare il ruolo dell'utente?",
+    "alert-msg": "Il ruolo dell'utente è stata cambiata da \"Agente\" a <strong>\"{roleText}\"</strong>, ma l'utente ha dei clienti associati. Scegliere a chi si desidera trasferire tutti i clienti e le provvigioni attuali.",
+    "btn-cancel": "Annulla",
+    "btn-send": "Si, confermo"
   }
 }

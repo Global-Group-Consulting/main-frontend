@@ -23,9 +23,10 @@ import usersDataSchema from '../config/forms/usersDataSchema.ts'
 import Permissions from './permissions'
 import AgentTeamType from "~/enums/AgentTeamType";
 
-import {kebabCase} from "lodash"
+import {kebabCase, sortBy} from "lodash"
+import RequestTypes from "~/enums/RequestTypes";
 
-export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $auth, $v}, refs) {
+export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $auth, $v, $store}, refs) {
   /**
    * @type {import('@vue/composition-api').Ref<Partial<import("../@types/UserFormData").UserDataSchema>>}
    */
@@ -37,6 +38,7 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
     suspended: false
   })
   const initialEmail = ref("");
+  const initialRole = ref("");
   const permissions = Permissions({$auth})
   const userIsNew = computed(() => $route.params.id === "new" || !formData.value.id)
   const userRole = computed(() => formData.value.role)
@@ -50,6 +52,7 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
   const beforeConfirm = ref(false)
   const dirtyForms = ref({})
   const emailChanged = computed(() => initialEmail.value !== formData.value.email)
+  const roleChanged = computed(() => initialRole.value !== formData.value.role)
 
 
   /**
@@ -135,6 +138,7 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
     }
 
     initialEmail.value = formData.value.email
+    roleChanged.value = formData.value.role
   }
 
   /**
@@ -155,6 +159,24 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
       key: "confirm-email-change",
       data: formData.value
     });
+  }
+
+  async function askIfWantToChangeRole() {
+    return new Promise((resolve, reject) => {
+      $store.dispatch("dialog/updateStatus", {
+        id: "UserRoleChangeDialog",
+        title: $i18n.t("dialogs.confirmRoleChange.title"),
+        texts: {
+          cancelBtn: "dialogs.confirmRoleChange.btn-cancel",
+          confirmBtn: "dialogs.confirmRoleChange.btn-send"
+        },
+        data: {
+          user: formData.value,
+          onCancel: er => reject(er),
+          onConfirm: res => resolve(res)
+        },
+      });
+    })
   }
 
   async function onSaveClick() {
@@ -190,6 +212,12 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
         data.incompleteData.completed = true
       }
 
+      if (formData.value.role !== UserRoles.AGENTE && roleChanged) {
+        const roleChangeResult = await askIfWantToChangeRole()
+
+        data.roleChangeData = roleChangeResult;
+      }
+
       if (userIsNew.value) {
         result = await $apiCalls.userCreate(data)
         $router.replace("/users/" + result.id)
@@ -222,6 +250,7 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
     formTabs,
     formSchemas,
     initialEmail,
+    initialRole,
     beforeConfirm,
     userIsNew,
     userRole,
