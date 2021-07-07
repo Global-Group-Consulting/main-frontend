@@ -128,6 +128,7 @@ import {ClubMovement} from "~/@types/club/ClubMovement";
 import {ClubPermissions} from "~/functions/acl/enums/club.permissions";
 import BriteUseDialog from "~/components/dialogs/BriteUseDialog.vue";
 import BriteRemoveDialog from "~/components/dialogs/BriteRemoveDialog.vue";
+import {sortBy} from "lodash";
 
 interface BlockData {
   briteTotal: number
@@ -227,22 +228,29 @@ export default class Brite extends Vue {
       totalAmount: 0,
       expirations: []
     }
-    const currentSemester = this.$moment().month() < 6 ? 1 : 2
+    //const currentSemester = this.$moment().month() < 6 ? 1 : 2
 
     for (const entry of Object.entries<BlockData>(this.blocksData)) {
-      const year: number = +entry[0].split("_")[0]
-      const semester: number = +entry[0].split("_")[1]
+      const usableFrom = this.$moment(entry[1].usableFrom);
+      const expiresAt = this.$moment(entry[1].expiresAt);
+      const amount = +entry[1].briteAvailable
 
-      if (year === this.$moment().year() && currentSemester >= semester) {
+      // If the brites are usable in the future, avoid showing them
+      if (usableFrom.isAfter(this.$moment()) || !amount) {
         continue
       }
 
       toReturn.totalAmount += +entry[1].briteAvailable
       toReturn.expirations.push({
-        amount: +entry[1].briteAvailable,
-        expiresAt: this.$moment().set({year, month: (semester === 1 ? 0 : 6), date: 1}).add(18, "months")
+        amount,
+        usableFrom,
+        expiresAt
       })
     }
+
+    toReturn.expirations = sortBy(toReturn.expirations, "expiresAt", function (o: {expiresAt: Moment}) {
+      return o.expiresAt.toDate()
+    })
 
     return toReturn
   }

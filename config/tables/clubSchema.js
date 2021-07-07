@@ -10,7 +10,13 @@ const columns = {
   'lastName': {text: 'tables.last-name', value: 'lastName'},
   'email': {text: 'tables.email', value: 'email'},
   'role': {text: 'tables.role', value: 'role', align: "center", component: "CellUserRole"},
-
+  'referenceAgent': {
+    text: 'tables.reference-agent',
+    value: 'referenceAgent',
+    align: "center",
+    component: "CellUserReferenceAgent",
+    componentSettings: {readonly: true}
+  },
   'clubCardNumber': {text: 'tables.club.cardNumber', value: 'clubCardNumber', component: "CellUserClubCardNumber"},
   'clubPack': {text: 'tables.club.clubPack', value: 'clubPack', align: "center", component: "CellUserClubPack"},
   'briteTotal': {text: 'tables.club.briteTotal', value: 'britesTotal', align: "right", component: "CellBriteValue"},

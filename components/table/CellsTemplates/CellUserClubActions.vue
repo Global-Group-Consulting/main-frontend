@@ -53,13 +53,18 @@ export default class CellUserClubActions extends Vue {
   @Prop({type: Array})
   public tableData!: any
 
+  get userIsAdmin() {
+    return this.$store.getters["user/userIsAdmin"];
+  }
+
   get menuOptions(): CrudMenuItem[] {
     return [
       {
         value: this.$t("menus.show-user-account") as string,
         action: async () => window.open(`users/${this.item.id}`, "_blank"),
         alwaysVisible: true,
-        icon: "mdi-square-edit-outline"
+        icon: "mdi-square-edit-outline",
+        if: this.userIsAdmin
       },
       {
         value: this.$t("menus.show-brite-account") as string,

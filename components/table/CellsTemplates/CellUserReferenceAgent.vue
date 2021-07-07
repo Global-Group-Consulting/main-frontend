@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!readonly">
     <!-- Case item.referenceAgent is same as userId and is the same as auth.user.id - Tu -->
     <div v-if="item.referenceAgent === $auth.user.id && item.referenceAgent === item.id">
       <v-btn text disabled small>Tu</v-btn>
@@ -22,6 +22,10 @@
       {{ refAgentName }}
     </v-btn>
   </div>
+
+  <div v-else>
+    {{ refAgentName }}
+  </div>
 </template>
 
 <script lang="ts">
@@ -32,6 +36,9 @@ import {User} from "~/@types/UserFormData";
 export default class CellUserReferenceAgent extends Vue {
   @Prop({type: Object, required: true})
   public item!: any
+
+  @Prop({type: Boolean, default: false})
+  public readonly!: boolean
 
   get user(): User {
     if ("user" in this.item) {

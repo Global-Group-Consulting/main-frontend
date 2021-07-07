@@ -7,6 +7,7 @@ import {AclPermission} from "~/@types/Acl/Permissions";
 import {AclRole} from "~/@types/Acl/Roles";
 import {RequestFormData} from "~/@types/Requests";
 import {AgentBriteApi} from "~/plugins/apiCalls/AgentBriteApi";
+import {UserApi} from "~/plugins/apiCalls/UserApi";
 
 
 interface IApiCalls extends ApiCalls {
@@ -40,11 +41,13 @@ declare module 'vuex/types/index' {
 
 export class ApiCalls extends BasicApiCall {
   public agentBriteApi!: AgentBriteApi;
+  public userApi!: UserApi;
 
   constructor(context: any) {
     super(context)
 
     this.agentBriteApi = new AgentBriteApi(context);
+    this.userApi = new UserApi(context);
   }
 
   async userCreate(data: any) {
