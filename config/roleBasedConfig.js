@@ -149,6 +149,7 @@ const defaults = {
         'firstName',
         'lastName',
         'email',
+        'referenceAgent',
         'clubPack',
         'briteTotal',
         'briteUsed',
