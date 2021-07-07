@@ -133,12 +133,14 @@ import {sortBy} from "lodash";
 interface BlockData {
   briteTotal: number
   briteUsed: number
-  briteAvailable: number
+  briteAvailable: number,
+  usableFrom: string,
+  expiresAt: string
 }
 
 interface TotalReport {
   totalAmount: number,
-  expirations: { amount: number, expiresAt: Moment }[]
+  expirations: { amount: number, expiresAt: Moment, usableFrom: Moment }[]
 }
 
 
