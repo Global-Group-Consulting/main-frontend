@@ -37,8 +37,8 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
     gold: true,
     suspended: false
   })
-  const initialEmail = ref("");
-  const initialRole = ref("");
+  const initialEmail = ref();
+  const initialRole = ref();
   const permissions = Permissions({$auth})
   const userIsNew = computed(() => $route.params.id === "new" || !formData.value.id)
   const userRole = computed(() => formData.value.role)
@@ -52,7 +52,7 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
   const beforeConfirm = ref(false)
   const dirtyForms = ref({})
   const emailChanged = computed(() => initialEmail.value !== formData.value.email)
-  const roleChanged = computed(() => initialRole.value !== formData.value.role)
+  const roleChanged = computed(() => initialRole.value !== +formData.value.role)
 
 
   /**
@@ -138,7 +138,7 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
     }
 
     initialEmail.value = formData.value.email
-    roleChanged.value = formData.value.role
+    initialRole.value = formData.value.role
   }
 
   /**
@@ -212,7 +212,7 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
         data.incompleteData.completed = true
       }
 
-      if (formData.value.role !== UserRoles.AGENTE && roleChanged) {
+      if (formData.value.role !== UserRoles.AGENTE && roleChanged.value) {
         const roleChangeResult = await askIfWantToChangeRole()
 
         data.roleChangeData = roleChangeResult;
