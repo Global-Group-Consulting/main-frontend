@@ -21,7 +21,9 @@ export default function (formContext: any): FormSchema[] {
           files: formContext?.magazine?.file ? [formContext.magazine.file] : [],
           canCancel: false,
           validations: {
-            required: {}
+            requiredIf: {
+              params: () => !formContext.magazine
+            }
           }
         }
       }
@@ -35,7 +37,9 @@ export default function (formContext: any): FormSchema[] {
           files: formContext?.magazine?.coverFile ? [formContext.magazine.coverFile] : [],
           canCancel: false,
           validations: {
-            required: {}
+            requiredIf: {
+              params: () => !formContext.magazine
+            }
           }
         }
       }

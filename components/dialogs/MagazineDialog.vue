@@ -35,7 +35,7 @@ interface IncomingData {
 export default class MagazineDialog extends Vue {
   loading = false;
   dateFormat = "YYYY-MM-DD";
-  magazine!: IMagazine
+  magazine: Partial<IMagazine> = {}
   formData: FormMagazineCreate = {
     title: "",
     pdfFile: null,
