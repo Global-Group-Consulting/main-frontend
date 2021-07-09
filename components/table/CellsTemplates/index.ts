@@ -27,6 +27,8 @@ import CellAgentBriteAmount from "~/components/table/CellsTemplates/CellAgentBri
 
 import CellCommissionAmount from "~/components/table/CellsTemplates/CellCommissionAmount.vue";
 
+import CellMagazineActions from "~/components/table/CellsTemplates/CellMagazineActions.vue";
+
 export default {
   CellUserAccountStatus,
   CellUserName,
@@ -51,5 +53,6 @@ export default {
   CellEuroValue,
   CellAgentBriteType,
   CellAgentBriteAmount,
-  CellCommissionAmount
+  CellCommissionAmount,
+  CellMagazineActions
 }

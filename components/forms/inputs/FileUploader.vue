@@ -79,7 +79,7 @@
           <v-btn
             icon
             @click.prevent="removeFile(file, $event)"
-            v-if="!readonly && !$attrs.disabled && !previewOnly"
+            v-if="!readonly && !$attrs.disabled && !previewOnly && canCancel"
             :title="$t('forms.tooltip-remove-file')"
           >
             <v-icon small>mdi-close</v-icon>
@@ -117,6 +117,10 @@ export default {
     },
     readonly: Boolean,
     previewOnly: Boolean,
+    canCancel: {
+      type: Boolean,
+      default: true
+    },
     editMode: Boolean
   },
   setup(props, { root }) {

@@ -82,6 +82,7 @@ export default {
     './plugins/apiCalls.ts',
     './plugins/filters.ts',
     './plugins/enums.ts',
+    './plugins/files.ts',
     './plugins/mixins.js',
     './plugins/global-components.js',
     './plugins/socket.ts',

@@ -47,6 +47,8 @@ export interface FormSchemaField {
   defaultValue?: any
   type?: string
   files?: any[],
+  previewOnly?: boolean,
+  canCancel?: boolean,
   clearable?: boolean,
   multiple?: boolean,
   max?: string | number,
@@ -59,6 +61,7 @@ export interface FormSchemaField {
   startByYear?: boolean,
   chipVersion?: boolean,
   rows?: number,
+  accept?: string,
   validations?: FormSchemaValidations
 }
 

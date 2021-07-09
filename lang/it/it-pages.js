@@ -203,5 +203,8 @@ export default {
   settings: {
     title: "Impostazioni",
     globalSettings: "Configurazioni globali"
+  },
+  magazine: {
+    title: "Magazine Global News"
   }
 }

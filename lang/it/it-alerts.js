@@ -203,4 +203,12 @@ export default {
   "send-admin-request-confirmBtnText": "Si, invia",
   "send-admin-request-cancelBtnText": "Annulla",
   "send-admin-request-success": "Richiesta inviata correttamente!",
+
+  magazine: {
+    "delete-title": "",
+    "delete-text": "Sei sicuro di voler cancellare il magazine <strong>{title}</strong>? L'operazione non è reversibile.",
+    "delete-confirmBtnText": "Si, cancella",
+    "delete-cancelBtnText": "Annulla",
+    "delete-success": "Magazine cancellato correttamente!",
+  }
 }

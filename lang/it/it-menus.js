@@ -23,5 +23,10 @@ export default {
   "show-brite-account": "Visualizza Profilo",
   "show-user-account": "Visualizza Anagrafica",
   "sign-contract": "Apponi firma finale",
-  "takeCharge": "Prendi in carico"
+  "takeCharge": "Prendi in carico",
+  magazine: {
+    "show-pdf": "Mostra pdf",
+    "edit": "Modifica",
+    "delete": "Elimina",
+  }
 }

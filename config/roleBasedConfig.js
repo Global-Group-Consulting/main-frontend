@@ -227,6 +227,14 @@ const defaults = {
         "created_at",
         "deposit",
       ]
+    },
+    magazine: {
+      columns: [
+        "title",
+        "showRange",
+        "publicationDate",
+        "actions",
+      ]
     }
   },
   blocks: {

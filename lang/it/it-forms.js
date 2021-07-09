@@ -164,5 +164,12 @@ export default {
   'userRoleChange': {
     "new-agent": "Nuovo agente",
     "commissions-receiver": "Agente a cui trasferire le provvigioni"
+  },
+  magazine: {
+    "title": "Titolo",
+    "pdf-file": "File PDF",
+    "cover-file": "File di copertina",
+    "publication-date": "Data a cui si riferisce",
+    "show-range": "In evidenza dal-al",
   }
 }

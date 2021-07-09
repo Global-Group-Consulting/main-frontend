@@ -15,18 +15,7 @@
       </v-col>
 
       <v-col md="4">
-        <v-card>
-          <v-card-text class="d-flex">
-            <a href="/magazine/GGM_3_21_Dash.pdf" target="_blank" style="width: 100%">
-              <v-img
-                src="/magazine/GGM_3_21_Dash.jpg"
-                width="100%"
-                contain
-                class=""
-              ></v-img>
-            </a>
-          </v-card-text>
-        </v-card>
+        <MagazineCard/>
       </v-col>
     </v-row>
   </div>
@@ -39,10 +28,11 @@ import clientDashboardChart from "@/config/charts/clientDashboard";
 import DashboardBlocks from "~/components/DashboardBlocks";
 
 import {onBeforeMount, reactive, ref, computed} from "@vue/composition-api";
+import MagazineCard from "~/components/dashboard/MagazineCard";
 
 export default {
   name: "Cliente",
-  components: {DashboardBlocks, Grafico},
+  components: {MagazineCard, DashboardBlocks, Grafico},
   setup(props, {root}) {
     const {$apiCalls, $options, $moment} = root;
     const monthsToShow = ref(12);

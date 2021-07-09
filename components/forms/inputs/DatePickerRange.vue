@@ -101,8 +101,11 @@ export default {
     }
   },
   watch: {
-    value: function (value) {
-      this.dates = value
+    value: {
+      immediate: true,
+      handler: function (value) {
+        this.dates = value
+      }
     }
   }
 };

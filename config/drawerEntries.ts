@@ -5,6 +5,7 @@ import {AclPermissions} from "~/functions/acl/enums/acl.permissions";
 import {ClubPermissions} from "~/functions/acl/enums/club.permissions";
 import {CalculatorPermissions} from "~/functions/acl/enums/calculator.permissions";
 import {SettingPermissions} from "~/functions/acl/enums/setting.permissions";
+import {MagazinePermissions} from "~/functions/acl/enums/magazine.permissions";
 
 export interface DrawerEntry {
   id?: string
@@ -135,13 +136,7 @@ export default function (context: Vue): DrawerEntry[] {
           link: '/traduzioni',
           permissions: ["translations:read"]
         },*/
-        {
-          id: 'acl',
-          text: 'acl',
-          icon: 'mdi-shield-account',
-          link: '/acl',
-          permissions: [AclPermissions.ACL_ACL_READ]
-        },
+
         /*{
           id: 'emailStatuses',
           text: 'emailStatuses',
@@ -161,11 +156,26 @@ export default function (context: Vue): DrawerEntry[] {
 }
 
 export function BottomDrawerEntries(context: Vue): DrawerEntry[] {
-  return [{
-    id: 'settings',
-    text: 'settings',
-    icon: 'mdi-cog',
-    link: '/settings',
-    permissions: [SettingPermissions.SETTINGS_ALL_READ]
-  }]
+  return [
+    {
+      id: 'magazine',
+      text: 'magazine',
+      icon: 'mdi-book-open-page-variant',
+      link: '/magazine',
+      permissions: [MagazinePermissions.MAGAZINE_READ]
+    },
+    {
+      id: 'acl',
+      text: 'acl',
+      icon: 'mdi-shield-account',
+      link: '/acl',
+      permissions: [AclPermissions.ACL_ACL_READ, AclPermissions.ACL_ACL_WRITE]
+    },
+    {
+      id: 'settings',
+      text: 'settings',
+      icon: 'mdi-cog',
+      link: '/settings',
+      permissions: [SettingPermissions.SETTINGS_ALL_READ]
+    }]
 }

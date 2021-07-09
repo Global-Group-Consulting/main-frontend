@@ -21,6 +21,7 @@ export default {
   'version': "Versione",
   'portfolio': "Portfolio agente",
   'wallet': "Wallet provvigioni",
+  'magazine': "Magazine",
   'bottom-home': "Home",
   'bottom-movements': "Movimenti",
   'bottom-requests': "Richieste",

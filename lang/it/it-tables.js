@@ -94,5 +94,10 @@ export default {
     "request-total": "Importo richiesta",
     "request-percent": "Perc. calcolata",
     "created-at": "Data creazione"
+  },
+  magazine: {
+    title: "Titolo",
+    showRange: "In evidenza dal-al",
+    publicationDate: "Data publicazione",
   }
 }

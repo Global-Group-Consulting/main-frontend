@@ -37,6 +37,7 @@
     </template>
     <v-date-picker
       ref="picker"
+      :type="type"
       v-model="dateValue"
       @input="onInput"
       :readonly="readonly"
@@ -74,6 +75,10 @@ export default {
     readonly: Boolean,
     disabled: Boolean,
     editMode: Boolean,
+    type: {
+      type: String,
+      default: null,
+    }
   },
   computed: {
     clearable() {

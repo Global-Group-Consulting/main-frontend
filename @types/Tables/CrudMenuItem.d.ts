@@ -5,4 +5,5 @@ export interface CrudMenuItem {
   if?: boolean
   alwaysVisible?: boolean
   divider?: boolean
+  color?: string
 }

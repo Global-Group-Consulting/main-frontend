@@ -62,6 +62,7 @@ export default {
     'title': '',
     'btn-cancel': 'Chiudi',
     'btn-download': 'Scarica',
+    'btn-open-in-new': 'Apri in nuova scheda',
   },
   statusChange: {
     'title': 'Modifica stato account ({status})',
@@ -154,5 +155,12 @@ export default {
     "alert-msg": "Il ruolo dell'utente è stata cambiata da \"Agente\" a <strong>\"{roleText}\"</strong>, ma l'utente ha dei clienti associati. Scegliere a chi si desidera trasferire tutti i clienti e le provvigioni attuali.",
     "btn-cancel": "Annulla",
     "btn-send": "Si, confermo"
+  },
+  magazine: {
+    "title-new": "Aggiungi un nuovo magazine",
+    "title-edit": "Modifica magazine",
+    "btn-cancel": "Annulla",
+    "btn-submit": "Aggiungi",
+    "btn-save": "Salva",
   }
 }

@@ -125,7 +125,7 @@ export class BasicApiCall {
   /**
    *
    * @param {ApiCallsParams | String | {}} params
-   * @returns {Promise<void>}
+   * @returns {Promise<any>}
    * @protected
    */
   async post(params) {

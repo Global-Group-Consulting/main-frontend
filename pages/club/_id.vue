@@ -158,7 +158,7 @@ interface TotalReport {
 })
 export default class Brite extends Vue {
   public tableData: Brite[] = []
-  public currentTab: number = this.$moment().month() > 5 ? 3 : 2
+  public currentTab: number = 2
   public currentUser: Partial<User> = {}
   public blocksData: Record<string, any> = {}
   public showSkeleton: boolean = true
