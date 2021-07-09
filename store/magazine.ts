@@ -25,12 +25,14 @@ export const mutations: MutationTree<RootState> = {
 }
 
 export const actions: ActionTree<RootState, RootState> = {
-  async fetch({commit}) {
+  async fetch({commit, dispatch}) {
     try {
       const data = await this.$apiCalls.magazine.index();
 
       commit("UPDATE_MAGAZINE_DATA", data)
       commit("UPDATE_LAST_FETCH", new Date())
+
+      dispatch("fetchCurrent")
     } catch (e) {
       this.$alerts.error(e)
     }

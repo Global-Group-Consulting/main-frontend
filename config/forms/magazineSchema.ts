@@ -6,6 +6,9 @@ export default function (formContext: any): FormSchema[] {
       cols: {
         title: {
           label: "magazine.title",
+          validations: {
+            required: {}
+          }
         }
       }
     },
@@ -15,8 +18,11 @@ export default function (formContext: any): FormSchema[] {
           label: "magazine.pdfFile",
           component: "file-uploader",
           accept: ".pdf",
-          files: formContext.magazine.file ? [formContext.magazine.file] : [],
-          canCancel: false
+          files: formContext?.magazine?.file ? [formContext.magazine.file] : [],
+          canCancel: false,
+          validations: {
+            required: {}
+          }
         }
       }
     },
@@ -26,8 +32,11 @@ export default function (formContext: any): FormSchema[] {
           label: "magazine.coverFile",
           component: "file-uploader",
           accept: "image/*",
-          files: formContext.magazine.coverFile ? [formContext.magazine.coverFile] : [],
-          canCancel: false
+          files: formContext?.magazine?.coverFile ? [formContext.magazine.coverFile] : [],
+          canCancel: false,
+          validations: {
+            required: {}
+          }
         }
       }
     },
@@ -37,7 +46,10 @@ export default function (formContext: any): FormSchema[] {
           label: "magazine.publicationDate",
           component: "date-picker",
           type: "month",
-          startByYear: false
+          startByYear: false,
+          validations: {
+            required: {}
+          }
         }
       }
     },
@@ -46,7 +58,10 @@ export default function (formContext: any): FormSchema[] {
         showRange: {
           label: "magazine.showRange",
           component: "date-picker-range",
-          range: true
+          range: true,
+          validations: {
+            required: {}
+          }
         }
       }
     },

@@ -82,9 +82,10 @@ export default class MagazineDialog extends Vue {
         return;
       }
       this.loading = true
-      await this.$apiCalls.magazine[this.magazine ? "update" : "create"](this.formData, this.magazine.id);
+      await this.$apiCalls.magazine[this.magazine ? "update" : "create"](this.formData, this.magazine?.id);
 
       await this.$store.dispatch("magazine/fetch")
+      await this.$store.dispatch("magazine/fetchCurrent")
 
       this.onClose()
     } catch (er) {
@@ -96,6 +97,10 @@ export default class MagazineDialog extends Vue {
 
   @Watch("magazine", {deep: true, immediate: true})
   onMagazineChange(value: IMagazine) {
+    if(!value){
+      return;
+    }
+
     this.formData.showRange = [this.$moment(value.showFrom).format(this.dateFormat), this.$moment(value.showUntil).format(this.dateFormat)]
     this.formData.title = value.title
     this.formData.publicationDate = this.$moment(value.publicationDate).format(this.dateFormat)
