@@ -35,7 +35,7 @@ interface IncomingData {
 export default class MagazineDialog extends Vue {
   loading = false;
   dateFormat = "YYYY-MM-DD";
-  magazine: FormMagazineCreate = {}
+  magazine!: IMagazine
   formData: FormMagazineCreate = {
     title: "",
     pdfFile: null,
@@ -116,7 +116,7 @@ export default class MagazineDialog extends Vue {
 
       // when available the fetched one, use that
       this.magazine = await this.$apiCalls.magazine.show(this.magazineId);
-    } catch (er: Error) {
+    } catch (er: any) {
       this.$alerts.error(er)
     }
   }

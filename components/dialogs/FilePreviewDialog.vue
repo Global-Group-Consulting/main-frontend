@@ -20,11 +20,11 @@
     <portal to="dialog-actions-left">
       <tooltip-btn iconName="mdi-download" :tooltip="$t('dialogs.filePreviewer.btn-download')"
                    text no-breakpoint breakpoint="_"
-                   @click="downloadFile" />
+                   @click="downloadFile"/>
 
       <tooltip-btn iconName="mdi-open-in-new" :tooltip="$t('dialogs.filePreviewer.btn-open-in-new')"
                    text no-breakpoint breakpoint="_"
-                   @click="openInNewWindow" />
+                   @click="openInNewWindow"/>
     </portal>
 
     <portal to="dialog-actions-right">
@@ -42,10 +42,10 @@ import jsFileDownload from "js-file-download";
 
 @Component
 export default class FilePreviewDialog extends Vue {
-  mimeType = ''
-  fileData = null
-  fileName = ""
-  fileUrl = ""
+  mimeType: string = ''
+  fileData: any = null
+  fileName: string = ""
+  fileUrl: any = ""
 
   get dialogData() {
     return this.$store.getters["dialog/dialogData"]
@@ -69,7 +69,9 @@ export default class FilePreviewDialog extends Vue {
 
   async downloadFile() {
     try {
-      jsFileDownload(this.fileData, this.fileName, this.mimeType);
+      if (this.fileData) {
+        jsFileDownload(this.fileData, this.fileName, this.mimeType);
+      }
     } catch (er) {
       this.$alerts.error(er);
     }
@@ -85,7 +87,7 @@ export default class FilePreviewDialog extends Vue {
 
 
   @Watch("fileId", {immediate: true})
-  async loadFile(fileId) {
+  async loadFile(fileId: string) {
     try {
       const file = await this.$apiCalls.files.show(fileId);
       const result = await this.$apiCalls.files.download(fileId);
