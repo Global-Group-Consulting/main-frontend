@@ -45,7 +45,7 @@ export default class AgentBriteAddDialog extends Vue {
     availableAmount: 0,
     amount: null,
     motivation: "",
-    type: 0
+    type: ""
   }
   reqType = "add"
 
@@ -88,8 +88,15 @@ export default class AgentBriteAddDialog extends Vue {
       }
 
       this.loading = true
-      await this.$apiCalls.agentBriteApi[this.formData.type](this.formData, this.user.id);
 
+      if(this.formData.type === "manual_add"){
+        await this.$apiCalls.agentBriteApi.manual_add(this.formData, this.user.id);
+      }else {
+        await this.$apiCalls.agentBriteApi.manual_remove(this.formData, this.user.id);
+      }
+
+
+      // TODO:: Refresh della pagina per caricare i dati aggiornati
       //await this.$store.dispatch("magazine/fetch")
 
       this.onClose()
@@ -101,16 +108,16 @@ export default class AgentBriteAddDialog extends Vue {
   }
 
   @Watch("reqType")
-  onTypeChange(value) {
+  onTypeChange(value: number) {
     this.$store.dispatch("dialog/updateData", {
       title: this.$t("dialogs.agentBriteAddDialog.title-" + (value === 0 ? "add" : "remove"))
     })
 
-    this.formData.type = value === 0 ? AgentBritesType.MANUAL_ADD : AgentBritesType.MANUAL_REMOVE
+    this.formData.type = (value === 0 ? AgentBritesType.MANUAL_ADD : AgentBritesType.MANUAL_REMOVE)
   }
 
   @Watch("maxValue", {immediate: true})
-  onMaxValueChange(value) {
+  onMaxValueChange(value: number) {
     this.formData.availableAmount = value
   }
 }
