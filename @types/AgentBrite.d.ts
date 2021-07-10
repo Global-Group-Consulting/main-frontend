@@ -14,6 +14,7 @@ export class AgentBrite {
 
   amount: number
   deposit: number
+  motivation: string
 
   type: string
 

@@ -340,9 +340,9 @@ export class ApiCalls extends BasicApiCall {
     })
   }
 
-  async fetchCommissionsStatus(data?: any) {
+  async fetchCommissionsStatus(userId?: string) {
     return await this.get({
-      endPoint: "/api/commissions/status" + (data && data.userId ? `/${data.userId}` : ''),
+      endPoint: "/api/commissions/status" + (userId ? `/${userId}` : ''),
     })
   }
 

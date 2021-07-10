@@ -1,6 +1,17 @@
 <template>
   <div>
     <span v-html="movementType"></span>
+    <span v-if="item.motivation">
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn text rounded v-on="on" color="primary">
+            <v-icon>mdi-information-outline</v-icon>
+          </v-btn>
+        </template>
+
+        {{ item.motivation }}
+      </v-tooltip>
+    </span>
   </div>
 </template>
 

@@ -14,7 +14,7 @@
         {{ $t(`dialogs.calculatorMovementsDialog.title${$options.filters.upperFirst(field)}`) }}
       </div>
 
-      <money-input v-model="localValue"></money-input>
+      <money-input v-model="localValue" clearable></money-input>
     </template>
   </v-edit-dialog>
 </template>
@@ -42,13 +42,13 @@ export default class CalculatorMovementDialog extends Vue {
   @Prop({type: Boolean, default: false})
   textInput!: boolean
 
-  @Prop({})
+  @Prop({type: [String, Number]})
   value!: any
 
   @Prop({type: Number})
   maxValue!: number
 
-  public localValue: string | string[] = this.value || ""
+  public localValue: string | string[] = this.value || 0
 
   @Watch("localValue")
   onLocalValueChanged() {

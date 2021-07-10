@@ -172,6 +172,8 @@ export default {
   },
   'AgentBritesType': {
     "from_withdrawl": "Da risc. provvigioni",
+    "manual_add": "Aggiunta",
+    "manual_remove": "Utilizzo",
   }
 }
 

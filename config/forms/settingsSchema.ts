@@ -32,7 +32,15 @@ export function globalSettings(context: Vue): FormSchema[] {
         clubRequestNotifyEmail: {
           label: "filters-club-request-notify-email",
           validations: {
-            email: {}
+            email: {},
+            required: {}
+          }
+        },
+        requestBriteEmail: {
+          label: "settings.request-brite-email",
+          validations: {
+            email: {},
+            required: {}
           }
         }
       }
@@ -43,16 +51,21 @@ export function globalSettings(context: Vue): FormSchema[] {
         requestMinAmount: {
           label: "settings.request-min-amount",
           component: "money-input",
-          showBrite: false
+          showBrite: false,
+          validations: {
+            required: {}
+          }
         },
         requestBritePercentage: {
           label: "settings.request-brite-percentage",
           type: "number",
           validations: {
             minValue: {params: 0.1},
-            maxValue: {params: 100}
+            maxValue: {params: 100},
+            required: {}
           }
-        }
+        },
+
       }
     }
   ]

@@ -14,6 +14,7 @@ export interface GlobalSettings {
   maintenanceMode: boolean
   requestsBlockTime: string[]
   requestsBlockTimeCriticDays: string[]
+  requestBriteEmail: string
   clubRequestNotifyEmail: string
   requestMinAmount: number
   requestBritePercentage: number

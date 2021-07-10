@@ -161,6 +161,8 @@ export default {
     agentBritesTotal: "Brite Accumulati",
     agentBritesCurrMonth: "Brite Mese corrente",
     addCommissions: "Aggiungi / Trasferisci",
+    addBrites: "Aggiungi / Rimuovi",
+    useBrites: "Utilizza",
     tabs: {
       commissions: "Provvigioni",
       agentBrites: "Brite",

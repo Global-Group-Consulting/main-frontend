@@ -154,12 +154,13 @@ export default {
   'filters-money-max': "Importo Massimo",
   'filters-club-request-notify-email': "Email da notificare per nuove Richieste Club",
 
-  'settings': {
+  settings: {
     'emails_notifications_label': "Email e notifiche",
     'agents_requests_label': "Agenti - Riscossione provvigioni",
 
     'request-min-amount': "Soglia minimo per richieste in €",
-    'request-brite-percentage': "Percentuale da convertire in Brite"
+    'request-brite-percentage': "Percentuale da convertire in Brite",
+    'request-brite-email': "Email per inoltro richieste uso Brite Agenti"
   },
   'userRoleChange': {
     "new-agent": "Nuovo agente",
@@ -171,5 +172,10 @@ export default {
     "cover-file": "File di copertina",
     "publication-date": "Data a cui si riferisce",
     "show-range": "In evidenza dal-al",
+  },
+  agentBriteAdd: {
+    "available-amount": "Importo disponibile",
+    "amount": "Importo",
+    "motivation": "Motivazione",
   }
 }

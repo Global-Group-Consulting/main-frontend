@@ -6,7 +6,7 @@
 
       <v-row>
         <v-col cols="12">
-          <v-card>
+          <v-card flat outlined>
             <movements-list-table :user-id="$auth.user.id"/>
           </v-card>
         </v-col>

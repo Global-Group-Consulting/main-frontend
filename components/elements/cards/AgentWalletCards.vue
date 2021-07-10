@@ -1,10 +1,16 @@
 <template>
-  <v-row class="mb-10">
-    <v-col v-for="(card, i) of dashboardBlocks" :key="'card_' + i"
-           cols="12" sm="6" lg="3">
-      <dashboard-card :card-data="card"/>
-    </v-col>
-  </v-row>
+  <div>
+    <v-row class="mb-10">
+      <v-col v-for="(card, i) of dashboardBlocks" :key="'card_' + i"
+             cols="12" sm="6" lg="3">
+        <dashboard-card :card-data="card" :loading="loading"/>
+      </v-col>
+    </v-row>
+
+    <commissions-add-dialog v-if="$store.getters['dialog/dialogId'] === 'CommissionsAddDialog'"/>
+    <agent-brite-use-dialog v-if="$store.getters['dialog/dialogId'] === 'AgentBriteUseDialog'"/>
+    <agent-brite-add-dialog v-if="$store.getters['dialog/dialogId'] === 'AgentBriteAddDialog'"/>
+  </div>
 </template>
 
 
@@ -14,15 +20,23 @@ import {DynamicTab} from "~/@types/components/DynamicTab";
 import UserRoles from "~/enums/UserRoles";
 import {BlockData} from "~/config/blocks/dashboardBlocks";
 import {moneyFormatter} from "~/plugins/filters";
+import CommissionsAddDialog from "~/components/dialogs/CommissionsAddDialog.vue";
+import DashboardCard from "~/components/dashboard/DashboardCard.vue";
+import AgentBriteUseDialog from "~/components/dialogs/AgentBriteUseDialog.vue";
+import AgentBriteAddDialog from "~/components/dialogs/AgentBriteAddDialog.vue";
+import {User} from "~/@types/UserFormData";
 
-@Component
+@Component({
+  components: {AgentBriteAddDialog, AgentBriteUseDialog, DashboardCard, CommissionsAddDialog}
+})
 export default class AgentWalletCards extends Vue {
   @Prop({type: String})
   userId!: string
 
+  @Prop({type: Object})
+  user!: User
+
   loading: boolean = true;
-
-
   dashboardData: any = {
     blocks: {
       monthCommissions: 0,
@@ -38,17 +52,36 @@ export default class AgentWalletCards extends Vue {
     }
   }
 
+  get userIsRefAgent() {
+    return this.$auth.user.hasSubAgents
+      && !this.$auth.user.referenceAgent
+      && !!this.userId // if no userId is given i'm in the wallet page
+  }
+
+  get userIsAdmin() {
+    return this.$store.getters["user/userIsAdmin"]
+  }
+
   get monthCommissionsActionText(): string {
-    const user = this.$auth.user
+    let toReturn = "collectCommissions"
 
-    const isReferenceAgent = user.hasSubAgents && !user.referenceAgent
-    const userIsAdmin = [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(this.$auth.user.role)
+    if (this.userIsRefAgent || this.userIsAdmin) {
+      toReturn = "addCommissions"
+    }
 
-    /*if (readonly) {
-      return isReferenceAgent || userIsAdmin ? "addCommissions" : ""
-    }*/
+    return this.$t("pages.wallet." + toReturn) as string
+  }
 
-    return this.$t("pages.wallet.collectCommissions") as string
+  get britesTotalActionText(): string {
+    let toReturn = ""
+
+    if (this.userIsAdmin) {
+      toReturn = "addBrites"
+    } else if (!this.userIsRefAgent) {
+      toReturn = "useBrites"
+    }
+
+    return toReturn ? this.$t("pages.wallet." + toReturn) as string : ""
   }
 
   get dashboardBlocks(): BlockData[] {
@@ -59,14 +92,9 @@ export default class AgentWalletCards extends Vue {
         color: "green",
         value: this.dashboardData.blocks.monthCommissions,
         actionText: this.monthCommissionsActionText,
-        action: (context, readonly = false): any => {
-          const user = this.$auth.user
-
-          const isReferenceAgent = user.hasSubAgents && !user.referenceAgent
-          const userIsAdmin = [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(this.$auth.user.role)
-
-          if (readonly) {
-            return isReferenceAgent || userIsAdmin ? this.addCommissions() : null
+        action: (): any => {
+          if (this.userIsRefAgent || this.userIsAdmin) {
+            return this.addCommissions();
           }
 
           return this.collectCommissions();
@@ -109,7 +137,16 @@ export default class AgentWalletCards extends Vue {
         icon: "$brite",
         color: "gold",
         currency: "Br'",
-        value: this.dashboardData.blocks.agentBritesTotal
+        value: this.dashboardData.blocks.agentBritesTotal,
+        actionText: this.britesTotalActionText,
+        actionDisabled: !this.userIsAdmin && !this.dashboardData.blocks.agentBritesTotal,
+        action: (): any => {
+          if (this.userIsAdmin) {
+            this.addBrites()
+          } else if (!this.userIsRefAgent) {
+            this.useBrites()
+          }
+        }
       },
       {
         slotId: "clientsTotalDeposit",
@@ -121,10 +158,9 @@ export default class AgentWalletCards extends Vue {
     ]
   }
 
-
   async mounted() {
     try {
-      const result = await this.$apiCalls.fetchCommissionsStatus();
+      const result = await this.$apiCalls.fetchCommissionsStatus(this.userId);
       const britesStats = await this.$apiCalls.agentBriteApi.statistics(this.userId);
 
       this.$set(this.dashboardData, "blocks", result.blocks);
@@ -154,6 +190,44 @@ export default class AgentWalletCards extends Vue {
 
   collectCommissions() {
     this.$router.push("/requests#new_collect_commissions");
+  }
+
+  addBrites() {
+    const user = this.user
+
+    if(!user){
+      return
+    }
+
+    this.$store.dispatch("dialog/updateStatus", {
+      id: "AgentBriteAddDialog",
+      title: this.$t("dialogs.agentBriteAddDialog.title-add"),
+      texts: {
+        cancelBtn: "dialogs.agentBriteAddDialog.btn-cancel",
+        confirmBtn: "dialogs.agentBriteAddDialog.btn-send"
+      },
+      data: {
+        user,
+        maxValue: this.dashboardData.blocks.agentBritesTotal
+      }
+    });
+  }
+
+  useBrites() {
+    const user = this.dashboardData.user || this.$auth.user
+
+    this.$store.dispatch("dialog/updateStatus", {
+      id: "AgentBriteUseDialog",
+      title: this.$t("dialogs.agentBriteUseDialog.title"),
+      texts: {
+        cancelBtn: "dialogs.agentBriteUseDialog.btn-cancel",
+        //confirmBtn: "dialogs.commissionsAddDialog.btn-send"
+      },
+      data: {
+        userName: user.firstName + " " + user.lastName,
+        maxValue: this.dashboardData.blocks.agentBritesTotal
+      }
+    });
   }
 
 }

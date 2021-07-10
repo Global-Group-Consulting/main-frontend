@@ -1,39 +1,41 @@
 <template>
   <v-row class="">
     <v-col v-for="(block, i) of blocksList" :key="block.id" md="3" sm="6">
-      <v-skeleton-loader
-        v-if="loading"
-        :elevation="2"
-        type="list-item-avatar-two-line"
-      ></v-skeleton-loader>
+      <v-card class="flex-fill flex-row d-flex align-start" style="height: 100%">
+        <v-skeleton-loader :loading="loading"
+                           class="flex-fill"
+                           type="list-item-avatar-three-line"
+        >
+          <div class="flex-fill flex-row d-flex align-start">
 
-      <v-card class="flex-fill flex-row d-flex align-start" style="height: 100%" v-else>
-        <v-icon x-large class="ml-3 mt-3" :color="block.color">
-          {{ block.icon }}
-        </v-icon>
+            <v-icon x-large class="ml-3 mt-3" :color="block.color">
+              {{ block.icon }}
+            </v-icon>
 
-        <div style="width: 100%">
-          <v-card-title class="pb-0 text-no-wrap">
-            <template v-if="!formatAsInt">
-              €
-              {{ $options.filters.moneyFormatter(dashboardData.blocks[block.value]) }}
-            </template>
-            <template v-else>
-              {{ dashboardData.blocks[block.value] }}
-            </template>
-          </v-card-title>
+            <div style="width: 100%">
+              <v-card-title class="pb-0 text-no-wrap">
+                <template v-if="!formatAsInt">
+                  €
+                  {{ $options.filters.moneyFormatter(dashboardData.blocks[block.value]) }}
+                </template>
+                <template v-else>
+                  {{ dashboardData.blocks[block.value] }}
+                </template>
+              </v-card-title>
 
-          <v-card-text>
-            {{ $t(`pages.${page}.${block.title}`) }}
-          </v-card-text>
+              <v-card-text>
+                {{ $t(`pages.${page}.${block.title}`) }}
+              </v-card-text>
 
-          <v-card-actions class="text-right pt-0 transparent"
-                          v-if="block.action">
-            <v-btn link text small color="primary" @click="block.action">
-              {{ $t(`pages.${page}.${block.actionText}`) }}
-            </v-btn>
-          </v-card-actions>
-        </div>
+              <v-card-actions class="text-right pt-0 transparent"
+                              v-if="block.action">
+                <v-btn link text small color="primary" @click="block.action">
+                  {{ $t(`pages.${page}.${block.actionText}`) }}
+                </v-btn>
+              </v-card-actions>
+            </div>
+          </div>
+        </v-skeleton-loader>
       </v-card>
     </v-col>
 

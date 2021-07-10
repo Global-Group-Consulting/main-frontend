@@ -26,7 +26,6 @@ export default function (context) {
   const pathName = route.name.slice(0, route.name.indexOf("_"))
 
 
-  debugger
   if (guards[pathName]) {
     return guards[pathName](context, permissions)
   }

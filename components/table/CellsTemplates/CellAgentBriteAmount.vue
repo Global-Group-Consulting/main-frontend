@@ -36,7 +36,7 @@ export default class CellAgentBriteAmount extends Vue {
   }
 
   getAmountSign() {
-    if ([AgentBritesType.FROM_WITHDRAWL].includes(this.item.type)) {
+    if ([AgentBritesType.FROM_WITHDRAWL, AgentBritesType.MANUAL_ADD].includes(this.item.type)) {
       return "+"
     } else {
       return "-";

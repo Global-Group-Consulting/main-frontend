@@ -11,6 +11,12 @@ class AgentBritesType extends BasicEnum {
     this.data = {
       [this.FROM_WITHDRAWL]: {
         id: this.FROM_WITHDRAWL,
+      },
+      [this.MANUAL_ADD]: {
+        id: this.MANUAL_ADD,
+      },
+      [this.MANUAL_REMOVE]: {
+        id: this.MANUAL_REMOVE,
       }
     }
   }

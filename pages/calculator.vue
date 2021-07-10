@@ -6,7 +6,7 @@
       <page-toolbar :actions-list="actionsList"></page-toolbar>
 
       <v-form @submit.prevent="onCalcUpdate">
-        <v-card class="mb-10" flat>
+        <v-card class="mb-10">
           <v-card-text>
             <dynamic-fieldset :schema="formSchema" v-model="formData"></dynamic-fieldset>
           </v-card-text>
@@ -27,67 +27,69 @@
 
       </v-form>
 
-      <data-table
-        id="quotationTable"
-        tableKey="calculator"
-        schema="calculatorSchema"
-        :items="tableData"
-        :items-per-page="25">
-        <template v-slot:item.date="{item, value}">
-          <span style="white-space: nowrap">{{ value }}</span>
+      <v-card falt outlined>
+        <data-table
+          id="quotationTable"
+          tableKey="calculator"
+          schema="calculatorSchema"
+          :items="tableData"
+          :items-per-page="25">
+          <template v-slot:item.date="{item, value}">
+            <span style="white-space: nowrap">{{ value }}</span>
 
-          <!--          {{ $moment(value).format("MMMM YYYY") }}-->
-        </template>
-        <template v-slot:item.depositAdded="{item, value}">
-          <calculator-movement-dialog :cell-data="item" field="depositAdded"
-                                      :value="value"
-                                      v-if="item.interestRecapitalized || value"
-                                      color="green--text"
-                                      @saved="onCalcUpdate"
-                                      @input="onEditSave(item, $event, 'depositAdded')"></calculator-movement-dialog>
-          <span v-else></span>
-        </template>
-        <template v-slot:item.depositCurrent="{item, value}">
-          <strong>{{ value | moneyFormatter(false, true) }}</strong>
-        </template>
-        <template v-slot:item.depositCollected="{item, value}">
-          <calculator-movement-dialog :cell-data="item" field="depositCollected"
-                                      v-if="item.interestRecapitalized"
-                                      :value="value"
-                                      color="red--text"
-                                      :max-value="item.depositCurrent"
-                                      @saved="onCalcUpdate"
-                                      @input="onEditSave(item, $event, 'depositCollected')"></calculator-movement-dialog>
-          <span v-else></span>
-        </template>
-        <template v-slot:item.interestAmount="{item, value}">
-          {{ value | moneyFormatter(false, true) }}
-        </template>
-        <template v-slot:item.interestRecapitalized="{item, value}">
-          <span class="lime--text text--darken-2">{{ value | moneyFormatter(false, true) }}</span>
-        </template>
-        <template v-slot:item.interestCollected="{item, value}">
-          <calculator-movement-dialog :cell-data="item" field="interestCollected"
-                                      v-if="item.interestAmount"
-                                      :value="value"
-                                      color="red--text"
-                                      :max-value="item.interestAmount"
-                                      @saved="onCalcUpdate"
-                                      @input="onEditSave(item, $event, 'interestCollected')"></calculator-movement-dialog>
-          <span v-else></span>
-        </template>
-        <template v-slot:item.brite="{item, value}">
-          <span class="yellow--text text--darken-3">{{ value | moneyFormatter(true, true) }}</span>
-        </template>
-        <template v-slot:item.britePartial="{item, value, header}">
+            <!--          {{ $moment(value).format("MMMM YYYY") }}-->
+          </template>
+          <template v-slot:item.depositAdded="{item, value}">
+            <calculator-movement-dialog :cell-data="item" field="depositAdded"
+                                        :value="value"
+                                        v-if="item.interestRecapitalized || value"
+                                        color="green--text"
+                                        @saved="onCalcUpdate"
+                                        @input="onEditSave(item, $event, 'depositAdded')"></calculator-movement-dialog>
+            <span v-else></span>
+          </template>
+          <template v-slot:item.depositCurrent="{item, value}">
+            <strong>{{ value | moneyFormatter(false, true) }}</strong>
+          </template>
+          <template v-slot:item.depositCollected="{item, value}">
+            <calculator-movement-dialog :cell-data="item" field="depositCollected"
+                                        v-if="item.interestRecapitalized"
+                                        :value="value"
+                                        color="red--text"
+                                        :max-value="item.depositCurrent"
+                                        @saved="onCalcUpdate"
+                                        @input="onEditSave(item, $event, 'depositCollected')"></calculator-movement-dialog>
+            <span v-else></span>
+          </template>
+          <template v-slot:item.interestAmount="{item, value}">
+            {{ value | moneyFormatter(false, true) }}
+          </template>
+          <template v-slot:item.interestRecapitalized="{item, value}">
+            <span class="lime--text text--darken-2">{{ value | moneyFormatter(false, true) }}</span>
+          </template>
+          <template v-slot:item.interestCollected="{item, value}">
+            <calculator-movement-dialog :cell-data="item" field="interestCollected"
+                                        v-if="item.interestAmount"
+                                        :value="value"
+                                        color="red--text"
+                                        :max-value="item.interestAmount"
+                                        @saved="onCalcUpdate"
+                                        @input="onEditSave(item, $event, 'interestCollected')"></calculator-movement-dialog>
+            <span v-else></span>
+          </template>
+          <template v-slot:item.brite="{item, value}">
+            <span class="yellow--text text--darken-3">{{ value | moneyFormatter(true, true) }}</span>
+          </template>
+          <template v-slot:item.britePartial="{item, value, header}">
 
           <span :class="{
             'yellow--text text--darken-3': (item.index % 6),
             'font-weight-bold yellow darken-3 rounded px-1 py-1': !(item.index % 6)}">
             {{ value | moneyFormatter(true, true) }}
           </span>
-        </template>
-      </data-table>
+          </template>
+        </data-table>
+      </v-card>
     </v-flex>
   </v-layout>
 </template>
@@ -190,7 +192,7 @@ export default class Calculator extends Vue {
         entry.interestRecapitalized = (+lastMonth.interestAmount) - (+lastMonth.interestCollected)
         entry.depositCurrent = ((+lastMonth.depositAdded) + (+lastMonth.depositCurrent) + (+entry.interestRecapitalized)) - (+lastMonth.depositCollected)
         entry.interestAmount = +entry.depositCurrent * (+this.formData.interestPercentage) / 100
-        entry.brite = Math.round(entry.interestAmount)
+        entry.brite = Math.round(entry.interestRecapitalized || entry.interestAmount)
         entry.britePartial = lastMonth.britePartial + entry.brite
       }
 

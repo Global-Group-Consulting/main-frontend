@@ -16,4 +16,20 @@ export class AgentBriteApi extends BasicApiCall {
       endPoint: "/api/agentBrites/statistics" + (userId ? `/${userId}` : ''),
     })
   }
+
+  async manual_add(formData: any, userId: string) {
+    return await this._call({
+      method: "patch",
+      endPoint: "/api/agentBrites/add/" + userId,
+      body: formData
+    })
+  }
+
+  async manual_remove(formData: any, userId: string) {
+    return await this._call({
+      method: "patch",
+      endPoint: "/api/agentBrites/remove/" + userId,
+      body: formData
+    })
+  }
 }

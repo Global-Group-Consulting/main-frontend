@@ -1,7 +1,7 @@
 <template>
   <v-layout>
     <v-flex>
-      <page-header page-name="user.profile" sub-title="true">
+      <page-header page-name="user.profile" sub-title="true" :loading="loading">
         <template v-slot:subtitle>{{ userData.firstName + ' ' + userData.lastName }}</template>
       </page-header>
 
@@ -13,14 +13,7 @@
                         :loading="loading"
       ></dashboard-blocks>
 
-      <!--      <agent-wallet-cards :user-id="userData.id" v-if="showAgentBlocks"></agent-wallet-cards>-->
-      <dashboard-blocks :dashboard-data="agentDashboardData"
-                        page="wallet"
-                        readonly
-                        includeCommissionsAddDialog
-                        v-if="showAgentBlocks"
-                        :loading="loading"
-      ></dashboard-blocks>
+      <agent-wallet-cards :user-id="userData.id"  :user="userData" v-if="showAgentBlocks"></agent-wallet-cards>
 
       <div class="mt-10"></div>
 
@@ -179,7 +172,7 @@ export default class Profile extends Vue {
       }
 
       if (this.showAgentBlocks) {
-        const resultCommissions = await this.$apiCalls.fetchCommissionsStatus({userId: this.userId});
+        const resultCommissions = await this.$apiCalls.fetchCommissionsStatus(this.userId);
 
         this.agentDashboardData.blocks = resultCommissions.blocks
         this.agentDashboardData.blocks.collectedCommissions = resultCommissions.blocks.collectedCommissions.total

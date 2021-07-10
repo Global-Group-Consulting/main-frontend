@@ -1,32 +1,24 @@
 <template>
-  <v-sheet
-    class="pb-10"
-    color="transparent"
-    tile
+  <v-sheet class="pb-10"
+           color="transparent"
+           tile
   >
     <div class="d-flex">
-      <!--      <v-icon
-              class="mr-3"
-              style="opacity: 0.5"
-              v-if="icon"
-              :x-large="$vuetify.breakpoint.mdAndUp"
-            >{{ icon }}
-            </v-icon>-->
-
       <h1 :class="{
         'display-3': $vuetify.breakpoint.mdAndUp,
         'display-2': $vuetify.breakpoint.smOnly,
         'display-1': $vuetify.breakpoint.xsOnly
         }" v-html="pageTitle"></h1>
     </div>
-    <h3
-      v-if="pageSubtitle"
-      class="display-1 font-weight-light text-grey blue-grey--text text--lighten-2"
-    >
-      <slot name="subtitle">
-        <div v-html="pageSubtitle"></div>
-      </slot>
-    </h3>
+    <v-skeleton-loader type="heading" v-if="pageSubtitle"
+                       :loading="loading" max-width="800px">
+      <h3 class="display-1 font-weight-light text-grey blue-grey--text text--lighten-2">
+        <slot name="subtitle">
+          <div v-html="pageSubtitle"></div>
+        </slot>
+      </h3>
+    </v-skeleton-loader>
+
   </v-sheet>
 </template>
 
@@ -44,6 +36,9 @@ export default class PageHeader extends Vue {
 
   @Prop({type: [Boolean, String]})
   public subTitle!: string | any
+
+  @Prop({type: Boolean})
+  public loading!: boolean
 
   get userRole() {
     return this.$enums.UserRoles.get(this.$auth.user.role)?.id

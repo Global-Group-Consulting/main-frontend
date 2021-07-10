@@ -69,43 +69,45 @@
         </template>
       </dynamic-tabs>
 
-      <data-table schema="clubBriteSchema"
-                  table-key="brite"
-                  :items="tableData">
-        <template v-slot:item.amountChange="{item, value}">
+      <v-card flat outlined>
+        <data-table schema="clubBriteSchema"
+                    table-key="brite"
+                    :items="tableData">
+          <template v-slot:item.amountChange="{item, value}">
           <span :class="getMovementColor(item)">
             Br' {{ value | moneyFormatter(true) }}</span>
-        </template>
+          </template>
 
-        <template v-slot:item.deposit="{item, value}">
-          <strong>Br' {{ value | moneyFormatter(true) }}</strong>
-        </template>
+          <template v-slot:item.deposit="{item, value}">
+            <strong>Br' {{ value | moneyFormatter(true) }}</strong>
+          </template>
 
-        <template v-slot:item.depositOld="{item, value}">
-          Br' {{ value | moneyFormatter(true) }}
-        </template>
+          <template v-slot:item.depositOld="{item, value}">
+            Br' {{ value | moneyFormatter(true) }}
+          </template>
 
-        <template v-slot:item.semesterId="{item, value}">
-          {{ value ? formatTabSemester(+value.split("_")[0], +value.split("_")[1]) : "" }}
-        </template>
+          <template v-slot:item.semesterId="{item, value}">
+            {{ value ? formatTabSemester(+value.split("_")[0], +value.split("_")[1]) : "" }}
+          </template>
 
-        <template v-slot:item.movementType="{item, value}">
-          <v-chip :color="$enums.ClubMovementTypes.get(value).color" small>
-            {{ $t(`enums.ClubMovementTypes.` + value) }}
-          </v-chip>
-        </template>
+          <template v-slot:item.movementType="{item, value}">
+            <v-chip :color="$enums.ClubMovementTypes.get(value).color" small>
+              {{ $t(`enums.ClubMovementTypes.` + value) }}
+            </v-chip>
+          </template>
 
-        <template v-slot:item.notes="{item, value}">
-          <v-tooltip bottom v-if="value">
-            <template v-slot:activator="{ on }">
-              <v-btn icon v-on="on" color="primary">
-                <v-icon>mdi-note-text-outline</v-icon>
-              </v-btn>
-            </template>
-            {{ value }}
-          </v-tooltip>
-        </template>
-      </data-table>
+          <template v-slot:item.notes="{item, value}">
+            <v-tooltip bottom v-if="value">
+              <template v-slot:activator="{ on }">
+                <v-btn icon v-on="on" color="primary">
+                  <v-icon>mdi-note-text-outline</v-icon>
+                </v-btn>
+              </template>
+              {{ value }}
+            </v-tooltip>
+          </template>
+        </data-table>
+      </v-card>
 
       <brite-add-dialog v-if="$store.getters['dialog/dialogId'] === 'BriteAddDialog'"
                         @briteAdded="onBriteAdded"/>
@@ -248,7 +250,6 @@ export default class Brite extends Vue {
         continue
       }
 
-      debugger
       toReturn.totalAmount += +entry[1].briteAvailable
       toReturn.expirations.push({
         amount,

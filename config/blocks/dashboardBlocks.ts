@@ -20,6 +20,7 @@ export interface BlockData {
   rawValue?: any
   page?: string
   actionText?: string | ((context: Vue, readonly: boolean) => string)
+  actionDisabled?: boolean
   action?: null | BlockAction | ((context: Vue, readonly: boolean) => BlockAction)
   dropDown?: Record<string, any>
   onDropDownChange?: (cardData: BlockData, newTab: string) => void

@@ -162,5 +162,15 @@ export default {
     "btn-cancel": "Annulla",
     "btn-submit": "Aggiungi",
     "btn-save": "Salva",
+  },
+  agentBriteUseDialog: {
+    "title": "Richiesta utilizzo brite",
+    "btn-cancel": "Chiudi"
+  },
+  agentBriteAddDialog: {
+    "title-add": "Aggiunta manuale brite",
+    "title-remove": "Rimozione manuale brite",
+    "btn-cancel": "Annulla",
+    "btn-send": "Invia"
   }
 }
