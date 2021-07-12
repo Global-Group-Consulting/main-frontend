@@ -88,7 +88,7 @@ export default class DatePicker extends Vue {
   }
 
   menuOpened: boolean = false
-  dateValue: string = this.value ? datePickerFormatter(this.value) : null
+  dateValue: string | null = this.value ? datePickerFormatter(this.value) : null
 
   get clearable() {
     return this.$attrs.clearable ?? (!this.readonly && !this.disabled)
@@ -114,7 +114,7 @@ export default class DatePicker extends Vue {
     this.$emit("change", value);
   }
 
-  onClear(ev: any) {
+  onClear() {
     this.dateValue = null
 
     setTimeout(() => {
