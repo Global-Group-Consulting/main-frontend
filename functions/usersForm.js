@@ -206,13 +206,13 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
         data.incompleteData.completed = true
       }
 
-      if (emailChanged.value) {
+      if (emailChanged.value && formData.value.id) {
         await askIfWantToChangeEmail()
 
         data.incompleteData.completed = true
       }
 
-      if (formData.value.role !== UserRoles.AGENTE && roleChanged.value) {
+      if (formData.value.role !== UserRoles.AGENTE && roleChanged.value && formData.value.id) {
         const roleChangeResult = await askIfWantToChangeRole()
 
         data.roleChangeData = roleChangeResult;
