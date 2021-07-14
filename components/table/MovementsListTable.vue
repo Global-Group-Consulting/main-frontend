@@ -93,7 +93,8 @@ export default class MovementsListTable extends Vue {
     const sign = [
       MovementTypes.INTEREST_COLLECTED,
       MovementTypes.DEPOSIT_COLLECTED,
-      MovementTypes.COMMISSION_COLLECTED
+      MovementTypes.COMMISSION_COLLECTED,
+      MovementTypes.CANCEL_DEPOSIT_ADDED
     ].includes(item.movementType)
       ? "-"
       : "+";
@@ -111,7 +112,8 @@ export default class MovementsListTable extends Vue {
     let movementToAvoid = [
       this.$enums.MovementTypes.CANCEL_INTEREST_COLLECTED,
       this.$enums.MovementTypes.CANCEL_DEPOSIT_COLLECTED,
-      this.$enums.MovementTypes.CANCEL_COMMISSION_COLLECTED
+      this.$enums.MovementTypes.CANCEL_COMMISSION_COLLECTED,
+      this.$enums.MovementTypes.CANCEL_DEPOSIT_ADDED
     ]
 
     if (reqType && !movementToAvoid.includes(item.movementType)) {

@@ -81,6 +81,7 @@ export default {
     "cancelCommissionCollected": "Annullamento riscossione provvigioni",
     "commissionsReinvestment": "Reinvestimento provvigioni",
     "commissionsCancellation": "Storno provvigioni",
+    "cancelDepositAdded": "Annullamento versamento",
   },
   "MessageTypes": {
     'newsletter': "Newsletter",
@@ -119,7 +120,8 @@ export default {
     "commissionsCollected": "Riscossione provvigioni",
     "cancelCommissionsCollected": "Annullamento riscossione provvigioni",
     "commissionsToReinvest": "Chiusura mese e reinvestimento",
-    "commissionsCancellation": "Storno provvigioni"
+    "commissionsCancellation": "Storno provvigioni",
+    "cancelCommissionsNewDeposit": "Storno per annullamento deposito cliente"
   },
   "NotificationTypes": {
     "user_validate": "Utente da validare",
