@@ -16,6 +16,7 @@ class MovementTypes extends BasicEnum {
     this.CANCEL_INTEREST_COLLECTED = 7
     this.CANCEL_DEPOSIT_COLLECTED = 8
     this.CANCEL_COMMISSION_COLLECTED = 9
+    this.CANCEL_DEPOSIT_ADDED = 11
 
     this.COMMISSIONS_REINVESTMENT = 10
 
@@ -52,6 +53,9 @@ class MovementTypes extends BasicEnum {
       },
       [this.COMMISSIONS_REINVESTMENT]: {
         id: "commissionsReinvestment"
+      },
+      [this.CANCEL_DEPOSIT_ADDED]: {
+        id: "cancelDepositAdded"
       },
     }
   }

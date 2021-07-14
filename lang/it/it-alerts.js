@@ -210,5 +210,13 @@ export default {
     "delete-confirmBtnText": "Si, cancella",
     "delete-cancelBtnText": "Annulla",
     "delete-success": "Magazine cancellato correttamente!",
+  },
+
+  requests: {
+    "admin-cancel-request-title": "",
+    "admin-cancel-request-text": "Sei sicuro di voler stornare la richiesta di <strong>{type}</strong> del valore di <strong>{amount}</strong> la quale è già stata approvata? Continuando verrà effetuato uno storno nei movimenti dell'utente ed il suo saldo verrà ricalcolato.<br><br>Se desideri procedere ti invitiamo ad indicare una motivazione per questa operazione.",
+    "admin-cancel-request-confirmBtnText": "Si, storna richiesta",
+    "admin-cancel-request-cancelBtnText": "Torna indietro",
+    "admin-cancel-request-success": "Richiesta stornata correttamente!",
   }
 }

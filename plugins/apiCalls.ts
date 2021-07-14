@@ -10,6 +10,7 @@ import {AgentBriteApi} from "~/plugins/apiCalls/AgentBriteApi";
 import {UserApi} from "~/plugins/apiCalls/UserApi";
 import {MagazineApi} from "~/plugins/apiCalls/Magazine";
 import {FilesApi} from "~/plugins/apiCalls/FilesApi";
+import {RequestsApi} from "~/plugins/apiCalls/RequestsApi";
 
 
 interface IApiCalls extends ApiCalls {
@@ -46,6 +47,7 @@ export class ApiCalls extends BasicApiCall {
   public userApi!: UserApi;
   public magazine!: MagazineApi;
   public files!: FilesApi;
+  public requests!: RequestsApi;
 
   constructor(context: any) {
     super(context)
@@ -54,6 +56,7 @@ export class ApiCalls extends BasicApiCall {
     this.userApi = new UserApi(context);
     this.magazine = new MagazineApi(context);
     this.files = new FilesApi(context);
+    this.requests = new RequestsApi(context);
   }
 
   async userCreate(data: any) {

@@ -274,6 +274,46 @@ export class RequestsTableActions {
     }
   }
 
+  async adminCancel(request: RequestFormData): Promise<boolean> {
+    if (!request) {
+      throw new Error("Missing request argument");
+    }
+
+    const currentRequest = request
+
+    try {
+      await this.ctx.$alerts.askBeforeAction({
+        key: "requests.admin-cancel-request",
+        preConfirm: async (value: string) => {
+          await this.ctx.$apiCalls.requests.revert({
+            id: currentRequest.id,
+            reason: value
+          });
+
+          await this.ctx.$store.dispatch("requests/fetchData");
+        },
+        settings: {
+          confirmButtonColor: "red",
+          input: "textarea",
+          inputValue: "",
+          inputValidator: (value: string) => {
+            return value ? null : this.ctx.$t("validators.requiredMotivationCancel") as string
+          }
+        },
+        data: {
+          type: this.ctx.$t("enums.RequestTypes." + RequestTypes.get(currentRequest.type).id),
+          amount: CurrencyType.get(currentRequest.currency).symbol + " " + moneyFormatter(currentRequest.amount),
+        }
+      });
+
+      return true
+    } catch (er) {
+      this.ctx.$alerts.error(er)
+
+      return false
+    }
+  }
+
   /**
    * Cancella completamente una richiesta effettuata
    */
