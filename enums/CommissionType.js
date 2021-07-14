@@ -16,6 +16,7 @@ class CommissionType extends BasicEnum {
     this.COMMISSIONS_REINVESTMENT = "commissionsReinvestment"
     this.COMMISSIONS_COLLECTED = "commissionsCollected"
     this.CANCEL_COMMISSIONS_COLLECTED = "cancelCommissionsCollected"
+    this.CANCEL_COMMISSIONS_NEW_DEPOSIT = "cancelCommissionsNewDeposit"
 
     //  Status used when the month end and i must block the months commissions, waiting for reinvestment date.
     this.COMMISSIONS_TO_REINVEST = "commissionsToReinvest"
@@ -58,6 +59,9 @@ class CommissionType extends BasicEnum {
       },
       [this.COMMISSIONS_CANCELLATION]: {
         id: this.COMMISSIONS_CANCELLATION,
+      },
+      [this.CANCEL_COMMISSIONS_NEW_DEPOSIT]: {
+        id: this.CANCEL_COMMISSIONS_NEW_DEPOSIT,
       }
     }
   }

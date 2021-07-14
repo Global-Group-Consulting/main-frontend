@@ -115,6 +115,12 @@ export default class CellRequestActions extends Vue {
           this.item.status === this.$enums.RequestStatus.ACCETTATA && this.item.canCancel
       },
       {
+        value: "adminCancelRequest",
+        action: async () => this.actions.adminCancel(this.item),
+        if: this.userIsAdmin &&
+          this.item.status === this.$enums.RequestStatus.ACCETTATA && this.item.canCancel
+      },
+      {
         value: "approve",
         action: async () => this.actions.approve(this.item),
         if: this.userIsAdmin && (this.isNew || this.isInCharge) && !this.firstMustTakeCharge
