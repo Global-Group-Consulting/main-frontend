@@ -14,6 +14,7 @@ export default {
   "reject": "Rifiuta",
   "cancel": "Annulla",
   "cancelRequest": "Annulla richiesta",
+  "adminCancelRequest": "Storna richiesta",
   "approveUser": "Attiva account",
   "noNotifications": "Nessuna nuova notifica",
   "downloadReceipt": "Scarica integrazione",
