@@ -13,7 +13,8 @@
                         :loading="loading"
       ></dashboard-blocks>
 
-      <agent-wallet-cards :user-id="userData.id"  :user="userData" v-if="showAgentBlocks"></agent-wallet-cards>
+      <agent-wallet-cards :user-id="userData.id" :user="userData" v-if="showAgentBlocks"
+                          @reloadCommissions="onReloadCommissions"></agent-wallet-cards>
 
       <div class="mt-10"></div>
 
@@ -27,13 +28,15 @@
                   v-slot:[`tabContent_${tab.id}`]="{item}">
           <component :is="tab.id + '-list-table'"
                      :user-id="userId"
+                     :ref="tab.id + '_list_table'"
           />
         </template>
       </dynamic-tabs>
 
       <admin-request-dialog
         v-if="$store.getters['user/userIsRealAdmin']
-              && $store.getters['dialog/dialogId'] === 'AdminRequestDialog'"/>
+              && $store.getters['dialog/dialogId'] === 'AdminRequestDialog'"
+      />
     </v-flex>
   </v-layout>
 </template>
@@ -89,6 +92,10 @@ export default class Profile extends Vue {
       collectedCommissions: 0,
       clientsTotalDeposit: 0,
     }
+  }
+
+  $refs!: {
+    commissions_list_table: CommissionsListTable[]
   }
 
   get actionsList(): ActionItem[] {
@@ -158,6 +165,23 @@ export default class Profile extends Vue {
     }
 
     this.$router.push(path)
+  }
+
+  async onReloadCommissions() {
+    if (!this.$refs.commissions_list_table) {
+      return;
+    }
+
+    let target: any = this.$refs.commissions_list_table
+    let finalTarget: any = null;
+
+    if (target instanceof Array) {
+      finalTarget = target[0]
+    }
+
+    if ("updateData" in target && finalTarget) {
+      await finalTarget.updateDate()
+    }
   }
 
   async beforeMount() {
