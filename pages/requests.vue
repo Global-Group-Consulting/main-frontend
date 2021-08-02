@@ -391,7 +391,7 @@ export default class Requests extends Vue {
 
      */
 
-    if (this.$auth.user.autoWithdrawlAll && this.$auth.user.gold) {
+    if (this.$auth.user.autoWithdrawlAll && reqType === this.$enums.RequestTypes.RISC_PROVVIGIONI) {
       this.$alerts.info({
         title: "",
         html: this.$t("alerts.autoWithdrawl-not-available", {link: "/requests#" + this.$auth.user.autoWithdrawlAll}) as string,

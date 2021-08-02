@@ -29,7 +29,7 @@ function getRequestTypeList(list, context) {
       // return [RequestTypes.RISC_INTERESSI_BRITE, RequestTypes.RISC_INTERESSI_GOLD].includes(el.value)
     }
 
-    if (isAgent && [RequestTypes.RISC_PROVVIGIONI].includes(el.value)) {
+    if (isAgent && [RequestTypes.RISC_PROVVIGIONI].includes(el.value) && context.incomingData.type === RequestTypes.RISC_PROVVIGIONI) {
       mustReturn = true
     }
 
@@ -102,7 +102,7 @@ export default function (context) {
           label: "requestType",
           if: (!readonly && !isVersamento) || readonly,
           component: !readonly ? 'v-select' : null,
-          disabled: readonly || !hasWithdrawalPermissions.value,
+          disabled: readonly || !hasWithdrawalPermissions.value || context.incomingData.type === RequestTypes.RISC_PROVVIGIONI,
           formatter: readonly ? (value) => context.$i18n.t(`enums.RequestTypes.${context.$enums.RequestTypes.getIdName(value)}`) : null,
           items: !readonly ? getRequestTypeList(context.$enums.RequestTypes.list, context) : null
         },
