@@ -458,12 +458,13 @@ export default class RequestDialog extends Vue {
 
           if (data.autoWithdrawlAll) {
             const user = this.$auth.user;
-
-            this.$auth.setUser({
+            const newUser = {
               ...user,
               autoWithdrawlAll: result.id,
               autoWithdrawlAllRecursively: data.autoWithdrawlAllRecursively ? result.id : null
-            })
+            }
+
+            this.$auth.setUser(newUser)
           }
         },
         data: {
