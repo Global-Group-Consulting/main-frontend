@@ -7,7 +7,8 @@
       </v-col>
     </v-row>
 
-    <commissions-add-dialog v-if="$store.getters['dialog/dialogId'] === 'CommissionsAddDialog'"/>
+    <commissions-add-dialog v-if="$store.getters['dialog/dialogId'] === 'CommissionsAddDialog'"
+                            @commissionsAdded="onCommissionsAdded"/>
     <agent-brite-use-dialog v-if="$store.getters['dialog/dialogId'] === 'AgentBriteUseDialog'"/>
     <agent-brite-add-dialog v-if="$store.getters['dialog/dialogId'] === 'AgentBriteAddDialog'"/>
   </div>
@@ -158,14 +159,18 @@ export default class AgentWalletCards extends Vue {
     ]
   }
 
+  async fetchData() {
+    const result = await this.$apiCalls.fetchCommissionsStatus(this.userId);
+    const britesStats = await this.$apiCalls.agentBriteApi.statistics(this.userId);
+
+    this.$set(this.dashboardData, "blocks", result.blocks);
+
+    this.dashboardData.blocks.agentBritesTotal = britesStats["agentBritesTotal"];
+  }
+
   async mounted() {
     try {
-      const result = await this.$apiCalls.fetchCommissionsStatus(this.userId);
-      const britesStats = await this.$apiCalls.agentBriteApi.statistics(this.userId);
-
-      this.$set(this.dashboardData, "blocks", result.blocks);
-
-      this.dashboardData.blocks.agentBritesTotal = britesStats["agentBritesTotal"];
+      await this.fetchData()
 
     } catch (er) {
       this.$alerts.error(er)
@@ -183,7 +188,8 @@ export default class AgentWalletCards extends Vue {
         confirmBtn: "dialogs.commissionsAddDialog.btn-send"
       },
       data: {
-        user: this.dashboardData.user
+        user: this.dashboardData.user || this.user || this.$auth.user,
+
       }
     });
   }
@@ -195,7 +201,7 @@ export default class AgentWalletCards extends Vue {
   addBrites() {
     const user = this.user
 
-    if(!user){
+    if (!user) {
       return
     }
 
@@ -228,6 +234,12 @@ export default class AgentWalletCards extends Vue {
         maxValue: this.dashboardData.blocks.agentBritesTotal
       }
     });
+  }
+
+  async onCommissionsAdded() {
+    await this.fetchData();
+
+    this.$emit("reloadCommissions")
   }
 
 }

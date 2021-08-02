@@ -31,11 +31,10 @@ export const actions: ActionTree<RootState, RootState> = {
 
     try {
       const requestsList: RequestFormData[] = await this.$apiCalls.fetchRequests();
-      const existsAutoWithdraw = getters["requestsGroups"].lavorazione.find((req: any) => req.autoWithdrawlAll)
-
       commit("UPDATE_DATA", requestsList);
 
       await this.dispatch("filters/updateDataToFilter", requestsList);
+      const existsAutoWithdraw = getters["requestsGroups"].lavorazione.find((req: any) => req.autoWithdrawlAll)
 
       // If in the list of working request does not exist an autoWithdraw request and the user still has one in its data,
       // updates the user data
