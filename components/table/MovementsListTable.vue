@@ -16,7 +16,15 @@
     </template>
 
     <template v-slot:item.movementType="{ item }">
-      <div v-html="formatMovementType(item)"></div>
+      <v-tooltip bottom v-if="item.notes">
+        <template v-slot:activator="{ on }">
+          <a class="text-decoration-underline-dotted" v-on="on" v-html="formatMovementType(item)"></a>
+        </template>
+
+        <span>{{ item.notes }}</span>
+      </v-tooltip>
+
+      <div v-else v-html="formatMovementType(item)"></div>
     </template>
 
     <template v-slot:item.deposit="{ item }">
@@ -94,7 +102,8 @@ export default class MovementsListTable extends Vue {
       MovementTypes.INTEREST_COLLECTED,
       MovementTypes.DEPOSIT_COLLECTED,
       MovementTypes.COMMISSION_COLLECTED,
-      MovementTypes.CANCEL_DEPOSIT_ADDED
+      MovementTypes.CANCEL_DEPOSIT_ADDED,
+      MovementTypes.MANUAL_INTEREST_COLLECTED,
     ].includes(item.movementType)
       ? "-"
       : "+";

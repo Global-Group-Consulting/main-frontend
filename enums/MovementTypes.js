@@ -12,6 +12,8 @@ class MovementTypes extends BasicEnum {
     this.INTEREST_COLLECTED = 4
     this.DEPOSIT_COLLECTED = 5
     this.COMMISSION_COLLECTED = 6
+    this.MANUAL_INTEREST_COLLECTED = 12
+
     // Storno operazioni
     this.CANCEL_INTEREST_COLLECTED = 7
     this.CANCEL_DEPOSIT_COLLECTED = 8
@@ -57,6 +59,9 @@ class MovementTypes extends BasicEnum {
       [this.CANCEL_DEPOSIT_ADDED]: {
         id: "cancelDepositAdded"
       },
+      [this.MANUAL_INTEREST_COLLECTED]: {
+        id: "manualInterestCollected"
+      }
     }
   }
 }
