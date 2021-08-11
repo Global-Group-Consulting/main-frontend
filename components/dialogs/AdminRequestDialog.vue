@@ -84,7 +84,9 @@ export default class AdminRequestDialog extends Vue {
   }
 
   get wallet() {
-    return this.$store.getters["user/availableWallets"].find((_wallet: any) => _wallet.type === (this.formData.wallet || 1));
+    return this.$store.getters["user/availableWallets"].find(
+      (_wallet: any) => _wallet.type === (this.formData.wallet || 1)
+    );
   };
 
   get availableAmount() {
@@ -101,6 +103,7 @@ export default class AdminRequestDialog extends Vue {
 
         break;
       case this.$enums.RequestTypes.RISC_INTERESSI:
+      case this.$enums.RequestTypes.RISC_MANUALE_INTERESSI:
       case this.$enums.RequestTypes.RISC_INTERESSI_BRITE:
       case this.$enums.RequestTypes.RISC_INTERESSI_GOLD:
         toReturn = this.wallet.interestAmount ?? 0;
@@ -192,7 +195,7 @@ export default class AdminRequestDialog extends Vue {
         }
       });
 
-      this.$emit("newRequestAdded");
+      this.$emit("newRequestAdded", data);
 
       this.close();
     } catch (er) {

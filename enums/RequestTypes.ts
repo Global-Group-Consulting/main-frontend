@@ -8,11 +8,15 @@ class RequestTypes extends BasicEnum {
   // this.ADMIN = 1
   public VERSAMENTO = 2;
   public RISC_CAPITALE = 3;
+
   public RISC_INTERESSI = 4;
-  // Reinvestimento Interessi maturati da un agente
-  public RISC_PROVVIGIONI = 5;
   public RISC_INTERESSI_GOLD = 6;
   public RISC_INTERESSI_BRITE = 7;
+  public RISC_MANUALE_INTERESSI = 10;
+
+  // Reinvestimento Interessi maturati da un agente
+  public RISC_PROVVIGIONI = 5;
+
   public COMMISSION_MANUAL_ADD = 8;
   public COMMISSION_MANUAL_TRANSFER = 9;
 
@@ -51,6 +55,10 @@ class RequestTypes extends BasicEnum {
       [this.COMMISSION_MANUAL_TRANSFER]: {
         id: 'commission_manual_transfer',
         reqRoles: [UserRoles.AGENTE, UserRoles.ADMIN, UserRoles.SERV_CLIENTI]
+      },
+      [this.RISC_MANUALE_INTERESSI]: {
+        id: 'risc_manuale_interessi',
+        reqRoles: [UserRoles.ADMIN]
       }
     }
   }
