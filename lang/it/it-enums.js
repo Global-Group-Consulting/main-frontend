@@ -50,6 +50,7 @@ export default {
     'risc_interessi': 'Riscossione rendite (classic)',
     'risc_interessi_brite': 'Riscossione rendite Gold',
     'risc_interessi_gold': 'Riscossione rendite Gold (Fisico)',
+    'risc_manuale_interessi': 'Storno manuale rendite',
     'commission_manual_add': 'Aggiunta manuale provvigioni ad agente',
     'commission_manual_transfer': 'Trasferimento manuale provvigioni tra Agenti',
   },
@@ -82,6 +83,7 @@ export default {
     "commissionsReinvestment": "Reinvestimento provvigioni",
     "commissionsCancellation": "Storno provvigioni",
     "cancelDepositAdded": "Annullamento versamento",
+    "manualInterestCollected": "Storno rendite",
   },
   "MessageTypes": {
     'newsletter': "Newsletter",

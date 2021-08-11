@@ -12,11 +12,12 @@ interface FormContext extends Vue {
 
 export default function (context: FormContext) {
   const availableRequests = [RequestTypes.RISC_CAPITALE, RequestTypes.RISC_INTERESSI,
-    RequestTypes.RISC_INTERESSI_BRITE, RequestTypes.RISC_INTERESSI_GOLD,
+    RequestTypes.RISC_INTERESSI_BRITE, RequestTypes.RISC_INTERESSI_GOLD, RequestTypes.RISC_MANUALE_INTERESSI,
     RequestTypes.VERSAMENTO]
   const goldRequests = [RequestTypes.RISC_INTERESSI_BRITE, RequestTypes.RISC_INTERESSI_GOLD]
   const classicRequests = [RequestTypes.RISC_INTERESSI]
   const userIsGold = context.user.gold || false
+  const userIsSuperAdmin = context.$auth.user.superAdmin || false
 
   return [
     {
@@ -33,6 +34,9 @@ export default function (context: FormContext) {
               return acc
             }
 
+            if([RequestTypes.RISC_MANUALE_INTERESSI].includes(el) && !userIsSuperAdmin){
+              return acc
+            }
 
             acc.push({
               value: el,
@@ -78,7 +82,10 @@ export default function (context: FormContext) {
           label: "requestNotes",
           component: 'v-textarea',
           autoGrow: true,
-          rows: 1
+          rows: 1,
+          validations: context.formData.type !== RequestTypes.RISC_MANUALE_INTERESSI ? {} : {
+            required: {}
+          }
         }
       }
     },

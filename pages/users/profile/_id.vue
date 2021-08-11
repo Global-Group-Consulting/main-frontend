@@ -36,6 +36,7 @@
       <admin-request-dialog
         v-if="$store.getters['user/userIsRealAdmin']
               && $store.getters['dialog/dialogId'] === 'AdminRequestDialog'"
+              @newRequestAdded="onAdminNewRequestAdded"
       />
     </v-flex>
   </v-layout>
@@ -96,6 +97,7 @@ export default class Profile extends Vue {
 
   $refs!: {
     commissions_list_table: CommissionsListTable[]
+    movements_list_table: MovementsListTable[]
   }
 
   get actionsList(): ActionItem[] {
@@ -184,16 +186,25 @@ export default class Profile extends Vue {
     }
   }
 
+  async onAdminNewRequestAdded() {
+    await this.fetchUserDetails();
+    await this.$refs.movements_list_table[0]?.updateData();
+  }
+
+  async fetchUserDetails(){
+    this.userData = await this.$apiCalls.fetchUserDetails(this.userId);
+
+    if (this.showUserBlocks) {
+      const resultDashboard = await this.$apiCalls.dashboardFetch(this.userId);
+
+      this.userDashboardData.blocks = resultDashboard.blocks
+      this.userDashboardData.user = this.userData
+    }
+  }
+
   async beforeMount() {
     try {
-      this.userData = await this.$apiCalls.fetchUserDetails(this.userId);
-
-      if (this.showUserBlocks) {
-        const resultDashboard = await this.$apiCalls.dashboardFetch(this.userId);
-
-        this.userDashboardData.blocks = resultDashboard.blocks
-        this.userDashboardData.user = this.userData
-      }
+      await this.fetchUserDetails();
 
       if (this.showAgentBlocks) {
         const resultCommissions = await this.$apiCalls.fetchCommissionsStatus(this.userId);
