@@ -49,14 +49,16 @@ export default class CommissionsReport extends Vue {
   }
 
   onApplyFilters(filters: any) {
-    if (filters.dates) {
-      filters.startDate = filters.dates[0];
-      filters.endDate = filters.dates[1];
+    this.$nextTick(() => {
+      if (filters.dates) {
+        filters.startDate = filters.dates[0];
+        filters.endDate = filters.dates[1];
 
-      delete filters.dates;
-    }
+        delete filters.dates;
+      }
 
-    this.$store.dispatch("reports/fetchCommissionsData", filters);
+      this.$store.dispatch("reports/fetchCommissionsData", filters);
+    })
   }
 
   onResetFilters() {
