@@ -16,9 +16,9 @@
         <v-divider/>
 
         <v-card-actions class="justify-center grey lighten-4">
-          <v-btn color="primary" @click="applyFilters">{{ $t("filters.filter-btn") }}</v-btn>
+          <v-btn color="primary" @click="applyFilters" :loading="loading">{{ $t("filters.filter-btn") }}</v-btn>
 
-          <v-btn @click="onClearClick">{{ $t("filters.cancel-btn") }}</v-btn>
+          <v-btn @click="onClearClick" :disabled="loading" elevation="0">{{ $t("filters.cancel-btn") }}</v-btn>
         </v-card-actions>
       </v-card>
 
@@ -51,10 +51,25 @@ export default class DynamicFilters extends Vue {
   @Prop({type: Boolean, default: false})
   expand!: boolean
 
+  @Prop({type: Object, default: () => ({})})
+  value!: any
+
+  @Prop({type: Object})
+  inputsData!: any
+
+  @Prop({type: Boolean, default: true})
+  useStore!: boolean
+
+  @Prop({type: Boolean, default: false})
+  loading!: boolean
+
+  @Prop({type: String})
+  filtersKey!: string
+
   activeFilters: any = {}
 
   /**
-   * The idea is that all filters are imported throw the index file and when using the component,
+   * The idea is that all filters are imported through the index file and when using the component,
    * i just need to specify the name of the schema to use, without needing to import the real schema.
    */
   get formSchema(): FormSchema[] {
@@ -83,24 +98,33 @@ export default class DynamicFilters extends Vue {
 
   applyFilters() {
     this.$nextTick(() => {
+      const filters = Object.entries(this.activeFilters).reduce((acc: any, entry) => {
+        const key: string = entry[0];
+        const value: any = entry[1];
+
+        if (![null, undefined].includes(value) && value !== "") {
+          acc[key] = value
+        }
+
+        return acc;
+      }, {})
+
+      if (!this.useStore) {
+        return this.$emit("applyFilters", filters)
+      }
 
       this.$store.dispatch("filters/updatePage", {
         page: this.$route.path,
-        activeFilters: Object.entries(this.activeFilters).reduce((acc: any, entry) => {
-          const key: string = entry[0];
-          const value: any = entry[1];
-
-          if (![null, undefined].includes(value) && value !== "") {
-            acc[key] = value
-          }
-
-          return acc;
-        }, {})
+        activeFilters: filters
       })
     })
   }
 
   onClearClick() {
+    if (!this.useStore) {
+      return this.$emit("resetFilters")
+    }
+
     this.$store.dispatch("filters/updatePage", {
       page: this.$route.path,
       activeFilters: null
@@ -112,6 +136,16 @@ export default class DynamicFilters extends Vue {
     if (!value || Object.keys(value).length === 0) {
       this.resetFilters()
     }
+  }
+
+  @Watch('value', {deep: true, immediate: true})
+  onValueChange(val: any) {
+    this.activeFilters = val
+  }
+
+  @Watch("activeFilters")
+  onActiveFiltersChange(val: any) {
+    this.$emit("input", val)
   }
 }
 </script>

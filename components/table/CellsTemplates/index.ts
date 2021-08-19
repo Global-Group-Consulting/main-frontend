@@ -29,6 +29,11 @@ import CellCommissionAmount from "~/components/table/CellsTemplates/CellCommissi
 
 import CellMagazineActions from "~/components/table/CellsTemplates/CellMagazineActions.vue";
 
+import CellReportIban from "~/components/table/CellsTemplates/CellReportIban.vue";
+import CellReportNotes from "~/components/table/CellsTemplates/CellReportNotes.vue";
+import CellReportMovementType from "~/components/table/CellsTemplates/CellReportMovementType.vue";
+import CellReportReferenceAgent from "~/components/table/CellsTemplates/CellReportReferenceAgent.vue";
+
 export default {
   CellUserAccountStatus,
   CellUserName,
@@ -54,5 +59,9 @@ export default {
   CellAgentBriteType,
   CellAgentBriteAmount,
   CellCommissionAmount,
-  CellMagazineActions
+  CellMagazineActions,
+  CellReportIban,
+  CellReportNotes,
+  CellReportMovementType,
+  CellReportReferenceAgent
 }

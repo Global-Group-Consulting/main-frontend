@@ -208,5 +208,8 @@ export default {
   },
   magazine: {
     title: "Magazine Global News"
+  },
+  reports: {
+    title: "Report uscite"
   }
 }

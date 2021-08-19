@@ -6,6 +6,7 @@ import {ClubPermissions} from "~/functions/acl/enums/club.permissions";
 import {CalculatorPermissions} from "~/functions/acl/enums/calculator.permissions";
 import {SettingPermissions} from "~/functions/acl/enums/setting.permissions";
 import {MagazinePermissions} from "~/functions/acl/enums/magazine.permissions";
+import {ReportsPermissions} from "~/functions/acl/enums/reports.permissions";
 
 export interface DrawerEntry {
   id?: string
@@ -157,6 +158,13 @@ export default function (context: Vue): DrawerEntry[] {
 
 export function BottomDrawerEntries(context: Vue): DrawerEntry[] {
   return [
+    {
+      id: 'reports',
+      text: 'reports',
+      icon: 'mdi-file-chart',
+      link: '/reports',
+      permissions: [ReportsPermissions.REPORTS_READ]
+    },
     {
       id: 'magazine',
       text: 'magazine',

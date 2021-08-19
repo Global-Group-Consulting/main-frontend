@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!chipVersion">
+  <div v-if="!chipVersion && value">
     <v-tooltip bottom v-if="item.gold">
       <template v-slot:activator="{on}">
                 <span v-on="on">
@@ -14,7 +14,7 @@
     <span v-else></span>
   </div>
 
-  <v-chip v-else
+  <v-chip v-else-if="value"
           :color="$enums.ClubPacks.get(value).color"
           small>
     {{ $t(`enums.ClubPacks.` + value) }}

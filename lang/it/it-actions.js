@@ -1,8 +1,8 @@
 export default {
-  'download-pdf': "PDF",
-  'download-pdf-tooltip': "Scarica file .pdf",
-  'download-xls': "Excel",
-  'download-xls-tooltip': "Scarica file .xls",
+  'download-pdf': "Scarica PDF",
+  'download-pdf-tooltip': "Scarica file in formato .pdf",
+  'download-xls': "Scarica Excel",
+  'download-xls-tooltip': "Scarica file in formato .xls",
   "withdrawal": "Risc. Classic",
   "withdrawalGold": "Risc. Gold",
   "withdrawal-tooltip": "Crea una richiesta di Riscossione Classic",
