@@ -217,7 +217,6 @@ const defaults = {
         'actions'
       ]
     },
-
     agentBrite: {
       columns: [
         "amount",
@@ -234,6 +233,19 @@ const defaults = {
         "showRange",
         "publicationDate",
         "actions",
+      ]
+    },
+    reports: {
+      columns: [
+        "user",
+        "amountChange",
+        "movementType",
+        "clubPack",
+        "iban",
+        "notes",
+        "reqNotes",
+        "referenceAgent",
+        "createdAt",
       ]
     }
   },

@@ -1,8 +1,8 @@
 <template>
-  <span>
-    {{ (value || 0) | moneyFormatter() }}
-
+  <span class="text-no-wrap">
     <span v-if="showCurrency">€</span>
+
+    {{ (value || 0) | moneyFormatter() }}
   </span>
 </template>
 

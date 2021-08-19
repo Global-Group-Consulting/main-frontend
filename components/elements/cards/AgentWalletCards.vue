@@ -10,7 +10,8 @@
     <commissions-add-dialog v-if="$store.getters['dialog/dialogId'] === 'CommissionsAddDialog'"
                             @commissionsAdded="onCommissionsAdded"/>
     <agent-brite-use-dialog v-if="$store.getters['dialog/dialogId'] === 'AgentBriteUseDialog'"/>
-    <agent-brite-add-dialog v-if="$store.getters['dialog/dialogId'] === 'AgentBriteAddDialog'"/>
+    <agent-brite-add-dialog v-if="$store.getters['dialog/dialogId'] === 'AgentBriteAddDialog'"
+                            @commissionsAdded="onCommissionsAdded"/>
   </div>
 </template>
 

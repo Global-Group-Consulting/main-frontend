@@ -4,8 +4,8 @@
       <v-tabs centered grow
               v-model="reqType"
               background-color="blue-grey lighten-5">
-        <v-tab>Aggiungi</v-tab>
         <v-tab>Rimuovi</v-tab>
+        <v-tab>Aggiungi</v-tab>
       </v-tabs>
 
       <dynamic-fieldset :schema="formSchema" v-model="formData" fill-row ref="form"></dynamic-fieldset>
@@ -47,7 +47,7 @@ export default class AgentBriteAddDialog extends Vue {
     motivation: "",
     type: ""
   }
-  reqType = "add"
+  reqType = "remove"
 
   $refs!: {
     form: HTMLElement & DynamicForm
@@ -89,15 +89,16 @@ export default class AgentBriteAddDialog extends Vue {
 
       this.loading = true
 
-      if(this.formData.type === "manual_add"){
+      if (this.formData.type === "manual_add") {
         await this.$apiCalls.agentBriteApi.manual_add(this.formData, this.user.id);
-      }else {
+      } else {
         await this.$apiCalls.agentBriteApi.manual_remove(this.formData, this.user.id);
       }
 
 
       // TODO:: Refresh della pagina per caricare i dati aggiornati
       //await this.$store.dispatch("magazine/fetch")
+      this.$emit("commissionsAdded")
 
       this.onClose()
     } catch (er) {
@@ -113,7 +114,7 @@ export default class AgentBriteAddDialog extends Vue {
       title: this.$t("dialogs.agentBriteAddDialog.title-" + (value === 0 ? "add" : "remove"))
     })
 
-    this.formData.type = (value === 0 ? AgentBritesType.MANUAL_ADD : AgentBritesType.MANUAL_REMOVE)
+    this.formData.type = (value === 1 ? AgentBritesType.MANUAL_ADD : AgentBritesType.MANUAL_REMOVE)
   }
 
   @Watch("maxValue", {immediate: true})

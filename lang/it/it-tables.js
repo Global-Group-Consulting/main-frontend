@@ -99,5 +99,16 @@ export default {
     title: "Titolo",
     showRange: "In evidenza dal-al",
     publicationDate: "Data publicazione",
+  },
+  reports: {
+    "user": "Utente",
+    "amount-change": "Importo",
+    "movement-type": "Tipologia movimento",
+    "club-pack": "Pacchetto Club",
+    "iban": "Iban",
+    "notes": "Note utente",
+    "req-notes": "Note richiesta",
+    "reference-agent": "Agente riferimento",
+    "created-at": "Data creazione",
   }
 }

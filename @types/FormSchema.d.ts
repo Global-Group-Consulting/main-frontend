@@ -62,6 +62,7 @@ export interface FormSchemaField {
   chipVersion?: boolean,
   rows?: number,
   accept?: string,
+  selectableDates?: string[][],
   validations?: FormSchemaValidations
 }
 

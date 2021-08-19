@@ -16,16 +16,19 @@
     @click:row="$emit('click:row', $event)"
     :locale="$i18n.locale"
     :options="options"
+    :disable-pagination="disablePagination"
   >
     <!-- Dynamic item templates -->
-    <template v-for="col in headers" v-slot:[`item.${col.value}`]="{ item, value }">
-      <slot :name="'item.' + col.value" v-bind:item="item" v-bind:value="value">
+    <template v-for="(col, id) in headers" v-slot:[`item.${getColId(col)}`]="{ item, value }">
+      <slot :name="'item.' + getColId(col)"
+            v-bind:item="item"
+            v-bind:value="value">
         <template v-if="col.component">
           <component :is="col.component"
-                     :item="item"
+                     :item="getItem(col, item)"
                      :value="value"
-                     :colConfig="col"
-                     :tableData="items"
+                     :col-config="col"
+                     :table-data="items"
                      v-bind="col.componentSettings"
           ></component>
         </template>
@@ -126,7 +129,8 @@ export default {
         return {};
       }
     },
-    condition: String | Number
+    condition: String | Number,
+    disablePagination: Boolean
   },
   setup(props, {root}) {
     const {$auth} = root;
@@ -186,6 +190,18 @@ export default {
       }, []);
     });
 
+    const getColId = function (col) {
+      return col.id ?? col.value
+    }
+
+    const getItem = function (col, item) {
+      if (col.componentSettings && col.componentSettings.item) {
+        return item[col.componentSettings.item]
+      }
+
+      return item
+    }
+
     onMounted(async () => {
       const result = await import(`../../config/tables/${props.schema}.js`);
 
@@ -193,7 +209,9 @@ export default {
     });
 
     return {
-      headers
+      headers,
+      getColId,
+      getItem
     };
   }
 };

@@ -1,51 +1,76 @@
 <template>
-  <v-menu
-    ref="menu"
-    v-model="opened"
-    :close-on-content-click="false"
-    :nudge-right="40"
-    transition="scale-transition"
-    offset-y
-    :disabled="readonly"
-    min-width="290px"
-  >
-    <template v-slot:activator="{ on }">
-      <v-text-field
-        :value="dateValue"
-        :label="label"
-        :prepend-icon="
-          typeof $attrs['prepend-icon'] === 'string'
-            ? $attrs['prepend-icon']
-            : 'mdi-calendar'
-        "
-        readonly
-        v-on="on"
-        v-bind="$attrs"
-        :clearable="clearable"
-        :disabled="disabled"
-        :class="{ 'edit-mode': editMode }"
-        @click:clear="onClear"
-      >
-        <template v-slot:prepend>
-          <slot name="prepend"></slot>
-        </template>
-
-        <template v-slot:label>
-          <slot name="label"></slot>
-        </template>
-      </v-text-field>
-    </template>
-    <v-date-picker
-      ref="picker"
-      v-model="dates"
-      @input="onInput"
-      :readonly="readonly"
-      :disabled="disabled"
-      :range="range"
-      locale="it"
+  <div>
+    <v-menu
+      ref="menu"
+      v-model="opened"
+      :close-on-content-click="false"
+      :nudge-right="40"
+      transition="scale-transition"
+      offset-y
+      :disabled="readonly"
+      min-width="290px"
     >
-    </v-date-picker>
-  </v-menu>
+      <template v-slot:activator="{ on }">
+        <v-text-field
+          :value="dateValue"
+          :label="label"
+          :prepend-icon="
+            typeof $attrs['prepend-icon'] === 'string'
+              ? $attrs['prepend-icon']
+              : 'mdi-calendar'
+          "
+          readonly
+          v-on="on"
+          v-bind="$attrs"
+          :clearable="clearable"
+          :disabled="disabled"
+          :class="{ 'edit-mode': editMode }"
+          @click:clear="onClear"
+        >
+          <template v-slot:prepend>
+            <slot name="prepend"></slot>
+          </template>
+
+          <template v-slot:label>
+            <slot name="label"></slot>
+          </template>
+        </v-text-field>
+      </template>
+
+      <v-card class="d-flex flex-no-wrap justify-space-between">
+        <v-date-picker
+          ref="picker"
+          v-model="dates"
+          @input="onInput"
+          :readonly="readonly"
+          :disabled="disabled"
+          :range="range"
+          locale="it"
+          :show-adjacent-months="true"
+          flat
+          style="border-top-right-radius: 0;"
+          :title-date-format="titleDateFormat"
+        >
+        </v-date-picker>
+
+        <v-divider vertical></v-divider>
+
+        <div v-if="selectableDates && selectableDates.length > 0">
+          <v-card-title>Mese di riferimento</v-card-title>
+
+          <v-card-text>
+            <v-list dense>
+              <v-list-item v-for="(datesArray, i) in selectableDates"
+                           :key="i"
+                           @click="onPredefinedDateClick(datesArray)">
+                {{ $moment(datesArray[0]).format("MMMM YYYY") }}
+              </v-list-item>
+            </v-list>
+          </v-card-text>
+        </div>
+      </v-card>
+    </v-menu>
+  </div>
 </template>
 
 <script>
@@ -72,6 +97,7 @@ export default {
     readonly: Boolean,
     disabled: Boolean,
     editMode: Boolean,
+    selectableDates: Array
   },
   computed: {
     clearable() {
@@ -93,11 +119,28 @@ export default {
          this.opened = false;
        }*/
 
-      this.$emit("change", value);
+      const sorted = value.sort()
+
+      this.$emit("change", sorted);
     },
     onClear() {
       this.dates = [];
       this.$emit("change", this.dates);
+    },
+    onPredefinedDateClick(datesArray) {
+      this.dates = datesArray;
+
+      this.onInput(datesArray)
+      this.$refs.picker.tableDate = this.$moment(datesArray[0]).format("YYYY-MM")
+    },
+    titleDateFormat(dates) {
+      const toReturn = []
+
+      dates.forEach(date => {
+        toReturn.push(this.$moment(date).format("DD MMM YY"))
+      })
+
+      return `<small>${toReturn.join(" - ")}</small>`
     }
   },
   watch: {
