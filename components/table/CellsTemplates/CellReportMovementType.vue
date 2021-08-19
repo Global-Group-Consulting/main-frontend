@@ -8,6 +8,7 @@ import {Component, Prop, Vue} from "vue-property-decorator";
 import BasicCell from "~/components/table/CellsTemplates/BasicCell.vue";
 import RequestTypes from "~/enums/RequestTypes";
 import MovementTypes from "~/enums/MovementTypes";
+import CommissionType from "~/enums/CommissionType";
 
 @Component
 export default class CellReportMovementType extends BasicCell {
@@ -19,7 +20,11 @@ export default class CellReportMovementType extends BasicCell {
 
   get computedValue() {
     if (!this.item._id.requestType) {
-      return this.$t("enums.MovementTypes." + MovementTypes.get(this.item._id.movementType).id);
+      if (this.item.type === "commissions") {
+        return this.$t(`enums.CommissionType.` + CommissionType.get(this.item._id.commissionType).id);
+      } else {
+        return this.$t(`enums.MovementTypes.` + MovementTypes.get(this.item._id.movementType).id);
+      }
     }
 
     let reqType = this.item._id.requestType
