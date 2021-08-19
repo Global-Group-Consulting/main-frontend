@@ -177,5 +177,13 @@ export default {
     "available-amount": "Importo disponibile",
     "amount": "Importo",
     "motivation": "Motivazione",
+  },
+  reports: {
+    'dates': "Periodo di riferimento",
+    'amount-min': "Importo minimo",
+    'amount-max': "Importo massimo",
+    'type': "Tipologia",
+    'user': "Utente",
+    'reference-agent': "Agente di riferimento"
   }
 }

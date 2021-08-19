@@ -11,6 +11,8 @@ import {UserApi} from "~/plugins/apiCalls/UserApi";
 import {MagazineApi} from "~/plugins/apiCalls/Magazine";
 import {FilesApi} from "~/plugins/apiCalls/FilesApi";
 import {RequestsApi} from "~/plugins/apiCalls/RequestsApi";
+import {ReportsApi} from "~/plugins/apiCalls/ReportsApi";
+import {FiltersApi} from "~/plugins/apiCalls/FiltersApi";
 
 
 interface IApiCalls extends ApiCalls {
@@ -48,6 +50,8 @@ export class ApiCalls extends BasicApiCall {
   public magazine!: MagazineApi;
   public files!: FilesApi;
   public requests!: RequestsApi;
+  public reports!: ReportsApi;
+  public filters!: FiltersApi;
 
   constructor(context: any) {
     super(context)
@@ -57,6 +61,8 @@ export class ApiCalls extends BasicApiCall {
     this.magazine = new MagazineApi(context);
     this.files = new FilesApi(context);
     this.requests = new RequestsApi(context);
+    this.reports = new ReportsApi(context);
+    this.filters = new FiltersApi(context);
   }
 
   async userCreate(data: any) {

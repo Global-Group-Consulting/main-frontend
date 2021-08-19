@@ -79,6 +79,12 @@ th {
   }
 }
 
+/*
+border-bottom {
+  border-bottom: solid 1px $bor;
+}
+*/
+
 
 @media #{map-get($display-breakpoints, 'sm-and-down')}{
   .v-slide-group__prev--disabled, .v-slide-group__next--disabled {
