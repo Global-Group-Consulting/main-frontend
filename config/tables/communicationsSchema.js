@@ -1,4 +1,3 @@
-
 export default {
   subject: {text: 'tables.com-subject', value: 'subject'},
   sender: {text: 'tables.com-sender', value: 'sender'},
@@ -9,4 +8,6 @@ export default {
   updatedAt: {text: 'tables.com-updated-at', value: 'updated_at', align: "center"},
   messagesCount: {text: 'tables.com-messages-count', value: 'messagesCount', align: "center"},
   unreadMessages: {text: 'tables.com-messages-unread-count', value: 'unreadMessages', align: "center"},
+  reqStatus: {text: 'tables.request-status', value: 'reqStatus'},
+
 }

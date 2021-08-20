@@ -100,6 +100,12 @@
 
                 <span v-else></span>
               </template>
+
+              <template v-slot:item.reqStatus="{item}">
+                <span v-if="item.request">
+                {{ $t("enums.RequestStatus." + $enums.RequestStatus.getIdName(item.request.status)) }}
+                </span>
+              </template>
             </data-table>
           </v-tab-item>
         </v-tabs-items>
