@@ -3,6 +3,9 @@ import UserRoles from "~/enums/UserRoles";
 import AccountStatuses from "~/enums/AccountStatuses";
 import ClubPacks from "~/enums/ClubPacks";
 import {User} from "~/@types/UserFormData";
+import {RequestFormData} from "~/@types/Requests";
+import {RangeValue} from "~/@types/components/form/MoneyInputRange";
+import rangeMoney from "~/functions/filters/rangeMoney";
 
 /*
 contractStatus: string[] | ((data: any, searchValue: any) => boolean)
@@ -40,6 +43,8 @@ export const usersFiltersFieldsMap = {
   contractId: ["contractNumber"],
   gold: ["gold"],
   suspended: ["suspended"],
+  depositRange: (data: any, searchValue: RangeValue): boolean => rangeMoney(data.earnings.deposit, searchValue),
+  interestRange: (data: any, searchValue: RangeValue): boolean => rangeMoney(data.earnings.interests, searchValue),
 }
 
 export default function (): FormSchema[] {
@@ -47,9 +52,12 @@ export default function (): FormSchema[] {
     {
       cols: {
         name: {
-          label: "filters-name"
+          label: "filters-name",
+          clearable: true,
         },
-        email: {},
+        email: {
+          clearable: true,
+        },
         role: {
           component: "v-select",
           label: "filters-role",
@@ -90,6 +98,19 @@ export default function (): FormSchema[] {
         },
         contractId: {
           label: "filters-contract-id",
+          clearable: true
+        },
+        depositRange: {
+          component: "money-input-range",
+          maxLabel: "filters.total-deposit-max",
+          minLabel: "filters.total-deposit-min",
+          clearable: true
+        },
+        interestRange: {
+          component: "money-input-range",
+          maxLabel: "filters.total-interest-max",
+          minLabel: "filters.total-interest-min",
+          clearable: true
         },
         gold: {
           component: "v-switch",

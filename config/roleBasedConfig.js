@@ -42,6 +42,7 @@ const defaults = {
         'role',
         'accountStatus',
         'clubPack',
+        'earnings',
         'actions'
       ]
     },

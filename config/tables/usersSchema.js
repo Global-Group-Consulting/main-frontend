@@ -10,8 +10,13 @@ const schema = {
   'referenceAgent': {text: 'tables.reference-agent', value: 'referenceAgent', component: "CellUserReferenceAgent"},
   'validatedAt': {text: 'tables.validated-at', value: 'validated_at'},
   'contractStatus': {text: 'tables.contract-status', value: 'contractSignedAt', component: "CellUserContractStatus"},
-  'role': {text: 'tables.role', value: 'role', align: "center",  component: "CellUserRole"},
-  'clientsNumber': {text: 'tables.clients-number', value: 'clientsCount', align: 'center', component: "CellUserClientsCount"},
+  'role': {text: 'tables.role', value: 'role', align: "center", component: "CellUserRole"},
+  'clientsNumber': {
+    text: 'tables.clients-number',
+    value: 'clientsCount',
+    align: 'center',
+    component: "CellUserClientsCount"
+  },
 
   'clubPack': {text: 'tables.club.gold', value: 'clubPack', align: 'center', component: "CellUserClubPack"},
 
@@ -19,6 +24,7 @@ const schema = {
   'signDocViewed': {text: 'tables.sign-doc-viewed', value: 'signDocViewed', align: 'center'},
   'signDocSigned': {text: 'tables.sign-doc-signed', value: 'signDocSigned', align: 'center'},
   'signDocLogs': {value: 'signDocLogs', align: 'center', sortable: false},
+  'earnings': {value: 'earnings', align: 'center', component: "CellUserEarnings", sortable: false},
 
   'commissionsAssigned': {
     text: 'tables.commissions-assigned',
