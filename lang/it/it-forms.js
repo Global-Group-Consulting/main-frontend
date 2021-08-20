@@ -185,5 +185,11 @@ export default {
     'type': "Tipologia",
     'user': "Utente",
     'reference-agent': "Agente di riferimento"
+  },
+  filters: {
+    "total-deposit-min": "Deposito min.",
+    "total-deposit-max": "Deposito max.",
+    "total-interest-min": "Rendite min.",
+    "total-interest-max": "Rendite max."
   }
 }
