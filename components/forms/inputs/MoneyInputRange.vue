@@ -12,6 +12,7 @@
     <money-input :show-brite="false"
                  :label="maxLabel ? $t(`forms.${maxLabel}`) : ''"
                  :value="maxValue"
+                 v-bind="$attrs"
                  @input="onInput('maxValue', $event)"
                  @change="onChange"/>
   </div>

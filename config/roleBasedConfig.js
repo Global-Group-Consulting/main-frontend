@@ -42,6 +42,7 @@ const defaults = {
         'role',
         'accountStatus',
         'clubPack',
+        'earnings',
         'actions'
       ]
     },
@@ -86,6 +87,7 @@ const defaults = {
         "createdAt",
         "creator",
         "updatedAt",
+        "reqStatus",
         "unreadMessages",
       ]
     },
@@ -442,6 +444,7 @@ const cliente = {
         "subject",
         "createdAt",
         "updatedAt",
+        "reqStatus",
         "unreadMessages",
       ]
     },

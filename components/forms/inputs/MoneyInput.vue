@@ -9,6 +9,7 @@
     @change="onChange"
     @focus="onFocus"
     @blur="onBlur"
+    @click:clear="onClear"
     ref="textInput"
     :messages="message"
   >
@@ -177,6 +178,12 @@ export default class MoneyInput extends Vue {
 
   onBlur() {
     this.hasFocus = false;
+  }
+
+  onClear() {
+    setValue(this.$refs.textInput, null);
+
+    this.$emit("change", null);
   }
 
   onMaxClick() {

@@ -11,6 +11,7 @@ import CellUserRole from "./CellUserRole.vue";
 import CellUserSuperAdmin from "./CellUserSuperAdmin.vue";
 import CellUserCommissionsAssigned from "./CellUserCommissionsAssigned.vue";
 import CellUserActions from "./CellUserActions.vue";
+import CellUserEarnings from "./CellUserEarnings.vue";
 
 import CellBriteValue from "./CellBriteValue.vue";
 import CellEuroValue from "./CellEuroValue.vue";
@@ -49,6 +50,7 @@ export default {
   CellUserSuperAdmin,
   CellUserCommissionsAssigned,
   CellUserActions,
+  CellUserEarnings,
   CellBriteValue,
   CellRequestStatus,
   CellRequestType,

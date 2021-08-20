@@ -50,7 +50,11 @@ export class RequestsTableActions {
         type: MessageTypes.CONVERSATION,
         subject: this.ctx.$t(
           `dialogs.communicationNewDialog.subject-new-${request.type === RequestTypes.RISC_CAPITALE ? "withdrawl" : "deposit"}`,
-          {date: dateFormatter(request.created_at)}
+          {
+            date: dateFormatter(request.created_at),
+            firstName: request.user.firstName,
+            lastName: request.user.lastName,
+          }
         ),
         receiver: request.user.id,
         message: this.ctx.$t(
