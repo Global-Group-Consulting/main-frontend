@@ -47,11 +47,10 @@ export default class AdminCards extends Vue {
       last12Months: 0,
     },
     usersStatus: {
-      draft: 0,
-      active: 0,
-      pendingAccess: 0,
-      pendingSignature: 0,
-      suspended: 0
+      draft: {count: 0, suspended: 0},
+      active: {count: 0, suspended: 0},
+      pendingAccess: {count: 0, suspended: 0},
+      pendingSignature: {count: 0, suspended: 0},
     },
     agentsNewUsers: [],
     agentsTotalEarnings: []
@@ -129,28 +128,28 @@ export default class AdminCards extends Vue {
           title: "Stato Utenti",
           items: [
             {
-              title: "Attivi",
-              value: this.dashboardData.usersStatus.active.toString(),
+              title: "Attivi" + this.showSuspendedCounter(this.dashboardData.usersStatus.active),
+              value: this.dashboardData.usersStatus.active.count.toString(),
               icon: "mdi-account-check",
-              color: this.getAccountStatusColor(AccountStatuses.ACTIVE)
+              color: this.getAccountStatusColor(AccountStatuses.ACTIVE),
             }, {
-              title: "Attesa accesso",
-              value: this.dashboardData.usersStatus.pendingAccess.toString(),
+              title: "Attesa accesso" + this.showSuspendedCounter(this.dashboardData.usersStatus.pendingAccess),
+              value: this.dashboardData.usersStatus.pendingAccess.count.toString(),
               icon: "mdi-account-arrow-right",
               color: this.getAccountStatusColor(AccountStatuses.APPROVED),
             }, {
-              title: "Attesa firma contratto",
-              value: this.dashboardData.usersStatus.pendingSignature.toString(),
+              title: "Attesa firma contratto" + this.showSuspendedCounter(this.dashboardData.usersStatus.pendingSignature),
+              value: this.dashboardData.usersStatus.pendingSignature.count.toString(),
               icon: "mdi-account-edit",
               color: "#c2b441",
-            }, {
+            }, /*{
               title: "Sospesi",
               value: this.dashboardData.usersStatus.suspended.toString(),
               icon: "mdi-account-off",
               color: "red",
-            }, {
-              title: "Bozza",
-              value: this.dashboardData.usersStatus.draft.toString(),
+            }, */{
+              title: "Bozza" + this.showSuspendedCounter(this.dashboardData.usersStatus.draft),
+              value: this.dashboardData.usersStatus.draft.count.toString(),
               icon: "mdi-account-outline",
               color: this.getAccountStatusColor(AccountStatuses.DRAFT),
             }
@@ -281,6 +280,10 @@ export default class AdminCards extends Vue {
 
   getAccountStatusColor(status: string) {
     return AccountStatuses.get(status).color || "#c1c1c1"
+  }
+
+  showSuspendedCounter(el: any) {
+    return (el.suspended ? ` (<strong>${el.suspended} sospesi</strong>)` : '')
   }
 
   async mounted() {
