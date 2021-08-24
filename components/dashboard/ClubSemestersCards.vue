@@ -35,7 +35,7 @@ import {ClubDashboardSemester} from "~/plugins/apiCalls/ClubApi";
   components: {CardBlock, DynamicTabs}
 })
 export default class ClubSemestersCards extends Vue {
-  currentTab: number = 0
+  currentTab: number = 2
   blocksData: Record<string, any> = {}
   statistics: Record<string, ClubDashboardSemester> = {
     expiresAt: "",
