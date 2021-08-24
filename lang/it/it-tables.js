@@ -51,6 +51,7 @@ export default {
   'commissions-assigned': "Provvigioni attive",
   'curr-month-commissions': "Provvigioni attuali",
   'commission-percentage': "Percentuale applicata",
+  'commission-on-value': "Importo versato dall'utente",
   'calc-date': "Data",
   'calc-deposit-added': "Nuovo Deposito",
   'calc-deposit-current': "Deposito",

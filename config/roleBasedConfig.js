@@ -75,9 +75,10 @@ const defaults = {
         "amountChange",
         "commissionType",
         "commissionPercentage",
+        "commissionOnValue",
         "user",
+        "currMonthCommissions",
         "createdAt",
-        "currMonthCommissions"
       ]
     },
 
@@ -512,9 +513,10 @@ const agente = {
         "amountChange",
         "commissionType",
         "commissionPercentage",
+        "commissionOnValue",
         "user",
+        "currMonthCommissions",
         "createdAt",
-        "currMonthCommissions"
       ]
     }
   },
