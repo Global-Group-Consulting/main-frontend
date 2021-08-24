@@ -11,6 +11,8 @@
                         :loading="!$store.getters['clubUsers/initialized']"
       ></dashboard-blocks>
 
+      <ClubSemestersCards></ClubSemestersCards>
+
       <page-toolbar always-visible
                     :actions-list="[]"
                     filters-schema="club"/>
@@ -52,9 +54,10 @@ import {DynamicTab} from "~/@types/components/DynamicTab";
 import PageToolbar from "~/components/blocks/PageToolbar.vue";
 import {clubFiltersFieldsMap} from "~/config/forms/filters/clubFiltersSchema";
 import DashboardBlocks from "~/components/DashboardBlocks.vue";
+import ClubSemestersCards from "~/components/dashboard/ClubSemestersCards.vue";
 
 @Component({
-  components: {DashboardBlocks, PageToolbar, DynamicTabs, MenuList, DataTable, PageHeader},
+  components: {ClubSemestersCards, DashboardBlocks, PageToolbar, DynamicTabs, MenuList, DataTable, PageHeader},
   meta: {
     permissions: [ClubPermissions.CLUB_READ]
   }

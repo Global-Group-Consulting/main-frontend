@@ -63,7 +63,8 @@ import {DynamicTab} from "~/@types/components/DynamicTab";
 import FiltersTable from "~/components/table/FiltersTable.vue";
 
 @Component({
-  components: {FiltersTable, DataTable}
+  components: {FiltersTable, DataTable},
+  name: "DynamicTabs"
 })
 export default class DynamicTabs extends Vue {
   @Prop({required: true, type: Array})
