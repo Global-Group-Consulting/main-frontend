@@ -40,13 +40,13 @@
           <!-- Content -->
           <v-list-item-content v-if="value.type !== 'inline'">
             <v-list-item-title class="font-weight-bold">{{ item.value }}</v-list-item-title>
-            <v-list-item-subtitle>{{ item.title }}</v-list-item-subtitle>
+            <v-list-item-subtitle v-html="item.title"></v-list-item-subtitle>
           </v-list-item-content>
 
           <v-list-item-content v-else>
             <v-list-item-title>
               <strong> {{ item.value }}</strong>
-              <span>{{ item.title }}</span>
+              <span v-html="item.title"></span>
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
