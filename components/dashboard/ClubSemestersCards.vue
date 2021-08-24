@@ -37,14 +37,7 @@ import {ClubDashboardSemester} from "~/plugins/apiCalls/ClubApi";
 export default class ClubSemestersCards extends Vue {
   currentTab: number = 2
   blocksData: Record<string, any> = {}
-  statistics: Record<string, ClubDashboardSemester> = {
-    expiresAt: "",
-    usableFrom: "",
-    types: {},
-    total: 0,
-    totalUsed: 0,
-    totalAvailable: 0
-  }
+  statistics: Record<string, ClubDashboardSemester> = {}
 
   get tabsList(): DynamicTab[] {
     const toReturn: DynamicTab[] = []
@@ -83,12 +76,14 @@ export default class ClubSemestersCards extends Vue {
 
   getCardValue(card: CardBlockI, tab: DynamicTab) {
     const toReturn = ["Br'"]
-    const semesterId = tab.id
+    const semesterId: string = tab.id as string
 
     let value = 0;
 
     if (this.statistics[semesterId]) {
-      value = this.statistics[semesterId][card.id.toString()]
+      const prop = card.id as "total" | "totalUsed" | "totalAvailable";
+
+      value = this.statistics[semesterId][prop]
     }
 
     toReturn.push(this.$options?.filters?.moneyFormatter(value, true))
