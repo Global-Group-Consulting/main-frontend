@@ -1,8 +1,10 @@
 <template>
   <span class="text-no-wrap">
-    <span v-if="showCurrency">€</span>
+    <template v-if="emptyIfNull ? !!value : true">
+      <span v-if="showCurrency">€</span>
 
-    {{ (value || 0) | moneyFormatter() }}
+      {{ (value || 0) | moneyFormatter() }}
+    </template>
   </span>
 </template>
 
@@ -19,6 +21,10 @@ export default class CellEuroValue extends Vue {
 
   @Prop({type: Boolean})
   public showCurrency!: any
+
+  @Prop({type: Boolean, default: false})
+  public emptyIfNull!: any
+
 }
 </script>
 
