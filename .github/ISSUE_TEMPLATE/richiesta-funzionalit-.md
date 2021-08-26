@@ -1,7 +1,7 @@
 ---
-name: Richiesta funzionalità
-about: Richiedi l'aggiunta di una nuova funzionalità o la modifica di una esistente
-title: "[FEATURE] - "
+name: Richiesta funzionalita'
+about: Richiedi l'aggiunta di una nuova funzionalita' o la modifica di una esistente
+title: "Feature - [Titolo della funzionalità]"
 labels: feature
 assignees: leicaflorian
 
