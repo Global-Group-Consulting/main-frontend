@@ -1,13 +1,13 @@
 ---
 name: Segnalazione Bug
 about: Creare una segnalazione di un bug riscontrato
-title: Bug - Titolo del bug
+title: Bug - [Titolo del bug]
 labels: bug
 assignees: leicaflorian
 
 ---
 
-### Descrivi il problema
+### Descrizione del problema
 Una chiara e concisa descrizione del problema riscontrato.
 
 
