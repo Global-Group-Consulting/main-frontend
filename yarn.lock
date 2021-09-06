@@ -10405,17 +10405,17 @@ prosemirror-keymap@1.1.4, prosemirror-keymap@^1.0.0, prosemirror-keymap@^1.1.2:
     prosemirror-state "^1.0.0"
     w3c-keyname "^2.2.0"
 
-prosemirror-model@1.11.0, prosemirror-model@1.11.2, prosemirror-model@^1.0.0, prosemirror-model@^1.1.0, prosemirror-model@^1.8.1:
-  version "1.11.0"
-  resolved "https://registry.yarnpkg.com/prosemirror-model/-/prosemirror-model-1.11.0.tgz#dc36cdb3ad6442b9f6325c7d89170c624f9dc520"
-  integrity sha512-GqoAz/mIYjdv8gVYJ8mWFKpHoTxn/lXq4tXJ6bTVxs+rem2LzMYXrNVXfucGtfsgqsJlRIgng/ByG9j7Q8XDrg==
+prosemirror-model@1.11.2, prosemirror-model@^1.0.0, prosemirror-model@^1.1.0, prosemirror-model@^1.8.1:
+  version "1.11.2"
+  resolved "https://registry.yarnpkg.com/prosemirror-model/-/prosemirror-model-1.11.2.tgz#3ce08172b465bc725c8808c18c2e9378fe69418d"
+  integrity sha512-+gM+x1VUfGAyKR/g0bK7FC46fVNq0xVVL859QAQ7my2p5HzKrPps/pSbYn7T50XTG2r2IhZJChsUFUBHtcoN0Q==
   dependencies:
     orderedmap "^1.1.0"
 
 prosemirror-model@^1.11.2:
-  version "1.14.2"
-  resolved "https://registry.yarnpkg.com/prosemirror-model/-/prosemirror-model-1.14.2.tgz#4e8c39cfff4e097631af4495e125d9a8a9773116"
-  integrity sha512-TwkACyEiSi8FJiRhg2ffbzmQRy5DR+aTwAr7trNQNZL24HJR8ouxy4qCkG99PnWK0xZ0AjSMtPXSU6hnxAiP7Q==
+  version "1.14.3"
+  resolved "https://registry.yarnpkg.com/prosemirror-model/-/prosemirror-model-1.14.3.tgz#a9c250d3c4023ddf10ecb41a0a7a130e9741d37e"
+  integrity sha512-yzZlBaSxfUPIIP6U5Edh5zKxJPZ5f7bwZRhiCuH3UYkWhj+P3d8swHsbuAMOu/iDatDc5J/Qs5Mb3++mZf+CvQ==
   dependencies:
     orderedmap "^1.1.0"
 
