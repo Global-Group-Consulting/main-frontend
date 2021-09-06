@@ -2,7 +2,30 @@
   <v-layout>
     <v-flex>
       <page-header page-name="user.profile" sub-title="true" :loading="loading">
-        <template v-slot:subtitle>{{ userData.firstName + ' ' + userData.lastName }}</template>
+        <template v-slot:subtitle>
+          <v-row>
+            <v-col md="6" cols="12">
+              {{ userData.firstName + ' ' + userData.lastName }}
+            </v-col>
+            <v-col md="6" cols="12">
+              <div>{{ $t("pages.club.brite.totalUsableBrite") }}: <strong>
+                Br' {{ clubStatistics.totalAmount|moneyFormatter(true) }}</strong></div>
+              <ul class="pl-4" style="list-style: none; font-size: 20px; line-height: 1;">
+                <li v-for="(entry, i) of clubStatistics.expirations" :key="i">
+                  <div v-html="$t('pages.club.brite.totalExpiresAt', {
+                              amount: $options.filters.moneyFormatter(entry.amount, true),
+                              expiresAt: $options.filters.dateFormatter(entry.expiresAt)
+                              })"/>
+                  <ul class="mb-2" style="list-style: none; font-size: 16px; line-height: 1;">
+                    <li v-for="pack of Object.entries(entry.byPack)" v-if="pack[1] > 0">
+                      {{ $t("enums.ClubPacks." + pack[0]) }} : {{ pack[1] }}
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </v-col>
+          </v-row>
+        </template>
       </page-header>
 
       <!-- Blocchi resoconto dashboard -->
@@ -36,7 +59,7 @@
       <admin-request-dialog
         v-if="$store.getters['user/userIsRealAdmin']
               && $store.getters['dialog/dialogId'] === 'AdminRequestDialog'"
-              @newRequestAdded="onAdminNewRequestAdded"
+        @newRequestAdded="onAdminNewRequestAdded"
       />
     </v-flex>
   </v-layout>
@@ -60,6 +83,8 @@ import PageToolbar from "~/components/blocks/PageToolbar.vue";
 import {ActionItem} from "~/@types/ActionItem";
 import AdminRequestDialog from "~/components/dialogs/AdminRequestDialog.vue";
 import AgentWalletCards from "~/components/elements/cards/AgentWalletCards.vue";
+import {sortBy} from "lodash";
+import {ClubPermissions} from "~/functions/acl/enums/club.permissions";
 
 @Component({
   components: {
@@ -95,19 +120,28 @@ export default class Profile extends Vue {
     }
   }
 
+  clubBlocks: any = {}
+
   $refs!: {
     commissions_list_table: CommissionsListTable[]
     movements_list_table: MovementsListTable[]
   }
 
   get actionsList(): ActionItem[] {
-    return [
+    const toReturn: any[] = [
       {
         text: "user-data",
         tooltip: "user-data-tooltip",
         position: "center",
         icon: "mdi-account-box",
         click: this.goToUserData
+      }, {
+        text: "club-data",
+        tooltip: "club-data-tooltip",
+        position: "center",
+        icon: "mdi-diamond-stone",
+        click: this.goToClubData,
+        if: this.$store.getters["user/userIsAdmin"] || this.$auth.user.permissions.includes(ClubPermissions.CLUB_READ)
       }, /*{
         text: "import-contract",
         tooltip: "import-contract-tooltip",
@@ -120,6 +154,8 @@ export default class Profile extends Vue {
         icon: "mdi-playlist-plus",
       }*/
     ]
+
+    return toReturn.filter(el => el.if ?? true)
   }
 
   get userId() {
@@ -158,9 +194,52 @@ export default class Profile extends Vue {
     ].filter(el => el.if)
   }
 
+  get clubStatistics() {
+    const toReturn: any = {
+      totalAmount: 0,
+      expirations: []
+    }
+
+    for (const entry of Object.entries<Record<string, any>>(this.clubBlocks)) {
+      const usableFrom = this.$moment(entry[1].usableFrom);
+      const expiresAt = this.$moment(entry[1].expiresAt);
+      const amount = +entry[1].briteAvailable
+
+      // If the brites are usable in the future, avoid showing them
+      if (usableFrom.isAfter(this.$moment()) || !amount) {
+        continue
+      }
+
+      toReturn.totalAmount += +entry[1].briteAvailable
+      toReturn.expirations.push({
+        amount,
+        usableFrom,
+        expiresAt,
+        byPack: entry[1].byPack
+      })
+    }
+
+    toReturn.expirations = sortBy(toReturn.expirations, "expiresAt", function (o: any) {
+      return o.expiresAt.toDate()
+    })
+
+    return toReturn
+  }
+
   goToUserData(event: MouseEvent, action: ActionItem) {
     let openInNewTab = event.ctrlKey
     const path = "/users/" + this.$route.params.id
+
+    if (openInNewTab) {
+      return window.open(path, "_blank")
+    }
+
+    this.$router.push(path)
+  }
+
+  goToClubData(event: MouseEvent, action: ActionItem) {
+    let openInNewTab = event.ctrlKey || true
+    const path = "/club/" + this.$route.params.id
 
     if (openInNewTab) {
       return window.open(path, "_blank")
@@ -191,7 +270,7 @@ export default class Profile extends Vue {
     await this.$refs.movements_list_table[0]?.updateData();
   }
 
-  async fetchUserDetails(){
+  async fetchUserDetails() {
     this.userData = await this.$apiCalls.fetchUserDetails(this.userId);
 
     if (this.showUserBlocks) {
@@ -205,6 +284,8 @@ export default class Profile extends Vue {
   async beforeMount() {
     try {
       await this.fetchUserDetails();
+
+      this.clubBlocks = await this.$apiCalls.clubFetchBlocks(this.userId)
 
       if (this.showAgentBlocks) {
         const resultCommissions = await this.$apiCalls.fetchCommissionsStatus(this.userId);
