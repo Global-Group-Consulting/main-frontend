@@ -92,6 +92,6 @@
     "vue-template-compiler": "^2.6.12"
   },
   "resolutions": {
-    "tiptap/**/prosemirror-model": "1.11.0"
+    "tiptap/**/prosemirror-model": "1.11.2"
   }
 }
