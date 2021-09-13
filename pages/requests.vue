@@ -246,7 +246,8 @@ export default class Requests extends Vue {
         options: {
           color: "primary"
         },
-        menuOptions: [
+        click: () => this.$router.push("/reports")
+        /*menuOptions: [
           {
             text: this.getLastMonth(0) as string,
             click: () => this.onDownloadReportClick(0)
@@ -263,7 +264,7 @@ export default class Requests extends Vue {
             text: this.getLastMonth(3) as string,
             click: () => this.onDownloadReportClick(3)
           }
-        ]
+        ]*/
       }
     ]
   }
