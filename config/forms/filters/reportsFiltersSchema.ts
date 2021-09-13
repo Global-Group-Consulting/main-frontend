@@ -4,6 +4,7 @@ import moment from "moment";
 import {Moment} from "moment/moment";
 import MovementTypes from "~/enums/MovementTypes";
 import {User} from "~/@types/UserFormData";
+import ClubPacks from "~/enums/ClubPacks";
 
 export const reportsFiltersFieldsMap = {}
 
@@ -96,6 +97,21 @@ export default function (this: Vue & { inputsData: any, filtersKey: "withdrawals
           component: "v-autocomplete",
           clearable: true,
           items: formatUsers(this.inputsData?.agentsList || [])
+        },
+        clubPack: {
+          label: "reports.club",
+          component: "v-autocomplete",
+          clearable: true,
+          if: this.filtersKey === "withdrawals",
+          items: [
+            {
+              value: ClubPacks.UNSUBSCRIBED,
+              text: "Non iscritto"
+            }, {
+              value: "subscribed",
+              text: "Iscritto"
+            }
+          ]
         }
       }
     }
