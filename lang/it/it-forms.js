@@ -184,6 +184,7 @@ export default {
     'amount-max': "Importo massimo",
     'type': "Tipologia",
     'user': "Utente",
+    'club': "Club",
     'reference-agent': "Agente di riferimento"
   },
   filters: {
