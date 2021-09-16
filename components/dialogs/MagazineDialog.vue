@@ -82,7 +82,7 @@ export default class MagazineDialog extends Vue {
         return;
       }
       this.loading = true
-      await this.$apiCalls.magazine[this.magazine ? "update" : "create"](this.formData, this.magazine?.id as string);
+      await this.$apiCalls.magazine[this.magazine.id ? "update" : "create"](this.formData, this.magazine?.id as string);
 
       await this.$store.dispatch("magazine/fetch")
       await this.$store.dispatch("magazine/fetchCurrent")
