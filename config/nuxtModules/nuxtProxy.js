@@ -1,5 +1,5 @@
 export default {
-  '/enum/countries': {
+/*  '/enum/countries': {
     target: process.env.COUNTRIES_API_URL,
     pathRewrite: { '^/enum.*': '?fields=alpha2Code;name;translations;nativeName;callingCodes;' }
   },
@@ -10,7 +10,7 @@ export default {
   '/enum/provinces': {
     target: process.env.PROVINCES_API_URL,
     pathRewrite: { '^/enum.*': '' }
-  },
+  },*/
   '/api': {
     target: process.env.API_URL
   }
