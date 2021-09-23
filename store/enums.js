@@ -2,22 +2,17 @@ import {sortBy as _sortBy, capitalize as _capitalize, startCase as _startCase} f
 
 export const state = () => ({
   /**
-   * @type {{}[]}
-   * @property {string} name
-   * @property {string} nativeName
-   * @property {string} alpha2Code
-   * @property {{key:string, value:string}[]} translations
+   * @type {import("../@types/Geolocation/Country").Country[]}
    */
   countries: [],
 
   /**
-   * @type {{}[]}
-   * @property {string} codice
-   * @property {string} nome
-   * @property {string} regione
-   * @property {string} sigla
+   * @type {import("../@types/Geolocation/ItaProvince").ItaProvince[]}
    */
   provinces: [],
+  /**
+   * @type {import("../@types/Geolocation/ItaRegion").ItaRegion[]}
+   */
   regions: [],
   lastFetch: {
     countries: null,
@@ -29,12 +24,23 @@ export const state = () => ({
 export const getters = {
   countriesList(state, getters, rootState) {
     const list = state.countries.reduce((acc, country) => {
-      const countryName = country.translations[rootState.i18n.locale] || country.name
+      const rightLangCode = Object.keys(country.translations)
+        // searches for a 3 chars lang code that starts with my 2 chars
+        .find(key => key.startsWith(rootState.i18n.locale))
 
-      acc.push({
-        value: (country.alpha2Code || country.name).toLowerCase(),
-        text: `${countryName} (${country.nativeName})`
-      })
+      const countryName = country.translations[rightLangCode].common || country.name.common
+      const localLang = Object.keys(country.languages)[0]
+      const nativeName = country.name.native[localLang]?.common
+
+      try {
+
+        acc.push({
+          value: (country.cca2).toLowerCase(),
+          text: `${countryName}` + (nativeName && countryName.toLowerCase() !== nativeName.toLowerCase() ? ` (${nativeName})` : '')
+        })
+      } catch (er) {
+        debugger
+      }
 
       return acc
     }, [])
@@ -43,14 +49,14 @@ export const getters = {
   },
   countriesPhoneCodeList(state, getters, rootState) {
     const list = state.countries.reduce((acc, country) => {
-      // const countryName = country.translations[rootState.i18n.locale] || country.name
+      const localLang = Object.keys(country.languages)[0]
 
       if (country.callingCodes) {
         country.callingCodes.forEach(code => {
           if (code) {
             acc.push({
               value: "+" + code,
-              text: `+${code} (${country.nativeName})`
+              text: `+${code} (${country.name.native[localLang]?.common})`
             })
           }
         })
@@ -64,8 +70,8 @@ export const getters = {
   regionsList(state) {
     const list = state.regions.reduce((acc, region) => {
       acc.push({
-        value: region.toLowerCase(),
-        text: _capitalize(region)
+        value: region.nome.toLowerCase(),
+        text: _capitalize(region.nome)
       })
 
       return acc
@@ -105,7 +111,7 @@ export const mutations = {
 export const actions = {
   async getCountries({commit}) {
     try {
-      const data = await this.$axios.$get('/enum/countries')
+      const data = await this.$apiCalls.geo.countries()
 
       commit('STORE_COUNTRIES', data)
     } catch (e) {
@@ -115,7 +121,7 @@ export const actions = {
 
   async getRegions({commit}) {
     try {
-      const data = await this.$axios.$get('/enum/regions')
+      const data = await this.$apiCalls.geo.regions()
 
       commit('STORE_REGIONS', data)
     } catch (e) {
@@ -125,7 +131,7 @@ export const actions = {
 
   async getProvinces({commit}) {
     try {
-      const data = await this.$axios.$get('/enum/provinces')
+      const data = await this.$apiCalls.geo.provinces()
 
       commit('STORE_PROVINCES', data)
     } catch (e) {
