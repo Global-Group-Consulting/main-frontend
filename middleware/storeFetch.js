@@ -11,9 +11,11 @@ export default async function (app) {
   const maxOld = null
   const settingsLastFetch = storedSettings.lastFetch
   const lastFetch = storedEnums.lastFetch
+  // this is used to force the redownload
+  const lastFetchMinDate = moment("2021-09-23T16:00:00.000Z")
   const toFetch = []
 
-  if (!lastFetch) {
+  if (!lastFetch || (lastFetch && moment(lastFetch.regions).isBefore(lastFetchMinDate))) {
     toFetch.push("countries")
     toFetch.push("regions")
     toFetch.push("provinces")
