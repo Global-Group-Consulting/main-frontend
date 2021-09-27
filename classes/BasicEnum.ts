@@ -1,4 +1,4 @@
-interface EnumData {
+export interface EnumData {
   id: string,
   index?: number | string,
   text?: string,
