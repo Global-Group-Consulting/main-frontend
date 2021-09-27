@@ -1,5 +1,6 @@
-import {BasicEnum} from '../classes/BasicEnum'
+import {BasicEnum, EnumData} from '../classes/BasicEnum'
 import UserRoles from "~/enums/UserRoles";
+
 
 /**
  * @enum
@@ -7,6 +8,9 @@ import UserRoles from "~/enums/UserRoles";
 class RequestTypes extends BasicEnum {
   // this.ADMIN = 1
   public VERSAMENTO = 2;
+  // tippologia creata solo a livello visivo, ma non viene usata nel codice o nelle richieste
+  public VERSAMENTO_INIZIALE = 11;
+
   public RISC_CAPITALE = 3;
 
   public RISC_INTERESSI = 4;
@@ -30,6 +34,12 @@ class RequestTypes extends BasicEnum {
         },*/
       [this.VERSAMENTO]: {
         id: 'versamento',
+        order: 1,
+      },
+      [this.VERSAMENTO_INIZIALE]: {
+        id: 'versamento_iniziale',
+        reqRoles: [UserRoles.AGENTE, UserRoles.ADMIN, UserRoles.SERV_CLIENTI],
+        order: 2,
       },
       [this.RISC_CAPITALE]: {
         id: 'risc_capitale',

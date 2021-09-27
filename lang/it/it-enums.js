@@ -44,7 +44,8 @@ export default {
   },
   'RequestTypes': {
     'admin': 'Admin',
-    'versamento': 'Versamento',
+    'versamento': 'Versamento (integrazione)',
+    'versamento_iniziale': 'Versamento iniziale',
     'risc_provvigioni': 'Riscossione provvigioni',
     'risc_capitale': 'Prelievo deposito',
     'risc_interessi': 'Riscossione rendite (classic)',
