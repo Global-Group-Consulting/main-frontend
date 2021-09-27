@@ -51,6 +51,32 @@ function getDistinctRefAgents(requests: RequestFormData[]): SelectOption[] {
   return Object.values(toReturn)
 }
 
+function getRequestTypeList(this: Vue) {
+  const userRole = this.$store.getters["user/userRole"];
+
+  const list = RequestTypes.iterable.reduce((acc: any[], curr) => {
+    let mustReturn = true
+
+    if (curr.hasOwnProperty("reqRoles") && curr.reqRoles instanceof Array) {
+      mustReturn = curr.reqRoles.includes(userRole)
+    }
+
+    if (mustReturn) {
+      acc.push({
+        value: curr.value,
+        text: this.$t("enums.RequestTypes." + curr.id),
+        order: curr.order || 99
+      })
+    }
+
+    return acc
+  }, [])
+
+  list.sort((a, b) => a.order - b.order)
+
+  return list
+}
+
 export const requestsFiltersFieldsMap = {
   type: ["type"],
   amount: (data: RequestFormData, searchValue: RangeValue): boolean => {
@@ -141,7 +167,6 @@ export default function (this: Vue): FormSchema[] {
   const dataToFilter = this.$store.getters["filters/dataToFilter"];
   const userAdmin = this.$store.getters["user/userIsAdmin"];
   const userIsCliente = this.$store.getters["user/userIsCliente"];
-  const userRole = this.$store.getters["user/userRole"];
 
   return [
     {
@@ -150,22 +175,7 @@ export default function (this: Vue): FormSchema[] {
           label: "request-type",
           component: "v-select",
           clearable: true,
-          items: RequestTypes.iterable.reduce((acc: any[], curr) => {
-            let mustReturn = true
-
-            if (curr.hasOwnProperty("reqRoles") && curr.reqRoles instanceof Array) {
-              mustReturn = curr.reqRoles.includes(userRole)
-            }
-
-            if (mustReturn) {
-              acc.push({
-                value: curr.value,
-                text: this.$t("enums.RequestTypes." + curr.id)
-              })
-            }
-
-            return acc
-          }, [])
+          items: getRequestTypeList.call(this)
         },
         amount: {
           label: "request-amount",
