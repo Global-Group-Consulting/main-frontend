@@ -26,7 +26,7 @@ import CommunicationNewSchema from "@/config/forms/communicationNewSchema";
 
 import DynamicFieldset from "@/components/DynamicFieldset";
 
-import {ref, onBeforeMount, computed, onMounted, nextTick, } from "@vue/composition-api";
+import {ref, onBeforeMount, computed, onMounted, nextTick,} from "@vue/composition-api";
 import UserRoles from "@/enums/UserRoles";
 
 export default {
@@ -38,7 +38,9 @@ export default {
 
     const test = ref(null);
     const form = ref(null);
-    const formData = ref({});
+    const formData = ref({
+      receiver: []
+    });
     const usersList = ref([]);
     const messageSending = ref(false);
 
@@ -73,6 +75,57 @@ export default {
     const userType = computed(() => [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes($auth.user.role) ? "admin" : "user")
 
     const communicationNewSchema = computed(CommunicationNewSchema);
+
+
+    async function closeDialog() {
+      $store.dispatch("dialog/updateStatus", false);
+    }
+
+    async function onSubmit() {
+      const form = refs.dialogContent.$slots.default[0].componentInstance
+
+      if (!(await form.validate())) {
+        return;
+      }
+
+      try {
+        messageSending.value = true;
+
+        const receiver = [
+          (formData.value.receiver || []),
+          (formData.value.watchers || [])
+        ].flat();
+
+        const communicationData = {
+          content: formData.value.message,
+          communicationAttachments: formData.value.attachments,
+          subject: formData.value.subject,
+          receiver,
+          type: dialogData.value.type
+        };
+
+        if (dialogData.value.request) {
+          communicationData.requestId = dialogData.value.request.id;
+        }
+
+        const result = await $apiCalls.communicationSend(communicationData);
+
+        if (!result) {
+          throw new Error("No communication was created")
+        }
+
+        emit("communicationAdded", result);
+
+        $alerts.toastSuccess(communicationData.type !== $enums.MessageTypes.BUG_REPORT ?
+          "communication-new-success" : "bug-report-success");
+
+        await closeDialog();
+      } catch (er) {
+        $alerts.error(er);
+      } finally {
+        messageSending.value = false;
+      }
+    }
 
     function _formatUsersList(list) {
       let lastType = "";
@@ -128,56 +181,6 @@ export default {
       }, []);
     }
 
-    async function closeDialog() {
-      $store.dispatch("dialog/updateStatus", false);
-    }
-
-    async function onSubmit() {
-      const form = refs.dialogContent.$slots.default[0].componentInstance
-
-      if (!(await form.validate())) {
-        return;
-      }
-
-      try {
-        messageSending.value = true;
-
-        const receiver = [
-          (formData.value.receiver || []),
-          (formData.value.watchers || [])
-        ].flat();
-
-        const communicationData = {
-          content: formData.value.message,
-          communicationAttachments: formData.value.attachments,
-          subject: formData.value.subject,
-          receiver,
-          type: dialogData.value.type
-        };
-
-        if (dialogData.value.request) {
-          communicationData.requestId = dialogData.value.request.id;
-        }
-
-        const result = await $apiCalls.communicationSend(communicationData);
-
-        if (!result) {
-          throw new Error("No communication was created")
-        }
-
-        emit("communicationAdded", result);
-
-        $alerts.toastSuccess(communicationData.type !== $enums.MessageTypes.BUG_REPORT ?
-          "communication-new-success" : "bug-report-success");
-
-        await closeDialog();
-      } catch (er) {
-        $alerts.error(er);
-      } finally {
-        messageSending.value = false;
-      }
-    }
-
     function _fillFormData() {
       root.$set(formData, "value", {
         subject: dialogData.value.subject,
@@ -186,13 +189,21 @@ export default {
       });
     }
 
-    onMounted(() => {
+    function _setReceiverFromDialogData() {
+      if (dialogData.value.receiver) {
+        root.$set(formData, "value", {
+          receiver: [dialogData.value.receiver]
+        })
+      }
+    }
+
+    /*onMounted(() => {
       if (
         dialogData.value.request &&
         dialogData.value.request.type === $enums.RequestTypes.VERSAMENTO
       ) {
       }
-    });
+    });*/
 
     onBeforeMount(async () => {
       try {
@@ -201,6 +212,8 @@ export default {
 
           root.$set(usersList, "value", _formatUsersList(result));
         }
+
+        _setReceiverFromDialogData()
 
         if (userType.value === "user") {
           formData.value.receiver = $enums.UserRoles.SERV_CLIENTI

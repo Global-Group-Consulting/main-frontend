@@ -91,6 +91,13 @@
             {{ $t("dialogs.requests.btn-cancel-auto-withdrawl") }}
           </v-btn>
 
+          <v-btn text v-if="showNewAgentCommunication"
+                 :href="`/communications?to=${userRefAgent}&subject=Comunicazione generica`"
+                 target="_blank">
+            <v-icon>mdi-chat-plus-outline</v-icon>
+            Scrivi all'Agente
+          </v-btn>
+
         </v-toolbar-items>
         <v-spacer></v-spacer>
       </v-toolbar>
@@ -168,6 +175,8 @@ interface FormData {
   components: {DynamicFieldset: DynamicFieldset as any},
 })
 export default class RequestDialog extends Vue {
+  private reqData!: Record<string, any>;
+
   formData: Partial<FormData> = {
     amount: 0,
     goldAmount: undefined,
@@ -350,6 +359,18 @@ export default class RequestDialog extends Vue {
     return !this.formData.id;
   }
 
+  get userRefAgent() {
+    return this.reqData?.user?.referenceAgentData?.id
+  }
+
+  get showNewAgentCommunication() {
+    if (!this.userRefAgent) {
+      return false
+    }
+
+    return this.$store.getters["user/userIsAdmin"]
+  }
+
   close() {
     this.$refs.dialogForm?.reset();
     this.$store.dispatch("dialog/updateStatus", false);
@@ -523,6 +544,8 @@ export default class RequestDialog extends Vue {
     if (this.incomingData.id) {
       try {
         const reqData: Record<string, any> = await this.$apiCalls.readRequest(this.incomingData.id)
+
+        this.reqData = reqData
 
         for (let key in reqData) {
           this.$set(this.formData, key, reqData[key])
