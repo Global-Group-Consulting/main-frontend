@@ -46,7 +46,7 @@ export default {
     'btn-reject-request': "Rifiuta richiesta",
   },
   communicationNewDialog: {
-    "title-conversation": "Nuovo ticket",
+    "title-conversation": "Nuovo chat",
     "title-service": "Nuova comunicazione",
     "title-bug-report": "Segnalazione di un problema",
     "title-handle-new-deposit": "Versamento nuovo deposito - {date}",
