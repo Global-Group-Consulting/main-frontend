@@ -133,7 +133,6 @@ import PageHeader from "@/components/blocks/PageHeader.vue";
 import {ClubPermissions} from "~/functions/acl/enums/club.permissions";
 import {Component, Vue, Watch} from "vue-property-decorator";
 
-
 @Component({
   components: {PageHeader},
   meta: {
@@ -245,7 +244,7 @@ export default class Communications extends Vue {
     });
   }
 
-  openNewCommunication(type: number) {
+  openNewCommunication(type: number, to?: string) {
     this.$store.dispatch("dialog/updateStatus", {
       id: "CommunicationNewDialog",
       title: this.$t(
@@ -258,7 +257,8 @@ export default class Communications extends Vue {
       fullscreen: false,
       readonly: false,
       data: {
-        type
+        type,
+        receiver: to
       }
     });
   }
@@ -302,6 +302,14 @@ export default class Communications extends Vue {
     communication.request.status = changedCommunication.request.status;
   }
 
+  checkQueryParams() {
+    const params: Record<string, any> = this.$route.query;
+
+    if (params.to) {
+      this.openNewCommunication(this.$enums.MessageTypes.CONVERSATION, params.to)
+    }
+  }
+
   @Watch("$route.hash")
   onUrlHashChange() {
     const hash = window.location.hash.replace("#", "")
@@ -321,6 +329,7 @@ export default class Communications extends Vue {
   onDialogClose(value: boolean) {
     if (!value) {
       window.location.hash = ""
+      this.$router.replace({query: {}})
     }
   }
 
@@ -328,8 +337,8 @@ export default class Communications extends Vue {
     await this._fetchAll();
 
     this.onUrlHashChange()
+    this.checkQueryParams()
   }
 };
 </script>
 
-<style scoped></style>
