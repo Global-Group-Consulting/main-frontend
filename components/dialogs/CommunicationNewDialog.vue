@@ -192,7 +192,8 @@ export default {
     function _setReceiverFromDialogData() {
       if (dialogData.value.receiver) {
         root.$set(formData, "value", {
-          receiver: [dialogData.value.receiver]
+          receiver: [dialogData.value.receiver],
+          subject: [dialogData.value.subject]
         })
       }
     }
