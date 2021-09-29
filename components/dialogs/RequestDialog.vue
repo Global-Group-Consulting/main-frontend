@@ -582,15 +582,5 @@ export default class RequestDialog extends Vue {
 
     this.dataLoaded = true
   }
-
-  ciao(){
-    for (let i = 0; i < 5; i++) {
-      for (let j = 0; j < 2; j++) {
-
-      }
-
-      console.log(i*j)
-    }
-  }
 }
 </script>
