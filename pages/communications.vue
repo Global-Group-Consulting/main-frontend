@@ -244,7 +244,7 @@ export default class Communications extends Vue {
     });
   }
 
-  openNewCommunication(type: number, to?: string) {
+  openNewCommunication(type: number, to?: string, subject?: string) {
     this.$store.dispatch("dialog/updateStatus", {
       id: "CommunicationNewDialog",
       title: this.$t(
@@ -258,6 +258,7 @@ export default class Communications extends Vue {
       readonly: false,
       data: {
         type,
+        subject,
         receiver: to
       }
     });
@@ -306,7 +307,7 @@ export default class Communications extends Vue {
     const params: Record<string, any> = this.$route.query;
 
     if (params.to) {
-      this.openNewCommunication(this.$enums.MessageTypes.CONVERSATION, params.to)
+      this.openNewCommunication(this.$enums.MessageTypes.CONVERSATION, params.to, params.subject)
     }
   }
 
