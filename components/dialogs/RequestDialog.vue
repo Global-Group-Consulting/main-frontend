@@ -92,7 +92,7 @@
           </v-btn>
 
           <v-btn text v-if="showNewAgentCommunication"
-                 :href="`/communications?to=${userRefAgent}&subject=Comunicazione generica`"
+                 :href="`/communications?to=${userRefAgent}&subject=Richiesta ${formattedUserName} - € ${formattedAmount}`"
                  target="_blank">
             <v-icon>mdi-chat-plus-outline</v-icon>
             Scrivi all'Agente
@@ -142,7 +142,7 @@
 import {Component, Vue, Watch} from "vue-property-decorator";
 import DynamicFieldset from "~/components/DynamicFieldset.vue";
 import requestSchema from "~/config/forms/requestSchema";
-import {moneyFormatter} from "~/plugins/filters";
+import {moneyFormatter, userFormatter} from "~/plugins/filters";
 import {DynamicForm} from "~/@types/DynamicForm";
 import {RequestsTableActions} from "~/functions/requestsTableActions";
 import RequestTypes from "~/enums/RequestTypes";
@@ -210,6 +210,14 @@ export default class RequestDialog extends Vue {
     if (this.dataLoaded) {
       return requestSchema(this as any)
     }
+  }
+
+  get formattedUserName(){
+    return userFormatter(this.reqData.user)
+  }
+
+  get formattedAmount() {
+    return moneyFormatter(this.formData.amount)
   }
 
   /* get actions() {
@@ -573,6 +581,16 @@ export default class RequestDialog extends Vue {
     this.formData.clubPack = this.$auth.user.clubPack
 
     this.dataLoaded = true
+  }
+
+  ciao(){
+    for (let i = 0; i < 5; i++) {
+      for (let j = 0; j < 2; j++) {
+
+      }
+
+      console.log(i*j)
+    }
   }
 }
 </script>
