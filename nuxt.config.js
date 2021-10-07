@@ -20,8 +20,8 @@ const APP_NAME = `${IS_BETA ? "[Beta] " : ""}Global Group Consulting`
 
 const serverConfig = process.env.NODE_ENV === "development" ? {
   https: {
-    key: fs.readFileSync(path.resolve(__dirname, 'key.pem')),
-    cert: fs.readFileSync(path.resolve(__dirname, 'cert.pem'))
+    key: fs.readFileSync(path.resolve(__dirname, 'localhost.key')),
+    cert: fs.readFileSync(path.resolve(__dirname, 'localhost.crt'))
   }
 } : {}
 
