@@ -95,5 +95,9 @@
   "resolutions": {
     "tiptap/**/prosemirror-model": "1.11.2",
     "tiptap-extensions/**/prosemirror-model": "1.11.2"
+  },
+  "volta": {
+    "node": "12.22.1",
+    "yarn": "1.22.5"
   }
 }
