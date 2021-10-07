@@ -8,7 +8,7 @@ import {SelectOption} from "~/@types/components/SelectInput";
 import moment from "moment";
 import UserRoles from "~/enums/UserRoles";
 
-function getDistinctUsers(requests: RequestFormData[]): SelectOption[] {
+function getDistinctUsers (requests: RequestFormData[]): SelectOption[] {
   const toReturn: Record<string, SelectOption> = {};
 
   requests.forEach((request) => {
@@ -78,7 +78,15 @@ function getRequestTypeList(this: Vue) {
 }
 
 export const requestsFiltersFieldsMap = {
-  type: ["type"],
+  type: (data: RequestFormData, searchValue: string): boolean => {
+    if (+searchValue === RequestTypes.VERSAMENTO_INIZIALE) {
+      return data.initialMovement
+    } else if (+searchValue === RequestTypes.VERSAMENTO) {
+      return data.type === +searchValue && !data.initialMovement
+    } else {
+      return data.type === +searchValue
+    }
+  },
   amount: (data: RequestFormData, searchValue: RangeValue): boolean => {
     let toReturn = true;
 
