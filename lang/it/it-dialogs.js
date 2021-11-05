@@ -18,6 +18,7 @@ export default {
     'tab-brite': 'Utilizza i tuoi Brite<br>e delega GlobalClub<br>alla vendita dell\'oro riservato',
     'tab-gold': 'Preleva l\'oro fisico',
     'btn-cancel': 'Annulla',
+    'btn-back': 'Indietro',
     'btn-close': 'Chiudi',
     'btn-send': 'Invia richiesta',
     'btn-send-club': 'Procedi con la richiesta',
@@ -33,6 +34,10 @@ export default {
     'alert-in-progress': "Questa richiesta è stata presa in carico da <strong>{firstName} {lastName}</strong>.",
     'alert-auto-withdrawl': "Questa è una richiesta che verrà gestita automaticamente dal sistema in quanto prevede la riscossione automatica di tutte le provvigioni disponibili l'ultimo giorno del mese.",
     'alert-auto-withdrawl-recursive': "Questa è una richiesta ricorrente che verrà gestita automaticamente dal sistema in quanto prevede la riscossione automatica mensile delle provvigioni disponibili l'ultimo giorno di ogni mese.",
+    'withdrawal-cards-split': "Avendo indicato un importo inferiore a {minAmount} €, per poter proseguire, è necessario indicare come si desidera ricevere tale importo. Scelga una o più carte e per ciascuna indichi che importo versarci.",
+    'withdrawal-cards-remaining': "Dei {requestedAmount} € richiesti, ha ancora a disposiozione {remainingAmount} € ({remainingAmountBrite} Br')' da smistare tra le tre card disponibili",
+    'withdrawal-too-much': "Somma importi superiore all'importo richiesto di {maxAmount} €.",
+    'withdrawal-too-low': "Somma importi diversa dall'importo richiesto di {maxAmount} €."
   },
   communicationDialog: {
     'you': "Me",

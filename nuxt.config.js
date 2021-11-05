@@ -76,6 +76,7 @@ export default {
   ** https://nuxtjs.org/guide/plugins
   */
   plugins: [
+    './plugins/vue-composition-api.js',
     './plugins/acl.ts',
     './plugins/axios.js',
     './plugins/alerts.ts',
@@ -86,7 +87,6 @@ export default {
     './plugins/mixins.js',
     './plugins/global-components.js',
     './plugins/socket.ts',
-    './plugins/vue-composition-api.js',
     './plugins/vue-portal.js',
     {src: './plugins/vuex-persist', ssr: false}
   ],

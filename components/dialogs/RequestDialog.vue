@@ -108,7 +108,7 @@
         :loading="!dataLoaded"
         type="list-item-two-line@4"
       >
-        <v-form :disabled="!!readonly" @submit.prevent="">
+        <v-form :disabled="!!readonly" @submit.prevent="" v-if="currentStep === 0">
           <dynamic-fieldset
             ref="dialogForm"
             :schema="formSchema"
@@ -117,6 +117,11 @@
             fill-row
           />
         </v-form>
+
+        <WithdrawalCards @input="withdrawalCards.onWithdrawalCardsInput"
+                         @error="withdrawalCards.cardsHasErrors = $event"
+                         v-else
+                         :available-amount="formData.amount"></WithdrawalCards>
       </v-skeleton-loader>
     </portal>
 
@@ -128,8 +133,8 @@
     </portal>
 
     <portal to="dialog-actions-right">
-      <v-btn text @click="close">
-        {{ $t(`dialogs.requests.btn-${isNew ? "cancel" : "close"}`) }}
+      <v-btn text @click="withdrawalCards.onBack">
+        {{ $t(`dialogs.requests.btn-${isNew ? (currentStep === 0 ? "cancel" : 'back') : 'close'}`) }}
       </v-btn>
       <v-btn color="blue darken-1" text @click="onFormSubmit" v-if="isNew && dataLoaded">
         {{ $t("dialogs.requests.btn-send") }}
@@ -139,164 +144,174 @@
 </template>
 
 <script lang="ts">
-import {Component, Vue, Watch} from "vue-property-decorator";
-import DynamicFieldset from "~/components/DynamicFieldset.vue";
-import requestSchema from "~/config/forms/requestSchema";
-import {moneyFormatter, userFormatter} from "~/plugins/filters";
-import {DynamicForm} from "~/@types/DynamicForm";
-import {RequestsTableActions} from "~/functions/requestsTableActions";
-import RequestTypes from "~/enums/RequestTypes";
-import RequestStatus from "~/enums/RequestStatus";
+  import { Component, Vue, Watch } from "vue-property-decorator";
+  import DynamicFieldset from "~/components/DynamicFieldset.vue";
+  import requestSchema from "~/config/forms/requestSchema";
+  import { moneyFormatter, userFormatter } from "~/plugins/filters";
+  import { DynamicForm } from "~/@types/DynamicForm";
+  import { RequestsTableActions } from "~/functions/requestsTableActions";
+  import RequestTypes from "~/enums/RequestTypes";
+  import RequestStatus from "~/enums/RequestStatus";
+  import withdrawalsCards, { WithdrawalCardsData } from "~/functions/withdrawalsCards"
+  import { computed } from '@vue/composition-api';
 
-interface FormData {
-  wallet: number
-  type: number
-  availableAmount: number
-  goldAmount: number
-  currency: number
-  gold: boolean
-  clubPack: string
-  status: number
-  requestState: number
-  id: string
-  autoWithdrawlAllRecursively: any
-  autoWithdrawlAll: any
-  conversation: any
-  requestAttachment: any
-  amount: number | string
-  rejectReason: string
-  completed_at: string
-  cancelReason: string
-  notes: string
-  userId: string
-}
-
-@Component({
-  components: {DynamicFieldset: DynamicFieldset as any},
-})
-export default class RequestDialog extends Vue {
-  private reqData!: Record<string, any>;
-
-  formData: Partial<FormData> = {
-    amount: 0,
-    goldAmount: undefined,
-    availableAmount: 0,
-    wallet: this.$enums.WalletTypes["DEPOSIT"],
-    type: this.$enums.RequestTypes["VERSAMENTO"],
-    currency: this.$enums.CurrencyType.EURO,
-    gold: false,
-    clubPack: this.$enums.ClubPacks.UNSUBSCRIBED,
-    autoWithdrawlAll: null,
-    autoWithdrawlAllRecursively: false
+  interface FormData {
+    wallet: number
+    type: number
+    availableAmount: number
+    goldAmount: number
+    currency: number
+    gold: boolean
+    clubPack: string
+    status: number
+    requestState: number
+    id: string
+    autoWithdrawlAllRecursively: any
+    autoWithdrawlAll: any
+    conversation: any
+    requestAttachment: any
+    amount: number | string
+    rejectReason: string
+    completed_at: string
+    cancelReason: string
+    notes: string
+    userId: string,
+    cards: {amount: number, id: string}[]
   }
 
-  dataLoaded = false
+  @Component({
+    components: { DynamicFieldset: DynamicFieldset as any },
+  })
+  export default class RequestDialog extends Vue {
+    private reqData!: Record<string, any>;
 
-  $refs!: {
-    dialogForm: HTMLElement & DynamicForm
-  }
+    currentStep: number = 0;
 
-  actions!: RequestsTableActions;
-
-  get dialogData() {
-    return this.$store.getters["dialog/dialogData"]
-  }
-
-  get incomingData() {
-    return this.dialogData.data
-  }
-
-  get formSchema() {
-    if (this.dataLoaded) {
-      return requestSchema(this as any)
-    }
-  }
-
-  get formattedUserName(){
-    return userFormatter(this.reqData.user)
-  }
-
-  get formattedAmount() {
-    return moneyFormatter(this.formData.amount)
-  }
-
-  /* get actions() {
-     if (this.dataLoaded) {
-       return requestsCrudActionsFn(this.formData, this as any, this.$emit);
-     }
-   }*/
-
-  get wallet() {
-    return this.$store.getters["user/availableWallets"].find((_wallet: any) => _wallet.type === (this.formData.wallet || 1));
-  };
-
-  get availableAmount() {
-    if (this.formData.status !== this.$enums.RequestStatus.NUOVA && this.formData.id) {
-      return this.formData.availableAmount;
+    formData: Partial<FormData> = {
+      amount: 0,
+      goldAmount: undefined,
+      availableAmount: 0,
+      wallet: this.$enums.WalletTypes["DEPOSIT"],
+      type: this.$enums.RequestTypes["VERSAMENTO"],
+      currency: this.$enums.CurrencyType.EURO,
+      gold: false,
+      clubPack: this.$enums.ClubPacks.UNSUBSCRIBED,
+      autoWithdrawlAll: null,
+      autoWithdrawlAllRecursively: false,
+      cards: []
     }
 
-    let toReturn = 0;
+    dataLoaded = false
 
-    switch (this.formData.type) {
-      case this.$enums.RequestTypes.RISC_CAPITALE:
-      case this.$enums.RequestTypes.VERSAMENTO:
-        toReturn = this.wallet.deposit ?? 0;
-
-        break;
-      case this.$enums.RequestTypes.RISC_INTERESSI:
-      case this.$enums.RequestTypes.RISC_INTERESSI_BRITE:
-      case this.$enums.RequestTypes.RISC_INTERESSI_GOLD:
-        toReturn = this.wallet.interestAmount ?? 0;
-
-        break;
-      case this.$enums.RequestTypes.RISC_PROVVIGIONI:
-        toReturn = this.wallet.currMonthCommissions ?? 0;
-
-        break;
-      case this.$enums.RequestTypes.COMMISSION_MANUAL_ADD:
-        toReturn = this.formData.availableAmount || 0;
-
-        break;
+    $refs!: {
+      dialogForm: HTMLElement & DynamicForm
     }
 
-    return toReturn;
-  }
+    actions!: RequestsTableActions;
 
-  get conversationId() {
-    return this.formData.conversation?.id
-  }
+    get withdrawalCards () {
+      return withdrawalsCards.call(this)
+    }
 
-  get showAlert() {
-    const statuses = [
-      this.$enums.RequestStatus.LAVORAZIONE,
-      this.$enums.RequestStatus.RIFIUTATA,
-      this.$enums.RequestStatus.ANNULLATA
-    ];
+    get dialogData () {
+      return this.$store.getters["dialog/dialogData"]
+    }
 
-    return this.formData.status ? statuses.includes(this.formData.status) : false
-  }
+    get incomingData () {
+      return this.dialogData.data
+    }
 
-  get showConversationLink() {
-    return (this.formData.conversation
-      && (this.formData.conversation?.watchersIds?.includes(this.$auth.user.id)
-        || this.$auth.user.role === this.$enums.UserRoles.ADMIN
-      ));
-  }
+    get formSchema () {
+      if (this.dataLoaded) {
+        return requestSchema(this as any)
+      }
+    }
 
-  get ownByCurrentUser() {
-    return [this.formData.conversation?.createdById, this.formData.conversation?.directedToId]
-      .includes(this.$auth.user.id)
-  }
+    get formattedUserName () {
+      return userFormatter(this.reqData.user)
+    }
 
-  get firstMustTakeCharge() {
-    return this.$store.getters["user/userIsAdmin"]
-      && this.formData.status === RequestStatus.NUOVA
-      && [RequestTypes.VERSAMENTO, RequestTypes.RISC_CAPITALE].includes(this.formData.type as number)
-      && [RequestStatus.NUOVA, RequestStatus.LAVORAZIONE].includes(this.formData.status as number)
-  }
+    get formattedAmount () {
+      return moneyFormatter(this.formData.amount)
+    }
 
-  get canApprove() {
-    if (!this.formData.status) {
+    /* get actions() {
+       if (this.dataLoaded) {
+         return requestsCrudActionsFn(this.formData, this as any, this.$emit);
+       }
+     }*/
+
+    get wallet () {
+      return this.$store.getters["user/availableWallets"].find((_wallet: any) => _wallet.type === (this.formData.wallet || 1));
+    };
+
+    get availableAmount () {
+      if (this.formData.status !== this.$enums.RequestStatus.NUOVA && this.formData.id) {
+        return this.formData.availableAmount;
+      }
+
+      let toReturn = 0;
+
+      switch (this.formData.type) {
+        case this.$enums.RequestTypes.RISC_CAPITALE:
+        case this.$enums.RequestTypes.VERSAMENTO:
+          toReturn = this.wallet.deposit ?? 0;
+
+          break;
+        case this.$enums.RequestTypes.RISC_INTERESSI:
+        case this.$enums.RequestTypes.RISC_INTERESSI_BRITE:
+        case this.$enums.RequestTypes.RISC_INTERESSI_GOLD:
+          toReturn = this.wallet.interestAmount ?? 0;
+
+          break;
+        case this.$enums.RequestTypes.RISC_PROVVIGIONI:
+          toReturn = this.wallet.currMonthCommissions ?? 0;
+
+          break;
+        case this.$enums.RequestTypes.COMMISSION_MANUAL_ADD:
+          toReturn = this.formData.availableAmount || 0;
+
+          break;
+      }
+
+      return toReturn;
+    }
+
+    get conversationId () {
+      return this.formData.conversation?.id
+    }
+
+    get showAlert () {
+      const statuses = [
+        this.$enums.RequestStatus.LAVORAZIONE,
+        this.$enums.RequestStatus.RIFIUTATA,
+        this.$enums.RequestStatus.ANNULLATA
+      ];
+
+      return this.formData.status ? statuses.includes(this.formData.status) : false
+    }
+
+    get showConversationLink () {
+      return (this.formData.conversation
+        && (this.formData.conversation?.watchersIds?.includes(this.$auth.user.id)
+          || this.$auth.user.role === this.$enums.UserRoles.ADMIN
+        ));
+    }
+
+    get ownByCurrentUser () {
+      return [this.formData.conversation?.createdById, this.formData.conversation?.directedToId]
+        .includes(this.$auth.user.id)
+    }
+
+    get firstMustTakeCharge () {
+      return this.$store.getters["user/userIsAdmin"]
+        && this.formData.status === RequestStatus.NUOVA
+        && [RequestTypes.VERSAMENTO, RequestTypes.RISC_CAPITALE].includes(this.formData.type as number)
+        && [RequestStatus.NUOVA, RequestStatus.LAVORAZIONE].includes(this.formData.status as number)
+    }
+
+    get canApprove () {
+      if (!this.formData.status) {
       return false
     }
 
@@ -359,116 +374,123 @@ export default class RequestDialog extends Vue {
     return icon
   }
 
-  get readonly() {
-    return this.formData.requestState
-  }
-
-  get isNew() {
-    return !this.formData.id;
-  }
-
-  get userRefAgent() {
-    return this.reqData?.user?.referenceAgentData?.id
-  }
-
-  get showNewAgentCommunication() {
-    if (!this.userRefAgent) {
-      return false
+    get readonly () {
+      return this.formData.requestState
     }
 
-    return this.$store.getters["user/userIsAdmin"]
-  }
-
-  close() {
-    this.$refs.dialogForm?.reset();
-    this.$store.dispatch("dialog/updateStatus", false);
-  }
-
-  async onDelete() {
-    const result = await this.actions?.delete(this.formData as any);
-
-    if (result) {
-      this.close();
-
-      this.$emit("requestDeleted");
+    get isNew () {
+      return !this.formData.id;
     }
-  }
 
-  async onApprove() {
-    const result = await (!this.firstMustTakeCharge ? this.actions?.approve(this.formData as any) : this.actions?.takeCharge(this.formData as any))
-
-    if (result) {
-      this.close();
-
-      this.$emit("requestStatusChanged");
+    get userRefAgent () {
+      return this.reqData?.user?.referenceAgentData?.id
     }
-  }
 
-  async onReject() {
-    const result = await this.actions?.reject(this.formData as any);
-
-    if (result) {
-      this.close();
-
-      this.$emit("requestStatusChanged");
-    }
-  }
-
-  async onCancelAutoWithdrawlAll() {
-    const result = await this.actions?.cancelAutoWithdrawlAll(this.formData as any);
-
-    if (result) {
-      const user = this.$auth.user;
-
-      this.$auth.setUser({
-        ...user,
-        autoWithdrawlAll: null,
-        autoWithdrawlAllRecursively: null
-      })
-
-      this.close();
-
-      this.$emit("requestStatusChanged");
-    }
-  }
-
-  async onFormSubmit() {
-    try {
-      if (!(await this.$refs.dialogForm.validate(false))) {
-        return;
+    get showNewAgentCommunication () {
+      if (!this.userRefAgent) {
+        return false
       }
 
-      const data = {
-        amount: this.formData.amount,
-        goldAmount: this.formData.goldAmount,
-        userId: this.$auth.user.id,
-        type: this.formData.type,
-        wallet: this.formData.wallet,
-        currency: this.formData.currency,
-        notes: this.formData.notes,
-        requestAttachment: this.formData.requestAttachment,
-        autoWithdrawlAll: this.formData.autoWithdrawlAll,
-        autoWithdrawlAllRecursively: this.formData.autoWithdrawlAllRecursively
-      };
+      return this.$store.getters["user/userIsAdmin"]
+    }
 
-      if ((data.amount || 0) <= this.wallet.interestAmount
-        && data.type === this.$enums.RequestTypes.RISC_CAPITALE) {
-        try {
-          await this.$alerts.ask({
-            html: `Per l'importo richiesto è consigliabile effettuare una <strong>Riscossione Rendite</strong> riducendo i tempi di attesa.
-            Vuole convertire questa richiesta in Riscossione Rendite?`,
-            confirmButtonText: "Si, converti in Riscossione rendite",
-            cancelButtonText: "No, procedi con Prelievo deposito"
-          })
+    close () {
+      this.$refs.dialogForm?.reset();
+      this.$store.dispatch("dialog/updateStatus", false);
+    }
 
-          await this.close();
+    async onDelete () {
+      const result = await this.actions?.delete(this.formData as any);
 
-          await this.$router.replace("/requests#new_collect_interests")
+      if (result) {
+        this.close();
 
-          return
-        } catch (er) {
-          // procede con la richiesta
+        this.$emit("requestDeleted");
+      }
+    }
+
+    async onApprove () {
+      const result = await (!this.firstMustTakeCharge ? this.actions?.approve(this.formData as any) : this.actions?.takeCharge(this.formData as any))
+
+      if (result) {
+        this.close();
+
+        this.$emit("requestStatusChanged");
+      }
+    }
+
+    async onReject () {
+      const result = await this.actions?.reject(this.formData as any);
+
+      if (result) {
+        this.close();
+
+        this.$emit("requestStatusChanged");
+      }
+    }
+
+    async onCancelAutoWithdrawlAll () {
+      const result = await this.actions?.cancelAutoWithdrawlAll(this.formData as any);
+
+      if (result) {
+        const user = this.$auth.user;
+
+        this.$auth.setUser({
+          ...user,
+          autoWithdrawlAll: null,
+          autoWithdrawlAllRecursively: null
+        })
+
+        this.close();
+
+        this.$emit("requestStatusChanged");
+      }
+    }
+
+    async onFormSubmit () {
+      debugger
+      try {
+        if (this.currentStep === 0 && !(await this.$refs.dialogForm.validate(false))) {
+          return;
         }
+
+        // Check if can proceed with the request
+        if (!this.withdrawalCards.checkBeforeSubmit()) {
+          return
+        }
+
+        const data = {
+          amount: this.formData.amount,
+          goldAmount: this.formData.goldAmount,
+          userId: this.$auth.user.id,
+          type: this.formData.type,
+          wallet: this.formData.wallet,
+          currency: this.formData.currency,
+          notes: this.formData.notes,
+          requestAttachment: this.formData.requestAttachment,
+          autoWithdrawlAll: this.formData.autoWithdrawlAll,
+          autoWithdrawlAllRecursively: this.formData.autoWithdrawlAllRecursively,
+          cards: this.formData.cards
+        };
+
+        if ((data.amount || 0) <= this.wallet.interestAmount
+          && data.type === this.$enums.RequestTypes.RISC_CAPITALE) {
+          try {
+            await this.$alerts.ask({
+              html: `Per l'importo richiesto è consigliabile effettuare una <strong>Riscossione Rendite</strong> riducendo i tempi di attesa.
+            Vuole convertire questa richiesta in Riscossione Rendite?`,
+              confirmButtonText: "Si, converti in Riscossione rendite",
+              cancelButtonText: "No, procedi con Prelievo deposito"
+            })
+
+            await this.close();
+
+            await this.$router.replace("/requests#new_collect_interests")
+
+            return
+          } catch (er) {
+            // procede con la richiesta
+          }
       }
 
       const reqTypeFormatted = this.$t("enums.RequestTypes." + this.$enums.RequestTypes.get(data.type).id)

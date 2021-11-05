@@ -60,8 +60,22 @@ export function globalSettings(context: Vue): FormSchema[] {
           label: "settings.request-brite-percentage",
           type: "number",
           validations: {
-            minValue: {params: 0.1},
-            maxValue: {params: 100},
+            minValue: { params: 0.1 },
+            maxValue: { params: 100 },
+            required: {}
+          }
+        },
+
+      }
+    },
+    {
+      legend: "settings.cards_requests_label",
+      cols: {
+        cardsRequestMinAmount: {
+          label: "settings.cards-request-min-amount",
+          component: "money-input",
+          showBrite: false,
+          validations: {
             required: {}
           }
         },

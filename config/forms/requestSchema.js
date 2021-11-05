@@ -6,14 +6,15 @@
  * @property { {data : {type: number}, readonly: boolean} } dialogData
  */
 
-import RequestTypes from "../../enums/RequestTypes"
-import RequestStatus from "../../enums/RequestStatus"
-import {computed} from "@vue/composition-api";
+import RequestTypes from "../../enums/RequestTypes";
+import RequestStatus from "../../enums/RequestStatus";
+import { computed } from "@vue/composition-api";
 import UserRoles from "~/enums/UserRoles";
-import {moneyFormatter} from "~/plugins/filters";
+import { moneyFormatter } from "~/plugins/filters";
+import { CardsList } from '~/config/cardsList';
 
-function getRequestTypeList(list, context) {
-  const userType = [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(+context.$auth.user.role) ? "admin" : "user"
+function getRequestTypeList (list, context) {
+  const userType = [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(+context.$auth.user.role) ? "admin" : "user";
 
   // const canDeposit = context.canDeposit;
   const canRequestGold = userType === "user" && context.$auth.user.gold;
@@ -21,16 +22,16 @@ function getRequestTypeList(list, context) {
   const isAgent = context.$auth.user.role === UserRoles.AGENTE;
 
   const data = list.filter((el) => {
-    let mustReturn = false
+    let mustReturn = false;
 
     if (canRequestClassic && [RequestTypes.RISC_INTERESSI].includes(el.value)) {
-      mustReturn = true
+      mustReturn = true;
     } else if (canRequestGold) {
       // return [RequestTypes.RISC_INTERESSI_BRITE, RequestTypes.RISC_INTERESSI_GOLD].includes(el.value)
     }
 
     if (isAgent && [RequestTypes.RISC_PROVVIGIONI].includes(el.value) && context.incomingData.type === RequestTypes.RISC_PROVVIGIONI) {
-      mustReturn = true
+      mustReturn = true;
     }
 
     return mustReturn
@@ -55,7 +56,21 @@ function getAmountMessage(context) {
   const limit = settings.requestMinAmount;
 
   if (percent === undefined || limit === undefined || context.formData.type !== RequestTypes.RISC_PROVVIGIONI) {
-    return ""
+    if (context.formData.cards && context.formData.cards.length > 0) {
+      const cardsList = [];
+
+      for (const card of context.formData.cards) {
+        const storedCard = CardsList.find(storedCard => storedCard.id === card.id);
+
+        if (storedCard) {
+          cardsList.push(storedCard.title + ": <strong>€ " + moneyFormatter(card.amount) + "</strong>");
+        }
+      }
+
+      return cardsList.join("; ");
+    }
+
+    return "";
   }
 
   let finalAmount = amount;
@@ -172,6 +187,12 @@ export default function (context) {
             },
             maxValue: {
               params: context.formData.type === RequestTypes.VERSAMENTO ? null : context.formData.availableAmount || 0.5
+            },
+            multipleOf: {
+              params: {
+                step: 50,
+                until: context.$store.getters["settings/globalSettings"].cardsRequestMinAmount
+              }
             }
           }
         },
