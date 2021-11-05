@@ -204,7 +204,8 @@ export default {
   },
   settings: {
     title: "Impostazioni",
-    globalSettings: "Configurazioni globali"
+    globalSettings: "Configurazioni globali",
+    cardSettings: "Riscossioni e Card prepagate"
   },
   magazine: {
     title: "Magazine Global News"

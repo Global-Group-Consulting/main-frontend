@@ -491,20 +491,51 @@ export default {
     });
 
     const showIncompleteDataInfo = computed(() => {
-      return [AccountStatuses.INCOMPLETE, AccountStatuses.MUST_REVALIDATE].includes(userForm.formData.value.account_status)
-    })
+      return [AccountStatuses.INCOMPLETE, AccountStatuses.MUST_REVALIDATE].includes(userForm.formData.value.account_status);
+    });
 
     const canResendContract = computed(() => {
-      return [AccountStatuses.VALIDATED].includes(userForm.formData.value.account_status)
-    })
+      return [AccountStatuses.VALIDATED].includes(userForm.formData.value.account_status);
+    });
 
-    const userIsSuspended = computed(() => !!userForm.formData.value.suspended)
+    const userIsSuspended = computed(() => !!userForm.formData.value.suspended);
 
     const canSuspend = computed(() => [$enums.UserRoles.ADMIN, $enums.UserRoles.SERV_CLIENTI].includes($auth.user.role)
-      && userForm.formData.value.account_status === $enums.AccountStatuses.ACTIVE)
+      && userForm.formData.value.account_status === $enums.AccountStatuses.ACTIVE);
 
+    const pageTitle = computed(() => {
+      if (userForm.userIsNew.value) {
+        return $i18n.t(`pages.usersId.title-new-with-role`, {
+          role: $i18n.t(
+            "enums.UserRoles." +
+            $enums.UserRoles.getIdName(userForm.userRole.value)
+          )
+        });
+      }
 
-    function getFormSchema(tab) {
+      return $i18n.t(`pages.usersId.title`);
+    });
+
+    const pageSubTitle = computed(() => {
+      if (!userForm.userAccountStatus.value) {
+        return "";
+      }
+
+      return $i18n.t("pages.usersId.subtitle", {
+        accountState: $i18n.t(
+          `enums.AccountStatuses.${
+            AccountStatuses.get(userForm.userAccountStatus.value).id
+          }`
+        )
+      });
+    });
+
+    const hasProfile = computed(() => {
+        return userForm.userType.value === "user";
+      }
+    );
+
+    function getFormSchema (tab) {
       const schema = userForm.formSchemas[tab.schema];
 
       if (!schema) {
@@ -512,7 +543,7 @@ export default {
       }
 
       return schema;
-    };
+    }
 
 
     function openChangeStatusDialog() {
@@ -727,35 +758,6 @@ export default {
       }
     }
 
-    const pageTitle = computed(() => {
-      if (userForm.userIsNew.value) {
-        return $i18n.t(`pages.usersId.title-new-with-role`, {
-          role: $i18n.t(
-            "enums.UserRoles." +
-            $enums.UserRoles.getIdName(userForm.userRole.value)
-          )
-        });
-      }
-
-      return $i18n.t(`pages.usersId.title`);
-    });
-
-    const pageSubTitle = computed(() => {
-      return $i18n.t("pages.usersId.subtitle", {
-        accountState: $i18n.t(
-          `enums.AccountStatuses.${
-            AccountStatuses.get(userForm.userAccountStatus.value).id
-          }`
-        )
-      });
-    });
-
-
-    const hasProfile = computed(() => {
-        return userForm.userType.value === "user"
-      }
-    )
-
     function goToUserProfile(event) {
       const path = "/users/profile/" + userForm.formData.value.id
 
@@ -823,13 +825,33 @@ export default {
     });
 
     return {
-      currentTab,
-      editMode,
-      getFormSchema,
-      ...userForm,
-      ...userDetails(root),
       pageTitle,
       pageSubTitle,
+      currentTab,
+      editMode,
+      permissions,
+      formData: userForm.formData,
+      formTabs: userForm.formTabs,
+      formSchemas: userForm.formSchemas,
+      initialEmail: userForm.initialEmail,
+      initialRole: userForm.initialRole,
+      beforeConfirm: userForm.beforeConfirm,
+      userIsNew: userForm.userIsNew,
+      userRole: userForm.userRole,
+      userAccountStatus: userForm.userAccountStatus,
+      userIsPersonaGiuridica: userForm.userIsPersonaGiuridica,
+      userBirthItaly: userForm.userBirthItaly,
+      userBusinessItaly: userForm.userBusinessItaly,
+      userLegalReprItaly: userForm.userLegalReprItaly,
+      userType: userForm.userType,
+      showReferenceAgent: userForm.showReferenceAgent,
+      onSaveClick: userForm.onSaveClick,
+      validateAll: userForm.validateAll,
+      updateDirtyForms: userForm.updateDirtyForms,
+      dirtyForms: userForm.dirtyForms,
+      emailChanged: userForm.emailChanged,
+      ...userDetails(root),
+      getFormSchema,
       communicationsList,
       accentColor,
       canApprove,
@@ -840,7 +862,6 @@ export default {
       canResendContract,
       dashboardData,
       showIncompleteDataInfo,
-      permissions,
       openChangeStatusDialog,
       openMovementsList,
       onAccountStatusChanged,

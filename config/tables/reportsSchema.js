@@ -31,6 +31,11 @@ export default {
       chipVersion: true
     }
   },
+  "cards": {
+    text: 'tables.reports.cards',
+    value: 'cards',
+    component: "CellReportCards",
+  },
   "iban": {
     text: 'tables.reports.iban',
     value: 'user.contractIban',
