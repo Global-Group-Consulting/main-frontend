@@ -158,6 +158,9 @@ export default {
     'emails_notifications_label': "Email e notifiche",
     'agents_requests_label': "Agenti - Riscossione provvigioni",
 
+    'cards_requests_label': "Riscossioni e Card Prepagate",
+    'cards-request-min-amount': "Soglia minima riscossione",
+
     'request-min-amount': "Soglia minimo per richieste in €",
     'request-brite-percentage': "Percentuale da convertire in Brite",
     'request-brite-email': "Email per inoltro richieste uso Brite Agenti"

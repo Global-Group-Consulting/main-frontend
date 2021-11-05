@@ -244,6 +244,7 @@ const defaults = {
         "amountChange",
         "movementType",
         "clubPack",
+        "cards",
         "iban",
         "notes",
         "reqNotes",

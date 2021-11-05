@@ -34,6 +34,7 @@ import CellReportIban from "~/components/table/CellsTemplates/CellReportIban.vue
 import CellReportNotes from "~/components/table/CellsTemplates/CellReportNotes.vue";
 import CellReportMovementType from "~/components/table/CellsTemplates/CellReportMovementType.vue";
 import CellReportReferenceAgent from "~/components/table/CellsTemplates/CellReportReferenceAgent.vue";
+import CellReportCards from "~/components/table/CellsTemplates/CellReportCards.vue";
 
 export default {
   CellUserAccountStatus,
@@ -65,5 +66,6 @@ export default {
   CellReportIban,
   CellReportNotes,
   CellReportMovementType,
-  CellReportReferenceAgent
+  CellReportReferenceAgent,
+  CellReportCards
 }

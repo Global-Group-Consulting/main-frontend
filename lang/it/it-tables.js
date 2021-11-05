@@ -111,5 +111,6 @@ export default {
     "req-notes": "Note richiesta",
     "reference-agent": "Agente riferimento",
     "created-at": "Data creazione",
+    "cards": "Carte prepagate",
   }
 }

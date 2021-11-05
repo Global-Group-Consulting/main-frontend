@@ -11,9 +11,21 @@
               :schema="formGlobalSchema"
               v-model="globalSettingsData"
               ref="globalSettingsForm"
+              immediate-update
             />
           </v-card-text>
         </v-card>
+        <!--
+                <v-card elevation="1" class="mt-3">
+                  <v-card-title>{{ $t("pages.settings.cardSettings") }}</v-card-title>
+                  <v-card-text>
+                    <dynamic-fieldset
+                      :schema="formGlobalSchema"
+                      v-model="globalSettingsData"
+                      ref="globalSettingsForm"
+                    />
+                  </v-card-text>
+                </v-card>-->
 
         <!-- Floating action button -->
         <v-fab-transition>
