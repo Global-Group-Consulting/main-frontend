@@ -173,7 +173,6 @@
 
     async onFormSubmit () {
       try {
-        debugger
         if (this.currentStep === 0 && !(await this.formElement.validate(false))) {
           return;
         }

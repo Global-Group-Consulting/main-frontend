@@ -61,3 +61,4 @@ export default function withdrawalCards (this: RequestDialog | RequestDialogGold
     checkBeforeSubmit
   }
 }
+

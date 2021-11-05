@@ -448,7 +448,6 @@
     }
 
     async onFormSubmit () {
-      debugger
       try {
         if (this.currentStep === 0 && !(await this.$refs.dialogForm.validate(false))) {
           return;

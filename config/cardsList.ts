@@ -6,7 +6,8 @@ export interface WithdrawalCard {
   amount: number;
   id: string;
   active: boolean;
-  stepper?: number
+  stepper: number;
+  maxPerType: number;
 }
 
 export interface WithdrawalCardStored {
@@ -14,6 +15,11 @@ export interface WithdrawalCardStored {
   id: string;
 }
 
+/**
+ * Lista delle card disponbili a sistema.
+ * Sicuramente queste card dovranno essere salvaten a DB con una normale CRUD in quanto
+ * devono essere gestite dinamicamente permettendo all'utente di modificare i vari dati a piacimento.
+ */
 export const CardsList: WithdrawalCard[] = [
   {
     img: "epipoli.png",
@@ -23,7 +29,8 @@ export const CardsList: WithdrawalCard[] = [
     amount: 0,
     id: "prepagata",
     active: true,
-    stepper: 50
+    stepper: 50,
+    maxPerType: 5
   },
   {
     img: "giftcard_carburante.png",
@@ -32,7 +39,9 @@ export const CardsList: WithdrawalCard[] = [
     text: "La carta carburante multimarca per fare rifornimento in tutte le stazioni ed emettere un’unica fattura elettronica a fine mese",
     amount: 0,
     id: "carburante",
-    active: false
+    active: false,
+    stepper: 50,
+    maxPerType: 5
   },
   {
     img: "giftcard_square.png",
@@ -41,6 +50,8 @@ export const CardsList: WithdrawalCard[] = [
     text: "La carta delle carte che può essere convertita nelle Gift Card dei migliori marchi: la libertà di scelta a portata di click",
     amount: 0,
     id: "square",
-    active: false
+    active: false,
+    stepper: 50,
+    maxPerType: 5
   }
 ]

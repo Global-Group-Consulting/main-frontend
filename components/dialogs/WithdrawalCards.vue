@@ -32,8 +32,12 @@
               </div>
             </v-col>-->
 
-      <v-col :cols="colsWidth" v-for="(card, i) in cardsList" :key="card.id + '_' + i" class="p-relative">
-        <v-img :src="'/cards/' + card.img" class="flex-grow-0" :aspect-ratio="16/9" contain max-width="300"></v-img>
+      <v-col :cols="colsWidth"
+             v-for="(card, i) in cardsList" :key="card.id + '_' + i"
+             class="p-relative">
+        <v-img :src="'/cards/' + card.img" class="flex-grow-0"
+               :aspect-ratio="16/9"
+               contain max-width="300"></v-img>
         <v-btn icon color="red" outlined absolute top style="right: 50%; transform: translateX(50%)"
                @click="removeCard(i)">
           <v-icon>mdi-close</v-icon>
@@ -44,10 +48,6 @@
                   @change="onSelectChange(i, $event)"
                   v-if="availableCardsSelect.length > 1"></v-select>
 
-        <!--        <v-text-field type="number" step="50" :error-messages="toMuchValue || toLowValue"
-                              prefix="€" :max="availableAmount" min="0" label="Importo"
-                              v-model.number="card.amount">
-                </v-text-field>-->
         <v-slider
           v-model="card.amount"
           :step="card.stepper"
@@ -84,9 +84,12 @@
             class="d-flex justify-center align-center"
             @click="addCard"
           >
-            <v-btn icon color="success" outlined>
+            <v-btn icon color="success" outlined v-if="canAddMore">
               <v-icon>mdi-plus</v-icon>
             </v-btn>
+
+            <span v-else>Numero massimo di carte raggiunto.</span>
+
           </v-sheet>
         </v-responsive>
       </v-col>
@@ -105,7 +108,16 @@
 </template>
 
 <script lang="ts">
-  import { computed, defineComponent, reactive, Ref, ref, SetupContext, watch } from '@vue/composition-api';
+  import {
+    computed,
+    ComputedRef,
+    defineComponent,
+    reactive,
+    Ref,
+    ref,
+    SetupContext,
+    watch
+  } from '@vue/composition-api';
   import { moneyFormatter } from '~/plugins/filters/moneyFormatter';
   import { CardsList, WithdrawalCard } from '~/config/cardsList';
 
@@ -123,73 +135,111 @@
       const availableCards = CardsList.filter(card => card.active);
       const cardsList: Ref<WithdrawalCard[]> = ref([])
 
-      const availableCardsSelect = availableCards.map(el => ({ text: el.title, value: el.id }))
+      const cardsTypeCounter: ComputedRef<Record<string, number>> = computed(() => cardsList.value.reduce<Record<string, number>>((acc, curr) => {
+          if (!acc[curr.id]) {
+            acc[curr.id] = 0
+          }
+
+          acc[curr.id]++
+
+          return acc
+        }, {})
+      );
+      const availableCardsSelect = computed(() => availableCards.map(el => ({
+            text: el.title,
+            value: el.id,
+            disabled: cardsTypeCounter.value[el.id] >= el.maxPerType
+          })
+        )
+      )
       const colsWidth = computed(() => {
         const total = cardsList.value.length + 1;
         return total > 3 ? 4 : 12 / total
       })
-      const usedAmount = computed(() => cardsList.value.reduce((acc, curr) => acc + curr.amount, 0))
-      const remainingAmount = computed(() => props.availableAmount - usedAmount.value)
-      const toMuchValue = computed(() => usedAmount.value > props.availableAmount
-        ? root.$t("dialogs.requests.withdrawal-too-much", { maxAmount: moneyFormatter(props.availableAmount) }) : '')
-      const toLowValue = computed(() => usedAmount.value !== props.availableAmount
-        ? root.$t("dialogs.requests.withdrawal-too-low", { maxAmount: moneyFormatter(props.availableAmount) }) : '')
+      const usedAmount: ComputedRef<number> = computed(() => cardsList.value.reduce((acc, curr) => acc + curr.amount, 0))
+      const remainingAmount: ComputedRef<number> = computed(() => props.availableAmount - usedAmount.value)
 
-      function stepperRules (card: WithdrawalCard) {
-        const multipleOf = (value: number) => {
-          if (card.stepper) {
-            const result = value % card.stepper === 0
+      /**
+       * Indicate if the sum of all cards is higher than the available amount
+       */
+      const toMuchValue: ComputedRef<string> = computed(() => usedAmount.value > props.availableAmount
+        ? root.$t("dialogs.requests.withdrawal-too-much", { maxAmount: moneyFormatter(props.availableAmount) }) as string : '')
 
-            if (!result) {
-              return "L'importo deve essere multiplo di " + card.stepper
-            }
+      /**
+       * Indicate if the sum of all cards is lower than the available amount
+       */
+      const toLowValue: ComputedRef<string> = computed(() => usedAmount.value !== props.availableAmount
+        ? root.$t("dialogs.requests.withdrawal-too-low", { maxAmount: moneyFormatter(props.availableAmount) }) as string : '')
+
+      /**
+       * Check if can be added new cards, based on maxPerType of each card
+       */
+      const canAddMore: ComputedRef<boolean> = computed(() => {
+        // Start by getting the difference between the available types and the used ones
+        let remainingCardTypes = availableCards.length - Object.keys(cardsTypeCounter.value).length
+
+        if (cardsList.value.length === 0) {
+          return true
+        }
+
+        for (const availableCardsElement of availableCards) {
+          // se il numero di carte per quel tipo è inferiore al massimo,
+          // indica che ne posso aggiungere altre
+          if (cardsTypeCounter.value[availableCardsElement.id] < availableCardsElement.maxPerType) {
+            remainingCardTypes++
           }
         }
-        const maxValue = () => !toMuchValue.value || toMuchValue.value;
 
-        return [maxValue]
-      }
+        return !!remainingCardTypes
+      })
 
       function addCard () {
-        cardsList.value.push({ ...availableCards[0] })
+        if (!canAddMore.value) {
+          return
+        }
+
+        // Get new first valid card that can be added based on its "disabled" prop.
+        const newIndex = availableCardsSelect.value.findIndex(el => !el.disabled)
+
+        cardsList.value.push({ ...availableCards[newIndex] })
       }
 
       function removeCard (index: number) {
         cardsList.value.splice(index, 1)
       }
 
-      function onSelectChange (index: number, choise: string) {
-        cardsList.value[index] = availableCards.find(el => el.id === choise) as WithdrawalCard
+      function onSelectChange (index: number, choice: string) {
+        const newCard = availableCards.find(el => el.id === choice) as WithdrawalCard
+
+        Object.assign(cardsList.value[index], newCard)
       }
 
+      // On remainingAmount input, emit INPUT event
       watch(remainingAmount, (value) => {
         emit("input", cardsList.value.reduce<any>((acc, curr) => {
-          acc.push({
-            amount: curr.amount,
-            id: curr.id
-          })
+          if (curr.amount) {
+            acc.push({
+              amount: curr.amount,
+              id: curr.id
+            })
+          }
 
           return acc
         }, []))
       })
 
+      // On toMuchValue, emit ERROR event
       watch(toMuchValue, (value) => {
         emit("error", value)
       })
 
       return {
-        colsWidth,
-        minAmount,
-        cardsList,
+        colsWidth, minAmount, cardsList,
         availableCardsSelect,
         toMuchValue, toLowValue,
-        remainingAmount,
-        usedAmount,
-        moneyFormatter,
-        addCard,
-        removeCard,
-        onSelectChange,
-        stepperRules
+        remainingAmount, usedAmount,
+        canAddMore, cardsTypeCounter,
+        moneyFormatter, addCard, removeCard, onSelectChange,
       }
     }
   });
