@@ -30,12 +30,13 @@
 
         if (movement.cards) {
           cards = movement.cards.map(rawCard => {
-            const foundCard = CardsList.find(el => el.id === rawCard.id) || {} as any;
+            const foundCard = CardsList.find(el => el.id === rawCard.id);
+            const cardToUse = { ...(foundCard ?? {}) }
 
-            foundCard.amount = rawCard.amount
+            cardToUse.amount = rawCard.amount
             cardsSum += rawCard.amount
 
-            return foundCard
+            return cardToUse
           })
         }
       })
