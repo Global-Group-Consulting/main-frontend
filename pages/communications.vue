@@ -40,44 +40,48 @@
 
       <v-card class="overflow-hidden">
         <v-tabs-items v-model="currentTab" touchless>
-          <v-tab-item v-for="tab of communicationsTabs" :key="tab.key">
-            <data-table
-              :items="communicationsList[tab.key]"
-              :table-key="tab.key"
-              :items-per-page="25"
-              schema="communicationsSchema"
-              @click:row="openCommunication"
-            >
-              <template v-slot:item.subject="{ item }" v-if="currentTab === 1">
-                <v-icon color="red" v-if="!item.read_at" x-small
-                >mdi-asterisk
-                </v-icon
-                >
-                {{ item.subject }}
-              </template>
+          <v-tab-item v-for="tab of communicationsTabs" :key="tab.key" :eager="tab.key === 'news'">
+            <template v-if="tab.key === 'news'">
+              <NewsTab @input="newsUnreadCounter = $event"/>
+            </template>
+            <template v-else>
+              <data-table
+                :items="communicationsList[tab.key]"
+                :table-key="tab.key"
+                :items-per-page="25"
+                schema="communicationsSchema"
+                @click:row="openCommunication"
+              >
+                <template v-slot:item.subject="{ item }" v-if="currentTab === 1">
+                  <v-icon color="red" v-if="!item.read_at" x-small
+                  >mdi-asterisk
+                  </v-icon
+                  >
+                  {{ item.subject }}
+                </template>
 
-              <template v-slot:item.type="{ item }">
-                {{
-                  $t(
-                    `enums.MessageTypes.${$enums.MessageTypes.getIdName(
-                      item.type
-                    )}`
-                  )
-                }}
-              </template>
+                <template v-slot:item.type="{ item }">
+                  {{
+                    $t(
+                      `enums.MessageTypes.${$enums.MessageTypes.getIdName(
+                        item.type
+                      )}`
+                    )
+                  }}
+                </template>
 
-              <template v-slot:item.creator="{ item }">
-                <div v-if="item.createdById !== $auth.user.id && item.creator">
-                  {{ item.creator.firstName }} {{ item.creator.lastName }}
-                </div>
+                <template v-slot:item.creator="{ item }">
+                  <div v-if="item.createdById !== $auth.user.id && item.creator">
+                    {{ item.creator.firstName }} {{ item.creator.lastName }}
+                  </div>
 
-                <div v-else>{{ $t("pages.communications.me") }}</div>
-              </template>
+                  <div v-else>{{ $t("pages.communications.me") }}</div>
+                </template>
 
-              <template v-slot:item.receiver="{ item }">
-                <div v-for="(receiver, i) of item.receiver"
-                     :key="receiver.id || i"
-                     v-if="receiver">
+                <template v-slot:item.receiver="{ item }">
+                  <div v-for="(receiver, i) of item.receiver"
+                       :key="receiver.id || i"
+                       v-if="receiver">
                   <span v-if="i < receiversShowLimit">
                     {{ receiver.firstName }} {{ receiver.lastName }} ({{
                       $t(
@@ -87,26 +91,27 @@
                     }})<span v-if="i < item.receiver.length - 1">, </span>
                   </span>
 
-                  <span v-else-if="i === receiversShowLimit">
+                    <span v-else-if="i === receiversShowLimit">
                     + altri {{ item.receiver.length - receiversShowLimit }} utenti
                   </span>
-                </div>
-              </template>
+                  </div>
+                </template>
 
-              <template v-slot:item.unreadMessages="{ item }">
-                <v-chip small v-if="item.unreadMessages" color="red" dark>
-                  {{ item.unreadMessages }}
-                </v-chip>
+                <template v-slot:item.unreadMessages="{ item }">
+                  <v-chip small v-if="item.unreadMessages" color="red" dark>
+                    {{ item.unreadMessages }}
+                  </v-chip>
 
-                <span v-else></span>
-              </template>
+                  <span v-else></span>
+                </template>
 
-              <template v-slot:item.reqStatus="{item}">
+                <template v-slot:item.reqStatus="{item}">
                 <span v-if="item.request">
                 {{ $t("enums.RequestStatus." + $enums.RequestStatus.getIdName(item.request.status)) }}
                 </span>
-              </template>
-            </data-table>
+                </template>
+              </data-table>
+            </template>
           </v-tab-item>
         </v-tabs-items>
       </v-card>
@@ -126,67 +131,74 @@
 </template>
 
 <script lang="ts">
-import CommunicationNewDialog from "@/components/dialogs/CommunicationNewDialog.vue";
+  import CommunicationNewDialog from "@/components/dialogs/CommunicationNewDialog.vue";
 
-import CommunicationsTabs from "@/config/tabs/communicationsTabs";
-import PageHeader from "@/components/blocks/PageHeader.vue";
-import {ClubPermissions} from "~/functions/acl/enums/club.permissions";
-import {Component, Vue, Watch} from "vue-property-decorator";
+  import CommunicationsTabs from "@/config/tabs/communicationsTabs";
+  import PageHeader from "@/components/blocks/PageHeader.vue";
+  import { ClubPermissions } from "~/functions/acl/enums/club.permissions";
+  import { Component, Vue, Watch } from "vue-property-decorator";
+  import NewsTab from "@/components/tabs/NewsTab.vue";
+  import { computed } from '@vue/composition-api';
 
-@Component({
-  components: {PageHeader},
-  meta: {
-    // permissions: [CommunicationsPermissions.ACL_COMMUNICATIONS_ALL_READ, CommunicationsPermissions.ACL_COMMUNICATIONS_SELF_READ]
-  },
-})
-export default class Communications extends Vue {
-  public receiversShowLimit: number = 2
-  public dataRefreshTimer: any = null;
-  public currentTab: number = 0
-  public communicationsList: any = {
-    messages: [],
-    messagesSent: [],
-    conversations: [],
-    clubConversations: []
-  }
-  public rawList: any[] = [];
-
-  get permissions() {
-    const createTicket = true; //$auth.user.role !== $enums.UserRoles.CLIENTE
-    const createCommunication = [this.$enums.UserRoles.ADMIN].includes(this.$auth.user.role)
-
-    return {
-      createTicket,
-      createCommunication,
-      seeToolbar: createTicket || createCommunication
+  @Component({
+    components: { PageHeader, NewsTab },
+    meta: {
+      // permissions: [CommunicationsPermissions.ACL_COMMUNICATIONS_ALL_READ, CommunicationsPermissions.ACL_COMMUNICATIONS_SELF_READ]
+    },
+  })
+  export default class Communications extends Vue {
+    public receiversShowLimit: number = 2
+    public dataRefreshTimer: any = null;
+    public currentTab: number = 0
+    public communicationsList: any = {
+      messages: [],
+      messagesSent: [],
+      conversations: [],
+      clubConversations: []
     }
-  };
+    public rawList: any[] = [];
+    public newsUnreadCounter: number = 0;
 
-  get communicationsTabs() {
-    const tabs: any = CommunicationsTabs.filter((_tab: any) => {
-      if (_tab.key === "messagesSent") {
-        return this.$enums.UserRoles.ADMIN === this.$auth.user.role
-      } else if (_tab.key === "clubConversations") {
-        return this.$acl.checkPermissions([ClubPermissions.BRITES_SELF_USE, ClubPermissions.CLUB_APPROVE])
+    get permissions () {
+      const createTicket = true; //$auth.user.role !== $enums.UserRoles.CLIENTE
+      const createCommunication = [this.$enums.UserRoles.ADMIN].includes(this.$auth.user.role)
+
+      return {
+        createTicket,
+        createCommunication,
+        seeToolbar: createTicket || createCommunication
       }
+    };
 
-      return true
-    })
+    get communicationsTabs () {
+      const tabs: any = CommunicationsTabs.filter((_tab: any) => {
+        if (_tab.key === "messagesSent") {
+          return this.$enums.UserRoles.ADMIN === this.$auth.user.role
+        } else if (_tab.key === "clubConversations") {
+          return this.$acl.checkPermissions([ClubPermissions.BRITES_SELF_USE, ClubPermissions.CLUB_APPROVE])
+        }
 
-    return tabs.map((tab: any) => {
-      const dataList: any = this.communicationsList[tab.key]
-      let counter = 0
+        return true
+      })
 
-      if (["conversations", "clubConversations"].includes(tab.key)) {
-        counter = dataList.reduce((acc: any, curr: any) => curr.unreadMessages > 0 ? acc + 1 : acc, 0)
-      } else if (tab.key === "messages") {
-        counter = dataList.reduce((acc: any, curr: any) => !curr.read_at ? acc + 1 : acc, 0)
-      }
+      return tabs.map((tab: any) => {
+        const dataList: any = this.communicationsList[tab.key]
+        let counter = 0
 
-      tab.unreadCounter = counter
+        if (["conversations", "clubConversations"].includes(tab.key)) {
+          counter = dataList.reduce((acc: any, curr: any) => curr.unreadMessages > 0 ? acc + 1 : acc, 0)
+        } else if (tab.key === "messages") {
+          counter = dataList.reduce((acc: any, curr: any) => !curr.read_at ? acc + 1 : acc, 0)
+        }
 
-      return tab
-    })
+        if (tab.key === "news") {
+          tab.unreadCounter = this.newsUnreadCounter
+        } else {
+          tab.unreadCounter = counter
+        }
+
+        return tab
+      })
   }
 
   get dialogState() {

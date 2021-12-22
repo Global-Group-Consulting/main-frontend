@@ -15,6 +15,7 @@ import {ReportsApi} from "~/plugins/apiCalls/ReportsApi";
 import {FiltersApi} from "~/plugins/apiCalls/FiltersApi";
 import {ClubApi} from "~/plugins/apiCalls/ClubApi";
 import {GeolocationApi} from "~/plugins/apiCalls/GeolocationApi";
+import {NewsApi} from "~/plugins/apiCalls/News";
 
 
 interface IApiCalls extends ApiCalls {
@@ -56,6 +57,7 @@ export class ApiCalls extends BasicApiCall {
   public filters!: FiltersApi;
   public club!: ClubApi;
   public geo!: GeolocationApi;
+  public news!: NewsApi;
 
   constructor(context: any) {
     super(context)
@@ -69,6 +71,7 @@ export class ApiCalls extends BasicApiCall {
     this.filters = new FiltersApi(context);
     this.club = new ClubApi(context);
     this.geo = new GeolocationApi(context);
+    this.news = new NewsApi(context);
   }
 
   async userCreate(data: any) {

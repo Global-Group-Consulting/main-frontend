@@ -119,6 +119,7 @@ export default {
     communications: "Comunicazioni",
     messagesSent: "Comunicazioni Inviate",
     clubConversations: "Global Club",
+    news: "News",
     me: "Me",
     "btn-new-conversation": "Nuova chat",
     "btn-new-message": "Nuova comunicazione"

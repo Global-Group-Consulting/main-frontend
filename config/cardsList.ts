@@ -30,7 +30,7 @@ export const CardsList: WithdrawalCard[] = [
     id: "prepagata",
     active: true,
     stepper: 50,
-    maxPerType: 5
+    maxPerType: 1
   },
   {
     img: "giftcard_carburante.png",

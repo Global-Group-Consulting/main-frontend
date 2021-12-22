@@ -157,6 +157,7 @@ export default {
 
   env: {
     version: require('./package.json').version,
-    SOCKET_URL: process.env.SOCKET_URL
+    SOCKET_URL: process.env.SOCKET_URL,
+    SERVER_URL: process.env.API_URL
   }
 }
