@@ -1,6 +1,4 @@
 import {Context, Plugin} from "@nuxt/types";
-import {AuthPlugin} from "~/@types/AuthPlugin";
-import {User} from "~/@types/UserFormData";
 import {Store} from 'vuex'
 
 declare module 'vue/types/vue' {

@@ -1,5 +1,7 @@
 <template>
   <v-layout column>
+    <NewsBox></NewsBox>
+
     <admin-cards></admin-cards>
 
     <v-card class="mb-5">
