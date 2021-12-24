@@ -1,47 +1,49 @@
-import {BasicApiCall} from "~/classes/BasicApiCall";
-import {FormMagazineCreate, IMagazine} from "~/@types/Magazine";
-import { INews } from '~/@types/News';
+import { BasicApiCall } from "~/classes/BasicApiCall";
+import { FormMagazineCreate, IMagazine } from "~/@types/Magazine";
+import { INews, NewsCreateDto, NewsStatus, NewsUpdateDto } from '~/@types/News';
 
 export class NewsApi extends BasicApiCall {
-  async index(): Promise<INews[]> {
+  async index (): Promise<INews[]> {
     return this.get({
       endPoint: "api/news",
     })
   }
 
-  async current(): Promise<IMagazine[]> {
+  async getUnread (): Promise<INews[]> {
     return this.get({
-      endPoint: "api/magazine/current",
+      endPoint: "api/news/user",
     })
   }
 
-  async show(magazineId: string): Promise<IMagazine> {
-    return this.get({
-      endPoint: "api/magazine/" + magazineId,
-    })
-  }
-
-  async create(magazineData: FormMagazineCreate): Promise<IMagazine> {
+  async create (newsData: NewsCreateDto): Promise<INews> {
     return this.post({
-      endPoint: "api/magazine",
-      body: magazineData,
+      endPoint: "api/news",
+      body: newsData,
       uploadMode: true
     })
   }
 
-  async update(magazineData: FormMagazineCreate, magazineId: string): Promise<IMagazine> {
+  async update (newsData: NewsUpdateDto, newsId: string): Promise<INews> {
+    return this._call({
+      method: "PUT",
+      endPoint: "api/news/" + newsId,
+      body: newsData,
+      uploadMode: true
+    })
+  }
+
+  async setAsRead (newsId: string): Promise<NewsStatus> {
     return this._call({
       method: "PATCH",
-      endPoint: "api/magazine/" + magazineId,
-      body: magazineData,
+      endPoint: "api/news/" + newsId,
       uploadMode: true
     })
   }
 
-  async delete(magazineId: string) {
+  async delete (newsId: string) {
     return this._call({
       method: "DELETE",
-      endPoint: "api/magazine/" + magazineId
+      endPoint: "api/news/" + newsId
     })
   }
 }

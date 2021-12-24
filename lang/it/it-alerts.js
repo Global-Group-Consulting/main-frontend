@@ -193,7 +193,7 @@ export default {
 
   "unsaved-data": "Attenzione, ci sono dati non ancora salvati sulla pagina. Se si procede, i dati non salvati andranno persi. Si desidera continuare?",
 
-  "club-request-unsubscribed": "Gentile utente, per poter procedere con la sua richiesta è necessario che abbia attivo almeno il pacchetto '<strong>Basic</strong>' de club. " +
+  "club-request-unsubscribed": "Gentile utente, per poter procedere con la sua richiesta è necessario che abbia attivo almeno il pacchetto '<strong>Basic</strong>' del club. " +
     "<br>Per maggiori informazioni la invitiamo a contattare il Sevizio Clienti.",
 
   "autoWithdrawl-not-available": "Gentile utente, non è possibile creare nessun altra richiesta di riscossione provvigioni in quanto esiste già una richiesta automatica di riscossione.<br><br><a href='{link}'>Cliccare qui</a> per visualizzare la richiesta automatica esistente.",
@@ -218,5 +218,18 @@ export default {
     "admin-cancel-request-confirmBtnText": "Si, storna richiesta",
     "admin-cancel-request-cancelBtnText": "Torna indietro",
     "admin-cancel-request-success": "Richiesta stornata correttamente!",
+  },
+  news: {
+    "delete-news-title": "",
+    "delete-news-text": "Sei sicuro di voler cancellare la news <strong>{title}</strong>? Continuando, l'operazione sarà irreversibile",
+    "delete-news-confirmBtnText": "Si, cancella",
+    "delete-news-cancelBtnText": "Annulla",
+    "delete-news-success": "News cancellata correttamente!",
+
+    "set-read-title": "",
+    "set-read-text": "Sei sicuro di voler segnare come letta la news <strong>{title}</strong>?",
+    "set-read-confirmBtnText": "Si, segna come letta",
+    "set-read-cancelBtnText": "Annulla",
+    "set-read-success": "News aggiornata correttamente!",
   }
 }

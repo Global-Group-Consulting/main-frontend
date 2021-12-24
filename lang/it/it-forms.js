@@ -195,5 +195,14 @@ export default {
     "total-deposit-max": "Deposito max.",
     "total-interest-min": "Rendite min.",
     "total-interest-max": "Rendite max."
+  },
+  news: {
+    "title": "Titolo",
+    "text": "Testo",
+    "news-img": "Immagine",
+    "start-at": "Mostra dal",
+    "end-at": "Monstra fino al",
+    "created-at": "Data creazione",
+    "updated-at": "Data ultima modifica",
   }
 }

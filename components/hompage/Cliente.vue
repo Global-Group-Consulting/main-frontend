@@ -1,5 +1,7 @@
 <template>
   <div>
+    <NewsBox></NewsBox>
+
     <dashboard-blocks :dashboard-data="dashboardData" :loading="loading"></dashboard-blocks>
 
     <v-row class="my-5">

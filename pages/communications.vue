@@ -24,6 +24,16 @@
           >
             {{ $t("pages.communications.btn-new-message") }}
           </tooltip-btn>
+
+          <tooltip-btn
+            tooltip="Nuova News"
+            text
+            icon-name="mdi-newspaper-plus"
+            @click="openNewNews()"
+            v-if="permissions.createCommunication"
+          >
+            Nuova News
+          </tooltip-btn>
         </template>
       </page-toolbar>
 
@@ -127,6 +137,7 @@
       v-if="$store.getters['dialog/dialogId'] === 'CommunicationNewDialog'"
       @communicationAdded="onCommunicationAdded"
     ></communication-new-dialog>
+
   </v-layout>
 </template>
 
@@ -199,159 +210,173 @@
 
         return tab
       })
-  }
+    }
 
-  get dialogState() {
-    return this.$store.getters["dialog/dialogState"]
-  }
+    get dialogState () {
+      return this.$store.getters["dialog/dialogState"]
+    }
 
-  private async _fetchAll() {
-    try {
-      const result: any = await this.$apiCalls.communicationsFetch();
+    private async _fetchAll () {
+      try {
+        const result: any = await this.$apiCalls.communicationsFetch();
 
-      this.rawList.push(...Object.values(result).flat());
+        this.rawList.push(...Object.values(result).flat());
 
-      this.communicationsList.messages = result.messages.map((_msg: any) => {
-        // i create anyway the prop so i can observe it when changes.
-        if (!_msg.read_at) {
-          _msg.read_at = null
+        this.communicationsList.messages = result.messages.map((_msg: any) => {
+          // i create anyway the prop so i can observe it when changes.
+          if (!_msg.read_at) {
+            _msg.read_at = null
+          }
+
+          return _msg
+        })
+        this.communicationsList.messagesSent = result.messagesSent
+        this.communicationsList.conversations = result.conversations
+        this.communicationsList.clubConversations = result.clubConversations
+      } catch (er) {
+        this.$alerts.error(er);
+      } finally {
+        this._startRefreshTimer();
+      }
+    }
+
+    private _startRefreshTimer () {
+      this.dataRefreshTimer = setTimeout(() => {
+        this._fetchAll();
+      }, 120000 /* 2 minutes */);
+    }
+
+    openCommunication (communication: any) {
+      const isConversation =
+        +communication.type === this.$enums.MessageTypes.CONVERSATION ||
+        !communication.type;
+
+      this.$store.dispatch("dialog/updateStatus", {
+        id: "CommunicationDetailsDialog",
+        title: communication.subject,
+        large: true,
+        showCloseBtn: true,
+        theme: "communications",
+        // fullscreen: isConversation,
+        readonly: !isConversation || communication.readonly,
+        texts: { cancelBtn: this.$t("dialogs.communicationDialog.btn-cancel") },
+        data: {
+          ...communication,
+          isConversation
         }
-
-        return _msg
-      })
-      this.communicationsList.messagesSent = result.messagesSent
-      this.communicationsList.conversations = result.conversations
-      this.communicationsList.clubConversations = result.clubConversations
-    } catch (er) {
-      this.$alerts.error(er);
-    } finally {
-      this._startRefreshTimer();
+      });
     }
-  }
 
-  private _startRefreshTimer() {
-    this.dataRefreshTimer = setTimeout(() => {
-      this._fetchAll();
-    }, 120000 /* 2 minutes */);
-  }
-
-  openCommunication(communication: any) {
-    const isConversation =
-      +communication.type === this.$enums.MessageTypes.CONVERSATION ||
-      !communication.type;
-
-    this.$store.dispatch("dialog/updateStatus", {
-      id: "CommunicationDetailsDialog",
-      title: communication.subject,
-      large: true,
-      showCloseBtn: true,
-      theme: "communications",
-      // fullscreen: isConversation,
-      readonly: !isConversation || communication.readonly,
-      texts: {cancelBtn: this.$t("dialogs.communicationDialog.btn-cancel")},
-      data: {
-        ...communication,
-        isConversation
-      }
-    });
-  }
-
-  openNewCommunication(type: number, to?: string, subject?: string) {
-    this.$store.dispatch("dialog/updateStatus", {
-      id: "CommunicationNewDialog",
-      title: this.$t(
-        `dialogs.communicationNewDialog.title-${
-          type === this.$enums.MessageTypes.CONVERSATION
-            ? "conversation"
-            : "service"
-        }`
-      ),
-      fullscreen: false,
-      readonly: false,
-      data: {
-        type,
-        subject,
-        receiver: to
-      }
-    });
-  }
-
-  async onCommunicationAdded(communication: any) {
-    const updatedSection = await this.$apiCalls.communicationsFetch(
-      communication.type +
-      (communication.senderId === this.$auth.user.id ? "&out" : "")
-    );
-
-    if (communication.type === this.$enums.MessageTypes.CONVERSATION) {
-      this.communicationsList.conversations = updatedSection
-    } else {
-      this.communicationsList.messagesSent = updatedSection
+    openNewCommunication (type: number, to?: string, subject?: string) {
+      this.$store.dispatch("dialog/updateStatus", {
+        id: "CommunicationNewDialog",
+        title: this.$t(
+          `dialogs.communicationNewDialog.title-${
+            type === this.$enums.MessageTypes.CONVERSATION
+              ? "conversation"
+              : "service"
+          }`
+        ),
+        fullscreen: false,
+        readonly: false,
+        data: {
+          type,
+          subject,
+          receiver: to
+        }
+      });
     }
-  }
 
-  /**
-   * @param {string} unreadMessagesId
-   */
-  async onSetAsRead(unreadMessagesId: string) {
-    const unreadMessage: any = this.rawList.find((_comm: any) => _comm.id === unreadMessagesId)
-    const msgType = "unreadMessages" in unreadMessage ? "conversations" : "messages"
+    openNewNews () {
+      this.$store.dispatch("dialog/updateStatus", {
+        id: "NewsDialog",
+        title: "Nuova news",
+        texts: {
+          cancelBtn: "Annulla"
+        },
+        showCloseBtn: true,
+      });
+    }
 
-    this.communicationsList[msgType].forEach((_com: any) => {
-      if (_com.id === unreadMessagesId) {
-        if (msgType === "conversations") {
-          _com.unreadMessages = 0;
-        } else {
-          _com.read_at = new Date().toISOString();
+    async onCommunicationAdded (communication: any) {
+      const updatedSection = await this.$apiCalls.communicationsFetch(
+        communication.type +
+        (communication.senderId === this.$auth.user.id ? "&out" : "")
+      );
+
+      if (communication.type === this.$enums.MessageTypes.CONVERSATION) {
+        this.communicationsList.conversations = updatedSection
+      } else {
+        this.communicationsList.messagesSent = updatedSection
+      }
+    }
+
+    /**
+     * @param {string} unreadMessagesId
+     */
+    async onSetAsRead (unreadMessagesId: string) {
+      const unreadMessage: any = this.rawList.find((_comm: any) => _comm.id === unreadMessagesId)
+      const msgType = "unreadMessages" in unreadMessage ? "conversations" : "messages"
+
+      this.communicationsList[msgType].forEach((_com: any) => {
+        if (_com.id === unreadMessagesId) {
+          if (msgType === "conversations") {
+            _com.unreadMessages = 0;
+          } else {
+            _com.read_at = new Date().toISOString();
+          }
+        }
+      });
+    }
+
+    onRequestStatusChanged (changedCommunication: any) {
+      const communication: any = this.communicationsList.conversations.find(
+        (_com: any) => (_com.id = changedCommunication.id)
+      );
+
+      communication.request.status = changedCommunication.request.status;
+    }
+
+    checkQueryParams () {
+      const params: Record<string, any> = this.$route.query;
+
+      if (params.to) {
+        this.openNewCommunication(this.$enums.MessageTypes.CONVERSATION, params.to, params.subject)
+      }
+    }
+
+    @Watch("$route.hash")
+    onUrlHashChange () {
+      const hash = window.location.hash.replace("#", "")
+
+      if (!hash) {
+        return
+      }
+
+      const communication = this.rawList.find((_req: any) => _req.id === hash);
+
+      if (communication) {
+        this.openCommunication(communication);
+      }
+    }
+
+    @Watch('dialogState')
+    onDialogClose (value: boolean) {
+      if (!value) {
+        window.location.hash = ""
+
+        if (Object.values(this.$route.query).length > 0) {
+          this.$router.replace({ query: {} })
         }
       }
-    });
-  }
-
-  onRequestStatusChanged(changedCommunication: any) {
-    const communication: any = this.communicationsList.conversations.find(
-      (_com: any) => (_com.id = changedCommunication.id)
-    );
-
-    communication.request.status = changedCommunication.request.status;
-  }
-
-  checkQueryParams() {
-    const params: Record<string, any> = this.$route.query;
-
-    if (params.to) {
-      this.openNewCommunication(this.$enums.MessageTypes.CONVERSATION, params.to, params.subject)
-    }
-  }
-
-  @Watch("$route.hash")
-  onUrlHashChange() {
-    const hash = window.location.hash.replace("#", "")
-
-    if (!hash) {
-      return
     }
 
-    const communication = this.rawList.find((_req: any) => _req.id === hash);
+    async beforeMount () {
+      await this._fetchAll();
 
-    if (communication) {
-      this.openCommunication(communication);
+      this.onUrlHashChange()
+      this.checkQueryParams()
     }
-  }
-
-  @Watch('dialogState')
-  onDialogClose(value: boolean) {
-    if (!value) {
-      window.location.hash = ""
-      this.$router.replace({query: {}})
-    }
-  }
-
-  async beforeMount() {
-    await this._fetchAll();
-
-    this.onUrlHashChange()
-    this.checkQueryParams()
-  }
-};
+  };
 </script>
 
