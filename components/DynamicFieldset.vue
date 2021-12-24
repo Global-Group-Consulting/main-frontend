@@ -79,6 +79,7 @@ import ContractTermsCondition from "@/components/forms/inputs/ContractTermsCondi
 import AgentCommissionsSelect from "@/components/forms/inputs/AgentCommissionsSelect";
 import PasswordInput from "@/components/forms/inputs/PasswordInput";
 import PhoneInput from "@/components/forms/inputs/PhoneInput";
+import RichTextEditor from "@/components/forms/inputs/RichTextEditor";
 
 import {validationRules, errorMessages} from "@/mixins/ValidationsParser";
 import {validationMixin} from "vuelidate";
@@ -109,7 +110,8 @@ export default {
     ContractTermsCondition,
     AgentCommissionsSelect,
     PasswordInput,
-    PhoneInput
+    PhoneInput,
+    RichTextEditor
   },
   mixins: [validationMixin],
   validations() {

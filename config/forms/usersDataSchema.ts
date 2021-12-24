@@ -333,7 +333,7 @@ export function agentData(formContext: FormContext) {
  * @returns {FormSchema[]}
  */
 export function contractData(formContext: FormContext) {
-  const {userType} = formContext.permissions
+  const userType = formContext.permissions?.userType
 
   return [
     {

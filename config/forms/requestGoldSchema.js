@@ -74,6 +74,12 @@ function briteSchema(context) {
             },
             maxValue: {
               params: context.formData.availableAmount
+            },
+            multipleOf: {
+              params: {
+                step: 50,
+                until: context.$store.getters["settings/globalSettings"].cardsRequestMinAmount
+              }
             }
           }
         },

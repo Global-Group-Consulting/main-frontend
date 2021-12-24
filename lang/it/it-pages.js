@@ -119,6 +119,7 @@ export default {
     communications: "Comunicazioni",
     messagesSent: "Comunicazioni Inviate",
     clubConversations: "Global Club",
+    news: "News",
     me: "Me",
     "btn-new-conversation": "Nuova chat",
     "btn-new-message": "Nuova comunicazione"
@@ -204,7 +205,8 @@ export default {
   },
   settings: {
     title: "Impostazioni",
-    globalSettings: "Configurazioni globali"
+    globalSettings: "Configurazioni globali",
+    cardSettings: "Riscossioni e Card prepagate"
   },
   magazine: {
     title: "Magazine Global News"

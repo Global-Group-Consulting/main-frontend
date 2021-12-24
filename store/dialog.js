@@ -41,17 +41,17 @@ export const mutations = {
         }
 
       } else {
-        state.data[key] = payload[key] || defaultData[key]
+        state.data[key] = payload[key] || defaultData[key];
       }
     }
     // _merge(state.data, payload)
   },
-  UPDATE_DATA(state, payload) {
+  UPDATE_DATA (state, payload) {
     // state.data = payload
-    _merge(state.data, payload)
+    _merge(state.data, payload);
   },
-  SET_RETAIN_FOCUS(state, payload) {
-    state.data.retainFocus = payload
+  SET_RETAIN_FOCUS (state, payload) {
+    state.data.retainFocus = payload;
   }
 }
 
@@ -66,37 +66,41 @@ export const actions = {
     if (!payload || payload === false) {
       if (state.show) {
         commit('HIDE')
-        commit('SET_DATA', defaultData)
+        commit('SET_DATA', defaultData);
       }
 
-      return
+      return;
     }
 
     if (payload && typeof payload.retainFocus !== "boolean") {
-      payload.retainFocus = true
+      payload.retainFocus = true;
     }
 
-    commit('SHOW')
-    commit('SET_DATA', payload || {})
+    commit('SHOW');
+    commit('SET_DATA', payload || {});
   },
 
-  updateRetainFocus({ commit }, payload) {
-    commit("SET_RETAIN_FOCUS", payload ?? true)
+  updateRetainFocus ({ commit }, payload) {
+    commit("SET_RETAIN_FOCUS", payload ?? true);
   },
 
-  updateData({commit, state}, payload){
-    commit('UPDATE_DATA', payload || {})
-  }
+  updateData ({ commit, state }, payload) {
+    commit('UPDATE_DATA', payload || {});
+  },
+
 }
 
 export const getters = {
-  dialogData(state) {
-    return state.data || {}
+  dialogData (state) {
+    return state.data || {};
   },
-  dialogState(state) {
-    return state.show || false
+  isReadonly (state) {
+    return state.data?.readonly ?? false;
   },
-  dialogId(state) {
-    return state.data?.id
+  dialogState (state) {
+    return state.show || false;
+  },
+  dialogId (state) {
+    return state.data?.id;
   }
 }
