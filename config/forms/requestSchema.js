@@ -189,7 +189,7 @@ export default function (context) {
               params: context.formData.type === RequestTypes.VERSAMENTO ? null : context.formData.availableAmount || 0.5
             },
             multipleOf: {
-              params: {
+              params: context.formData.type === RequestTypes.VERSAMENTO ? null : {
                 step: 50,
                 until: context.$store.getters["settings/globalSettings"].cardsRequestMinAmount
               }
