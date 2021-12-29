@@ -122,7 +122,8 @@ export default class MovementsListTable extends Vue {
       this.$enums.MovementTypes.CANCEL_INTEREST_COLLECTED,
       this.$enums.MovementTypes.CANCEL_DEPOSIT_COLLECTED,
       this.$enums.MovementTypes.CANCEL_COMMISSION_COLLECTED,
-      this.$enums.MovementTypes.CANCEL_DEPOSIT_ADDED
+      this.$enums.MovementTypes.CANCEL_DEPOSIT_ADDED,
+      this.$enums.MovementTypes.INITIAL_DEPOSIT,
     ]
 
     if (reqType && !movementToAvoid.includes(item.movementType)) {
