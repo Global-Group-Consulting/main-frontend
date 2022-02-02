@@ -150,7 +150,7 @@
         }
 
         submitTimer = setTimeout(async () => {
-          try {
+          /*try {
             const newData = await $apiCalls.news[isNew.value ? 'create' : 'update'](formData.value, news.value?._id);
 
             emit("dataStored", newData, isNew.value)
@@ -160,7 +160,7 @@
             $alerts.error(er);
           } finally {
             loading.value = false
-          }
+          }*/
         }, 1000)
       }
 

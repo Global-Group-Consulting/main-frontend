@@ -31,13 +31,19 @@
             </v-tooltip>
           </div>
 
-          <div class="text-h4">
-            <strong>{{ news.title }}</strong>
-          </div>
-          <div>
-            <RichTextEditor :value="news.text" readonly></RichTextEditor>
-          </div>
+          <div class="d-flex">
+            <a :href="news.coverImg" target="_blank">
+              <img :src="news.coverImg" alt=""
+                   class="mr-3"
+                   style="width: 300px; max-height: 150px; object-fit: cover; object-position: center">
+            </a>
 
+            <div>
+              <strong class="text-h4">{{ news.title }}</strong>
+
+              <div v-html="news.content"></div>
+            </div>
+          </div>
 
         </v-sheet>
       </v-carousel-item>

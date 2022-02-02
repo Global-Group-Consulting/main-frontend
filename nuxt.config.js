@@ -160,6 +160,7 @@ export default {
     SOCKET_URL: process.env.SOCKET_URL,
     SERVER_URL: process.env.API_URL,
     APP_CLIENT_KEY: process.env.APP_CLIENT_KEY,
-    clubAppUrl: process.env.CLUB_APP_URL
+    clubAppUrl: process.env.CLUB_APP_URL,
+    newsAppUrl: process.env.NEWS_APP_URL,
   }
 }

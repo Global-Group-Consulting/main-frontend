@@ -53,7 +53,7 @@
       }
 
       async function onDelete (news: INews) {
-        try {
+        /*try {
           await $alerts.askBeforeAction({
             key: "news.delete-news",
             preConfirm: async () => {
@@ -71,7 +71,7 @@
           });
         } catch (er) {
           $alerts.error(er)
-        }
+        }*/
       }
 
       function updateData (newData: INews, isNew: boolean) {
