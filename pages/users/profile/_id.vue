@@ -8,7 +8,7 @@
               {{ userData.firstName + ' ' + userData.lastName }}
             </v-col>
             <v-col md="6" cols="12">
-              <div>{{ $t("pages.club.brite.totalUsableBrite") }}: <strong>
+<!--              <div>{{ $t("pages.club.brite.totalUsableBrite") }}: <strong>
                 Br' {{ clubStatistics.totalAmount|moneyFormatter(true) }}</strong></div>
               <ul class="pl-4" style="list-style: none; font-size: 20px; line-height: 1;">
                 <li v-for="(entry, i) of clubStatistics.expirations" :key="i">
@@ -22,7 +22,7 @@
                     </li>
                   </ul>
                 </li>
-              </ul>
+              </ul>-->
             </v-col>
           </v-row>
         </template>
@@ -85,6 +85,7 @@ import AdminRequestDialog from "~/components/dialogs/AdminRequestDialog.vue";
 import AgentWalletCards from "~/components/elements/cards/AgentWalletCards.vue";
 import {sortBy} from "lodash";
 import {ClubPermissions} from "~/functions/acl/enums/club.permissions";
+import {UsersPermissions} from "~/functions/acl/enums/users.permissions";
 
 @Component({
   components: {
@@ -94,7 +95,10 @@ import {ClubPermissions} from "~/functions/acl/enums/club.permissions";
     DynamicTabs,
     AgentBriteListTable, CommissionsListTable, MovementsListTable, UsersListTable,
     DashboardBlocks, DataTable, PageHeader
-  }
+  },
+  meta: {
+    permissions: [UsersPermissions.ACL_USERS_TEAM_READ, UsersPermissions.ACL_USERS_ALL_READ]
+  },
 })
 export default class Profile extends Vue {
   userData: User | any = {}
@@ -238,14 +242,9 @@ export default class Profile extends Vue {
   }
 
   goToClubData(event: MouseEvent, action: ActionItem) {
-    let openInNewTab = event.ctrlKey || true
-    const path = "/club/" + this.$route.params.id
+    const path = process.env.clubAppUrl + "/admin/users/profile/" + this.$route.params.id
 
-    if (openInNewTab) {
-      return window.open(path, "_blank")
-    }
-
-    this.$router.push(path)
+    return window.open(path, "_blank")
   }
 
   async onReloadCommissions() {
@@ -285,7 +284,7 @@ export default class Profile extends Vue {
     try {
       await this.fetchUserDetails();
 
-      this.clubBlocks = await this.$apiCalls.clubFetchBlocks(this.userId)
+      // this.clubBlocks = await this.$apiCalls.clubFetchBlocks(this.userId)
 
       if (this.showAgentBlocks) {
         const resultCommissions = await this.$apiCalls.fetchCommissionsStatus(this.userId);

@@ -193,11 +193,11 @@
           </tooltip-btn>
 
           <tooltip-btn
-            :tooltip="$t('actions.user-profile-tooltip')"
-            icon-name="mdi-card-account-details"
-            text
-            v-if="hasProfile"
-            @click="goToUserProfile($event)"
+              :tooltip="$t('actions.user-profile-tooltip')"
+              icon-name="mdi-card-account-details"
+              text
+              v-if="hasProfile && $acl.checkPermissions([UsersPermissions.ACL_USERS_TEAM_READ, UsersPermissions.ACL_USERS_ALL_READ])"
+              @click="goToUserProfile($event)"
           >
             {{ $t("actions.user-profile") }}
           </tooltip-btn>
@@ -362,7 +362,7 @@ import usersForm from "../../functions/usersForm";
 import Permissions from "../../functions/permissions";
 import SigningLogsPopup from "~/components/elements/SigningLogsPopup";
 import PageToolbar from "~/components/blocks/PageToolbar";
-import {UsersPermissions} from "../../functions/acl/enums/users.permissions";
+import {UsersPermissions} from "@/functions/acl/enums/users.permissions";
 import DashboardBlocks from "../../components/DashboardBlocks";
 import UserRoleChangeDialog from "../../components/dialogs/UserRoleChangeDialog";
 
@@ -877,7 +877,8 @@ export default {
       areDirtyForms,
       userIsSuspended,
       suspendUser,
-      canSuspend
+      canSuspend,
+      UsersPermissions
     };
   },
   computed: {},

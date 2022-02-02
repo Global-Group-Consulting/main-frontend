@@ -44,6 +44,8 @@ export default class Index extends Vue {
         pageToReturn = "ServClienti";
 
         break;
+      default:
+        pageToReturn = "Cliente";
     }
 
     return pageToReturn;
