@@ -54,6 +54,7 @@ export default {
     'risc_manuale_interessi': 'Storno manuale rendite',
     'commission_manual_add': 'Aggiunta manuale provvigioni ad agente',
     'commission_manual_transfer': 'Trasferimento manuale provvigioni tra Agenti',
+    "depositRepayment": "Rimborso",
   },
   'RequestStatus': {
     'nuova': "Da Evadere",
@@ -85,6 +86,7 @@ export default {
     "commissionsCancellation": "Storno provvigioni",
     "cancelDepositAdded": "Annullamento versamento",
     "manualInterestCollected": "Storno rendite",
+    "depositRepayment": "Rimborso",
   },
   "MessageTypes": {
     'newsletter': "Newsletter",

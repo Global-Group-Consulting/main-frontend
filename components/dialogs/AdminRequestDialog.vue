@@ -5,7 +5,8 @@
                type="warning"
                prominent
                tile
-               border="right">
+               border="right"
+               v-if="!hideAlert">
         <p class="mb-0"
            v-html="$t('dialogs.adminRequestDialog.alert-msg', {fullName: `${this.user.firstName} ${this.user.lastName}`})"></p>
       </v-alert>
@@ -99,6 +100,7 @@ export default class AdminRequestDialog extends Vue {
     switch (this.formData.type) {
       case this.$enums.RequestTypes.RISC_CAPITALE:
       case this.$enums.RequestTypes.VERSAMENTO:
+      case this.$enums.RequestTypes.DEPOSIT_REPAYMENT:
         toReturn = this.wallet.deposit ?? 0;
 
         break;
@@ -124,6 +126,10 @@ export default class AdminRequestDialog extends Vue {
 
   get user(): User {
     return this.incomingData.user || {}
+  }
+
+  get hideAlert() {
+    return this.formData.type && [this.$enums.RequestTypes.DEPOSIT_REPAYMENT, this.$enums.RequestTypes.RISC_MANUALE_INTERESSI].includes(this.formData.type)
   }
 
   close() {
