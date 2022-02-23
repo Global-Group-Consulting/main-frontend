@@ -31,10 +31,21 @@
       <!-- Blocchi resoconto dashboard -->
       <dashboard-blocks :dashboard-data="userDashboardData"
                         class="mb-6"
-                        :readonly="$auth.user.role !== $enums.UserRoles.ADMIN"
+                        :readonly="$store.getters['user/userIsAgente']"
                         v-if="showUserBlocks"
                         :loading="loading"
-      ></dashboard-blocks>
+                        include-commissions-add-dialog
+      >
+        <template v-slot:deposit_card-action="{item}"
+                  v-if="$store.getters['user/userIsAgente']">
+          <v-card-actions class="text-right pt-0 transparent">
+            <v-btn link text small color="primary" @click="onAddRepayment">
+              Rimborso
+            </v-btn>
+          </v-card-actions>
+        </template>
+
+      </dashboard-blocks>
 
       <agent-wallet-cards :user-id="userData.id" :user="userData" v-if="showAgentBlocks"
                           @reloadCommissions="onReloadCommissions"></agent-wallet-cards>
@@ -57,9 +68,13 @@
       </dynamic-tabs>
 
       <admin-request-dialog
-        v-if="$store.getters['user/userIsRealAdmin']
+          v-if="$store.getters['user/userIsRealAdmin']
               && $store.getters['dialog/dialogId'] === 'AdminRequestDialog'"
-        @newRequestAdded="onAdminNewRequestAdded"
+          @newRequestAdded="onAdminNewRequestAdded"
+      />
+
+      <agent-request-repayment
+          v-if="$store.getters['user/userIsAgente'] && $store.getters['dialog/dialogId'] === 'AgentRequestRepayment'"
       />
     </v-flex>
   </v-layout>
@@ -86,6 +101,8 @@ import AgentWalletCards from "~/components/elements/cards/AgentWalletCards.vue";
 import {sortBy} from "lodash";
 import {ClubPermissions} from "~/functions/acl/enums/club.permissions";
 import {UsersPermissions} from "~/functions/acl/enums/users.permissions";
+import {AclUserRoles} from "~/enums/AclUserRoles";
+import RequestTypes from "~/enums/RequestTypes";
 
 @Component({
   components: {
@@ -167,11 +184,13 @@ export default class Profile extends Vue {
   }
 
   get showUserBlocks() {
-    return [this.$enums.UserRoles.AGENTE, this.$enums.UserRoles.CLIENTE].includes(+this.userData.role)
+    return this.$acl.checkRoles([AclUserRoles.AGENT, AclUserRoles.CLIENT], this.userData);
+    // return [this.$enums.UserRoles.AGENTE, this.$enums.UserRoles.CLIENTE].includes(+this.userData.role)
   }
 
   get showAgentBlocks() {
-    return [this.$enums.UserRoles.AGENTE].includes(+this.userData.role)
+    return this.$acl.checkRoles([AclUserRoles.AGENT], this.userData);
+    // return [this.$enums.UserRoles.AGENTE].includes(+this.userData.role)
   }
 
   get tabsList(): DynamicTab[] {
@@ -278,6 +297,21 @@ export default class Profile extends Vue {
       this.userDashboardData.blocks = resultDashboard.blocks
       this.userDashboardData.user = this.userData
     }
+  }
+
+  async onAddRepayment() {
+    await this.$store.dispatch("dialog/updateStatus", {
+      id: "AgentRequestRepayment",
+      title: "Nuova richiesta di <strong>Rimborso</strong>",
+      texts: {
+        cancelBtn: "dialogs.agentBriteAddDialog.btn-cancel",
+        confirmBtn: "dialogs.agentBriteAddDialog.btn-send"
+      },
+      data: {
+        user: this.userData,
+        maxValue: await this.$apiCalls.fetchCommissionsAvailable(this.$auth.user.id),
+      }
+    })
   }
 
   async beforeMount() {

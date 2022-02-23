@@ -8,19 +8,19 @@
 
 import RequestTypes from "../../enums/RequestTypes";
 import RequestStatus from "../../enums/RequestStatus";
-import { computed } from "@vue/composition-api";
+import {computed} from "@vue/composition-api";
 import UserRoles from "~/enums/UserRoles";
-import { moneyFormatter } from "~/plugins/filters";
-import { CardsList } from '~/config/cardsList';
+import {moneyFormatter, userFormatter} from "~/plugins/filters";
+import {CardsList} from '~/config/cardsList';
 
-function getRequestTypeList (list, context) {
+function getRequestTypeList(list, context) {
   const userType = [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(+context.$auth.user.role) ? "admin" : "user";
-
+  
   // const canDeposit = context.canDeposit;
   const canRequestGold = userType === "user" && context.$auth.user.gold;
   const canRequestClassic = userType === "user" && !context.$auth.user.gold;
   const isAgent = context.$auth.user.role === UserRoles.AGENTE;
-
+  
   const data = list.filter((el) => {
     let mustReturn = false;
 
@@ -155,7 +155,7 @@ export default function (context) {
           formatter: (item) => {
             return item.firstName + " " + item.lastName + ` (${item.email})`
           },
-          if: context.formData.type === RequestTypes.COMMISSION_MANUAL_ADD,
+          if: [RequestTypes.COMMISSION_MANUAL_ADD, RequestTypes.DEPOSIT_REPAYMENT].includes(context.formData.type),
         }
       }
     },

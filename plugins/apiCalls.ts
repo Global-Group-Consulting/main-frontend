@@ -281,7 +281,7 @@ export class ApiCalls extends BasicApiCall {
       uploadMode: true
     })
   }
-
+  
   async createAdminRequest(data: any) {
     return await this.post({
       endPoint: `/api/requests/admin`,
@@ -289,14 +289,21 @@ export class ApiCalls extends BasicApiCall {
       uploadMode: true
     })
   }
-
+  
+  async createAgentRequest(data: any) {
+    return await this.post({
+      endPoint: `/api/requests/agent`,
+      body: data
+    })
+  }
+  
   async deleteRequest(data: any) {
     return await this._call({
       method: "DELETE",
       endPoint: `/api/requests/${data.id}`,
     })
   }
-
+  
   async acceptRequest(data: RequestFormData, paymentDocDate: Date, paymentAmount: number, paymentGoldAmount: number) {
     return await this._call({
       method: "PUT",

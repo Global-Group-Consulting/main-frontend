@@ -120,6 +120,7 @@ export default {
     "manualAdd": "Aggiunta manuale",
     "manualTransfer": "Trasferimento da un altro agente",
     "manualTransferDoner": "Trasferimento verso agente",
+    "repaymentTransfer": "Rimborso verso utente",
     "manualWithdrawal": "Rimozione manuale",
     "commissionsReinvestment": "Reinvestimento provvigioni",
     "commissionsCollected": "Riscossione provvigioni",

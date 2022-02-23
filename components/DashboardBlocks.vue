@@ -27,12 +27,14 @@
                 {{ $t(`pages.${page}.${block.title}`) }}
               </v-card-text>
 
-              <v-card-actions class="text-right pt-0 transparent"
-                              v-if="block.action">
-                <v-btn link text small color="primary" @click="block.action">
-                  {{ $t(`pages.${page}.${block.actionText}`) }}
-                </v-btn>
-              </v-card-actions>
+              <slot :name="block.id +'_card-action'" v-bind:item="block">
+                <v-card-actions class="text-right pt-0 transparent"
+                                v-if="block.action">
+                  <v-btn link text small color="primary" @click="block.action">
+                    {{ $t(`pages.${page}.${block.actionText}`) }}
+                  </v-btn>
+                </v-card-actions>
+              </slot>
             </div>
           </div>
         </v-skeleton-loader>
@@ -134,7 +136,7 @@ export default class DashboardBlocks extends Vue {
     const reqTranslation = this.$t("enums.RequestTypes." + reqText)
 
     this.$store.dispatch("dialog/updateStatus", {
-      id: "AdminRequestDialog",
+      id: "AgentBriteAddDialog",
       title: this.$t("dialogs.adminRequestDialog.title", {request: reqTranslation}),
       texts: {
         cancelBtn: "dialogs.adminRequestDialog.btn-cancel",
