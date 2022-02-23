@@ -1,5 +1,7 @@
 import {Context, Plugin} from "@nuxt/types";
 import {Store} from 'vuex'
+import {AclUserRoles} from "~/enums/AclUserRoles";
+import {User} from "~/@types/UserFormData";
 
 declare module 'vue/types/vue' {
   // this.$myInjectedFunction inside Vue components
@@ -39,19 +41,23 @@ class Acl {
   constructor(context: Context) {
     this.store = context.store
   }
-
+  
   get auth() {
     return this.store?.$auth || null
   }
-
+  
   get userPermissions(): string[] {
     return this.auth?.user?.permissions || []
   }
-
+  
+  get userRoles(): string[] {
+    return this.auth?.user?.roles || []
+  }
+  
   protected permissionParts(permission: string): PermissionsParts {
     const blocks: string[] = permission.split(/\.|:/)
     const toReturn: PermissionsParts = {section: "", type: "", access: ""}
-
+    
     switch (blocks.length) {
       case 2:
         toReturn.section = blocks[0]
@@ -117,16 +123,44 @@ class Acl {
           (userParts.type === parts.type || userParts.type === "*") &&
           (userParts.access === parts.access || userParts.access === "*")) {
           toReturn = true
-
+  
           // Once i found a valid match, stop all the cycles
           break reqPermissionsCycle;
         }
       }
     }
-
+  
     return toReturn
   }
-
+  
+  checkRoles(requiredRoles: AclUserRoles[], userToCheck?: User): boolean {
+    let toReturn = false
+    
+    /*
+    If no permission in required, return true
+   */
+    if (!requiredRoles || requiredRoles.length === 0) {
+      return true
+    }
+    
+    const userRoles = userToCheck ? userToCheck.roles : this.userRoles;
+    
+    /*
+    If the user has no permissions, but at least one is required, return false
+     */
+    if (!userRoles) {
+      return toReturn
+    }
+    
+    // If the user has at least one required role, return true
+    for (const requiredRole of requiredRoles) {
+      if (userRoles.includes(requiredRole)) {
+        toReturn = true;
+      }
+    }
+    
+    return toReturn
+  }
 }
 
 const aclPlugin: Plugin = (context, inject) => {

@@ -203,6 +203,12 @@ export default {
   "send-admin-request-confirmBtnText": "Si, invia",
   "send-admin-request-cancelBtnText": "Annulla",
   "send-admin-request-success": "Richiesta inviata correttamente!",
+  
+  "send-agent-request-repayment-title": "",
+  "send-agent-request-repayment-text": "Sei sicuro di voler inviare la nuova richiesta di <strong>{type}</strong> del valore di <strong>{amount}</strong> a favore dell'utente <strong>{fullName}</strong>?<br><br><strong>L'importo verrà tolto dalle proprie provvigioni e versato nel deposito dell'utente.</strong>",
+  "send-agent-request-repayment-confirmBtnText": "Si, invia",
+  "send-agent-request-repayment-cancelBtnText": "Annulla",
+  "send-agent-request-repayment-success": "Richiesta inviata correttamente!",
 
   magazine: {
     "delete-title": "",

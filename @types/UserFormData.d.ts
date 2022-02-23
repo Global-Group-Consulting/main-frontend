@@ -1,5 +1,6 @@
 import AgentTeamType from "~/enums/AgentTeamType";
 import {SignRequestLog} from "~/@types/SignRequest";
+import {AclUserRoles} from "~/enums/AclUserRoles";
 
 export interface User {
   id: string,
@@ -64,6 +65,7 @@ export interface User {
   suspended: boolean
   clientsCount: number
   commissionsAssigned: any
+  roles: AclUserRoles[]
 }
 
 export interface UserDataSchema extends User {

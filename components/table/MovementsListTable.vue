@@ -16,13 +16,26 @@
     </template>
 
     <template v-slot:item.movementType="{ item }">
-      <v-tooltip bottom v-if="item.notes">
-        <template v-slot:activator="{ on }">
-          <a class="text-decoration-underline-dotted" v-on="on" v-html="formatMovementType(item)"></a>
+      <v-menu offset-y v-if="item.notes">
+        <template v-slot:activator="{ on, attrs }">
+          <a class="text-decoration-underline-dotted" v-on="on" v-bind="attrs"
+             v-html="formatMovementType(item)"></a>
         </template>
+        <v-card
+            color="white"
+            elevation="1"
+        >
+          <v-card-text v-html="item.notes"></v-card-text>
+        </v-card>
+      </v-menu>
 
-        <span>{{ item.notes }}</span>
-      </v-tooltip>
+      <!--      <v-tooltip bottom v-if="item.notes">
+              <template v-slot:activator="{ on }">
+                <a class="text-decoration-underline-dotted" v-on="on" v-html="formatMovementType(item)"></a>
+              </template>
+
+              <span v-html="item.notes"></span>
+            </v-tooltip>-->
 
       <div v-else v-html="formatMovementType(item)"></div>
     </template>

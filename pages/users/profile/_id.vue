@@ -8,7 +8,7 @@
               {{ userData.firstName + ' ' + userData.lastName }}
             </v-col>
             <v-col md="6" cols="12">
-              <div>{{ $t("pages.club.brite.totalUsableBrite") }}: <strong>
+<!--              <div>{{ $t("pages.club.brite.totalUsableBrite") }}: <strong>
                 Br' {{ clubStatistics.totalAmount|moneyFormatter(true) }}</strong></div>
               <ul class="pl-4" style="list-style: none; font-size: 20px; line-height: 1;">
                 <li v-for="(entry, i) of clubStatistics.expirations" :key="i">
@@ -22,7 +22,7 @@
                     </li>
                   </ul>
                 </li>
-              </ul>
+              </ul>-->
             </v-col>
           </v-row>
         </template>
@@ -31,10 +31,21 @@
       <!-- Blocchi resoconto dashboard -->
       <dashboard-blocks :dashboard-data="userDashboardData"
                         class="mb-6"
-                        :readonly="$auth.user.role !== $enums.UserRoles.ADMIN"
+                        :readonly="$store.getters['user/userIsAgente']"
                         v-if="showUserBlocks"
                         :loading="loading"
-      ></dashboard-blocks>
+                        include-commissions-add-dialog
+      >
+        <template v-slot:deposit_card-action="{item}"
+                  v-if="$store.getters['user/userIsAgente']">
+          <v-card-actions class="text-right pt-0 transparent">
+            <v-btn link text small color="primary" @click="onAddRepayment">
+              Rimborso
+            </v-btn>
+          </v-card-actions>
+        </template>
+
+      </dashboard-blocks>
 
       <agent-wallet-cards :user-id="userData.id" :user="userData" v-if="showAgentBlocks"
                           @reloadCommissions="onReloadCommissions"></agent-wallet-cards>
@@ -57,9 +68,13 @@
       </dynamic-tabs>
 
       <admin-request-dialog
-        v-if="$store.getters['user/userIsRealAdmin']
+          v-if="$store.getters['user/userIsRealAdmin']
               && $store.getters['dialog/dialogId'] === 'AdminRequestDialog'"
-        @newRequestAdded="onAdminNewRequestAdded"
+          @newRequestAdded="onAdminNewRequestAdded"
+      />
+
+      <agent-request-repayment
+          v-if="$store.getters['user/userIsAgente'] && $store.getters['dialog/dialogId'] === 'AgentRequestRepayment'"
       />
     </v-flex>
   </v-layout>
@@ -85,6 +100,9 @@ import AdminRequestDialog from "~/components/dialogs/AdminRequestDialog.vue";
 import AgentWalletCards from "~/components/elements/cards/AgentWalletCards.vue";
 import {sortBy} from "lodash";
 import {ClubPermissions} from "~/functions/acl/enums/club.permissions";
+import {UsersPermissions} from "~/functions/acl/enums/users.permissions";
+import {AclUserRoles} from "~/enums/AclUserRoles";
+import RequestTypes from "~/enums/RequestTypes";
 
 @Component({
   components: {
@@ -94,7 +112,10 @@ import {ClubPermissions} from "~/functions/acl/enums/club.permissions";
     DynamicTabs,
     AgentBriteListTable, CommissionsListTable, MovementsListTable, UsersListTable,
     DashboardBlocks, DataTable, PageHeader
-  }
+  },
+  meta: {
+    permissions: [UsersPermissions.ACL_USERS_TEAM_READ, UsersPermissions.ACL_USERS_ALL_READ]
+  },
 })
 export default class Profile extends Vue {
   userData: User | any = {}
@@ -163,11 +184,13 @@ export default class Profile extends Vue {
   }
 
   get showUserBlocks() {
-    return [this.$enums.UserRoles.AGENTE, this.$enums.UserRoles.CLIENTE].includes(+this.userData.role)
+    return this.$acl.checkRoles([AclUserRoles.AGENT, AclUserRoles.CLIENT], this.userData);
+    // return [this.$enums.UserRoles.AGENTE, this.$enums.UserRoles.CLIENTE].includes(+this.userData.role)
   }
 
   get showAgentBlocks() {
-    return [this.$enums.UserRoles.AGENTE].includes(+this.userData.role)
+    return this.$acl.checkRoles([AclUserRoles.AGENT], this.userData);
+    // return [this.$enums.UserRoles.AGENTE].includes(+this.userData.role)
   }
 
   get tabsList(): DynamicTab[] {
@@ -238,14 +261,9 @@ export default class Profile extends Vue {
   }
 
   goToClubData(event: MouseEvent, action: ActionItem) {
-    let openInNewTab = event.ctrlKey || true
-    const path = "/club/" + this.$route.params.id
+    const path = process.env.clubAppUrl + "/admin/users/profile/" + this.$route.params.id
 
-    if (openInNewTab) {
-      return window.open(path, "_blank")
-    }
-
-    this.$router.push(path)
+    return window.open(path, "_blank")
   }
 
   async onReloadCommissions() {
@@ -281,11 +299,26 @@ export default class Profile extends Vue {
     }
   }
 
+  async onAddRepayment() {
+    await this.$store.dispatch("dialog/updateStatus", {
+      id: "AgentRequestRepayment",
+      title: "Nuova richiesta di <strong>Rimborso</strong>",
+      texts: {
+        cancelBtn: "dialogs.agentBriteAddDialog.btn-cancel",
+        confirmBtn: "dialogs.agentBriteAddDialog.btn-send"
+      },
+      data: {
+        user: this.userData,
+        maxValue: await this.$apiCalls.fetchCommissionsAvailable(this.$auth.user.id),
+      }
+    })
+  }
+
   async beforeMount() {
     try {
       await this.fetchUserDetails();
 
-      this.clubBlocks = await this.$apiCalls.clubFetchBlocks(this.userId)
+      // this.clubBlocks = await this.$apiCalls.clubFetchBlocks(this.userId)
 
       if (this.showAgentBlocks) {
         const resultCommissions = await this.$apiCalls.fetchCommissionsStatus(this.userId);

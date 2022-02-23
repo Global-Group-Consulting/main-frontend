@@ -1,4 +1,9 @@
-module.exports = `<h2 id="v1811smalltbasmall">v 1.8.11 - <small>TBA</small></h2>
+module.exports = `<h2 id="v190small02022022small">v 1.9.0 - <small>02/02/2022</small></h2>
+<h3 id="miglioaremnti">Miglioaremnti</h3>
+<ul>
+<li>Miglioramenti generali prestazioni</li>
+</ul>
+<h2 id="v1811small20102021small">v 1.8.11 - <small>20/10/2021</small></h2>
 <h3 id="miglioramenti">Miglioramenti</h3>
 <ul>
 <li>Risolto bug che non permetteva di riscuotere tutti gli interessi maturati</li>

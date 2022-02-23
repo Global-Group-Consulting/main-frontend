@@ -17,7 +17,7 @@
         </v-tooltip>
       </span>
 
-    <v-tooltip v-if="$enums.RequestTypes.COMMISSION_MANUAL_ADD === item.type"
+    <v-tooltip v-if="[$enums.RequestTypes.COMMISSION_MANUAL_ADD, $enums.RequestTypes.DEPOSIT_REPAYMENT].includes(item.type)"
                bottom
                open-on-click>
       <template v-slot:activator="{ on }">
@@ -62,7 +62,7 @@ export default class CellRequestType extends Vue {
 
     this.$alerts.info({
       title: "",
-      html: `Agente destinatario:<br>
+      html: `Utente destinatario:<br>
             ${this.item.targetUser.firstName} ${this.item.targetUser.lastName} (${this.item.targetUser.email})
             `
     })

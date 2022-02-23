@@ -2,6 +2,8 @@ import Vue from "vue"
 import UserRoles from '../enums/UserRoles'
 import WalletTypes from "../enums/WalletTypes"
 import {computed} from "@vue/composition-api";
+import acl from "~/plugins/acl";
+import {AclUserRoles} from "~/enums/AclUserRoles";
 
 const emptyWallets = [{
   type: WalletTypes.DEPOSIT,
@@ -89,8 +91,9 @@ export const getters = {
   userIsCliente: (state, getters, rootState) => {
     return [UserRoles.CLIENTE].includes(rootState.auth.user.role)
   },
-  userIsAgente: (state, getters, rootState) => {
-    return [UserRoles.AGENTE].includes(rootState.auth.user.role)
+  userIsAgente: (state, getters, rootState, a, b, c) => {
+    return $nuxt.$acl.checkRoles([AclUserRoles.AGENT])
+    // return [UserRoles.AGENTE].includes(rootState.auth.user.role)
   },
   userIsAdmin: (state, getters, rootState) => {
     return [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(rootState.auth.user.role)

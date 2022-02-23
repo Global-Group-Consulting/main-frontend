@@ -29,7 +29,8 @@
             tooltip="Nuova News"
             text
             icon-name="mdi-newspaper-plus"
-            @click="openNewNews()"
+            :href="newNewsLink"
+            target="_blank"
             v-if="permissions.createCommunication"
           >
             Nuova News
@@ -133,10 +134,6 @@
       @requestStatusChanged="onRequestStatusChanged"
     ></comunication-details-dialog>
 
-    <communication-new-dialog
-      v-if="$store.getters['dialog/dialogId'] === 'CommunicationNewDialog'"
-      @communicationAdded="onCommunicationAdded"
-    ></communication-new-dialog>
 
   </v-layout>
 </template>
@@ -216,6 +213,10 @@
       return this.$store.getters["dialog/dialogState"]
     }
 
+    get newNewsLink() {
+      return process.env.newsAppUrl + '/news/create';
+    }
+
     private async _fetchAll () {
       try {
         const result: any = await this.$apiCalls.communicationsFetch();
@@ -284,17 +285,6 @@
           subject,
           receiver: to
         }
-      });
-    }
-
-    openNewNews () {
-      this.$store.dispatch("dialog/updateStatus", {
-        id: "NewsDialog",
-        title: "Nuova news",
-        texts: {
-          cancelBtn: "Annulla"
-        },
-        showCloseBtn: true,
       });
     }
 
