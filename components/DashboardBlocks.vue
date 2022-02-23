@@ -136,7 +136,7 @@ export default class DashboardBlocks extends Vue {
     const reqTranslation = this.$t("enums.RequestTypes." + reqText)
 
     this.$store.dispatch("dialog/updateStatus", {
-      id: "AgentBriteAddDialog",
+      id: "AdminRequestDialog",
       title: this.$t("dialogs.adminRequestDialog.title", {request: reqTranslation}),
       texts: {
         cancelBtn: "dialogs.adminRequestDialog.btn-cancel",
