@@ -514,6 +514,13 @@ export class ApiCalls extends BasicApiCall {
       body: data
     })
   }
+  
+  async commissionsCancellation(userId: string, data: any) {
+    return await this.post({
+      endPoint: `/api/commissions/${userId}/cancellation`,
+      body: data
+    })
+  }
 
   async clubRemoveBrites(userId: string, data: any, semesterId: string) {
     return await this.post({
