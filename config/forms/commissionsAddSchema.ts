@@ -1,10 +1,10 @@
-import {FormSchema} from "~/@types/FormSchema";
+import { FormSchema } from '~/@types/FormSchema'
 
-import {UserDataSchema} from "~/@types/UserFormData";
-import {Permissions} from "~/@types/Permissions";
-import CurrencyType from "~/enums/CurrencyType";
-import CommissionType from "~/enums/CommissionType";
-import {computed} from "@vue/composition-api";
+import { UserDataSchema } from '~/@types/UserFormData'
+import { Permissions } from '~/@types/Permissions'
+import CurrencyType from '~/enums/CurrencyType'
+import CommissionType from '~/enums/CommissionType'
+import { computed } from '@vue/composition-api'
 
 interface FormContext extends Vue {
   dialogData: any,
@@ -21,7 +21,8 @@ interface FormData {
 
 export default function (formData: FormData): FormSchema[] {
   const isManualTransfer = formData.commissionType === CommissionType.MANUAL_TRANSFER
-
+  const isCommissionsCancellation = formData.commissionType === CommissionType.COMMISSIONS_CANCELLATION
+  
   return [
     {
       cols: {
@@ -34,9 +35,9 @@ export default function (formData: FormData): FormSchema[] {
     {
       cols: {
         amountAvailable: {
-          component: "money-input",
-          label: "available-amount",
-          if: isManualTransfer,
+          component: 'money-input',
+          label: 'available-amount',
+          if: isManualTransfer || isCommissionsCancellation,
           disabled: true
         }
       }
@@ -44,8 +45,8 @@ export default function (formData: FormData): FormSchema[] {
     {
       cols: {
         amountChange: {
-          component: "money-input",
-          label: "amount-change",
+          component: 'money-input',
+          label: 'amount-change' + (isCommissionsCancellation ? '-cancellation' : ''),
           validations: {
             required: {},
             maxValue: {
@@ -53,15 +54,15 @@ export default function (formData: FormData): FormSchema[] {
             },
             minValue: {
               params: 1
-            },
+            }
           }
         }
       }
     }, {
       cols: {
         notes: {
-          label: "commissions-add-notes",
-          component: "v-textarea",
+          label: `commissions-${isCommissionsCancellation ? 'cancellation' : 'add'}-notes`,
+          component: 'v-textarea',
           autoGrow: true,
           rows: 1,
           validations: {

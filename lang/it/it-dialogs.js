@@ -142,6 +142,9 @@ export default {
   },
   commissionsAddDialog: {
     title: "Aggiunta manuale provvigioni",
+    "title-manualAdd": "Aggiunta manuale provvigioni",
+    "title-manualTransfer": "Trasferimento provvigioni verso altro agente",
+    "title-commissionsCancellation": "Storno provvigioni",
     "btn-send": "Aggiungi",
     "btn-cancel": "Annulla"
   },

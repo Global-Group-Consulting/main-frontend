@@ -35,6 +35,9 @@ export default {
   "request-withdrawl-deposit-tooltip": "Crea una richiesta di Prelievo Deposito",
   "request-download-report": "Scarica Report",
   "filters-btn": "Filtri",
+  "cancel-commissions": "Storno Commissioni",
+  "cancel-commissions-tooltip": "Crea un movimento si Storno Commissioni",
+  
   magazine: {
     "add": "Aggiungi"
   }

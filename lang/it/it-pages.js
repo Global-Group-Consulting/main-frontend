@@ -161,7 +161,7 @@ export default {
     collectCommissions: "Preleva",
     agentBritesTotal: "Brite Accumulati",
     agentBritesCurrMonth: "Brite Mese corrente",
-    addCommissions: "Aggiungi / Trasferisci",
+    addCommissions: "Aggiungi / Trasferisci / Storna",
     addBrites: "Aggiungi / Rimuovi",
     useBrites: "Utilizza",
     tabs: {
