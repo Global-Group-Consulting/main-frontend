@@ -28,27 +28,35 @@
         </template>
       </page-header>
 
+
+      <ProfileDashboard :user="userData" @reloadCommissions="onReloadCommissions"></ProfileDashboard>
+
       <!-- Blocchi resoconto dashboard -->
-      <dashboard-blocks :dashboard-data="userDashboardData"
-                        class="mb-6"
-                        :readonly="$store.getters['user/userIsAgente']"
-                        v-if="showUserBlocks"
-                        :loading="loading"
-                        include-commissions-add-dialog
-      >
-        <template v-slot:deposit_card-action="{item}"
-                  v-if="$store.getters['user/userIsAgente']">
-          <v-card-actions class="text-right pt-0 transparent">
-            <v-btn link text small color="primary" @click="onAddRepayment">
-              Rimborso
-            </v-btn>
-          </v-card-actions>
-        </template>
+      <!--      <h2>Deposito e Rendite</h2>-->
+      <!--
+            <dashboard-blocks :dashboard-data="userDashboardData"
+                              class="mb-6"
+                              :readonly="$store.getters['user/userIsAgente']"
+                              v-if="showUserBlocks"
+                              :loading="loading"
+                              include-commissions-add-dialog
+            >
+              <template v-slot:deposit_card-action="{item}"
+                        v-if="$store.getters['user/userIsAgente']">
+                <v-card-actions class="text-right pt-0 transparent">
+                  <v-btn link text small color="primary" @click="onAddRepayment">
+                    Rimborso
+                  </v-btn>
+                </v-card-actions>
+              </template>
 
-      </dashboard-blocks>
+            </dashboard-blocks>
+      -->
 
-      <agent-wallet-cards :user-id="userData.id" :user="userData" v-if="showAgentBlocks"
-                          @reloadCommissions="onReloadCommissions"></agent-wallet-cards>
+      <!--      <h2>Provvigioni</h2>-->
+      <!--      <agent-wallet-cards :user-id="userData.id" :user="userData" v-if="showAgentBlocks"
+                                @reloadCommissions="onReloadCommissions"></agent-wallet-cards>-->
+
 
       <div class="mt-10"></div>
 
@@ -103,9 +111,11 @@ import { ClubPermissions } from '~/functions/acl/enums/club.permissions'
 import { UsersPermissions } from '~/functions/acl/enums/users.permissions'
 import { AclUserRoles } from '~/enums/AclUserRoles'
 import RequestTypes from '~/enums/RequestTypes'
+import ProfileDashboard from '~/components/ProfileDashboard.vue'
 
 @Component({
   components: {
+    ProfileDashboard,
     AgentWalletCards,
     AdminRequestDialog,
     PageToolbar,
