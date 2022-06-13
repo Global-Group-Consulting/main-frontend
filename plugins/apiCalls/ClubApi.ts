@@ -1,4 +1,5 @@
-import {BasicApiCall} from "~/classes/BasicApiCall";
+import { BasicApiCall } from '~/classes/BasicApiCall'
+import { DashboardBritesData } from '~/@types/Brites'
 
 export interface ClubDashboardSemester {
   expiresAt: string
@@ -13,9 +14,18 @@ export interface ClubDashboardSemester {
 }
 
 export class ClubApi extends BasicApiCall {
-  async dashboardStatistics(): Promise<Record<string, ClubDashboardSemester>> {
+  async dashboardStatistics (): Promise<Record<string, ClubDashboardSemester>> {
     return await this.get({
-      endPoint: `/api/club/dashboard/semesters`,
+      endPoint: `/api/club/dashboard/semesters`
+    })
+  }
+  
+  async fetchStatistics (userId: string): Promise<DashboardBritesData> {
+    return this.get({
+      endPoint: 'api/ext/club/dashboard/statistics',
+      params: {
+        userId
+      }
     })
   }
 }
