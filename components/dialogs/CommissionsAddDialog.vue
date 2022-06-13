@@ -97,7 +97,7 @@ export default class CommissionsAddDialog extends Vue {
 
   close () {
     try {
-      this.$refs.dialogForm.reset()
+      this.$refs.dialogForm && this.$refs.dialogForm.reset()
       this.$store.dispatch('dialog/updateStatus', false)
     } catch (er) {
       console.error(er)
