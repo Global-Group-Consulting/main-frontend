@@ -64,12 +64,12 @@ export default defineComponent({
     }
   },
   setup (props, { root }) {
-    const data: Ref<DashboardBritesData> = ref()
+    const data: Ref<any> = ref()
 
     const listItems: ComputedRef<DashboardBlockData[]> = computed(() => {
       const resoconto: any[] = []
 
-      data.value?.expirations?.forEach(el => {
+      data.value?.expirations?.forEach((el: any) => {
         if (el.usable > 0) {
           const expiration = new Intl.DateTimeFormat('it-IT', {
             year: 'numeric',
@@ -84,7 +84,7 @@ export default defineComponent({
         }
       })
 
-      const semesters: any[] = data.value?.semesters.reduce((acc, el) => {
+      const semesters: any[] = data.value?.semesters.reduce((acc: any[], el:any) => {
         if (el.totalUsable > 0) {
           const semester = el.semesterId.split('_')
           const usableFrom = new Intl.DateTimeFormat('it-IT', {
