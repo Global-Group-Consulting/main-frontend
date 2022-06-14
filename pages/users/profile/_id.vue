@@ -112,6 +112,8 @@ import { UsersPermissions } from '~/functions/acl/enums/users.permissions'
 import { AclUserRoles } from '~/enums/AclUserRoles'
 import RequestTypes from '~/enums/RequestTypes'
 import ProfileDashboard from '~/components/ProfileDashboard.vue'
+import jsFileDownload from 'js-file-download'
+import { userFormatter } from '~/plugins/filters'
 
 @Component({
   components: {
@@ -173,17 +175,14 @@ export default class Profile extends Vue {
         icon: 'mdi-diamond-stone',
         click: this.goToClubData,
         if: this.$store.getters['user/userIsAdmin'] || this.$auth.user.permissions.includes(ClubPermissions.CLUB_READ)
-      } /*{
-        text: "import-contract",
-        tooltip: "import-contract-tooltip",
-        position: "right",
-        icon: "mdi-file-document-edit"
       }, {
-        text: "import-movements",
-        tooltip: "import-movements-tooltip",
-        position: "right",
-        icon: "mdi-playlist-plus",
-      }*/
+        text: 'movements-download-excel',
+        tooltip: 'movements-download-excel-tooltip',
+        position: 'center',
+        icon: 'mdi-file-excel-outline',
+        click: this.downloadMovementsList,
+        if: this.$store.getters['user/userIsAdmin']
+      }
     ]
 
     return toReturn.filter(el => el.if ?? true)
@@ -326,6 +325,19 @@ export default class Profile extends Vue {
         maxValue: await this.$apiCalls.fetchCommissionsAvailable(this.$auth.user.id)
       }
     })
+  }
+
+  async downloadMovementsList () {
+    try {
+      const file = await this.$apiCalls.downloadMovementsReport(this.userId)
+
+      jsFileDownload(file.data, this.$t('pages.requests.fileMovementsName', {
+        user: userFormatter(this.userData),
+        id: this.userId
+      }) + '.xlsx')
+    } catch (er) {
+      this.$alerts.error(er)
+    }
   }
 
   async beforeMount () {
