@@ -1,9 +1,11 @@
 const express = require('express')
 const app = express()
 
-const enforce = require('express-sslify');
+const enforce = require('express-sslify')
 
-app.use(enforce.HTTPS({trustProtoHeader: true}));
+if (process.env.NODE_ENV !== 'development') {
+  app.use(enforce.HTTPS({ trustProtoHeader: true }))
+}
 
 /*
 app.all('*', (req, res, next) => {

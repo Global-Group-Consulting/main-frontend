@@ -19,10 +19,10 @@ const FAVICON_VERSION = process.env.FAVICON_VERSION
 const APP_NAME = `${IS_BETA ? "[Beta] " : ""}Global Group Consulting`
 
 const serverConfig = process.env.NODE_ENV === "development" ? {
-  https: {
+ /* https: {
     key: fs.readFileSync(path.resolve(__dirname, 'localhost.key')),
     cert: fs.readFileSync(path.resolve(__dirname, 'localhost.crt'))
-  }
+  }*/
 } : {}
 
 console.log(process.env.NODE_ENV)
