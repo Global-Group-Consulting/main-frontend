@@ -2,7 +2,7 @@
   <div>
     <page-header page-name="dashboard"></page-header>
 
-    <component :is="userPage"/>
+    <component :is="userPage" v-if="userPage"/>
 
     <mobile-menu-actions></mobile-menu-actions>
   </div>
@@ -45,7 +45,7 @@ export default class Index extends Vue {
 
         break;
       default:
-        pageToReturn = "Cliente";
+        pageToReturn = "";
     }
 
     return pageToReturn;
