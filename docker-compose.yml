@@ -1,6 +1,7 @@
 version: "3.9"
 services:
   frontend:
+    container_name: main-frontend
     build: .
     volumes:
       - ./:/usr/src/app
@@ -8,10 +9,9 @@ services:
     ports:
       - "3330:3000"
     environment:
-      - API_URL=http://localhost:3333/
+      - API_URL=http://local.api.globalgroup.consulting/
       - APP_CLIENT_KEY=7BpSpC4q8gg2QSR
       - CLUB_APP_URL=https://private.stg.globalclub.it
-      - COUNTRIES_API_URL=https://restcountries.eu/rest/v2/all
       - FAVICON_VERSION=Lbxoegj4RJ
       - HOST=0.0.0.0
       - PORT=3000
@@ -19,8 +19,6 @@ services:
       - NODE_ENV=development
       - NODE_OPTIONS=--max-old-space-size=4096
       - NPM_CONFIG_PRODUCTION=false
-      - PROVINCES_API_URL=https://comuni-ita.herokuapp.com/api/province
-      - REGIONS_API_URL=https://comuni-ita.herokuapp.com/api/regioni
       - SOCKET_URL=wss://localhost:3333
 volumes:
   nodemodules: { }
