@@ -28,27 +28,35 @@
         </template>
       </page-header>
 
+
+      <ProfileDashboard :user="userData" @reloadCommissions="onReloadCommissions"></ProfileDashboard>
+
       <!-- Blocchi resoconto dashboard -->
-      <dashboard-blocks :dashboard-data="userDashboardData"
-                        class="mb-6"
-                        :readonly="$store.getters['user/userIsAgente']"
-                        v-if="showUserBlocks"
-                        :loading="loading"
-                        include-commissions-add-dialog
-      >
-        <template v-slot:deposit_card-action="{item}"
-                  v-if="$store.getters['user/userIsAgente']">
-          <v-card-actions class="text-right pt-0 transparent">
-            <v-btn link text small color="primary" @click="onAddRepayment">
-              Rimborso
-            </v-btn>
-          </v-card-actions>
-        </template>
+      <!--      <h2>Deposito e Rendite</h2>-->
+      <!--
+            <dashboard-blocks :dashboard-data="userDashboardData"
+                              class="mb-6"
+                              :readonly="$store.getters['user/userIsAgente']"
+                              v-if="showUserBlocks"
+                              :loading="loading"
+                              include-commissions-add-dialog
+            >
+              <template v-slot:deposit_card-action="{item}"
+                        v-if="$store.getters['user/userIsAgente']">
+                <v-card-actions class="text-right pt-0 transparent">
+                  <v-btn link text small color="primary" @click="onAddRepayment">
+                    Rimborso
+                  </v-btn>
+                </v-card-actions>
+              </template>
 
-      </dashboard-blocks>
+            </dashboard-blocks>
+      -->
 
-      <agent-wallet-cards :user-id="userData.id" :user="userData" v-if="showAgentBlocks"
-                          @reloadCommissions="onReloadCommissions"></agent-wallet-cards>
+      <!--      <h2>Provvigioni</h2>-->
+      <!--      <agent-wallet-cards :user-id="userData.id" :user="userData" v-if="showAgentBlocks"
+                                @reloadCommissions="onReloadCommissions"></agent-wallet-cards>-->
+
 
       <div class="mt-10"></div>
 
@@ -103,9 +111,13 @@ import { ClubPermissions } from '~/functions/acl/enums/club.permissions'
 import { UsersPermissions } from '~/functions/acl/enums/users.permissions'
 import { AclUserRoles } from '~/enums/AclUserRoles'
 import RequestTypes from '~/enums/RequestTypes'
+import ProfileDashboard from '~/components/ProfileDashboard.vue'
+import jsFileDownload from 'js-file-download'
+import { userFormatter } from '~/plugins/filters'
 
 @Component({
   components: {
+    ProfileDashboard,
     AgentWalletCards,
     AdminRequestDialog,
     PageToolbar,
@@ -163,17 +175,14 @@ export default class Profile extends Vue {
         icon: 'mdi-diamond-stone',
         click: this.goToClubData,
         if: this.$store.getters['user/userIsAdmin'] || this.$auth.user.permissions.includes(ClubPermissions.CLUB_READ)
-      } /*{
-        text: "import-contract",
-        tooltip: "import-contract-tooltip",
-        position: "right",
-        icon: "mdi-file-document-edit"
       }, {
-        text: "import-movements",
-        tooltip: "import-movements-tooltip",
-        position: "right",
-        icon: "mdi-playlist-plus",
-      }*/
+        text: 'movements-download-excel',
+        tooltip: 'movements-download-excel-tooltip',
+        position: 'center',
+        icon: 'mdi-file-excel-outline',
+        click: this.downloadMovementsList,
+        if: this.$store.getters['user/userIsAdmin']
+      }
     ]
 
     return toReturn.filter(el => el.if ?? true)
@@ -316,6 +325,19 @@ export default class Profile extends Vue {
         maxValue: await this.$apiCalls.fetchCommissionsAvailable(this.$auth.user.id)
       }
     })
+  }
+
+  async downloadMovementsList () {
+    try {
+      const file = await this.$apiCalls.downloadMovementsReport(this.userId)
+
+      jsFileDownload(file.data, this.$t('pages.requests.fileMovementsName', {
+        user: userFormatter(this.userData),
+        id: this.userId
+      }) + '.xlsx')
+    } catch (er) {
+      this.$alerts.error(er)
+    }
   }
 
   async beforeMount () {
