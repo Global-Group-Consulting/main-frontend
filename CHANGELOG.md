@@ -1,6 +1,10 @@
 [comment]: <> (## Non ancora rilasciato)
 
-## v 1.8.11 - <small>TBA</small>
+## v 1.9.0 - <small>02/02/2022</small>
+### Miglioaremnti
+- Miglioramenti generali prestazioni
+
+## v 1.8.11 - <small>20/10/2021</small>
 ### Miglioramenti
 - Risolto bug che non permetteva di riscuotere tutti gli interessi maturati
 

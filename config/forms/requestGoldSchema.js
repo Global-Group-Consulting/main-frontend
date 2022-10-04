@@ -1,6 +1,6 @@
 /**
  * @typedef ComputedContext
- * @property { typeof import("../../plugins/enums").enums } $enums
+ * @property { typeof import('../../plugins/enums').enums } $enums
  * @property {} $i18n
  * @property { {} } formData
  * @property { {data : {type: number}, readonly: boolean} } dialogData
@@ -9,20 +9,20 @@
 /**
  *
  * @param {ComputedContext} context
- * @returns {import("../../@types/FormSchema").FormSchema[]}
+ * @returns {import('../../@types/FormSchema').FormSchema[]}
  */
-function goldSchema(context) {
+function goldSchema (context) {
   return [
     {
       maxCols: 2,
       cols: {
         availableAmount: {
-          component: "money-input",
+          component: 'money-input',
           disabled: true,
           showBrite: false
         },
         requestAmount: {
-          component: "money-input",
+          component: 'money-input',
           showBrite: false,
           maxValue: context.formData.availableAmount,
           validations: {
@@ -43,29 +43,31 @@ function goldSchema(context) {
 /**
  *
  * @param {ComputedContext} context
- * @returns {import("../../@types/FormSchema").FormSchema[]}
+ * @returns {import('../../@types/FormSchema').FormSchema[]}
  */
-function briteSchema(context) {
+function briteSchema (context) {
   return [
     {
       maxCols: 2,
       cols: {
         availableAmount: {
-          component: "money-input",
+          component: 'money-input',
           disabled: true
         },
         clubCardNumber: {
           disabled: !!context.$auth.user.clubCardNumber,
           validations: {
-            required: {},
+            required: {}
           }
-        },
-      },
+        }
+      }
     }, {
-      maxCols: 2,
+      colsBreakpoints: {
+        cols: '12'
+      },
       cols: {
         requestAmount: {
-          component: "money-input",
+          component: 'money-input',
           maxValue: context.formData.availableAmount,
           validations: {
             required: {},
@@ -78,14 +80,18 @@ function briteSchema(context) {
             multipleOf: {
               params: {
                 step: 50,
-                until: context.$store.getters["settings/globalSettings"].cardsRequestMinAmount
+                until: context.$store.getters['settings/globalSettings'].cardsRequestMinAmount
               }
             }
           }
         },
-        requestIban: {
+        notes: {
+          component: 'v-textarea',
+          label: "request-notes",
+          hint: 'request-notes-hint',
+          persistentHint: true,
           validations: {
-            required: {}
+            // required: {}
           }
         }
       }
@@ -93,4 +99,4 @@ function briteSchema(context) {
   ]
 }
 
-export {goldSchema, briteSchema}
+export { goldSchema, briteSchema }

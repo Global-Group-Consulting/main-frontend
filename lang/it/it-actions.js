@@ -18,9 +18,11 @@ export default {
   "user-data": "Apri anagrafica",
   "user-profile": "Apri profilo",
   "club-data": "Apri profilo Club",
+  "movements-download-excel": "Scarica movimenti",
   "user-profile-tooltip": "mostra la pagina del profilo dell'utente",
   "user-data-tooltip": "Mostra la pagina dell'anagrafica dell'utente",
   "club-data-tooltip": "Mostra la pagina del profilo Club dell'utente",
+  "movements-download-excel-tooltip": "Scarica la lista degli ultimi 30 mesi dell'utente",
   "import-contract": "Importa Contratto",
   "import-contract-tooltip": "",
   "import-movements": "Importa Movimenti",
@@ -35,6 +37,9 @@ export default {
   "request-withdrawl-deposit-tooltip": "Crea una richiesta di Prelievo Deposito",
   "request-download-report": "Scarica Report",
   "filters-btn": "Filtri",
+  "cancel-commissions": "Storno Commissioni",
+  "cancel-commissions-tooltip": "Crea un movimento si Storno Commissioni",
+  
   magazine: {
     "add": "Aggiungi"
   }

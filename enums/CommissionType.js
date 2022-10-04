@@ -12,6 +12,7 @@ class CommissionType extends BasicEnum {
     this.MANUAL_ADD = "manualAdd"
     this.MANUAL_TRANSFER = "manualTransfer"
     this.MANUAL_TRANSFER_DONER = "manualTransferDoner"
+    this.REPAYMENT_TRANSFER = "repaymentTransfer"
     this.MANUAL_WITHDRAWAL = "manualWithdrawal"
     this.COMMISSIONS_REINVESTMENT = "commissionsReinvestment"
     this.COMMISSIONS_COLLECTED = "commissionsCollected"
@@ -62,6 +63,9 @@ class CommissionType extends BasicEnum {
       },
       [this.CANCEL_COMMISSIONS_NEW_DEPOSIT]: {
         id: this.CANCEL_COMMISSIONS_NEW_DEPOSIT,
+      },
+      [this.REPAYMENT_TRANSFER]: {
+        id: this.REPAYMENT_TRANSFER,
       }
     }
   }

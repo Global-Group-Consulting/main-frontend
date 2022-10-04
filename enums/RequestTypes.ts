@@ -23,6 +23,9 @@ class RequestTypes extends BasicEnum {
 
   public COMMISSION_MANUAL_ADD = 8;
   public COMMISSION_MANUAL_TRANSFER = 9;
+  
+  // 13 come la tipologia di movimento che genera
+  public DEPOSIT_REPAYMENT = 13;
 
   constructor() {
     super('RequestTypes')
@@ -68,6 +71,10 @@ class RequestTypes extends BasicEnum {
       },
       [this.RISC_MANUALE_INTERESSI]: {
         id: 'risc_manuale_interessi',
+        reqRoles: [UserRoles.ADMIN]
+      },
+      [this.DEPOSIT_REPAYMENT]: {
+        id: 'depositRepayment',
         reqRoles: [UserRoles.ADMIN]
       }
     }

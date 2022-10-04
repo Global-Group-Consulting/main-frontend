@@ -157,10 +157,16 @@ export default {
   "brite-use-success": "Richiesta inoltrata correttamente!",
 
   "commissions-add-title": "",
-  "commissions-add-text": "Sei sicuro di voler aggiungere provvigioni per un valore di <strong>{amount}</strong>?",
+  "commissions-add-text": "Sei sicuro di voler <strong>aggiungere</strong> provvigioni per un valore di <strong>{amount}</strong>?",
   "commissions-add-confirmBtnText": "Si, aggiungi",
   "commissions-add-cancelBtnText": "Annulla",
   "commissions-add-success": "Operazione inoltrata correttamente!",
+  
+  "commissions-cancellation-title": "",
+  "commissions-cancellation-text": "Sei sicuro di voler creare un movimento di <strong>storno</strong> provvigioni per un valore di <strong>{amount}</strong>?",
+  "commissions-cancellation-confirmBtnText": "Si, storna",
+  "commissions-cancellation-cancelBtnText": "Annulla",
+  "commissions-cancellation-success": "Operazione inoltrata correttamente!",
 
   "brite-remove-title": "",
   "brite-remove-text": "Sei sicuro di voler rimuovere <strong>{amount}</strong> brite dall'account dell'utente?",
@@ -203,6 +209,12 @@ export default {
   "send-admin-request-confirmBtnText": "Si, invia",
   "send-admin-request-cancelBtnText": "Annulla",
   "send-admin-request-success": "Richiesta inviata correttamente!",
+  
+  "send-agent-request-repayment-title": "",
+  "send-agent-request-repayment-text": "Sei sicuro di voler inviare la nuova richiesta di <strong>{type}</strong> del valore di <strong>{amount}</strong> a favore dell'utente <strong>{fullName}</strong>?<br><br><strong>L'importo verrà tolto dalle proprie provvigioni e versato nel deposito dell'utente.</strong>",
+  "send-agent-request-repayment-confirmBtnText": "Si, invia",
+  "send-agent-request-repayment-cancelBtnText": "Annulla",
+  "send-agent-request-repayment-success": "Richiesta inviata correttamente!",
 
   magazine: {
     "delete-title": "",

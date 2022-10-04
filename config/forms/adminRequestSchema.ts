@@ -12,8 +12,8 @@ interface FormContext extends Vue {
 
 export default function (context: FormContext) {
   const availableRequests = [RequestTypes.RISC_CAPITALE, RequestTypes.RISC_INTERESSI,
-    RequestTypes.RISC_INTERESSI_BRITE, RequestTypes.RISC_INTERESSI_GOLD, RequestTypes.RISC_MANUALE_INTERESSI,
-    RequestTypes.VERSAMENTO]
+    RequestTypes.RISC_INTERESSI_BRITE, RequestTypes.RISC_INTERESSI_GOLD,
+    RequestTypes.VERSAMENTO, -1, RequestTypes.RISC_MANUALE_INTERESSI, RequestTypes.DEPOSIT_REPAYMENT]
   const goldRequests = [RequestTypes.RISC_INTERESSI_BRITE, RequestTypes.RISC_INTERESSI_GOLD]
   const classicRequests = [RequestTypes.RISC_INTERESSI]
   const userIsGold = context.user.gold || false
@@ -25,24 +25,33 @@ export default function (context: FormContext) {
         type: {
           label: "requestType",
           component: 'v-select',
-          items: availableRequests.reduce((acc: { value: number, text: string }[], el) => {
+          items: availableRequests.reduce((acc: { value: number, text: string, divider?: boolean }[], el) => {
             const reqName = RequestTypes.getIdName(el)
-
+    
+            if (el === -1) {
+              acc.push({
+                value: -1,
+                text: "--",
+                divider: true
+              })
+              return acc
+            }
+    
             // if the user is not gold, avoid showing gold requests
             if (!userIsGold && goldRequests.includes(el)
               || userIsGold && classicRequests.includes(el)) {
               return acc
             }
-
-            if([RequestTypes.RISC_MANUALE_INTERESSI].includes(el) && !userIsSuperAdmin){
+    
+            if ([RequestTypes.RISC_MANUALE_INTERESSI].includes(el) && !userIsSuperAdmin) {
               return acc
             }
-
+    
             acc.push({
               value: el,
               text: context.$i18n.t(`enums.RequestTypes.${reqName}`) as string
             })
-
+    
             return acc
           }, [])
         },
@@ -70,7 +79,7 @@ export default function (context: FormContext) {
               params: 1
             },
             maxValue: {
-              params: context.formData.type === RequestTypes.VERSAMENTO ? null : context.formData.availableAmount || 0.5
+              params: [RequestTypes.VERSAMENTO, RequestTypes.DEPOSIT_REPAYMENT].includes(context.formData.type) ? null : context.formData.availableAmount || 0.5
             }
           }
         },
@@ -83,9 +92,9 @@ export default function (context: FormContext) {
           component: 'v-textarea',
           autoGrow: true,
           rows: 1,
-          validations: context.formData.type !== RequestTypes.RISC_MANUALE_INTERESSI ? {} : {
+          validations: [RequestTypes.RISC_MANUALE_INTERESSI, RequestTypes.DEPOSIT_REPAYMENT].includes(context.formData.type) ? {
             required: {}
-          }
+          } : {}
         }
       }
     },

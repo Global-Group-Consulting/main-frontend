@@ -141,6 +141,7 @@ export default {
     'tableAccettata-title': "Accettate",
     'tableRifiutata-title': "Rifiutate",
     "fileReportName": "Report {date}",
+    "fileMovementsName": "Movimenti {user}-{id}",
     "autoWithdrawlAll-tooltip": "Riscossione di tutto l'importo disponibile alla fine del mese in corso",
     "autoWithdrawlAllRecursive-tooltip": "Riscossione ricorrente di tutto l'importo disponibile alla fine di ogni mese"
   },
@@ -161,7 +162,7 @@ export default {
     collectCommissions: "Preleva",
     agentBritesTotal: "Brite Accumulati",
     agentBritesCurrMonth: "Brite Mese corrente",
-    addCommissions: "Aggiungi / Trasferisci",
+    addCommissions: "Aggiungi / Trasferisci / Storna",
     addBrites: "Aggiungi / Rimuovi",
     useBrites: "Utilizza",
     tabs: {

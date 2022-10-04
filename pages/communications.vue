@@ -6,31 +6,32 @@
       <page-toolbar v-if="permissions.seeToolbar">
         <template slot="center-block">
           <tooltip-btn
-            :tooltip="$t('pages.communications.btn-new-conversation')"
-            text
-            icon-name="mdi-forum"
-            @click="openNewCommunication($enums.MessageTypes.CONVERSATION)"
             v-if="permissions.createTicket"
+            :tooltip="$t('pages.communications.btn-new-conversation')"
+            icon-name="mdi-forum"
+            text
+            @click="openNewCommunication($enums.MessageTypes.CONVERSATION)"
           >
             {{ $t("pages.communications.btn-new-conversation") }}
           </tooltip-btn>
 
           <tooltip-btn
-            :tooltip="$t('pages.communications.btn-new-message')"
-            text
-            icon-name="mdi-email-plus"
-            @click="openNewCommunication($enums.MessageTypes.SERVICE)"
             v-if="permissions.createCommunication"
+            :tooltip="$t('pages.communications.btn-new-message')"
+            icon-name="mdi-email-plus"
+            text
+            @click="openNewCommunication($enums.MessageTypes.SERVICE)"
           >
             {{ $t("pages.communications.btn-new-message") }}
           </tooltip-btn>
 
           <tooltip-btn
-            tooltip="Nuova News"
-            text
-            icon-name="mdi-newspaper-plus"
-            @click="openNewNews()"
             v-if="permissions.createCommunication"
+            :href="newNewsLink"
+            icon-name="mdi-newspaper-plus"
+            target="_blank"
+            text
+            tooltip="Nuova News"
           >
             Nuova News
           </tooltip-btn>
@@ -57,13 +58,13 @@
             <template v-else>
               <data-table
                 :items="communicationsList[tab.key]"
-                :table-key="tab.key"
                 :items-per-page="25"
+                :table-key="tab.key"
                 schema="communicationsSchema"
                 @click:row="openCommunication"
               >
-                <template v-slot:item.subject="{ item }" v-if="currentTab === 1">
-                  <v-icon color="red" v-if="!item.read_at" x-small
+                <template v-if="currentTab === 1" v-slot:item.subject="{ item }">
+                  <v-icon v-if="!item.read_at" color="red" x-small
                   >mdi-asterisk
                   </v-icon
                   >
@@ -90,8 +91,8 @@
 
                 <template v-slot:item.receiver="{ item }">
                   <div v-for="(receiver, i) of item.receiver"
-                       :key="receiver.id || i"
-                       v-if="receiver">
+                       v-if="receiver"
+                       :key="receiver.id || i">
                   <span v-if="i < receiversShowLimit">
                     {{ receiver.firstName }} {{ receiver.lastName }} ({{
                       $t(
@@ -108,7 +109,7 @@
                 </template>
 
                 <template v-slot:item.unreadMessages="{ item }">
-                  <v-chip small v-if="item.unreadMessages" color="red" dark>
+                  <v-chip v-if="item.unreadMessages" color="red" dark small>
                     {{ item.unreadMessages }}
                   </v-chip>
 
@@ -129,14 +130,15 @@
 
     <comunication-details-dialog
       v-if="$store.getters['dialog/dialogId'] === 'CommunicationDetailsDialog'"
-      @setAsRead="onSetAsRead"
       @requestStatusChanged="onRequestStatusChanged"
+      @setAsRead="onSetAsRead"
     ></comunication-details-dialog>
 
     <communication-new-dialog
-      v-if="$store.getters['dialog/dialogId'] === 'CommunicationNewDialog'"
-      @communicationAdded="onCommunicationAdded"
+        v-if="$store.getters['dialog/dialogId'] === 'CommunicationNewDialog'"
+        @communicationAdded="onCommunicationAdded"
     ></communication-new-dialog>
+
 
   </v-layout>
 </template>
@@ -149,7 +151,6 @@
   import { ClubPermissions } from "~/functions/acl/enums/club.permissions";
   import { Component, Vue, Watch } from "vue-property-decorator";
   import NewsTab from "@/components/tabs/NewsTab.vue";
-  import { computed } from '@vue/composition-api';
 
   @Component({
     components: { PageHeader, NewsTab },
@@ -216,34 +217,8 @@
       return this.$store.getters["dialog/dialogState"]
     }
 
-    private async _fetchAll () {
-      try {
-        const result: any = await this.$apiCalls.communicationsFetch();
-
-        this.rawList.push(...Object.values(result).flat());
-
-        this.communicationsList.messages = result.messages.map((_msg: any) => {
-          // i create anyway the prop so i can observe it when changes.
-          if (!_msg.read_at) {
-            _msg.read_at = null
-          }
-
-          return _msg
-        })
-        this.communicationsList.messagesSent = result.messagesSent
-        this.communicationsList.conversations = result.conversations
-        this.communicationsList.clubConversations = result.clubConversations
-      } catch (er) {
-        this.$alerts.error(er);
-      } finally {
-        this._startRefreshTimer();
-      }
-    }
-
-    private _startRefreshTimer () {
-      this.dataRefreshTimer = setTimeout(() => {
-        this._fetchAll();
-      }, 120000 /* 2 minutes */);
+    get newNewsLink() {
+      return process.env.newsAppUrl + '/news/create';
     }
 
     openCommunication (communication: any) {
@@ -287,17 +262,6 @@
       });
     }
 
-    openNewNews () {
-      this.$store.dispatch("dialog/updateStatus", {
-        id: "NewsDialog",
-        title: "Nuova news",
-        texts: {
-          cancelBtn: "Annulla"
-        },
-        showCloseBtn: true,
-      });
-    }
-
     async onCommunicationAdded (communication: any) {
       const updatedSection = await this.$apiCalls.communicationsFetch(
         communication.type +
@@ -316,7 +280,7 @@
      */
     async onSetAsRead (unreadMessagesId: string) {
       const unreadMessage: any = this.rawList.find((_comm: any) => _comm.id === unreadMessagesId)
-      const msgType = "unreadMessages" in unreadMessage ? "conversations" : "messages"
+      const msgType = unreadMessage && "unreadMessages" in unreadMessage ? "conversations" : "messages"
 
       this.communicationsList[msgType].forEach((_com: any) => {
         if (_com.id === unreadMessagesId) {
@@ -376,6 +340,36 @@
 
       this.onUrlHashChange()
       this.checkQueryParams()
+    }
+
+    private async _fetchAll () {
+      try {
+        const result: any = await this.$apiCalls.communicationsFetch();
+
+        this.rawList.push(...Object.values(result).flat());
+
+        this.communicationsList.messages = result.messages.map((_msg: any) => {
+          // i create anyway the prop so i can observe it when changes.
+          if (!_msg.read_at) {
+            _msg.read_at = null
+          }
+
+          return _msg
+        })
+        this.communicationsList.messagesSent = result.messagesSent
+        this.communicationsList.conversations = result.conversations
+        this.communicationsList.clubConversations = result.clubConversations
+      } catch (er) {
+        this.$alerts.error(er);
+      } finally {
+        this._startRefreshTimer();
+      }
+    }
+
+    private _startRefreshTimer () {
+      this.dataRefreshTimer = setTimeout(() => {
+        this._fetchAll();
+      }, 120000 /* 2 minutes */);
     }
   };
 </script>

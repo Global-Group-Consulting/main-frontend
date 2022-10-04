@@ -85,7 +85,7 @@ export default function (context: Vue): DrawerEntry[] {
         },
       ]
     },
-    {
+    /*{
       type: 'group',
       text: 'club',
       childs: [
@@ -104,7 +104,7 @@ export default function (context: Vue): DrawerEntry[] {
           if: context.$auth.user.gold && !context.$acl.checkPermissions([ClubPermissions.CLUB_READ])
         }
       ]
-    },
+    },*/
     {
       type: 'group',
       text: 'utilities',
@@ -172,13 +172,13 @@ export function BottomDrawerEntries(context: Vue): DrawerEntry[] {
       link: '/magazine',
       permissions: [MagazinePermissions.MAGAZINE_READ]
     },
-    {
+    /*{
       id: 'acl',
       text: 'acl',
       icon: 'mdi-shield-account',
       link: '/acl',
       permissions: [AclPermissions.ACL_ACL_READ, AclPermissions.ACL_ACL_WRITE]
-    },
+    },*/
     {
       id: 'settings',
       text: 'settings',
