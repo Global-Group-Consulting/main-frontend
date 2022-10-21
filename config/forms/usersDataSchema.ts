@@ -557,8 +557,7 @@ export function extraData (formContext: FormContext) {
               return
             }
             
-            const foundedUser = formContext.$store.getters.agentsList
-              .find((_user: UserDataSchema) => _user.id.toString() === value.toString())
+            const foundedUser = formContext.$store.getters.agentsList?.find((_user: UserDataSchema) => _user.id.toString() === value.toString())
             
             if (!foundedUser) {
               return
@@ -567,8 +566,8 @@ export function extraData (formContext: FormContext) {
             return `${foundedUser.firstName} ${foundedUser.lastName}`
             
           } : null,
-          items: !canChangeAgenteRif.value ? null : formContext.$store.getters.agentsList
-            .reduce((acc: { text: string, value: string }[], curr: UserDataSchema, i: number, arr: UserDataSchema[]) => {
+          ERRORE NEL LEGGERE GLI AGENTS LIST VISTO CHE NON CARICO PIù TUTTI GLI UTENTI INSIEME.
+          items: !canChangeAgenteRif.value || !formContext.$store.getters.agentsList ? null : formContext.$store.getters.agentsList?.reduce((acc: { text: string, value: string }[], curr: UserDataSchema, i: number, arr: UserDataSchema[]) => {
               if (+formContext.formData.role === UserRoles.AGENTE
                 && curr.id === formContext.formData.id) {
                 return acc

@@ -1,232 +1,326 @@
 <template>
   <div>
-    <v-skeleton-loader
-      elevation="1"
-      v-if="showSkeleton"
-      type="table-thead, table-tbody, table-tfoot"
-    ></v-skeleton-loader>
+    <v-tabs v-model="currentTab">
+      <v-tab v-for="(tab, i) of visibileTabsList" :key="i">
+        <v-icon class="mr-2" small>
+          {{ tab.icon }}
+        </v-icon>
 
-    <div v-show="!showSkeleton">
-      <div v-if="existsData">
-        <dynamic-tabs :tabs-list="tabsList"
-                      :loading="loading"
-                      :filters-fields-map="usersFiltersFieldsMap"
-                      filters-schema="usersSchema"
-                      filters-table-key="usersFilter"
-                      :outlined="true">
+        {{ tab.title }}
+        <template v-if="tab.counter"> ({{ tab.counter }})</template>
+      </v-tab>
+    </v-tabs>
 
-          <template v-for="tab of tabsList"
-                    v-slot:[`tabContent_${tab.id}`]="{item}">
-            <data-table
-              :items="tab.data"
-              table-key="users"
-              schema="usersSchema"
-              :options="{
-              sortBy: ['accountStatusOrdered', 'firstName', 'lastName'],
-            }"
-              :loading="loading"
-              :condition="+$enums.UserRoles.get(tab.id).index"
-            >
-            </data-table>
-          </template>
+    <v-card class="mb-10" flat outlined>
+      <v-card-text>
 
-        </dynamic-tabs>
+        <v-tabs-items :value="currentTab">
+          <v-tab-item v-for="(tab, i) of visibileTabsList" :key="i">
+            <v-skeleton-loader type="table-thead, table-tbody, table-tfoot"
+                               :loading="!tab.data">
+              <PaginatedTable :paginated-data="tab.data"
+                              :columns="usersSchema"
+                              :condition="tab.refRole"
+                              :table-key="tab.tableKey"
+                              :options="tab.tableOptions"
+                              :loading="tab.loading"
+                              @update:pagination="onPaginationChanged"
+              ></PaginatedTable>
+            </v-skeleton-loader>
+          </v-tab-item>
+        </v-tabs-items>
+      </v-card-text>
+    </v-card>
 
-        <clients-list-dialog v-if="$store.getters['dialog/dialogId'] === 'ClientsListDialog'"/>
-      </div>
-
-      <div v-else>Nessun utente disponibile...</div>
-    </div>
+    <clients-list-dialog v-if="$store.getters['dialog/dialogId'] === 'ClientsListDialog'"/>
   </div>
 </template>
 
 <script lang="ts">
-import {Component, Prop, Vue, Watch} from "vue-property-decorator";
+import { computed, ComputedRef, defineComponent, onBeforeMount, onMounted, Ref, ref, watch } from '@vue/composition-api'
+import { AclUserRoles } from '~/enums/AclUserRoles'
+import { PaginatedTab } from '~/@types/pagination/PaginatedTab'
+import usersSchema from '~/config/tables/usersSchema'
+import UserRoles from '~/enums/UserRoles'
+import { PaginationDto } from '~/@types/pagination/PaginationDto'
+import { Filter } from '~/@types/Filter'
 
-import {User} from "~/@types/UserFormData";
-import {DynamicTab} from "~/@types/components/DynamicTab";
-
-import DynamicTabs from "../DynamicTabs.vue";
-import DataTable from "../table/DataTable.vue";
-import SigningLogsPopup from "../elements/SigningLogsPopup.vue";
-import ClientsListDialog from "~/components/dialogs/ClientsListDialog.vue";
-import CellUserAccountStatus from "~/components/table/CellsTemplates/CellUserAccountStatus.vue";
-import {usersFiltersFieldsMap} from "~/config/forms/filters/usersFiltersSchema";
-
-@Component({
-  components: {CellUserAccountStatus, ClientsListDialog, SigningLogsPopup, DataTable, DynamicTabs}
-})
-export default class UsersListTable extends Vue {
-  @Prop({type: String, required: true})
-  public userId!: string;
-
-  @Prop({type: Array, default: () => []})
-  public filtersActive!: any[]
-
-  loading: boolean = false;
-
-  /* usersData: Record<string, User[]> = {
-     [this.getRoleName(this.$enums.UserRoles.CLIENTE)]: [],
-     [this.getRoleName(this.$enums.UserRoles.AGENTE)]: [],
-     [this.getRoleName(this.$enums.UserRoles.SERV_CLIENTI)]: [],
-     [this.getRoleName(this.$enums.UserRoles.ADMIN)]: []
-   }*/
-
-  get usersData() {
-    if (this.mustLoadAgentUsers) {
-      return this.$store.getters["users/agentUsersGroups"]
-    } else {
-      return this.$store.getters["users/usersGroups"]
+export default defineComponent({
+  name: 'UsersListTable',
+  props: {
+    userId: {
+      type: String
     }
-  }
-
-  get tabsList(): DynamicTab[] {
-    return [{
-      id: this.getRoleName(this.$enums.UserRoles.CLIENTE),
-      title: "Clienti",
-      data: this.usersData[this.getRoleName(this.$enums.UserRoles.CLIENTE)]
-    }, {
-      id: this.getRoleName(this.$enums.UserRoles.AGENTE),
-      title: "Agenti",
-      data: this.usersData[this.getRoleName(this.$enums.UserRoles.AGENTE)]
-    }, {
-      id: this.getRoleName(this.$enums.UserRoles.SERV_CLIENTI),
-      title: "Servizio Clienti",
-      data: this.usersData[this.getRoleName(this.$enums.UserRoles.SERV_CLIENTI)]
-    }, {
-      id: this.getRoleName(this.$enums.UserRoles.ADMIN),
-      title: "Admin",
-      data: this.usersData[this.getRoleName(this.$enums.UserRoles.ADMIN)]
-    }].filter(el => el.data && el.data.length > 0)
-  }
-
-  get usersFiltersFieldsMap() {
-    return usersFiltersFieldsMap
-  }
-
-  get existsData() {
-    const data = this.tabsList.reduce((acc: any[], curr) => {
-      if (curr.data) {
-        acc.push(...curr.data)
+  },
+  setup (props, { root }) {
+    const { $apiCalls, $alerts, $auth } = root
+    const currentTab = ref(0)
+    const authUserIsAdmin = computed(() => root.$store.getters['user/userIsAdmin'])
+    const authUserIsAgent = computed(() => root.$store.getters['user/userIsAgente'])
+    const tabsList: Ref<PaginatedTab[]> = ref([
+      {
+        id: AclUserRoles.CLIENT,
+        refRole: UserRoles.CLIENTE,
+        title: 'Clienti',
+        data: null,
+        paginationDto: { sortBy: ['firstName', 'lastName'] },
+        tableKey: 'users',
+        loading: false,
+        lastFetch: null,
+        counter: 0
+      },
+      {
+        id: AclUserRoles.CLIENT + '_indirect',
+        refRole: UserRoles.AGENTE,
+        title: 'Clienti indiretti',
+        data: null,
+        paginationDto: { sortBy: ['firstName', 'lastName'] },
+        tableKey: 'users',
+        loading: false,
+        lastFetch: null,
+        counter: 0,
+        if: authUserIsAgent.value
+      }, {
+        id: AclUserRoles.AGENT,
+        refRole: UserRoles.AGENTE,
+        title: 'Agenti',
+        data: null,
+        paginationDto: { sortBy: ['role', 'referenceAgentData.lastName ', 'firstName', 'lastName'] },
+        tableKey: 'clients',
+        loading: false,
+        lastFetch: null,
+        counter: 0
+      }, {
+        id: AclUserRoles.CLIENTS_SERVICE,
+        refRole: UserRoles.SERV_CLIENTI,
+        title: 'Servizio Clienti',
+        data: null,
+        paginationDto: { sortBy: ['firstName', 'lastName'] },
+        tableKey: 'users',
+        loading: false,
+        lastFetch: null,
+        counter: 0,
+        if: authUserIsAdmin.value && !props.userId
+      }, {
+        id: AclUserRoles.ADMIN,
+        refRole: UserRoles.ADMIN,
+        title: 'Admin',
+        data: null,
+        paginationDto: { sortBy: ['firstName', 'lastName'] },
+        tableKey: 'users',
+        loading: false,
+        lastFetch: null,
+        counter: 0,
+        if: authUserIsAdmin.value && !props.userId
+      }, {
+        id: 'filters',
+        title: 'Risultati ricerca',
+        data: null,
+        paginationDto: { sortBy: ['firstName', 'lastName'] },
+        tableKey: 'usersFilter',
+        loading: false,
+        lastFetch: null,
+        counter: 0
       }
+    ])
 
-      return acc;
-    }, [])
-
-    return data.length > 0
-  }
-
-  get mustLoadAgentUsers() {
-    return this.$auth.user.id !== this.userId || this.$auth.user.role === this.$enums.UserRoles.AGENTE
-  }
-
-  get showSkeleton() {
-    return !this.$store.getters["users/initialized"];
-  }
-
-  getRoleName(role: number | string) {
-    return this.$enums.UserRoles.getIdName(+role)
-  }
-
-  getInitials(str: any, item: any): string {
-    switch (item.name) {
-      case this.$enums.CommissionType.NEW_DEPOSIT:
-
-        return item.percent + "%";
-      case this.$enums.CommissionType.TOTAL_DEPOSIT:
-
-        return "% / mese";
-      case this.$enums.CommissionType.ANNUAL_DEPOSIT:
-
-        return item.percent + "% / anno"
-    }
-
-    return ""
-  }
-
-  async showClientsList(user: User) {
-    try {
-      // Fetch the users list
-      const usersList = await this.$apiCalls.getClientsList(user.id)
-
-      await this.$store.dispatch("dialog/updateStatus", {
-        title: this.$i18n.t("dialogs.clientsList.title"),
-        id: "ClientsListDialog",
-        fullscreen: false,
-        large: true,
-        readonly: true,
-        texts: {
-          cancelBtn: "dialogs.clientsList.btn-cancel"
-        },
-        data: {
-          usersList,
-          agent: user
+    // show only basic tabs and eventually show also filters tab if user has filters active
+    const visibileTabsList: ComputedRef<PaginatedTab[]> = computed(() => {
+      return tabsList.value.filter(tab => {
+        if (tab.id === 'filters') {
+          return areActiveFilters.value
         }
-      });
-    } catch (e) {
-      this.$alerts.error(e)
-    }
-  }
 
-  onUserDeleted(item: User, data: any[]) {
-    const index = data.findIndex(_el => _el.id === item.id)
+        if (tab.hasOwnProperty('if')) {
+          return tab.if
+        }
 
-    this.$delete(data, index)
-  }
+        return true
+      })
+    })
 
-  public async updateData() {
-    this.loading = true
+    //********************************************************
+    // COMPUTED PROPS
+    //********************************************************
 
-    try {
-      let usersList: any[];
-      let listToEmit: any[] = []
+    const selectedTabId = computed(() => {
+      return visibileTabsList.value[currentTab.value].id
+    })
 
-      if (this.mustLoadAgentUsers) {
-        await this.$store.dispatch("users/fetchAgentClients", this.userId);
-        /*usersList = await this.$apiCalls.getClientsList(this.userId)
+    const selectedTab: ComputedRef<PaginatedTab> = computed(() => {
+      return tabsList.value.find(tab => tab.id === selectedTabId.value) as PaginatedTab
+    })
 
-        listToEmit = usersList;
+    const selectedRole: ComputedRef<AclUserRoles> = computed(() => {
+      return selectedTab.value.id as AclUserRoles
+    })
 
-        for (const user of usersList) {
-          if (user.id === this.userId) {
-            continue
-          }
+    const filtersTab: ComputedRef<PaginatedTab> = computed(() => {
+      return tabsList.value.find(tab => tab.id === 'filters') as PaginatedTab
+    })
 
-          this.usersData[this.$enums.UserRoles.getIdName(+user.role)].push(user)
-        }*/
-      } else {
-        await this.$store.dispatch("users/fetchData");
-        /*usersList = await this.$apiCalls.fetchAllUsers()
+    const activeFilters: ComputedRef<Filter> = computed(() => {
+      return root.$store.getters['filters/activeFilters']
+    })
 
-        for (const group of usersList) {
-          this.usersData[this.getRoleName(+group.id)].push(...group.data)
-          listToEmit.push(...group.data)
-        }*/
+    const areActiveFilters: ComputedRef<boolean> = computed(() => {
+      return root.$store.getters['filters/areActiveFilters']
+    })
+
+    //********************************************************
+    // FUNCTIONS
+    //********************************************************
+
+    /**
+     * Fetches the data for the selected tab
+     * @param {PaginationDto} paginationSettings
+     */
+    async function fetchData (paginationSettings: PaginationDto) {
+      // store selectedTab internally so if in the meanwhile this changes,
+      // we store the data for the correct tab
+      const targetTab = selectedTab.value
+
+      // if the tab is already loading, do nothing
+      if (targetTab.loading) {
+        return
       }
 
-      /* this.$emit("updatedUsersList", listToEmit.map(user => {
+      targetTab.loading = true
 
-         user.accountStatusOrdered = this.$enums.AccountStatuses.get(user.account_status).order
+      paginationSettings.filters = {
+        roles: selectedRole.value,
+        referenceAgent: props.userId
+      }
 
-         return user
-       }))*/
-    } catch (e) {
-      console.error(e)
+      try {
+        targetTab.data = await $apiCalls.userApi.filter(paginationSettings)
+
+        // store the current time to avoid to many fetches
+        targetTab.lastFetch = new Date()
+        targetTab.counter = targetTab.data?.total
+      } catch (er) {
+        $alerts.error(er)
+      }
+
+      targetTab.loading = false
     }
 
-    this.loading = false
-  }
+    /**
+     * Fetches the counters for the tabs
+     */
+    async function fetchCounters () {
+      try {
+        const counters = await $apiCalls.userApi.fetchCounters({
+          referenceAgent: props.userId
+        })
 
-  @Watch("usersData", {deep: true})
-  onUserDataChange(value: any) {
-    this.$store.dispatch("filters/updateDataToFilter", Object.values(value).flat())
-  }
+        tabsList.value.forEach(tab => {
+          tab.counter = counters.find(c => c._id === tab.id)?.count || 0
+        })
 
-  // @ts-ignore
-  async mounted() {
-    await this.updateData()
+      } catch (er) {
+        $alerts.error(er)
+      }
+    }
+
+    /**
+     * Fetches the data for the filters tab
+     * @param {PaginationDto} paginationSettings
+     */
+    async function filterData (paginationSettings: PaginationDto) {
+      if (root.$store.state.filters.loading) {
+        return
+      }
+
+      root.$store.dispatch('filters/updateLoading', true)
+
+      try {
+        filtersTab.value.data = await $apiCalls.userApi.filter(paginationSettings)
+        filtersTab.value.counter = filtersTab.value.data?.total
+
+        currentTab.value = visibileTabsList.value.length - 1
+      } catch (er) {
+        $alerts.error(er)
+      }
+
+      root.$store.dispatch('filters/updateLoading', false)
+    }
+
+    /**
+     * When the pagination changes, fetches the data for the selected tab
+     * This can occur when the user changes the page or the sort order
+     * @param {PaginationDto} paginationSettings
+     */
+    function onPaginationChanged (paginationSettings: PaginationDto) {
+      // updates selectedTab pagination settings
+      selectedTab.value.paginationDto = paginationSettings
+
+      if (selectedTab.value.id === 'filters') {
+        filterData({
+          ...paginationSettings,
+          filters: activeFilters.value,
+          sortBy: selectedTab.value.paginationDto?.sortBy
+        })
+      } else {
+        fetchData(paginationSettings)
+      }
+    }
+
+    /**
+     * When the currentTab changes, eventually fetches the data for the selected tab
+     */
+    watch(() => currentTab.value, () => {
+      const now = new Date()
+      const in5Minutes = selectedTab.value.lastFetch ? new Date(selectedTab.value.lastFetch) : null
+
+      // nothing to fetch for the filters tab. Data will be fetched when the user clicks on the search button
+      if (selectedTab.value.id === 'filters') {
+        return
+      }
+
+      if (in5Minutes) {
+        in5Minutes.setMinutes(in5Minutes.getMinutes() + 5)
+
+        // If it has not passed 5 minutes, avoid fetching again
+        if (now < in5Minutes) {
+          return
+        }
+      }
+
+      if (selectedTab.value.paginationDto) {
+        fetchData(selectedTab.value.paginationDto)
+      }
+    }, {
+      immediate: true
+    })
+
+    /**
+     * When the active filters change, fetches the data for the filters tab
+     * and eventually shows the filters tab
+     */
+    watch(() => activeFilters.value, () => {
+      if (root.$store.getters['filters/areActiveFilters']) {
+        filterData({
+          filters: activeFilters.value,
+          sortBy: selectedTab.value.paginationDto?.sortBy
+        })
+      }
+    })
+
+    onMounted(() => {
+      // fetch counters only when starting the component
+      // counters will be updated when the user loads data for each tab
+      fetchCounters()
+    })
+
+    return {
+      visibileTabsList,
+      currentTab,
+      usersSchema,
+      onPaginationChanged
+    }
   }
-}
+})
 </script>
 
 <style scoped>

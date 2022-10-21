@@ -27,7 +27,7 @@ const defaults = {
         'email',
         'role',
         'clientsNumber',
-        'referenceAgent',
+        // 'referenceAgent',
         'actions'
       ]
     },
@@ -42,7 +42,7 @@ const defaults = {
         'role',
         'accountStatus',
         'clubPack',
-        'earnings',
+        // 'earnings',
         'actions'
       ]
     },
