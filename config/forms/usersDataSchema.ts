@@ -566,10 +566,9 @@ export function extraData (formContext: FormContext) {
             return `${foundedUser.firstName} ${foundedUser.lastName}`
             
           } : null,
-          ERRORE NEL LEGGERE GLI AGENTS LIST VISTO CHE NON CARICO PIù TUTTI GLI UTENTI INSIEME.
           items: !canChangeAgenteRif.value || !formContext.$store.getters.agentsList ? null : formContext.$store.getters.agentsList?.reduce((acc: { text: string, value: string }[], curr: UserDataSchema, i: number, arr: UserDataSchema[]) => {
               if (+formContext.formData.role === UserRoles.AGENTE
-                && curr.id === formContext.formData.id) {
+                && curr._id === formContext.formData.id) {
                 return acc
               }
               
@@ -590,7 +589,7 @@ export function extraData (formContext: FormContext) {
               
               acc.push({
                 text: indentation + ' ' + curr.firstName + ' ' + curr.lastName,
-                value: curr.id
+                value: curr._id
               })
               
               return acc
