@@ -4,19 +4,23 @@ import {User} from "~/@types/UserFormData";
 import {sortBy} from "lodash";
 
 interface FormContext extends Vue {
-  incomingData: User
+  incomingData: {
+    user: User,
+    onCancel: () => void
+    onConfirm: () => void
+  }
 }
 
 function agentsList(this: FormContext) {
   const list = this.$store.getters["agentsList"]
-    .filter((user: User) => user.id !== this.incomingData.id);
+    .filter((user: User) => user.id !== this.incomingData.user.id);
 
   return sortBy(list, ["lastName", "firstName"])
     .reduce((acc, curr) => {
 
       acc.push({
         text: curr.firstName + " " + curr.lastName,
-        value: curr.id
+        value: curr._id
       })
 
       return acc;

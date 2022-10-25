@@ -4,6 +4,7 @@ import {AclUserRoles} from "~/enums/AclUserRoles";
 
 export interface User {
   id: string,
+  _id: string,
   role: number
   personType: string
   businessName: string
@@ -63,7 +64,11 @@ export interface User {
   autoWithdrawlAll: string | null
   autoWithdrawlAllRecursively: string | null
   suspended: boolean
+  /**
+   * @deprecated
+   */
   clientsCount: number
+  clients: number
   commissionsAssigned: any
   roles: AclUserRoles[]
 }

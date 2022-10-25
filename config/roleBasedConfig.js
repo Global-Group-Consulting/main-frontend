@@ -42,7 +42,7 @@ const defaults = {
         'role',
         'accountStatus',
         'clubPack',
-        'earnings',
+        // 'earnings',
         'actions'
       ]
     },
@@ -482,6 +482,7 @@ const agente = {
         ['referenceAgent', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         ['clientsNumber', [UserRoles.AGENTE]],
         ['commissionsAssigned', [UserRoles.AGENTE]],
+        ['role'],
         ['contractStatus', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         'accountStatus',
         'clubPack',

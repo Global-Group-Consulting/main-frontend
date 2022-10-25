@@ -6,10 +6,10 @@ const schema = {
   'firstName': {text: 'tables.first-name', value: 'firstName'},
   'lastName': {text: 'tables.last-name', value: 'lastName'},
   'email': {text: 'tables.email', value: 'email'},
-  'accountStatus': {text: 'tables.account-status', value: 'account_status', component: "CellUserAccountStatus"},
-  'referenceAgent': {text: 'tables.reference-agent', value: 'referenceAgent', component: "CellUserReferenceAgent"},
+  'accountStatus': {text: 'tables.account-status', value: 'account_status', component: "CellUserAccountStatus", sortable: false},
+  'referenceAgent': {text: 'tables.reference-agent', value: 'referenceAgent', component: "CellUserReferenceAgent", sortable: false},
   'validatedAt': {text: 'tables.validated-at', value: 'validated_at'},
-  'contractStatus': {text: 'tables.contract-status', value: 'contractSignedAt', component: "CellUserContractStatus"},
+  'contractStatus': {text: 'tables.contract-status', value: 'contractSignedAt', component: "CellUserContractStatus", sortable: false},
   'role': {text: 'tables.role', value: 'role', align: "center", component: "CellUserRole"},
   'clientsNumber': {
     text: 'tables.clients-number',
@@ -18,7 +18,7 @@ const schema = {
     component: "CellUserClientsCount"
   },
 
-  'clubPack': {text: 'tables.club.gold', value: 'clubPack', align: 'center', component: "CellUserClubPack"},
+  'clubPack': {text: 'tables.club.gold', value: 'clubPack', align: 'center', component: "CellUserClubPack", sortable: false},
 
   'signDocSent': {text: 'tables.sign-doc-sent', value: 'signDocSent', align: 'center'},
   'signDocViewed': {text: 'tables.sign-doc-viewed', value: 'signDocViewed', align: 'center'},
