@@ -27,7 +27,7 @@ const defaults = {
         'email',
         'role',
         'clientsNumber',
-        // 'referenceAgent',
+        'referenceAgent',
         'actions'
       ]
     },
@@ -482,6 +482,7 @@ const agente = {
         ['referenceAgent', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         ['clientsNumber', [UserRoles.AGENTE]],
         ['commissionsAssigned', [UserRoles.AGENTE]],
+        ['role'],
         ['contractStatus', [UserRoles.AGENTE, UserRoles.CLIENTE]],
         'accountStatus',
         'clubPack',

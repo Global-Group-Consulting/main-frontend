@@ -75,11 +75,11 @@ export default defineComponent({
         title: 'Clienti indiretti',
         data: null,
         paginationDto: { sortBy: ['firstName', 'lastName'] },
-        tableKey: 'users',
+        tableKey: 'clients',
         loading: false,
         lastFetch: null,
         counter: 0,
-        if: authUserIsAgent.value
+        if: authUserIsAgent.value // dovrei mostrare questa tab anche per gli admin, ma ho bisogno di sapere il ruolo dell'utete selezionato
       }, {
         id: AclUserRoles.AGENT,
         refRole: UserRoles.AGENTE,
