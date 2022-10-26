@@ -1,9 +1,8 @@
-import {GetterTree, ActionTree, MutationTree} from 'vuex'
-import RequestStatus from "~/enums/RequestStatus";
-import {User} from "~/@types/UserFormData";
-import UserRoles from "~/enums/UserRoles";
-import {computed} from "@vue/composition-api";
-import AccountStatuses from "~/enums/AccountStatuses";
+import { ActionTree, GetterTree, MutationTree } from 'vuex'
+import { User } from '~/@types/UserFormData'
+import UserRoles from '~/enums/UserRoles'
+import AccountStatuses from '~/enums/AccountStatuses'
+import { AclUserRoles } from '~/enums/AclUserRoles'
 
 export type RootState = ReturnType<typeof state>
 

@@ -23,12 +23,12 @@
           <v-divider v-if="entry.divider && entry.if" :key="'divider_' + entry.value"></v-divider>
 
           <v-list-item
-            :key="entry.value"
-            :entry="entry"
-            @click="entry.action($event)"
+              :key="entry.value"
+              :entry="entry"
+              @click="entry.action($event)"
           >
             <v-list-item-title>{{
-                $t("menus." + entry.value)
+                $t('menus.' + entry.value)
               }}
             </v-list-item-title>
           </v-list-item>
@@ -39,38 +39,38 @@
 </template>
 
 <script lang="ts">
-import {Component, Prop, Vue} from "vue-property-decorator";
-import {User} from "~/@types/UserFormData";
-import {CrudMenuItem} from "~/@types/Tables/CrudMenuItem";
-import {UsersTableActions} from "~/functions/usersTableActions";
-import UserRoles from "~/enums/UserRoles";
+import { Component, Prop, Vue } from 'vue-property-decorator'
+import { User } from '~/@types/UserFormData'
+import { CrudMenuItem } from '~/@types/Tables/CrudMenuItem'
+import { UsersTableActions } from '~/functions/usersTableActions'
+import UserRoles from '~/enums/UserRoles'
 
 @Component({
   components: {}
 })
 export default class CellUserActions extends Vue {
-  @Prop({type: Object, required: true})
+  @Prop({ type: Object, required: true })
   public item!: User
 
-  @Prop({type: Array})
+  @Prop({ type: Array })
   public tableData!: any
 
-  public actions!: UsersTableActions;
+  public actions!: UsersTableActions
 
-  get menuOptions(): CrudMenuItem[] {
+  get menuOptions (): CrudMenuItem[] {
     return [
       {
-        value: this.$t("menus.edit") as string,
-        action: async () => this.actions.openEdit(this.item.id),
+        value: this.$t('menus.edit') as string,
+        action: async () => this.actions.openEdit(this.item.id || this.item._id),
         alwaysVisible: true,
-        icon: "mdi-square-edit-outline"
+        icon: 'mdi-square-edit-outline'
       },
       {
-        value: this.$t("menus.profile") as string,
-        action: async () => this.actions.openProfile(this.item.id),
+        value: this.$t('menus.profile') as string,
+        action: async () => this.actions.openProfile(this.item.id || this.item._id),
         if: [UserRoles.AGENTE, UserRoles.CLIENTE].includes(+this.item.role),
         alwaysVisible: true,
-        icon: "mdi-account-search"
+        icon: 'mdi-account-search'
       },
       /*{
         value: "sendCommunication",
@@ -79,23 +79,23 @@ export default class CellUserActions extends Vue {
           this.item.account_status === AccountStatuses.ACTIVE,
       },*/
       {
-        value: "delete",
+        value: 'delete',
         action: async () => this.actions.delete(this.item),
-        if: this.item.id !== this.$auth.user.id && this.$store.getters["user/canDeleteUser"],
+        if: (this.item.id || this.item._id) !== this.$auth.user.id && this.$store.getters['user/canDeleteUser']
         //divider: true,
-      },
-    ];
+      }
+    ]
   }
 
-  get alwaysVisibleOptions(): CrudMenuItem[] {
+  get alwaysVisibleOptions (): CrudMenuItem[] {
     return this.menuOptions.filter(el => el.alwaysVisible && (el.if ?? true))
   }
 
-  get alwaysGroupedOptions(): CrudMenuItem[] {
+  get alwaysGroupedOptions (): CrudMenuItem[] {
     return this.menuOptions.filter(el => !el.alwaysVisible && (el.if ?? true))
   }
 
-  mounted() {
+  mounted () {
     this.actions = new UsersTableActions(this)
   }
 }

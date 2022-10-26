@@ -5,6 +5,7 @@
              @click="showClientsList(item)"
              :disabled="!+value"
              v-on="on"
+             :loading="loading"
              small
              color="primary">
         <v-icon small class="mr-2" v-if="+value === 1">mdi-account</v-icon>
@@ -17,40 +18,46 @@
 </template>
 
 <script lang="ts">
-import {Component, Prop, Vue} from "vue-property-decorator";
-import {User} from "~/@types/UserFormData";
+import { Component, Prop, Vue } from 'vue-property-decorator'
+import { User } from '~/@types/UserFormData'
 
 @Component({})
 export default class CellUserClientsCount extends Vue {
-  @Prop({type: Object, required: true})
+  @Prop({ type: Object, required: true })
   public item!: User
 
-  get value() {
-    return this.item.clientsCount;
+  public loading = false
+
+  get value () {
+    return this.item.clients
   }
 
-  async showClientsList(user: User) {
+  async showClientsList (user: User) {
+    this.loading = true
+
     try {
       // Fetch the users list
-      const usersList = await this.$apiCalls.getClientsList(user.id)
+      // const usersList = await this.$apiCalls.getClientsList(user.id || user._id)
 
-      await this.$store.dispatch("dialog/updateStatus", {
-        title: this.$i18n.t("dialogs.clientsList.title"),
-        id: "ClientsListDialog",
+      // data will be loaded internally by the dialog
+      await this.$store.dispatch('dialog/updateStatus', {
+        title: this.$i18n.t('dialogs.clientsList.title'),
+        id: 'ClientsListDialog',
         fullscreen: false,
         large: true,
         readonly: true,
         texts: {
-          cancelBtn: "dialogs.clientsList.btn-cancel"
+          cancelBtn: 'dialogs.clientsList.btn-cancel'
         },
         data: {
-          usersList,
           agent: user
         }
-      });
+      })
     } catch (e) {
       this.$alerts.error(e)
     }
+
+    this.loading = false
   }
 }
 </script>

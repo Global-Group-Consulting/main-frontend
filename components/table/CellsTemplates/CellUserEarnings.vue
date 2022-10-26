@@ -25,7 +25,7 @@ export default class CellUserContractNumber extends Vue {
   public item!: any
 
   get value(): { deposit: number, interests: number } {
-    return this.item?.earnings
+    return this.item?.earnings || {}
   }
 }
 </script>
