@@ -5,7 +5,8 @@ export const state = () => ({
   pages: {},
   filteredData: [],
   dataToFilter: [],
-  expanded: false
+  expanded: false,
+  loading: false,
 })
 
 export const mutations = {
@@ -28,6 +29,10 @@ export const mutations = {
 
   SET_EXPANDED(state, payload) {
     state.expanded = payload;
+  },
+  
+  SET_LOADING(state, payload) {
+    state.loading = payload;
   }
 }
 
@@ -62,6 +67,10 @@ export const actions = {
   updateExpanded({commit}, payload = false) {
     commit("SET_EXPANDED", payload)
   },
+  
+  updateLoading({commit}, payload = false) {
+    commit("SET_LOADING", payload)
+  },
 
   resetAll({commit, state}, payload) {
     commit('SET_PAGE', {
@@ -75,12 +84,27 @@ export const actions = {
 }
 
 export const getters = {
+  /**
+   *
+   * @param state
+   * @param getters
+   * @return {boolean}
+   */
   areActiveFilters(state, getters) {
     return getters.activeFilters && Object.keys(getters.activeFilters).length > 0
   },
+  
+  /**
+   *
+   * @param state
+   * @param getters
+   * @param rootState
+   * @return {import("../@types/Filter").Filter}
+   */
   activeFilters(state, getters, rootState) {
     return state.pages[rootState.route.path]
   },
+  
   filteredData(state, getters) {
     if (!getters.areActiveFilters) {
       return null

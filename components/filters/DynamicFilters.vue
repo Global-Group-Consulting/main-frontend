@@ -16,7 +16,9 @@
         <v-divider/>
 
         <v-card-actions class="justify-center grey lighten-4">
-          <v-btn color="primary" @click="applyFilters" :loading="loading">{{ $t("filters.filter-btn") }}</v-btn>
+          <v-btn color="primary" @click="applyFilters" :loading="loading||loadingData">
+            {{ $t("filters.filter-btn") }}
+          </v-btn>
 
           <v-btn @click="onClearClick" :disabled="loading" elevation="0">{{ $t("filters.cancel-btn") }}</v-btn>
         </v-card-actions>
@@ -80,6 +82,10 @@ export default class DynamicFilters extends Vue {
 
   get storedActiveFilters() {
     return this.$store.getters["filters/activeFilters"];
+  }
+
+  get loadingData() {
+    return this.$store.state.filters.loading;
   }
 
   resetFilters() {

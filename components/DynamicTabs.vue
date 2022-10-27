@@ -27,9 +27,9 @@
     </v-tabs>
 
     <v-progress-linear
-      indeterminate
-      v-if="loading"
-      color="yellow darken-2"
+        indeterminate
+        v-if="loading"
+        color="yellow darken-2"
     ></v-progress-linear>
 
     <v-card class="mb-10" flat :color="color"
@@ -56,73 +56,73 @@
 </template>
 
 <script lang="ts">
-import {Vue, Component, Prop, Watch} from 'vue-property-decorator'
-import DataTable from "~/components/table/DataTable.vue";
-import {computed, reactive, ref, watch} from "@vue/composition-api";
-import {DynamicTab} from "~/@types/components/DynamicTab";
-import FiltersTable from "~/components/table/FiltersTable.vue";
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
+import DataTable from '~/components/table/DataTable.vue'
+import { computed, reactive, ref, watch } from '@vue/composition-api'
+import { DynamicTab } from '~/@types/components/DynamicTab'
+import FiltersTable from '~/components/table/FiltersTable.vue'
 
 @Component({
-  components: {FiltersTable, DataTable},
-  name: "DynamicTabs"
+  components: { FiltersTable, DataTable },
+  name: 'DynamicTabs'
 })
 export default class DynamicTabs extends Vue {
-  @Prop({required: true, type: Array})
+  @Prop({ required: true, type: Array })
   public tabsList!: DynamicTab[]
 
-  @Prop({type: String})
+  @Prop({ type: String })
   public color!: string
 
-  @Prop({type: Number, default: 0})
+  @Prop({ type: Number, default: 0 })
   public value!: number
 
-  @Prop({type: Boolean})
+  @Prop({ type: Boolean })
   public outlined!: boolean
 
-  @Prop({type: String})
+  @Prop({ type: String })
   public cardTextClass!: string
 
-  @Prop({type: Boolean, default: false})
+  @Prop({ type: Boolean, default: false })
   public loading!: string
 
   /*  @Prop({type: Array, default: () => null})
     public filteredData!: any[] | null*/
 
-  @Prop({type: String})
+  @Prop({ type: String })
   filtersTableKey!: string
 
-  @Prop({type: String})
+  @Prop({ type: String })
   filtersSchema!: string
 
-  @Prop({type: Object})
+  @Prop({ type: Object })
   filtersFieldsMap!: any
 
   public currentTab = this.value
   public lastTab = this.currentTab
 
-  get tabsData() {
+  get tabsData () {
     return this.tabsList.map(tab => tab.data).flat() || []
   }
 
-  get filteredData() {
-    return this.$store.getters["filters/filteredData"]
+  get filteredData () {
+    return this.$store.getters['filters/filteredData']
   }
 
-  get areActiveFilters() {
-    return this.$store.getters["filters/areActiveFilters"]
+  get areActiveFilters () {
+    return this.$store.getters['filters/areActiveFilters']
   }
 
-  filtersClean() {
-    this.$store.dispatch("filters/updatePage", {
+  filtersClean () {
+    this.$store.dispatch('filters/updatePage', {
       page: this.$route.path,
       activeFilters: null
     })
 
-    this.$store.dispatch("filters/updateExpanded", false);
+    this.$store.dispatch('filters/updateExpanded', false)
   }
 
-  getTabColor(tab: any) {
-    const activeTabData = this.tabsList[this.currentTab];
+  getTabColor (tab: any) {
+    const activeTabData = this.tabsList[this.currentTab]
 
     if (!activeTabData) {
       return
@@ -132,7 +132,7 @@ export default class DynamicTabs extends Vue {
   }
 
   @Watch('areActiveFilters')
-  onFiltersActiveChange(value: boolean) {
+  onFiltersActiveChange (value: boolean) {
     const maxTabs = this.tabsList.length
 
     if (value) {
@@ -145,10 +145,10 @@ export default class DynamicTabs extends Vue {
     }
   }
 
-  @Watch('currentTab')
-  onTabChange(value: string) {
-    this.$emit("tabChange", value)
-    this.$emit("input", value)
+  @Watch('currentTab', { immediate: true })
+  onTabChange (value: string) {
+    this.$emit('tabChange', value)
+    this.$emit('input', value)
   }
 
 }

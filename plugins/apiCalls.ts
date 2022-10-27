@@ -174,7 +174,7 @@ export class ApiCalls extends BasicApiCall {
   
   async fetchAgents () {
     return await this.get({
-      endPoint: `/api/users?f=` + UserRoles.AGENTE
+      endPoint: `/api/users/select/agents`
     })
   }
   

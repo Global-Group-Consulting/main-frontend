@@ -7,8 +7,10 @@
     :items-per-page="itemsPerPage"
     :item-class="itemClass"
     :footer-props="{
-        itemsPerPageOptions
+        disableItemsPerPage: !!serverItemsLength,
+        itemsPerPageOptions: !!serverItemsLength ? [] : itemsPerPageOptions,
       }"
+    :server-items-length="serverItemsLength"
     :loading="loading"
     :hide-default-footer="items.length <= itemsPerPage"
     :no-data-text="$t(noDataText)"
@@ -111,10 +113,13 @@ export default {
       default: 10
     },
     itemsPerPageOptions: {
-      typr: Array,
+      type: Array,
       default: () => {
         return [10, 25, 50, -1];
       }
+    },
+    serverItemsLength: {
+      type: Number
     },
     itemClass: String | Function,
     loading: Boolean,
@@ -130,7 +135,8 @@ export default {
       }
     },
     condition: String | Number,
-    disablePagination: Boolean
+    disablePagination: Boolean,
+    pagination: Object
   },
   setup(props, {root}) {
     const {$auth} = root;
