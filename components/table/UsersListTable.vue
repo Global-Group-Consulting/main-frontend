@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, onBeforeMount, onMounted, Ref, ref, watch } from '@vue/composition-api'
+import { computed, ComputedRef, defineComponent, onMounted, Ref, ref, watch } from '@vue/composition-api'
 import { AclUserRoles } from '~/enums/AclUserRoles'
 import { PaginatedTab } from '~/@types/pagination/PaginatedTab'
 import usersSchema from '~/config/tables/usersSchema'
@@ -53,7 +53,7 @@ export default defineComponent({
     }
   },
   setup (props, { root }) {
-    const { $apiCalls, $alerts, $auth } = root
+    const { $apiCalls, $alerts } = root
     const currentTab = ref(0)
     const authUserIsAdmin = computed(() => root.$store.getters['user/userIsAdmin'])
     const authUserIsAgent = computed(() => root.$store.getters['user/userIsAgente'])
@@ -266,6 +266,14 @@ export default defineComponent({
       }
     }
 
+    function onUserDeleted () {
+      fetchCounters()
+
+      if (selectedTab.value.paginationDto) {
+        onPaginationChanged(selectedTab.value.paginationDto)
+      }
+    }
+
     /**
      * When the currentTab changes, eventually fetches the data for the selected tab
      */
@@ -311,13 +319,19 @@ export default defineComponent({
       // fetch counters only when starting the component
       // counters will be updated when the user loads data for each tab
       fetchCounters()
+
+      root.$nuxt.$on('user:deleted', () => {
+        onUserDeleted()
+      })
+
     })
 
     return {
       visibileTabsList,
       currentTab,
       usersSchema,
-      onPaginationChanged
+      onPaginationChanged,
+      onUserDeleted
     }
   }
 })
