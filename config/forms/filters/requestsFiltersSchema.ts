@@ -171,6 +171,17 @@ export const requestsFiltersFieldsMap = {
   autoWithdrawlAll: ["autoWithdrawlAll"],
 }
 
+const booleanSelectOptions = [
+  {
+    value: true,
+    text: 'Si'
+  },
+  {
+    value: false,
+    text: 'No'
+  }
+]
+
 export default function (this: Vue): FormSchema[] {
   const dataToFilter = this.$store.getters["filters/dataToFilter"];
   const userAdmin = this.$store.getters["user/userIsAdmin"];
@@ -228,10 +239,11 @@ export default function (this: Vue): FormSchema[] {
           if: userAdmin
         },
         autoWithdrawlAll: {
+          component: "v-select",
           label: "filters-auto-withdrawl-all",
-          component: "v-switch",
-          falseValue: false,
-          if: this.$auth.user.role !== UserRoles.CLIENTE
+          clearable: true,
+          if: this.$auth.user.role !== UserRoles.CLIENTE,
+          items: booleanSelectOptions
         },
       }
     }
