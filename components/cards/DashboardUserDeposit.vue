@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, ref, watch } from '@vue/composition-api'
+import { computed, ComputedRef, defineComponent, onMounted, ref, watch } from '@vue/composition-api'
 import { moneyFormatter } from '~/plugins/filters'
 import RequestTypes from '~/enums/RequestTypes'
 import CommissionsAddDialog from '~/components/dialogs/CommissionsAddDialog.vue'
@@ -213,13 +213,21 @@ export default defineComponent({
       })
     })
 
-    watch(() => props.userId, async (userId) => {
-      if (userId) {
-        const result = await root.$apiCalls.dashboardFetch(userId)
+    async function fetchData () {
+      if (props.userId) {
+        const result = await root.$apiCalls.dashboardFetch(props.userId)
 
         data.value = result.blocks
       }
+    }
+
+    watch(() => props.userId, () => {
+      fetchData()
     }, { immediate: true })
+
+    onMounted(() => {
+      root.$nuxt.$on('requests:newAdded', fetchData)
+    })
 
     return {
       formatAsInt,

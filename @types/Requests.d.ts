@@ -10,6 +10,7 @@ export interface RequestFormData {
   status: number
   requestState: number
   id: string
+  _id: string
   autoWithdrawlAllRecursively: any
   autoWithdrawlAll: any
   autoWithdrawlAllRevoked: any
@@ -38,5 +39,6 @@ export interface RequestFormData {
 
   briteMovementId: string
   movementId: string
+  
 
 }
