@@ -187,7 +187,9 @@ export default class AdminRequestDialog extends Vue {
           }) as string
         },
         preConfirm: async () => {
-          await this.$apiCalls.createAdminRequest(data);
+          const result = await this.$apiCalls.requests.createAdminRequest(data);
+
+          this.$nuxt.$emit('requests:newAdded', result.status)
         },
         data: {
           type: this.$t(
@@ -202,6 +204,7 @@ export default class AdminRequestDialog extends Vue {
       });
 
       this.$emit("newRequestAdded", data);
+
 
       this.close();
     } catch (er) {

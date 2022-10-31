@@ -12,7 +12,6 @@ export default function (context: Vue) {
 
   async function connectToTopic() {
     let reconnectionInterval
-    debugger
 
     try {
       topic.value = await $socket.account()

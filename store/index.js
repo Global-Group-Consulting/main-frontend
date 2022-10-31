@@ -30,7 +30,7 @@ export const actions = {
       }*/
 
     try {
-      const result = await $apiCalls.fetchAgents()
+      const result = await $apiCalls.userApi.getAgents()
 
       commit("SET_AGENTS_LIST", result)
     } catch (er) {
