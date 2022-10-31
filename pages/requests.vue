@@ -8,26 +8,19 @@
       <page-toolbar :actions-list="actionsList" filters-schema="requests" always-visible
       ></page-toolbar>
 
-      <RequestsListTable :user-id="$auth.user._id"></RequestsListTable>
+      <RequestsListTable :user-id="$auth.user._id" ref="requestsListTable"></RequestsListTable>
     </v-flex>
 
     <request-dialog
-        @newRequestAdded="onNewRequestAdded"
-        @requestDeleted="onRequestDeleted"
-        @requestStatusChanged="onRequestStatusChanged"
         v-if="$store.getters['dialog/dialogId'] === 'RequestDialog'"
     ></request-dialog>
 
     <request-dialog-gold
-        @newRequestAdded="onNewRequestAdded"
-        @requestDeleted="onRequestDeleted"
-        @requestStatusChanged="onRequestStatusChanged"
         v-if="$store.getters['dialog/dialogId'] === 'RequestDialogGold'"
     ></request-dialog-gold>
 
     <communication-new-dialog
         v-if="$store.getters['dialog/dialogId'] === 'CommunicationNewDialog'"
-        @communicationAdded="onCommunicationAdded"
     ></communication-new-dialog>
 
   </v-layout>
@@ -35,43 +28,63 @@
 
 <script lang="ts">
 
-import { computed, ComputedRef, defineComponent, watch } from '@vue/composition-api'
+import { computed, defineComponent, onMounted, Ref, ref, watch } from '@vue/composition-api'
 import { useRequestActions } from '~/composables/requestActions'
-import { contractNumberFormatter, userFormatter } from '~/plugins/filters'
-import { Watch } from 'vue-property-decorator'
 import RequestTypes from '~/enums/RequestTypes'
 import RequestsListTable from '~/components/table/RequestsListTable.vue'
+import RequestStatus from '~/enums/RequestStatus'
+import RequestDialog from '~/components/dialogs/RequestDialog.vue'
+import RequestDialogGold from '~/components/dialogs/RequestGoldDialog.vue'
+import { RequestsTableActions } from '~/functions/requestsTableActions'
+import { Watch } from 'vue-property-decorator'
 
 export default defineComponent({
   name: 'RequestsPage',
-  components: { RequestsListTable },
+  components: { RequestsListTable, RequestDialog, RequestDialogGold },
   setup (props, ctx) {
-    const { $route, $store, $t } = ctx.root
+    const { $route, $router, $store, $nuxt } = ctx.root
+    const requestsListTable: Ref = ref(null)
     const requestActions = useRequestActions(ctx)
+    const tableActions: RequestsTableActions = new RequestsTableActions(ctx.root)
 
-    /**
-     * Open a dialog with the request details
-     * @param {string} requestId
-     */
-    function openRequestDetails (requestId: string) {
-      let title = $t('dialogs.requests.title-details')
+    //azioni = reload dati
 
-      // TODO:: sistemare il titolo del dialog come succedeva prima
-      // if ($store.getters['user/userIsAdmin'] && row.user) {
-      // title += ` <small><em>(${userFormatter(row.user)} - ${contractNumberFormatter(row.user.contractNumber)})</em></small>`
-      // }
-
-      $store.dispatch('dialog/updateStatus', {
-        title,
-        id: 'RequestDialog',
-        readonly: true,
-        data: {
-          id: requestId
-        }
-      })
+    function onNewRequestAdded (newStatus: number) {
+      if (requestsListTable.value) {
+        requestsListTable.value?.refreshTabData(newStatus ?? RequestStatus.LAVORAZIONE)
+        requestsListTable.value?.setActiveTab(newStatus ?? RequestStatus.LAVORAZIONE)
+      }
     }
 
-    watch(() => $route.hash, () => {
+    function onRequestDeleted (oldStatus: number) {
+      if (requestsListTable.value) {
+        requestsListTable.value?.refreshTabData(oldStatus)
+      }
+    }
+
+    function onRequestStatusChanged ({ oldStatus, newStatus }: { oldStatus: number, newStatus: number }) {
+      if (requestsListTable.value) {
+        // must refresh data for old tab and new tab
+        requestsListTable.value?.refreshTabData(oldStatus)
+
+        if (newStatus && newStatus > -1) {
+          requestsListTable.value?.refreshTabData(newStatus)
+          requestsListTable.value?.setActiveTab(newStatus)
+        }
+      }
+    }
+
+    function onCommunicationAdded () {
+      if (requestsListTable.value) {
+        requestsListTable.value?.refreshTabData(RequestStatus.NUOVA)
+        requestsListTable.value?.refreshTabData(RequestStatus.LAVORAZIONE)
+
+        requestsListTable.value?.setActiveTab(RequestStatus.LAVORAZIONE)
+      }
+    }
+
+    // Handle hash change
+    function onHashChange () {
       const hash = window.location.hash.replace('#', '')
 
       if (!hash) {
@@ -116,12 +129,40 @@ export default defineComponent({
         }
       } else {
         // open the request details by passing the id of the request
-        openRequestDetails(hash)
+        // tableActions.openDetailsDialog(hash)
+      }
+    }
+
+    const routeHash = computed(() => $route.hash)
+
+    watch(() => routeHash.value, onHashChange, {immediate: true})
+
+    // when closing the dialog remove the hash from the url
+    watch(() => $store.getters['dialog/dialogState'], (value: boolean) => {
+      if (!value) {
+        window.location.hash = ""
       }
     })
 
+    onMounted(() => {
+      // add event listeners
+      $nuxt.$on('requests:statusChanged', onRequestStatusChanged)
+      $nuxt.$on('requests:deleted', onRequestDeleted)
+      $nuxt.$on('requests:newAdded', onNewRequestAdded)
+
+      window.addEventListener('hashchange', () => {
+        console.log("[hash change!!!]", window.location.hash)
+        onHashChange()
+      })
+    })
+
     return {
-      actionsList: requestActions.actionsList
+      actionsList: requestActions.actionsList,
+      requestsListTable,
+      onNewRequestAdded,
+      onRequestDeleted,
+      onRequestStatusChanged,
+      onCommunicationAdded
     }
   }
 })
