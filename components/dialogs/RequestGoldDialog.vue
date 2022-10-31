@@ -197,7 +197,8 @@ export default class RequestDialogGold extends Vue {
       await this.$alerts.askBeforeAction({
         key: 'send-request-' + data.typeClub,
         preConfirm: async () => {
-          const result = await this.$apiCalls.createRequest(data)
+          const result = await this.$apiCalls.requests.createRequest(data)
+          this.$nuxt.$emit('requests:newAdded', result.status)
         },
         data: {
           type: this.$t('enums.RequestTypes.' + this.$enums.RequestTypes.get(data.type).id),
