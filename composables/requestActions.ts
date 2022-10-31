@@ -1,13 +1,10 @@
 import { computed, ComputedRef, SetupContext } from '@vue/composition-api'
 import { ActionItem } from '~/@types/ActionItem'
 import RequestTypes from '~/enums/RequestTypes'
-import { Store } from 'vuex'
-import { Moment } from 'moment/moment'
-import jsFileDownload from 'js-file-download'
 import ClubPacks from '~/enums/ClubPacks'
 
 export function useRequestActions (ctx: SetupContext) {
-  const { $store, $alerts, $router, $t, $auth } = ctx.root
+  const { $store, $alerts, $router, $i18n, $auth } = ctx.root
   
   /**
    * // Utente NON GOLD
@@ -79,7 +76,7 @@ export function useRequestActions (ctx: SetupContext) {
   
   function newDepositRequest () {
     $store.dispatch('dialog/updateStatus', {
-      title: $t('dialogs.requests.title-deposit'),
+      title: $i18n.t('dialogs.requests.title-deposit'),
       id: 'RequestDialog',
       data: {
         type: RequestTypes.VERSAMENTO
@@ -104,7 +101,7 @@ export function useRequestActions (ctx: SetupContext) {
     if ($auth.user.autoWithdrawlAll && reqType === RequestTypes.RISC_PROVVIGIONI) {
       $alerts.info({
         title: '',
-        html: $t('alerts.autoWithdrawl-not-available', { link: '/requests#' + $auth.user.autoWithdrawlAll }) as string,
+        html: $i18n.t('alerts.autoWithdrawl-not-available', { link: '/requests#' + $auth.user.autoWithdrawlAll }) as string,
         onOpen: (el: HTMLElement) => {
           el.querySelector('a')?.addEventListener('click', () => {
             $alerts.close()
@@ -116,7 +113,7 @@ export function useRequestActions (ctx: SetupContext) {
     }
     
     $store.dispatch('dialog/updateStatus', {
-      title: $t('dialogs.requests.title-withdrawal-' + reqType),
+      title: $i18n.t('dialogs.requests.title-withdrawal-' + reqType),
       id: 'RequestDialog',
       data: {
         type: reqType,
@@ -143,7 +140,7 @@ export function useRequestActions (ctx: SetupContext) {
     }
     
     $store.dispatch('dialog/updateStatus', {
-      title: $t('dialogs.requests.title-withdrawal-gold'),
+      title: $i18n.t('dialogs.requests.title-withdrawal-gold'),
       id: 'RequestDialogGold',
       fullscreen: true,
       theme: 'global-club',
@@ -165,7 +162,7 @@ export function useRequestActions (ctx: SetupContext) {
     if (userIsGold && userClubUnsubscribed) {
       $alerts.info({
         title: '',
-        html: $t('alerts.club-request-unsubscribed') as string
+        html: $i18n.t('alerts.club-request-unsubscribed') as string
       })
       
       return false
