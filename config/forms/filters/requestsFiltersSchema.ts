@@ -55,7 +55,7 @@ function getDistinctRefAgents(this: Vue, requests: RequestFormData[]): Promise<S
   // return Object.values(toReturn)
   
   // TODO:: completare il fetch dinamico degli agenti
-  return [];
+  return [] as any;
 }
 
 function getRequestTypeList(this: Vue) {
@@ -219,14 +219,14 @@ export default function (this: Vue): FormSchema[] {
         user: {
           label: "filters-user",
           component: "v-autocomplete",
-          items: getDistinctUsers(dataToFilter),
+          // items: getDistinctUsers(dataToFilter),
           clearable: true,
           if: userAdmin
         },
         referenceAgent: {
           label: "filters-reference-agent",
           component: "v-autocomplete",
-          items: getDistinctRefAgents(dataToFilter),
+          // items: getDistinctRefAgents(dataToFilter),
           clearable: true,
           if: userAdmin
         },
