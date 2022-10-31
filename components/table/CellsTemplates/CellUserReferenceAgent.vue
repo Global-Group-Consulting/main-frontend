@@ -1,18 +1,18 @@
 <template>
-  <div v-if="!readonly">
+  <div v-if="!readonly && refAgentId">
     <!-- Case item.referenceAgent is same as userId and is the same as auth.user.id - Tu -->
-    <div v-if="item.referenceAgent === $auth.user.id && item.referenceAgent === (item.id || item._id)">
+    <div v-if="refAgentId === $auth.user.id && refAgentId === (item.id || item._id)">
       <v-btn text disabled small>Tu</v-btn>
     </div>
 
-    <!-- Case item.referenceAgent is same as userId but is different from auth.user.id - Utente attuale -->
-    <div v-else-if="item.referenceAgent !== $auth.user.id && item.referenceAgent === (item.id || item._id)">
+    <!-- Case refAgentId is same as userId but is different from auth.user.id - Utente attuale -->
+    <div v-else-if="refAgentId !== $auth.user.id && refAgentId === (item.id || item._id)">
       <v-btn text disabled small>Utente attuale</v-btn>
     </div>
 
-    <!-- Case item.referenceAgent is different from userId and from auth.user.id -  -->
+    <!-- Case refAgentId is different from userId and from auth.user.id -  -->
     <v-btn text
-           v-else-if="refAgentData && item.referenceAgent !== $auth.user.id && item.referenceAgent !== (item.id || item._id)"
+           v-else-if="refAgentData && refAgentId !== $auth.user.id && refAgentId !== (item.id || item._id)"
            small
            target="_blank"
            class="text-capitalize"
@@ -46,6 +46,10 @@ export default class CellUserReferenceAgent extends Vue {
     }
 
     return this.item
+  }
+
+  get refAgentId(): string | null {
+    return this.user?.referenceAgent
   }
 
   get refAgentData(): User | null {

@@ -20,7 +20,7 @@
                                :loading="!tab.data">
               <PaginatedTable :paginated-data="tab.data"
                               :columns="requestsSchema"
-                              :condition="tab.refRole"
+                              :condition="tab.id"
                               :table-key="tab.tableKey"
                               :options="tab.tableOptions"
                               :loading="tab.loading"
@@ -181,11 +181,12 @@ export default defineComponent({
     /**
      * Fetches the data for the selected tab
      * @param {PaginationDto} paginationSettings
+     * @param {PaginatedTab} tab
      */
-    async function fetchData (paginationSettings: PaginationDto) {
+    async function fetchData (paginationSettings: PaginationDto, tab?: PaginatedTab) {
       // store selectedTab internally so if in the meanwhile this changes,
       // we store the data for the correct tab
-      const targetTab = selectedTab.value
+      const targetTab = tab ?? selectedTab.value
 
       // if the tab is already loading, do nothing
       if (targetTab.loading) {
@@ -270,6 +271,41 @@ export default defineComponent({
     }
 
     /**
+     * Trigger data fetch for a given tab
+     * @param {RequestStatus} tabKey
+     */
+    function refreshTabData (tabKey?: number) {
+      // if a tab key is passed, we refresh that tab, otherwise we refresh the current tab
+      const tab = typeof tabKey === 'number' ? tabsList.value.find(tab => tab.customKey === tabKey) : selectedTab.value
+
+
+      // refresh the specified tab and ensure is not the filters one
+      if (tab && tab.paginationDto && tab.id !== 'filters') {
+        fetchData(tab.paginationDto, tab)
+      }
+
+      // if are active filters, we refresh the filters tab too
+      if (areActiveFilters.value) {
+        filterData({
+          filters: activeFilters.value,
+          sortBy: filtersTab.value.paginationDto?.sortBy
+        })
+      }
+    }
+
+    function setActiveTab (tabKey: number) {
+      if (typeof tabKey !== 'number' || tabKey === selectedTab.value.customKey) {
+        return
+      }
+
+      const tabIndex = tabsList.value.findIndex(tab => tab.customKey === tabKey)
+
+      if (tabIndex > -1) {
+        currentTab.value = tabIndex
+      }
+    }
+
+    /**
      * When the currentTab changes, eventually fetches the data for the selected tab
      */
     watch(() => currentTab.value, () => {
@@ -305,7 +341,7 @@ export default defineComponent({
       if (root.$store.getters['filters/areActiveFilters']) {
         filterData({
           filters: activeFilters.value,
-          sortBy: selectedTab.value.paginationDto?.sortBy
+          sortBy: filtersTab.value.paginationDto?.sortBy
         })
       }
     })
@@ -320,7 +356,9 @@ export default defineComponent({
       currentTab,
       visibileTabsList,
       requestsSchema,
-      onPaginationChanged
+      onPaginationChanged,
+      refreshTabData,
+      setActiveTab
     }
   }
 })
