@@ -37,6 +37,19 @@ export class RequestsTableActions {
     })
   }
   
+  async openDetailsDialogFromId (requestId: string) {
+    let title = this.ctx.$t('dialogs.requests.title-details')
+    
+    await this.ctx.$store.dispatch('dialog/updateStatus', {
+      title,
+      id: 'RequestDialog',
+      readonly: true,
+      data: {
+        id: requestId
+      }
+    })
+  }
+  
   /**
    * Prende in carico una richiesta mostrando un dialog per inviare una comunicazione
    */
