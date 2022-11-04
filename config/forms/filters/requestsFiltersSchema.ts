@@ -9,55 +9,6 @@ import moment from "moment";
 import UserRoles from "~/enums/UserRoles";
 import Vue from 'vue'
 
-function getDistinctUsers (requests: RequestFormData[]): SelectOption[] {
-  const toReturn: Record<string, SelectOption> = {};
-
-  requests.forEach((request) => {
-    if (!request.user || !request.user.id) {
-      return
-    }
-
-    const user = request.user
-
-    if (!toReturn[user.id]) {
-      toReturn[user.id] = {
-        value: user.id,
-        text: user.firstName + " " + user.lastName
-      }
-    }
-  })
-
-  return Object.values(toReturn)
-}
-
-/**
- * @this {Vue}
- */
-function getDistinctRefAgents(this: Vue, requests: RequestFormData[]): Promise<SelectOption[]> {
-  const toReturn: Record<string, SelectOption> = {};
-  
-  // const refAgents = await this.$apiCalls.userApi.getAgents();
-  
-  /*refAgents.forEach((agent) => {
-    /!*if (!request.user || !request.user.referenceAgent
-      || !request.user.referenceAgentData || !request.user.referenceAgentData.id) {
-      return
-    }*!/
-
-    if (!toReturn[agent._id]) {
-      toReturn[agent._id] = {
-        value: agent._id,
-        text: agent.firstName + " " + agent.lastName
-      }
-    }
-  })*/
-
-  // return Object.values(toReturn)
-  
-  // TODO:: completare il fetch dinamico degli agenti
-  return [];
-}
-
 function getRequestTypeList(this: Vue) {
   const userRole = this.$store.getters["user/userRole"];
 
@@ -218,18 +169,21 @@ export default function (this: Vue): FormSchema[] {
         },
         user: {
           label: "filters-user",
-          component: "v-autocomplete",
-          items: getDistinctUsers(dataToFilter),
+          component: "async-autocomplete",
+          items: [],
+          asyncFn: this.$apiCalls.selectOptions.getUsersList,
           clearable: true,
           if: userAdmin
         },
-        referenceAgent: {
+        // disabled because i can't filter by a subRelation
+        /*referenceAgent: {
           label: "filters-reference-agent",
-          component: "v-autocomplete",
-          items: getDistinctRefAgents(dataToFilter),
+          component: "async-autocomplete",
+          items: [],
+          asyncFn: this.$apiCalls.selectOptions.getAgentsList,
           clearable: true,
           if: userAdmin
-        },
+        },*/
         createdAt: {
           label: "filters-creation-date",
           component: "date-picker-range",
@@ -242,9 +196,10 @@ export default function (this: Vue): FormSchema[] {
           range: true,
           startByYear: false
         },
-        clubCardNumber: {
+        // disabled because i can't filter by a subRelation
+        /*clubCardNumber: {
           if: userAdmin
-        },
+        },*/
         autoWithdrawlAll: {
           component: "v-select",
           label: "filters-auto-withdrawl-all",
