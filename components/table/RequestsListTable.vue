@@ -79,7 +79,7 @@ export default defineComponent({
         lastFetch: null,
         counter: 0,
         paginationDto: {
-          sortBy: ['created_at', 'user'],
+          sortBy: ['created_at'],
           sortDesc: [true]
         }
       },
@@ -95,7 +95,7 @@ export default defineComponent({
         lastFetch: null,
         counter: 0,
         paginationDto: {
-          sortBy: ['updated_at', 'created_at', 'user'],
+          sortBy: ['updated_at', 'created_at'],
           sortDesc: [true]
         }
       },
@@ -111,7 +111,7 @@ export default defineComponent({
         lastFetch: null,
         counter: 0,
         paginationDto: {
-          sortBy: ['completed_at', 'created_at', 'user'],
+          sortBy: ['completed_at', 'created_at'],
           sortDesc: [true, false]
         }
       },
@@ -127,14 +127,14 @@ export default defineComponent({
         lastFetch: null,
         counter: 0,
         paginationDto: {
-          sortBy: ['completed_at', 'created_at', 'user'],
+          sortBy: ['completed_at', 'created_at'],
           sortDesc: [true, false]
         }
       }, {
         id: 'filters',
         title: 'Risultati ricerca',
         data: null,
-        paginationDto: { sortBy: ['completed_at', 'created_at', 'user'] },
+        paginationDto: { sortBy: ['completed_at', 'created_at'] },
         tableKey: 'requestsFilter',
         loading: false,
         lastFetch: null,
