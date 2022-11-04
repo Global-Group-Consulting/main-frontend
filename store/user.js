@@ -1,9 +1,9 @@
-import Vue from "vue"
+import Vue from 'vue'
 import UserRoles from '../enums/UserRoles'
-import WalletTypes from "../enums/WalletTypes"
-import {computed} from "@vue/composition-api";
-import acl from "~/plugins/acl";
-import {AclUserRoles} from "~/enums/AclUserRoles";
+import WalletTypes from '../enums/WalletTypes'
+import { computed } from '@vue/composition-api'
+import acl from '~/plugins/acl'
+import { AclUserRoles } from '~/enums/AclUserRoles'
 
 const emptyWallets = [{
   type: WalletTypes.DEPOSIT,
@@ -12,7 +12,7 @@ const emptyWallets = [{
   interestPercentage: 0
 }, {
   type: WalletTypes.COMMISION,
-  currMonthCommissions: 0,
+  currMonthCommissions: 0
 }]
 
 export const state = () => ({
@@ -22,22 +22,22 @@ export const state = () => ({
 })
 
 export const mutations = {
-  UPDATE_WALLETS(state, payload) {
+  UPDATE_WALLETS (state, payload) {
     for (const wallet of payload) {
       const index = state.wallets.findIndex(_w => _w.type === wallet.type)
-
+      
       Vue.set(state.wallets, index, wallet)
     }
   }
 }
 
 export const actions = {
-  async updateWallets({commit}, {data, apiCalls}) {
+  async updateWallets ({ commit }, { data, apiCalls }) {
     try {
-      commit("UPDATE_WALLETS", emptyWallets)
-
-      console.info("RESETED WALLETS")
-
+      commit('UPDATE_WALLETS', emptyWallets)
+      
+      console.info('RESETED WALLETS')
+      
       /**
        * @type {{
        *  deposit: number
@@ -45,9 +45,9 @@ export const actions = {
        *  interestPercentage: number
        * }}
        */
-      const result = await apiCalls.fetchWalletStatus(data);
-
-      commit("UPDATE_WALLETS", [{
+      const result = await apiCalls.fetchWalletStatus(data)
+      
+      commit('UPDATE_WALLETS', [{
         ...result,
         type: WalletTypes.DEPOSIT
       }, {
@@ -61,18 +61,18 @@ export const actions = {
 }
 
 export const getters = {
-  current(state, getters, rootState) {
-    return rootState.auth.user;
+  current (state, getters, rootState) {
+    return rootState.auth.user
   },
-
+  
   mustActivate: (state, getters, rootState) => {
     return +rootState.auth.user.role === +UserRoles.CLIENTE
       && !rootState.auth.user.activatedAt
   },
-  availableWallets(state) {
+  availableWallets (state) {
     return state.wallets
   },
-
+  
   userRole: (state, getters, rootState) => {
     return rootState.auth.user.role
   },
@@ -86,7 +86,7 @@ export const getters = {
    * @returns {"admin" | "user"}
    */
   userType: (state, getters) => {
-    return [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(+getters.userRole) ? "admin" : "user"
+    return [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(+getters.userRole) ? 'admin' : 'user'
   },
   userIsCliente: (state, getters, rootState) => {
     return [UserRoles.CLIENTE].includes(rootState.auth.user.role)
@@ -107,16 +107,20 @@ export const getters = {
   canAddUsers: (state, getters) => getters.userRole !== UserRoles.CLIENTE,
   canAddUsers_admin: (state, getters) => !!getters.userIsSuperAdmin,
   canAddUsers_servClienti: (state, getters) => !!getters.userIsSuperAdmin,
-  canAddUsers_agente: (state, getters) => getters.userType === "admin" && !!getters.userIsSuperAdmin,
+  canAddUsers_agente: (state, getters) => getters.userType === 'admin' && !!getters.userIsSuperAdmin,
   canAddUsers_cliente: (state, getters) => getters.userRole !== UserRoles.CLIENTE,
-  canAddRequest: (state, getters) => getters.userType === "user",
-  canAddRequestGold: (state, getters) => getters.userType === "user" && getters.userIsGold,
+  canWithdrawal: (state, getters) => getters.userType === 'user',
+  canDeposit: (state, getters) => getters.userType === 'user',
+  canDownloadReport: (state, getters) => getters.userType === 'admin',
+  canAddRequestClassic: (state, getters) => getters.userType === 'user' && !getters.userIsGold,
+  canAddRequestGold: (state, getters) => getters.userType === 'user' && getters.userIsGold,
   canChangeRole: (state, getters) => !!getters.userIsSuperAdmin,
   canChangeState: (state, getters) => !!getters.userIsSuperAdmin,
-  canChangeAgenteRif: (state, getters) => getters.userType === "admin",
+  canChangeAgenteRif: (state, getters) => getters.userType === 'admin',
   canDeleteUser: (state, getters) => !!getters.userIsSuperAdmin,
   canSeeSuperAdmins: (state, getters) => !!getters.userIsSuperAdmin,
-  seeAllUsers: (state, getters) => getters.userType === "admin",
+  seeAllUsers: (state, getters) => getters.userType === 'admin',
   seeOwnUsers: (state, getters) => getters.userRole === UserRoles.AGENTE,
   canSeeOtherUsers: (state, getters) => getters.seeAllUsers || getters.seeOwnUsers
+  
 }

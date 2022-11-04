@@ -16,6 +16,7 @@ import { FiltersApi } from '~/plugins/apiCalls/FiltersApi'
 import { ClubApi } from '~/plugins/apiCalls/ClubApi'
 import { GeolocationApi } from '~/plugins/apiCalls/GeolocationApi'
 import { NewsApi } from '~/plugins/apiCalls/News'
+import { SelectOptionsApi } from '~/plugins/apiCalls/SelectOptionsApi'
 
 interface IApiCalls extends ApiCalls {
   [key: string]: any
@@ -57,6 +58,7 @@ export class ApiCalls extends BasicApiCall {
   public club!: ClubApi
   public geo!: GeolocationApi
   public news!: NewsApi
+  public selectOptions!: SelectOptionsApi
   
   constructor (context: any) {
     super(context)
@@ -71,6 +73,7 @@ export class ApiCalls extends BasicApiCall {
     this.club = new ClubApi(context)
     this.geo = new GeolocationApi(context)
     this.news = new NewsApi(context)
+    this.selectOptions = new SelectOptionsApi(context)
   }
   
   async userCreate (data: any) {
@@ -172,12 +175,6 @@ export class ApiCalls extends BasicApiCall {
     })
   }
   
-  async fetchAgents () {
-    return await this.get({
-      endPoint: `/api/users/select/agents`
-    })
-  }
-  
   async fetchUserDetails (_id: string) {
     return (await this.get({
         endPoint: `/api/users/` + _id
@@ -268,76 +265,6 @@ export class ApiCalls extends BasicApiCall {
   async readRequestTargetUser (id: string) {
     return await this.get({
       endPoint: `/api/requests/targetUser/${id}`
-    })
-  }
-  
-  async createRequest (data: any) {
-    return await this.post({
-      endPoint: `/api/requests`,
-      body: data,
-      uploadMode: true
-    })
-  }
-  
-  async createAdminRequest (data: any) {
-    return await this.post({
-      endPoint: `/api/requests/admin`,
-      body: data,
-      uploadMode: true
-    })
-  }
-  
-  async createAgentRequest (data: any) {
-    return await this.post({
-      endPoint: `/api/requests/agent`,
-      body: data
-    })
-  }
-  
-  async deleteRequest (data: any) {
-    return await this._call({
-      method: 'DELETE',
-      endPoint: `/api/requests/${data.id}`
-    })
-  }
-  
-  async acceptRequest (data: RequestFormData, paymentDocDate: Date, paymentAmount: number, paymentGoldAmount: number) {
-    return await this._call({
-      method: 'PUT',
-      endPoint: `/api/requests/${data.id}/approve`,
-      body: {
-        paymentDocDate,
-        paymentAmount,
-        paymentGoldAmount
-      }
-    })
-  }
-  
-  async rejectRequest (data: any) {
-    return await this._call({
-      method: 'PUT',
-      endPoint: `/api/requests/${data.id}/reject`,
-      body: { reason: data.reason }
-    })
-  }
-  
-  async cancelRequest (data: any) {
-    return await this._call({
-      method: 'PUT',
-      endPoint: `/api/requests/${data.id}/cancel`,
-      body: { reason: data.reason }
-    })
-  }
-  
-  async downloadRequestReceipt (reqId: string, type: 'movement' | 'request') {
-    return await this._call({
-      method: 'GET',
-      endPoint: `/api/docs/receipt/deposit`,
-      downloadMode: true,
-      params: {
-        id: reqId,
-        type: type
-      }
     })
   }
   

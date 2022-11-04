@@ -13,7 +13,7 @@ const schema = {
   },
   'firstName': {text: 'tables.first-name', value: 'user.firstName'},
   'lastName': {text: 'tables.last-name', value: 'user.lastName'},
-  'user': {text: 'tables.user', value: 'user', component: "CellUserName"},
+  'user': {text: 'tables.user', value: 'user', component: "CellUserName", sortable: false},
   'email': {text: 'tables.email', value: 'user.email'},
   'type': {text: 'tables.request-type', value: 'type', component: "CellRequestType"},
   'amount': {
@@ -26,12 +26,13 @@ const schema = {
   'referenceAgent': {
     text: 'tables.reference-agent',
     value: 'user.referenceAgentData',
-    component: "CellUserReferenceAgent"
+    component: "CellUserReferenceAgent",
+    sortable: false
   },
   'status': {text: 'tables.request-status', value: 'status', component: "CellRequestStatus"},
-  'created_at': {text: 'tables.created-at', value: 'created_at'},
-  'updated_at': {text: 'tables.updated-at', value: 'updated_at'},
-  'completed_at': {text: 'tables.completed-at', value: 'completed_at'},
+  'created_at': {text: 'tables.created-at', value: 'created_at', component: "CellDate", componentSettings: {includeTime: true}},
+  'updated_at': {text: 'tables.updated-at', value: 'updated_at', component: "CellDate", componentSettings: {includeTime: true}},
+  'completed_at': {text: 'tables.completed-at', value: 'completed_at', component: "CellDate", componentSettings: {includeTime: true}},
   'currency': {
     text: 'tables.request-currency',
     value: 'currency',

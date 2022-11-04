@@ -2,19 +2,19 @@
   <div ref="test">
     <portal to="dialog-content" ref="dialogContent">
       <dynamic-fieldset
-        :schema="communicationNewSchema"
-        v-model="formData"
-        fill-row
-        ref="form"
+          :schema="communicationNewSchema"
+          v-model="formData"
+          fill-row
+          ref="form"
       ></dynamic-fieldset>
     </portal>
 
     <portal to="dialog-actions-right">
       <v-btn color="" text @click="close" :disabled="gLoading">
-        {{ $t("dialogs.communicationNewDialog.btn-cancel") }}
+        {{ $t('dialogs.communicationNewDialog.btn-cancel') }}
       </v-btn>
       <v-btn color="success" @click="onSubmit" :loading="gLoading">
-        {{ $t("dialogs.communicationNewDialog.btn-send") }}
+        {{ $t('dialogs.communicationNewDialog.btn-send') }}
         <v-icon class="ml-2">mdi-send</v-icon>
       </v-btn>
     </portal>
@@ -22,79 +22,79 @@
 </template>
 
 <script>
-import CommunicationNewSchema from "@/config/forms/communicationNewSchema";
+import CommunicationNewSchema from '@/config/forms/communicationNewSchema'
 
-import DynamicFieldset from "@/components/DynamicFieldset";
+import DynamicFieldset from '@/components/DynamicFieldset'
 
-import {ref, onBeforeMount, computed, onMounted, nextTick,} from "@vue/composition-api";
-import UserRoles from "@/enums/UserRoles";
+import { ref, onBeforeMount, computed, onMounted, nextTick } from '@vue/composition-api'
+import UserRoles from '@/enums/UserRoles'
+import RequestStatus from '~/enums/RequestStatus'
 
 export default {
-  name: "CommunicationNewDialog",
-  components: {DynamicFieldset},
+  name: 'CommunicationNewDialog',
+  components: { DynamicFieldset },
 
-  setup(props, {root, refs, emit, app}) {
-    const {$apiCalls, $alerts, $enums, $store, $auth} = root;
+  setup (props, { root, refs, emit, app }) {
+    const { $apiCalls, $alerts, $enums, $store, $auth, $nuxt } = root
 
-    const test = ref(null);
-    const form = ref(null);
+    const test = ref(null)
+    const form = ref(null)
     const formData = ref({
       receiver: []
-    });
-    const usersList = ref([]);
-    const messageSending = ref(false);
+    })
+    const usersList = ref([])
+    const messageSending = ref(false)
 
-    const dialogSettings = computed(() => $store.getters["dialog/dialogData"]);
+    const dialogSettings = computed(() => $store.getters['dialog/dialogData'])
     const dialogData = computed(
-      () => $store.getters["dialog/dialogData"].data || {}
-    );
+        () => $store.getters['dialog/dialogData'].data || {}
+    )
 
     const availableReceivers = computed(() => {
       if (formData.value.watchers) {
         return usersList.value.filter(
-          _receiver =>
-            !formData.value.watchers.find(_cc => _cc === _receiver.value) ||
-            !_receiver.value
-        );
+            _receiver =>
+                !formData.value.watchers.find(_cc => _cc === _receiver.value) ||
+                !_receiver.value
+        )
       }
 
-      return usersList.value;
-    });
+      return usersList.value
+    })
     const availableCC = computed(() => {
       if (formData.value.receiver && formData.value.receiver instanceof Array) {
         return usersList.value.filter(
-          _cc =>
-            !formData.value.receiver.find(
-              _receiver => _receiver === _cc.value
-            ) || !_cc.value
-        );
+            _cc =>
+                !formData.value.receiver.find(
+                    _receiver => _receiver === _cc.value
+                ) || !_cc.value
+        )
       }
 
-      return usersList.value;
-    });
-    const userType = computed(() => [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes($auth.user.role) ? "admin" : "user")
+      return usersList.value
+    })
+    const userType = computed(() => [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes($auth.user.role) ? 'admin' : 'user')
 
-    const communicationNewSchema = computed(CommunicationNewSchema);
+    const communicationNewSchema = computed(CommunicationNewSchema)
 
-
-    async function closeDialog() {
-      $store.dispatch("dialog/updateStatus", false);
+    async function closeDialog () {
+      $store.dispatch('dialog/updateStatus', false)
     }
 
-    async function onSubmit() {
+    async function onSubmit () {
       const form = refs.dialogContent.$slots.default[0].componentInstance
 
       if (!(await form.validate())) {
-        return;
+        return
       }
 
       try {
-        messageSending.value = true;
+        messageSending.value = true
 
         const receiver = [
           (formData.value.receiver || []),
           (formData.value.watchers || [])
-        ].flat();
+        ].flat()
 
         const communicationData = {
           content: formData.value.message,
@@ -102,46 +102,53 @@ export default {
           subject: formData.value.subject,
           receiver,
           type: dialogData.value.type
-        };
+        }
 
         if (dialogData.value.request) {
-          communicationData.requestId = dialogData.value.request.id;
+          communicationData.requestId = dialogData.value.request.id || dialogData.value.request._id
         }
 
-        const result = await $apiCalls.communicationSend(communicationData);
+        const result = await $apiCalls.communicationSend(communicationData)
 
         if (!result) {
-          throw new Error("No communication was created")
+          throw new Error('No communication was created')
         }
 
-        emit("communicationAdded", result);
+        emit('communicationAdded', result)
+
+        if (dialogData.value.adminTakingCharge) {
+          $nuxt.$emit('requests:statusChanged', {
+            oldStatus: dialogData.value.request.status,
+            newStatus: RequestStatus.LAVORAZIONE
+          })
+        }
 
         $alerts.toastSuccess(communicationData.type !== $enums.MessageTypes.BUG_REPORT ?
-          "communication-new-success" : "bug-report-success");
+            'communication-new-success' : 'bug-report-success')
 
-        await closeDialog();
+        await closeDialog()
       } catch (er) {
-        $alerts.error(er);
+        $alerts.error(er)
       } finally {
-        messageSending.value = false;
+        messageSending.value = false
       }
     }
 
-    function _formatUsersList(list) {
-      let lastType = "";
+    function _formatUsersList (list) {
+      let lastType = ''
 
       return list.reduce((acc, _user) => {
         let receiverRole = _user.role
         let role = root.$t(
-          `enums.UserRoles.${$enums.UserRoles.getIdName(
-            receiverRole instanceof Array ?
-              UserRoles.SERV_CLIENTI : _user.role
-          )}`
-        );
+            `enums.UserRoles.${$enums.UserRoles.getIdName(
+                receiverRole instanceof Array ?
+                    UserRoles.SERV_CLIENTI : _user.role
+            )}`
+        )
 
         const toAdd = {
           value: _user.id,
-          text: _user.firstName + " " + _user.lastName,
+          text: _user.firstName + ' ' + _user.lastName,
           role
         }
 
@@ -154,87 +161,79 @@ export default {
 
           if (dialogData.value.type !== $enums.MessageTypes.CONVERSATION) {
             toAdd.text = root.$t(
-              `enums.UserRoles.${$enums.UserRoles.getIdName(_user.role)}_plural`
-            );
+                `enums.UserRoles.${$enums.UserRoles.getIdName(_user.role)}_plural`
+            )
 
           }
         } else {
           if ($enums.UserRoles.CLIENTE === $auth.user.role) {
-            toAdd.text += ` (${root.$t("dialogs.communicationNewDialog.your-agent")})`
+            toAdd.text += ` (${root.$t('dialogs.communicationNewDialog.your-agent')})`
           } else {
             toAdd.text += ` (${role})`
           }
         }
 
         if (![$enums.UserRoles.CLIENTE, $enums.UserRoles.AGENTE].includes($auth.user.role)
-          && dialogData.value.type === $enums.MessageTypes.CONVERSATION) {
+            && dialogData.value.type === $enums.MessageTypes.CONVERSATION) {
           if (lastType !== role && $auth.user.role !== $enums.UserRoles.CLIENTE) {
-            lastType = role;
+            lastType = role
 
-            acc.push(...[{divider: true}, {header: role}]);
+            acc.push(...[{ divider: true }, { header: role }])
           }
         }
 
-        acc.push(toAdd);
+        acc.push(toAdd)
 
-        return acc;
-      }, []);
+        return acc
+      }, [])
     }
 
-    function _fillFormData() {
-      root.$set(formData, "value", {
+    function _fillFormData () {
+      root.$set(formData, 'value', {
         subject: dialogData.value.subject,
-        receiver: [dialogData.value.request.user.id],
+        receiver: [dialogData.value.request.userId],
         message: dialogData.value.message
-      });
+      })
     }
 
-    function _setReceiverFromDialogData() {
+    function _setReceiverFromDialogData () {
       if (dialogData.value.receiver) {
-        root.$set(formData, "value", {
+        root.$set(formData, 'value', {
           receiver: [dialogData.value.receiver],
           subject: [dialogData.value.subject]
         })
       }
     }
 
-    /*onMounted(() => {
-      if (
-        dialogData.value.request &&
-        dialogData.value.request.type === $enums.RequestTypes.VERSAMENTO
-      ) {
-      }
-    });*/
-
     onBeforeMount(async () => {
       try {
         if (dialogData.value.type !== $enums.MessageTypes.BUG_REPORT) {
-          const result = await $apiCalls.communicationsFetchReceivers(dialogData.value.type);
+          const result = await $apiCalls.communicationsFetchReceivers(dialogData.value.type)
 
-          root.$set(usersList, "value", _formatUsersList(result));
+          root.$set(usersList, 'value', _formatUsersList(result))
         }
 
         _setReceiverFromDialogData()
 
-        if (userType.value === "user") {
+        if (userType.value === 'user') {
           formData.value.receiver = $enums.UserRoles.SERV_CLIENTI
         }
 
         if (dialogData.value.type === $enums.MessageTypes.BUG_REPORT) {
-          root.$set(formData, "value", {
+          root.$set(formData, 'value', {
             type: dialogData.value.type,
             subject: dialogData.value.subject,
-            receiver: [dialogData.value.receiver],
-          });
+            receiver: [dialogData.value.receiver]
+          })
         }
 
         if (dialogData.value.request) {
-          _fillFormData();
+          _fillFormData()
         }
       } catch (er) {
-        $alerts.error(er);
+        $alerts.error(er)
       }
-    });
+    })
 
     return {
       formData,
@@ -246,14 +245,14 @@ export default {
       onSubmit,
       messageSending,
       close: closeDialog
-    };
-  },
-  computed: {
-    formRef() {
-      return this.$refs.form
     }
   },
-};
+  computed: {
+    formRef () {
+      return this.$refs.form
+    }
+  }
+}
 </script>
 
 <style scoped></style>

@@ -17,7 +17,7 @@ export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n, 
       await $alerts.askBeforeAction({
         key: "delete-request",
         preConfirm: async () => {
-          const result = await $apiCalls.deleteRequest(currentRequest);
+          const result = await $apiCalls.requests.deleteRequest(currentRequest);
         },
         data: {
           type: $i18n.t(
@@ -79,7 +79,7 @@ export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n, 
           const amount = +amountInput?.cleave?.getRawValue()
           const goldAmount = +goldAmountInput?.cleave?.getRawValue()
 
-          await $apiCalls.acceptRequest(currentRequest, moment(value, "DD/MM/YYYY", true).toDate(), amount, goldAmount);
+          await $apiCalls.requests.acceptRequest(currentRequest, moment(value, "DD/MM/YYYY", true).toDate(), amount, goldAmount);
         },
         settings: {
           html: $i18n.t(`alerts.approve-request-text`, alertData) + `<br>${inputs.join("")}`,
@@ -239,7 +239,7 @@ export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n, 
       await $alerts.askBeforeAction({
         key: "reject-request",
         preConfirm: async (value) => {
-          await $apiCalls.rejectRequest({
+          await $apiCalls.requests.rejectRequest({
             id: currentRequest.id,
             reason: value
           });
@@ -285,7 +285,7 @@ export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n, 
       await $alerts.askBeforeAction({
         key: "cancel-request",
         preConfirm: async (value) => {
-          await $apiCalls.cancelRequest({
+          await $apiCalls.requests.cancelRequest({
             id: currentRequest.id,
             reason: value
           });
@@ -330,7 +330,7 @@ export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n, 
       await $alerts.askBeforeAction({
         key: "cancel-auto-withdrawl-request",
         preConfirm: async () => {
-          await $apiCalls.cancelRequest({
+          await $apiCalls.requests.cancelRequest({
             id: currentRequest.id,
             reason: "cancelled by user"
           });
@@ -355,7 +355,7 @@ export default function (request, {$apiCalls, $alerts, $options, $enums, $i18n, 
 
   async function downloadReceipt(reqId) {
     try {
-      const result = await $apiCalls.downloadRequestReceipt(reqId, "request")
+      const result = await $apiCalls.requests.downloadRequestReceipt(reqId, "request")
 
       jsFileDownload(result.data, result.headers["x-file-name"]);
       return true

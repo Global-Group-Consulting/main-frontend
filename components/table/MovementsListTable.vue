@@ -184,7 +184,7 @@ export default class MovementsListTable extends Vue {
     this.downloadLoading = movement.id
 
     try {
-      const result = await this.$apiCalls.downloadRequestReceipt(movementId, 'movement')
+      const result = await this.$apiCalls.requests.downloadRequestReceipt(movementId, 'movement')
 
       jsFileDownload(result.data, result.headers['x-file-name'])
 

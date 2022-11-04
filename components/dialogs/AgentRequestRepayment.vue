@@ -107,7 +107,9 @@ export default class AdminRequestDialog extends Vue {
           }) as string
         },
         preConfirm: async () => {
-          await this.$apiCalls.createAgentRequest(data);
+          const result = await this.$apiCalls.createAgentRequest(data);
+
+          this.$nuxt.$emit('requests:newAdded', result.status)
         },
         data: {
           type: this.$t(

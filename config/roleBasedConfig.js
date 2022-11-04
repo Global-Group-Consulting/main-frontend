@@ -431,6 +431,17 @@ const cliente = {
         'actions'
       ]
     },
+    requestsFilter: {
+      columns: [
+        'amount',
+        'type',
+        'status',
+        'created_at',
+        'updated_at',
+        'completed_at',
+        'actions'
+      ]
+    },
     movements: {
       columns: [
         "amountChange",
