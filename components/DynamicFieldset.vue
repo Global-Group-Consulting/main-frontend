@@ -24,6 +24,7 @@
             :input-value="getValue(field, key)"
             :value="field.component === 'v-switch' ? null : getValue(field, key)"
             :field-key="key"
+            :asyncFn="field.asyncFn"
             :ref="`comp_${key}_${index}_${fieldIndex}`"
             :hint="field.hasOwnProperty('hint') ? $t('forms.' + field.hint) : null"
             :error-messages="errorMessages[key]"
@@ -80,6 +81,7 @@ import AgentCommissionsSelect from "@/components/forms/inputs/AgentCommissionsSe
 import PasswordInput from "@/components/forms/inputs/PasswordInput";
 import PhoneInput from "@/components/forms/inputs/PhoneInput";
 import RichTextEditor from "@/components/forms/inputs/RichTextEditor";
+import AsyncAutocomplete from "@/components/forms/inputs/AsyncAutocomplete.vue";
 
 import {validationRules, errorMessages} from "@/mixins/ValidationsParser";
 import {validationMixin} from "vuelidate";
@@ -111,7 +113,8 @@ export default {
     AgentCommissionsSelect,
     PasswordInput,
     PhoneInput,
-    RichTextEditor
+    RichTextEditor,
+    AsyncAutocomplete
   },
   mixins: [validationMixin],
   validations() {
