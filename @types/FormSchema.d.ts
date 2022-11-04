@@ -30,13 +30,14 @@ export type FormSchemaValidations = Partial<Record<ValidatorRules, {
 export interface FormSchemaField {
   component?: "v-select" | "date-picker" | "date-picker-range" | "time-picker" | "time-picker-range" | "file-uploader"
     | "agent-commissions-select" | "contract-doc" | "money-input" | "money-input-range" | "phone-input"
-    | "v-switch" | "v-autocomplete" | "v-textarea" | "rich-text-editor" | "",
+    | "v-switch" | "v-autocomplete" | "v-textarea" | "rich-text-editor" | "async-autocomplete" | "",
   label?: string,
   minLabel?: string,
   maxLabel?: string,
   formatter?: Formatters | Function,
   if?: any,
-  items?: Function | any
+  items?: any
+  asyncFn?: Function
   disabled?: boolean | Function
   readonly?: boolean | Function
   hideDetails?: boolean

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-tabs v-model="currentTab">
+    <v-tabs v-model="currentTab" v-if="visibileTabsList.length > 1">
       <v-tab v-for="(tab, i) of visibileTabsList" :key="i">
         <v-icon class="mr-2" small>
           {{ tab.icon }}
@@ -11,8 +11,8 @@
       </v-tab>
     </v-tabs>
 
-    <v-card class="mb-10" flat outlined>
-      <v-card-text>
+    <v-card :class="{'mb-10': !flat}" flat :outlined="!flat">
+      <v-card-text :class="flat ? 'px-0 pb-0' : ''">
 
         <v-tabs-items :value="currentTab">
           <v-tab-item v-for="(tab, i) of visibileTabsList" :key="i">
@@ -21,10 +21,11 @@
               <PaginatedTable :paginated-data="tab.data"
                               :columns="requestsSchema"
                               :condition="tab.id"
-                              :table-key="tab.tableKey"
+                              :table-key="tableSchema ? tableSchema : tab.tableKey"
                               :options="tab.tableOptions"
                               :loading="tab.loading"
                               @update:pagination="onPaginationChanged"
+                              @click:row="onRowClick"
               ></PaginatedTable>
             </v-skeleton-loader>
           </v-tab-item>
@@ -47,16 +48,22 @@ import requestsSchema from '~/config/tables/requestsSchema'
 import { PaginationDto } from '~/@types/pagination/PaginationDto'
 import { Filter } from '~/@types/Filter'
 import RequestStatus from '~/enums/RequestStatus'
+import { Request } from 'express'
+import { RequestFormData } from '~/@types/Requests'
 
 export default defineComponent({
   components: { CellRequestActions, DataTable },
   props: {
     userId: {
       type: String
-    }
+    },
+    tabs: Array,
+    flat: Boolean,
+    redirectToPage: Boolean,
+    tableSchema: String
   },
   setup (props, { root, emit }) {
-    const { $i18n, $alerts, $apiCalls } = root
+    const { $i18n, $alerts, $apiCalls, $router } = root
     const currentTab = ref(0)
 
     const tabsList: Ref<PaginatedTab[]> = ref([
@@ -144,6 +151,10 @@ export default defineComponent({
       return tabsList.value.filter(tab => {
         if (tab.id === 'filters') {
           return areActiveFilters.value
+        }
+
+        if (props.tabs) {
+          return props.tabs.includes(tab.id)
         }
 
         if (tab.hasOwnProperty('if')) {
@@ -278,7 +289,6 @@ export default defineComponent({
       // if a tab key is passed, we refresh that tab, otherwise we refresh the current tab
       const tab = typeof tabKey === 'number' ? tabsList.value.find(tab => tab.customKey === tabKey) : selectedTab.value
 
-
       // refresh the specified tab and ensure is not the filters one
       if (tab && tab.paginationDto && tab.id !== 'filters') {
         fetchData(tab.paginationDto, tab)
@@ -302,6 +312,12 @@ export default defineComponent({
 
       if (tabIndex > -1) {
         currentTab.value = tabIndex
+      }
+    }
+
+    function onRowClick (request: RequestFormData) {
+      if (props.redirectToPage) {
+        $router.push('/requests#' + (request.id || request._id))
       }
     }
 
@@ -358,7 +374,8 @@ export default defineComponent({
       requestsSchema,
       onPaginationChanged,
       refreshTabData,
-      setActiveTab
+      setActiveTab,
+      onRowClick
     }
   }
 })

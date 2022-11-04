@@ -17,6 +17,7 @@
            target="_blank"
            class="text-capitalize"
            color="primary"
+           @click.stop
            :href="refAgentUrl">
       <v-icon small class="mr-2">mdi-open-in-new</v-icon>
       {{ refAgentName }}

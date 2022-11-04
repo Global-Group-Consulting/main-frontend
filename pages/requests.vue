@@ -128,8 +128,10 @@ export default defineComponent({
             break
         }
       } else {
+        console.log('hash', hash)
+
         // open the request details by passing the id of the request
-        // tableActions.openDetailsDialog(hash)
+        tableActions.openDetailsDialogFromId(hash)
       }
     }
 

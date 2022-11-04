@@ -3,7 +3,7 @@
          target="_blank"
          class="text-capitalize"
          color="primary"
-         @click.stop=""
+         @click.stop
          :href="'users/profile/' + (user.id || user._id)">
     <v-icon small class="mr-2">mdi-open-in-new</v-icon>
 
