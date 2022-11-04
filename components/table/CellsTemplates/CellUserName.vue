@@ -1,10 +1,10 @@
 <template>
-  <v-btn text v-if="user && user.id" small
+  <v-btn text v-if="user && (user.id || user._id)" small
          target="_blank"
          class="text-capitalize"
          color="primary"
-         @click.stop=""
-         :href="'users/profile/' + user.id">
+         @click.stop
+         :href="'users/profile/' + (user.id || user._id)">
     <v-icon small class="mr-2">mdi-open-in-new</v-icon>
 
     {{ $options.filters.userFormatter(user) }}

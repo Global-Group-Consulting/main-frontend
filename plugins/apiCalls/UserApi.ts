@@ -3,6 +3,7 @@ import { AclUserRoles } from '~/enums/AclUserRoles'
 import { PaginatedResult } from '~/@types/pagination/PaginatedResult'
 import { PaginationDto } from '~/@types/pagination/PaginationDto'
 import { GetCountersDto } from '~/@types/dto/GetCounters.dto'
+import { User } from '~/@types/UserFormData'
 
 export interface GetStatisticsDto {
   _id: string;
@@ -28,5 +29,11 @@ export class UserApi extends BasicApiCall {
   
   async getStatistics (statisticType: string): Promise<GetStatisticsDto[]> {
     return await this._call({ endPoint: `/api/users/statistics`, params: { type: statisticType } })
+  }
+  
+  async getAgents (): Promise<User[]> {
+    return await this.get({
+      endPoint: `/api/users/select/agents`
+    })
   }
 }

@@ -6,6 +6,7 @@ export interface PaginatedTab {
   title?: string
   data?: PaginatedResult | null,
   refRole?: any,
+  customKey?: string|number,
   tableKey?: string,
   tableOptions?: any,
   loading?: boolean,
@@ -14,4 +15,6 @@ export interface PaginatedTab {
   counter?: number,
   if?: boolean,
   closable?: boolean,
+  color?: string,
+  icon?: string,
 }

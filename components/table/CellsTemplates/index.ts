@@ -15,6 +15,7 @@ import CellUserEarnings from "./CellUserEarnings.vue";
 
 import CellBriteValue from "./CellBriteValue.vue";
 import CellEuroValue from "./CellEuroValue.vue";
+import CellDate from "./CellDate.vue";
 
 import CellRequestAmount from "./CellRequestAmount.vue";
 import CellRequestStatus from "./CellRequestStatus.vue";
@@ -53,6 +54,7 @@ export default {
   CellUserActions,
   CellUserEarnings,
   CellBriteValue,
+  CellDate,
   CellRequestStatus,
   CellRequestType,
   CellRequestActions,

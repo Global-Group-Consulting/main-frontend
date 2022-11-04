@@ -196,6 +196,10 @@ export default class Profile extends Vue {
     return this.userData?.roles?.includes(AclUserRoles.AGENT)
   }
 
+  get userLoaded () {
+    return Object.keys(this.userData).length > 0
+  }
+
   get showUserBlocks () {
     return this.$acl.checkRoles([AclUserRoles.AGENT, AclUserRoles.CLIENT], this.userData)
     // return [this.$enums.UserRoles.AGENTE, this.$enums.UserRoles.CLIENTE].includes(+this.userData.role)
@@ -227,7 +231,7 @@ export default class Profile extends Vue {
         title: 'Brite Agente',
         if: +this.userData.role !== this.$enums.UserRoles.CLIENTE
       }
-    ].filter(el => el.if)
+    ].filter(el => this.userLoaded ? el.if : false)
   }
 
   get clubStatistics () {
@@ -298,17 +302,18 @@ export default class Profile extends Vue {
 
   async onAdminNewRequestAdded () {
     await this.fetchUserDetails()
-    await this.$refs.movements_list_table[0]?.updateData()
+    // TODO:: update movementsList correctly maybe by a global event
+    // await this.$refs.movements_list_table[0]?.updateData()
   }
 
   async fetchUserDetails () {
     this.userData = await this.$apiCalls.fetchUserDetails(this.userId)
 
     if (this.showUserBlocks) {
-      const resultDashboard = await this.$apiCalls.dashboardFetch(this.userId)
+      /*const resultDashboard = await this.$apiCalls.dashboardFetch(this.userId)
 
       this.userDashboardData.blocks = resultDashboard.blocks
-      this.userDashboardData.user = this.userData
+      this.userDashboardData.user = this.userData*/
     }
   }
 

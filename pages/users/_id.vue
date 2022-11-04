@@ -788,10 +788,12 @@ export default {
 
       // TODO:: Must check if the user can see others account.
 
-      if (permissions.changeAgenteRif
-        || (loggedUser.hasSubAgents && userForm.formData.value.id !== loggedUser.id)
-        || (userForm.userIsNew.value && permissions.userRole !== $enums.UserRoles.AGENTE)) {
-        $store.dispatch("fetchAgentsList", {$apiCalls, $auth});
+      if ($store.getters['user/userIsAdmin']) {
+        if (permissions.changeAgenteRif
+            || (loggedUser.hasSubAgents && userForm.formData.value.id !== loggedUser.id)
+            || (userForm.userIsNew.value && permissions.userRole !== $enums.UserRoles.AGENTE)) {
+          $store.dispatch('fetchAgentsList', { $apiCalls, $auth })
+        }
       }
 
       if (userId === "new") {

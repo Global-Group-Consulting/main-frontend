@@ -2,16 +2,16 @@
   <div>
     <portal to="dialog-pre-content">
       <v-alert
-        v-if="showAlert"
-        :type="
+          v-if="showAlert"
+          :type="
           formData.status === $enums.RequestStatus.LAVORAZIONE
             ? 'info'
             : 'warning'
         "
-        :icon="alertIcon"
-        class="mb-0"
-        tile
-        dense
+          :icon="alertIcon"
+          class="mb-0"
+          tile
+          dense
       >
         <template v-if="formData.status === $enums.RequestStatus.RIFIUTATA">
           <div v-html="$t('dialogs.requests.alert-reject-reason')"></div>
@@ -20,7 +20,7 @@
 
         <template v-else-if="formData.status === $enums.RequestStatus.ANNULLATA">
           <div
-            v-html="
+              v-html="
               $t('dialogs.requests.alert-cancel-reason', {
                 date: $options.filters.dateHourFormatter(formData.completed_at)
               })
@@ -35,17 +35,17 @@
               <p v-if="!ownByCurrentUser" class="mb-1"
                  v-html="$t('dialogs.requests.alert-in-progress', formData.conversation.creator)"/>
 
-              {{ $t("dialogs.requests.alert-connected-communication") }}
+              {{ $t('dialogs.requests.alert-connected-communication') }}
               <v-btn
-                link
-                outlined
-                x-small
-                :href="'/communications#' + conversationId"
-                target="__blank"
-                v-if="ownByCurrentUser"
+                  link
+                  outlined
+                  x-small
+                  :href="'/communications#' + conversationId"
+                  target="__blank"
+                  v-if="ownByCurrentUser"
               >
                 <v-icon x-small>mdi-open-in-new</v-icon>
-                {{ $t("dialogs.requests.btn-go-to-conversation") }}
+                {{ $t('dialogs.requests.btn-go-to-conversation') }}
               </v-btn>
             </template>
 
@@ -56,39 +56,39 @@
 
           <!-- Auto withdrawl request type -->
           <template v-else>
-            {{ $t(`dialogs.requests.alert-auto-withdrawl${formData.autoWithdrawlAllRecursively ? "-recursive" : ''}`) }}
+            {{ $t(`dialogs.requests.alert-auto-withdrawl${formData.autoWithdrawlAllRecursively ? '-recursive' : ''}`) }}
           </template>
         </template>
       </v-alert>
 
       <v-toolbar
-        dense
-        elevation="2"
-        color="blue-grey lighten-5"
-        v-if="canApprove || canCancelAutoWithdrawlAll"
+          dense
+          elevation="2"
+          color="blue-grey lighten-5"
+          v-if="canApprove || canCancelAutoWithdrawlAll"
       >
         <v-spacer></v-spacer>
         <v-toolbar-items>
           <v-btn text color="red" v-if="canApprove" @click="onReject">
             <v-icon>mdi-close</v-icon>
-            {{ $t("dialogs.requests.btn-reject") }}
+            {{ $t('dialogs.requests.btn-reject') }}
           </v-btn>
           <v-btn text color="success" v-if="canApprove" @click="onApprove">
             <template
-              v-if="[$enums.RequestTypes.VERSAMENTO, $enums.RequestTypes.RISC_CAPITALE].includes(formData.type) && formData.status === $enums.RequestStatus.NUOVA">
+                v-if="[$enums.RequestTypes.VERSAMENTO, $enums.RequestTypes.RISC_CAPITALE].includes(formData.type) && formData.status === $enums.RequestStatus.NUOVA">
               <v-icon>mdi-wechat</v-icon>
-              {{ $t("dialogs.requests.btn-chat") }}
+              {{ $t('dialogs.requests.btn-chat') }}
             </template>
 
             <template v-else>
               <v-icon>mdi-check</v-icon>
-              {{ $t("dialogs.requests.btn-accept") }}
+              {{ $t('dialogs.requests.btn-accept') }}
             </template>
           </v-btn>
 
           <v-btn text color="red" v-if="canCancelAutoWithdrawlAll" @click="onCancelAutoWithdrawlAll">
             <v-icon>mdi-delete</v-icon>
-            {{ $t("dialogs.requests.btn-cancel-auto-withdrawl") }}
+            {{ $t('dialogs.requests.btn-cancel-auto-withdrawl') }}
           </v-btn>
 
           <v-btn text v-if="showNewAgentCommunication"
@@ -105,16 +105,16 @@
 
     <portal to="dialog-content">
       <v-skeleton-loader
-        :loading="!dataLoaded"
-        type="list-item-two-line@4"
+          :loading="!dataLoaded"
+          type="list-item-two-line@4"
       >
         <v-form :disabled="!!readonly" @submit.prevent="" v-if="currentStep === 0">
           <dynamic-fieldset
-            ref="dialogForm"
-            :schema="formSchema"
-            v-model="formData"
-            immediate-update
-            fill-row
+              ref="dialogForm"
+              :schema="formSchema"
+              v-model="formData"
+              immediate-update
+              fill-row
           />
         </v-form>
 
@@ -127,223 +127,223 @@
 
     <portal to="dialog-actions-left">
       <v-btn color="red" text v-if="canDelete" @click="onDelete">{{
-          $t("dialogs.requests.btn-delete")
+          $t('dialogs.requests.btn-delete')
         }}
       </v-btn>
     </portal>
 
     <portal to="dialog-actions-right">
       <v-btn text @click="withdrawalCards.onBack">
-        {{ $t(`dialogs.requests.btn-${isNew ? (currentStep === 0 ? "cancel" : 'back') : 'close'}`) }}
+        {{ $t(`dialogs.requests.btn-${isNew ? (currentStep === 0 ? 'cancel' : 'back') : 'close'}`) }}
       </v-btn>
       <v-btn color="blue darken-1" text @click="onFormSubmit" v-if="isNew && dataLoaded">
-        {{ $t("dialogs.requests.btn-send") }}
+        {{ $t('dialogs.requests.btn-send') }}
       </v-btn>
     </portal>
   </div>
 </template>
 
 <script lang="ts">
-  import { Component, Vue, Watch } from "vue-property-decorator";
-  import DynamicFieldset from "~/components/DynamicFieldset.vue";
-  import requestSchema from "~/config/forms/requestSchema";
-  import { moneyFormatter, userFormatter } from "~/plugins/filters";
-  import { DynamicForm } from "~/@types/DynamicForm";
-  import { RequestsTableActions } from "~/functions/requestsTableActions";
-  import RequestTypes from "~/enums/RequestTypes";
-  import RequestStatus from "~/enums/RequestStatus";
-  import withdrawalsCards, { WithdrawalCardsData } from "~/functions/withdrawalsCards"
-  import { computed } from '@vue/composition-api';
+import { Component, Vue, Watch } from 'vue-property-decorator'
+import DynamicFieldset from '~/components/DynamicFieldset.vue'
+import requestSchema from '~/config/forms/requestSchema'
+import { moneyFormatter, userFormatter } from '~/plugins/filters'
+import { DynamicForm } from '~/@types/DynamicForm'
+import { RequestsTableActions } from '~/functions/requestsTableActions'
+import RequestTypes from '~/enums/RequestTypes'
+import RequestStatus from '~/enums/RequestStatus'
+import withdrawalsCards, { WithdrawalCardsData } from '~/functions/withdrawalsCards'
+import { computed } from '@vue/composition-api'
 
-  interface FormData {
-    wallet: number
-    type: number
-    availableAmount: number
-    goldAmount: number
-    currency: number
-    gold: boolean
-    clubPack: string
-    status: number
-    requestState: number
-    id: string
-    autoWithdrawlAllRecursively: any
-    autoWithdrawlAll: any
-    conversation: any
-    requestAttachment: any
-    amount: number | string
-    rejectReason: string
-    completed_at: string
-    cancelReason: string
-    notes: string
-    userId: string,
-    cards: {amount: number, id: string}[]
+interface FormData {
+  wallet: number
+  type: number
+  availableAmount: number
+  goldAmount: number
+  currency: number
+  gold: boolean
+  clubPack: string
+  status: number
+  requestState: number
+  id: string
+  autoWithdrawlAllRecursively: any
+  autoWithdrawlAll: any
+  conversation: any
+  requestAttachment: any
+  amount: number | string
+  rejectReason: string
+  completed_at: string
+  cancelReason: string
+  notes: string
+  userId: string,
+  cards: { amount: number, id: string }[]
+}
+
+@Component({
+  components: { DynamicFieldset: DynamicFieldset as any }
+})
+export default class RequestDialog extends Vue {
+  private reqData!: Record<string, any>
+
+  currentStep: number = 0
+
+  formData: Partial<FormData> = {
+    amount: 0,
+    goldAmount: undefined,
+    availableAmount: 0,
+    wallet: this.$enums.WalletTypes['DEPOSIT'],
+    type: this.$enums.RequestTypes['VERSAMENTO'],
+    currency: this.$enums.CurrencyType.EURO,
+    gold: false,
+    clubPack: this.$enums.ClubPacks.UNSUBSCRIBED,
+    autoWithdrawlAll: null,
+    autoWithdrawlAllRecursively: false,
+    cards: []
   }
 
-  @Component({
-    components: { DynamicFieldset: DynamicFieldset as any },
-  })
-  export default class RequestDialog extends Vue {
-    private reqData!: Record<string, any>;
+  dataLoaded = false
 
-    currentStep: number = 0;
+  $refs!: {
+    dialogForm: HTMLElement & DynamicForm
+  }
 
-    formData: Partial<FormData> = {
-      amount: 0,
-      goldAmount: undefined,
-      availableAmount: 0,
-      wallet: this.$enums.WalletTypes["DEPOSIT"],
-      type: this.$enums.RequestTypes["VERSAMENTO"],
-      currency: this.$enums.CurrencyType.EURO,
-      gold: false,
-      clubPack: this.$enums.ClubPacks.UNSUBSCRIBED,
-      autoWithdrawlAll: null,
-      autoWithdrawlAllRecursively: false,
-      cards: []
+  actions!: RequestsTableActions
+
+  get withdrawalCards () {
+    return withdrawalsCards.call(this)
+  }
+
+  get dialogData () {
+    return this.$store.getters['dialog/dialogData']
+  }
+
+  get incomingData () {
+    return this.dialogData.data
+  }
+
+  get formSchema () {
+    if (this.dataLoaded) {
+      return requestSchema(this as any)
+    }
+  }
+
+  get formattedUserName () {
+    return userFormatter(this.reqData.user)
+  }
+
+  get formattedAmount () {
+    return moneyFormatter(this.formData.amount)
+  }
+
+  /* get actions() {
+     if (this.dataLoaded) {
+       return requestsCrudActionsFn(this.formData, this as any, this.$emit);
+     }
+   }*/
+
+  get wallet () {
+    return this.$store.getters['user/availableWallets'].find((_wallet: any) => _wallet.type === (this.formData.wallet || 1))
+  };
+
+  get availableAmount () {
+    if (this.formData.status !== this.$enums.RequestStatus.NUOVA && this.formData.id) {
+      return this.formData.availableAmount
     }
 
-    dataLoaded = false
+    let toReturn = 0
 
-    $refs!: {
-      dialogForm: HTMLElement & DynamicForm
+    switch (this.formData.type) {
+      case this.$enums.RequestTypes.RISC_CAPITALE:
+      case this.$enums.RequestTypes.VERSAMENTO:
+        toReturn = this.wallet.deposit ?? 0
+
+        break
+      case this.$enums.RequestTypes.RISC_INTERESSI:
+      case this.$enums.RequestTypes.RISC_INTERESSI_BRITE:
+      case this.$enums.RequestTypes.RISC_INTERESSI_GOLD:
+        toReturn = this.wallet.interestAmount ?? 0
+
+        break
+      case this.$enums.RequestTypes.RISC_PROVVIGIONI:
+        toReturn = this.wallet.currMonthCommissions ?? 0
+
+        break
+      case this.$enums.RequestTypes.COMMISSION_MANUAL_ADD:
+        toReturn = this.formData.availableAmount || 0
+
+        break
     }
 
-    actions!: RequestsTableActions;
+    return toReturn
+  }
 
-    get withdrawalCards () {
-      return withdrawalsCards.call(this)
-    }
+  get conversationId () {
+    return this.formData.conversation?.id
+  }
 
-    get dialogData () {
-      return this.$store.getters["dialog/dialogData"]
-    }
+  get showAlert () {
+    const statuses = [
+      this.$enums.RequestStatus.LAVORAZIONE,
+      this.$enums.RequestStatus.RIFIUTATA,
+      this.$enums.RequestStatus.ANNULLATA
+    ]
 
-    get incomingData () {
-      return this.dialogData.data
-    }
+    return this.formData.status ? statuses.includes(this.formData.status) : false
+  }
 
-    get formSchema () {
-      if (this.dataLoaded) {
-        return requestSchema(this as any)
-      }
-    }
-
-    get formattedUserName () {
-      return userFormatter(this.reqData.user)
-    }
-
-    get formattedAmount () {
-      return moneyFormatter(this.formData.amount)
-    }
-
-    /* get actions() {
-       if (this.dataLoaded) {
-         return requestsCrudActionsFn(this.formData, this as any, this.$emit);
-       }
-     }*/
-
-    get wallet () {
-      return this.$store.getters["user/availableWallets"].find((_wallet: any) => _wallet.type === (this.formData.wallet || 1));
-    };
-
-    get availableAmount () {
-      if (this.formData.status !== this.$enums.RequestStatus.NUOVA && this.formData.id) {
-        return this.formData.availableAmount;
-      }
-
-      let toReturn = 0;
-
-      switch (this.formData.type) {
-        case this.$enums.RequestTypes.RISC_CAPITALE:
-        case this.$enums.RequestTypes.VERSAMENTO:
-          toReturn = this.wallet.deposit ?? 0;
-
-          break;
-        case this.$enums.RequestTypes.RISC_INTERESSI:
-        case this.$enums.RequestTypes.RISC_INTERESSI_BRITE:
-        case this.$enums.RequestTypes.RISC_INTERESSI_GOLD:
-          toReturn = this.wallet.interestAmount ?? 0;
-
-          break;
-        case this.$enums.RequestTypes.RISC_PROVVIGIONI:
-          toReturn = this.wallet.currMonthCommissions ?? 0;
-
-          break;
-        case this.$enums.RequestTypes.COMMISSION_MANUAL_ADD:
-          toReturn = this.formData.availableAmount || 0;
-
-          break;
-      }
-
-      return toReturn;
-    }
-
-    get conversationId () {
-      return this.formData.conversation?.id
-    }
-
-    get showAlert () {
-      const statuses = [
-        this.$enums.RequestStatus.LAVORAZIONE,
-        this.$enums.RequestStatus.RIFIUTATA,
-        this.$enums.RequestStatus.ANNULLATA
-      ];
-
-      return this.formData.status ? statuses.includes(this.formData.status) : false
-    }
-
-    get showConversationLink () {
-      return (this.formData.conversation
+  get showConversationLink () {
+    return (this.formData.conversation
         && (this.formData.conversation?.watchersIds?.includes(this.$auth.user.id)
-          || this.$auth.user.role === this.$enums.UserRoles.ADMIN
-        ));
-    }
+            || this.$auth.user.role === this.$enums.UserRoles.ADMIN
+        ))
+  }
 
-    get ownByCurrentUser () {
-      return [this.formData.conversation?.createdById, this.formData.conversation?.directedToId]
+  get ownByCurrentUser () {
+    return [this.formData.conversation?.createdById, this.formData.conversation?.directedToId]
         .includes(this.$auth.user.id)
-    }
+  }
 
-    get firstMustTakeCharge () {
-      return this.$store.getters["user/userIsAdmin"]
+  get firstMustTakeCharge () {
+    return this.$store.getters['user/userIsAdmin']
         && this.formData.status === RequestStatus.NUOVA
         && [RequestTypes.VERSAMENTO, RequestTypes.RISC_CAPITALE].includes(this.formData.type as number)
         && [RequestStatus.NUOVA, RequestStatus.LAVORAZIONE].includes(this.formData.status as number)
-    }
-
-    get canApprove () {
-      if (!this.formData.status) {
-      return false
-    }
-
-    const isNewRequest = this.$enums.RequestStatus.NUOVA === +this.formData.status;
-    const isInProgress = this.$enums.RequestStatus.LAVORAZIONE === +this.formData.status;
-    // const ownByAdmin = isInProgress && ownByCurrentUser.value;
-
-    return (isNewRequest || isInProgress)
-      && this.$store.getters["user/userIsAdmin"]
-      && !this.formData.autoWithdrawlAll
   }
 
-  get canCancelAutoWithdrawlAll() {
+  get canApprove () {
     if (!this.formData.status) {
       return false
     }
 
-    const isInProgress = this.$enums.RequestStatus.LAVORAZIONE === +this.formData.status;
-    const isAuthUserRequest = this.$auth.user.id === this.formData.userId;
+    const isNewRequest = this.$enums.RequestStatus.NUOVA === +this.formData.status
+    const isInProgress = this.$enums.RequestStatus.LAVORAZIONE === +this.formData.status
+    // const ownByAdmin = isInProgress && ownByCurrentUser.value;
+
+    return (isNewRequest || isInProgress)
+        && this.$store.getters['user/userIsAdmin']
+        && !this.formData.autoWithdrawlAll
+  }
+
+  get canCancelAutoWithdrawlAll () {
+    if (!this.formData.status) {
+      return false
+    }
+
+    const isInProgress = this.$enums.RequestStatus.LAVORAZIONE === +this.formData.status
+    const isAuthUserRequest = this.$auth.user.id === this.formData.userId
     const reqHasAutoWithdrawl = this.formData.autoWithdrawlAll
 
-    return isInProgress && isAuthUserRequest && reqHasAutoWithdrawl;
+    return isInProgress && isAuthUserRequest && reqHasAutoWithdrawl
   }
 
-  get canDelete() {
+  get canDelete () {
     return this.formData.id
-      && this.formData.userId === this.$auth.user.id
-      && this.formData.status === this.$enums.RequestStatus.NUOVA
+        && this.formData.userId === this.$auth.user.id
+        && this.formData.status === this.$enums.RequestStatus.NUOVA
 
   }
 
-  get canEdit() {
+  get canEdit () {
     if (!this.formData.requestState) {
       return false
     }
@@ -351,163 +351,162 @@
     const allowedRoles = [
       this.$enums.UserRoles.ADMIN,
       this.$enums.UserRoles.SERV_CLIENTI
-    ];
-    const allowedState = [this.$enums.RequestStatus.NUOVA];
+    ]
+    const allowedState = [this.$enums.RequestStatus.NUOVA]
 
     return (
-      allowedRoles.includes(this.$auth.user.role) &&
-      allowedState.includes(this.formData.requestState)
-    );
+        allowedRoles.includes(this.$auth.user.role) &&
+        allowedState.includes(this.formData.requestState)
+    )
   }
 
-  get alertIcon() {
+  get alertIcon () {
     let icon = null
 
     if (this.formData.autoWithdrawlAll) {
-      icon = "mdi-infinity"
+      icon = 'mdi-infinity'
     }
 
     if (this.formData.autoWithdrawlAllRecursively) {
-      icon = "mdi-repeat"
+      icon = 'mdi-repeat'
     }
 
     return icon
   }
 
-    get readonly () {
-      return this.formData.requestState
+  get readonly () {
+    return this.formData.requestState
+  }
+
+  get isNew () {
+    return !this.formData.id
+  }
+
+  get userRefAgent () {
+    return this.reqData?.user?.referenceAgentData?.id
+  }
+
+  get showNewAgentCommunication () {
+    if (!this.userRefAgent) {
+      return false
     }
 
-    get isNew () {
-      return !this.formData.id;
-    }
+    return this.$store.getters['user/userIsAdmin']
+  }
 
-    get userRefAgent () {
-      return this.reqData?.user?.referenceAgentData?.id
-    }
+  close () {
+    this.$refs.dialogForm?.reset()
+    this.$store.dispatch('dialog/updateStatus', false)
+  }
 
-    get showNewAgentCommunication () {
-      if (!this.userRefAgent) {
-        return false
+  async onDelete () {
+    const result = await this.actions?.delete(this.formData as any)
+
+    if (result) {
+      this.close()
+
+      // this.$nuxt.$emit("requests:deleted")
+      // this.$emit('requestDeleted')
+    }
+  }
+
+  async onApprove () {
+    const result = await (!this.firstMustTakeCharge ? this.actions?.approve(this.formData as any) : this.actions?.takeCharge(this.formData as any))
+
+    if (result) {
+      this.close()
+    }
+  }
+
+  async onReject () {
+    const result = await this.actions?.reject(this.formData as any)
+
+    if (result) {
+      this.close()
+    }
+  }
+
+  async onCancelAutoWithdrawlAll () {
+    const result = await this.actions?.cancelAutoWithdrawlAll(this.formData as any)
+
+    if (result) {
+      const user = this.$auth.user
+
+      this.$auth.setUser({
+        ...user,
+        autoWithdrawlAll: null,
+        autoWithdrawlAllRecursively: null
+      })
+
+      this.close()
+    }
+  }
+
+  async onFormSubmit () {
+    try {
+      if (this.currentStep === 0 && !(await this.$refs.dialogForm.validate(false))) {
+        return
       }
 
-      return this.$store.getters["user/userIsAdmin"]
-    }
-
-    close () {
-      this.$refs.dialogForm?.reset();
-      this.$store.dispatch("dialog/updateStatus", false);
-    }
-
-    async onDelete () {
-      const result = await this.actions?.delete(this.formData as any);
-
-      if (result) {
-        this.close();
-
-        this.$emit("requestDeleted");
+      // Check if can proceed with the request
+      if (!this.withdrawalCards.checkBeforeSubmit()) {
+        return
       }
-    }
 
-    async onApprove () {
-      const result = await (!this.firstMustTakeCharge ? this.actions?.approve(this.formData as any) : this.actions?.takeCharge(this.formData as any))
-
-      if (result) {
-        this.close();
-
-        this.$emit("requestStatusChanged");
+      const data = {
+        amount: this.formData.amount,
+        goldAmount: this.formData.goldAmount,
+        userId: this.$auth.user.id,
+        type: this.formData.type,
+        wallet: this.formData.wallet,
+        currency: this.formData.currency,
+        notes: this.formData.notes,
+        requestAttachment: this.formData.requestAttachment,
+        autoWithdrawlAll: this.formData.autoWithdrawlAll,
+        autoWithdrawlAllRecursively: this.formData.autoWithdrawlAllRecursively,
+        cards: this.formData.cards
       }
-    }
 
-    async onReject () {
-      const result = await this.actions?.reject(this.formData as any);
-
-      if (result) {
-        this.close();
-
-        this.$emit("requestStatusChanged");
-      }
-    }
-
-    async onCancelAutoWithdrawlAll () {
-      const result = await this.actions?.cancelAutoWithdrawlAll(this.formData as any);
-
-      if (result) {
-        const user = this.$auth.user;
-
-        this.$auth.setUser({
-          ...user,
-          autoWithdrawlAll: null,
-          autoWithdrawlAllRecursively: null
-        })
-
-        this.close();
-
-        this.$emit("requestStatusChanged");
-      }
-    }
-
-    async onFormSubmit () {
-      try {
-        if (this.currentStep === 0 && !(await this.$refs.dialogForm.validate(false))) {
-          return;
-        }
-
-        // Check if can proceed with the request
-        if (!this.withdrawalCards.checkBeforeSubmit()) {
-          return
-        }
-
-        const data = {
-          amount: this.formData.amount,
-          goldAmount: this.formData.goldAmount,
-          userId: this.$auth.user.id,
-          type: this.formData.type,
-          wallet: this.formData.wallet,
-          currency: this.formData.currency,
-          notes: this.formData.notes,
-          requestAttachment: this.formData.requestAttachment,
-          autoWithdrawlAll: this.formData.autoWithdrawlAll,
-          autoWithdrawlAllRecursively: this.formData.autoWithdrawlAllRecursively,
-          cards: this.formData.cards
-        };
-
-        if ((data.amount || 0) <= this.wallet.interestAmount
+      if ((data.amount || 0) <= this.wallet.interestAmount
           && data.type === this.$enums.RequestTypes.RISC_CAPITALE) {
-          try {
-            await this.$alerts.ask({
-              html: `Per l'importo richiesto è consigliabile effettuare una <strong>Riscossione Rendite</strong> riducendo i tempi di attesa.
+        try {
+          await this.$alerts.ask({
+            html: `Per l'importo richiesto è consigliabile effettuare una <strong>Riscossione Rendite</strong> riducendo i tempi di attesa.
             Vuole convertire questa richiesta in Riscossione Rendite?`,
-              confirmButtonText: "Si, converti in Riscossione rendite",
-              cancelButtonText: "No, procedi con Prelievo deposito"
-            })
+            confirmButtonText: 'Si, converti in Riscossione rendite',
+            cancelButtonText: 'No, procedi con Prelievo deposito'
+          })
 
-            await this.close();
+          await this.close()
 
-            await this.$router.replace("/requests#new_collect_interests")
-
-            return
-          } catch (er) {
-            // procede con la richiesta
+          if (this.$route.path === '/requests') {
+            window.location.hash = 'new_collect_interests'
+          } else {
+            await this.$router.replace('/requests#new_collect_interests')
           }
+
+          return
+        } catch (er) {
+          // procede con la richiesta
+        }
       }
 
-      const reqTypeFormatted = this.$t("enums.RequestTypes." + this.$enums.RequestTypes.get(data.type).id)
+      const reqTypeFormatted = this.$t('enums.RequestTypes.' + this.$enums.RequestTypes.get(data.type).id)
 
       await this.$alerts.askBeforeAction({
-        key: "send-request",
+        key: 'send-request',
         settings: {
-          html: this.$t(`alerts.send-request${data.autoWithdrawlAll ? `-all${data.autoWithdrawlAllRecursively ? '-recursive' : ''}` : ""}-text`, {
+          html: this.$t(`alerts.send-request${data.autoWithdrawlAll ? `-all${data.autoWithdrawlAllRecursively ? '-recursive' : ''}` : ''}-text`, {
             ...data,
             type: reqTypeFormatted,
-            amount: "€ " + moneyFormatter(data.amount)
+            amount: '€ ' + moneyFormatter(data.amount)
           }) as string
         },
         preConfirm: async () => {
-          const result: any = await this.$apiCalls.createRequest(data);
+          const result: any = await this.$apiCalls.requests.createRequest(data)
 
           if (data.autoWithdrawlAll) {
-            const user = this.$auth.user;
+            const user = this.$auth.user
             const newUser = {
               ...user,
               autoWithdrawlAll: result.id,
@@ -516,55 +515,54 @@
 
             this.$auth.setUser(newUser)
           }
+
+          this.$nuxt.$emit('requests:newAdded', result.status)
         },
         data: {
           type: this.$t(
-            "enums.RequestTypes." +
-            this.$enums.RequestTypes.get(this.formData.type).id
+              'enums.RequestTypes.' +
+              this.$enums.RequestTypes.get(this.formData.type).id
           ),
           amount:
-            this.$enums.CurrencyType.get(data.currency).symbol +
-            " " +
-            moneyFormatter(data.amount)
+              this.$enums.CurrencyType.get(data.currency).symbol +
+              ' ' +
+              moneyFormatter(data.amount)
         }
-      });
+      })
 
-
-      this.$emit("newRequestAdded");
-
-      this.close();
+      this.close()
     } catch (er) {
-      console.log(er);
+      console.log(er)
     }
   }
 
-  @Watch("availableAmount", {immediate: true})
-  onAvailableAmountChange(value: number) {
-    this.formData.availableAmount = value;
+  @Watch('availableAmount', { immediate: true })
+  onAvailableAmountChange (value: number) {
+    this.formData.availableAmount = value
   }
 
-  @Watch("formData.type", {immediate: true})
-  onTypeChange(value: number) {
+  @Watch('formData.type', { immediate: true })
+  onTypeChange (value: number) {
     this.formData.wallet =
-      ![this.$enums.RequestTypes.RISC_PROVVIGIONI, this.$enums.RequestTypes.COMMISSION_MANUAL_ADD].includes(value)
-        ? this.$enums.WalletTypes.DEPOSIT
-        : this.$enums.WalletTypes.COMMISION;
+        ![this.$enums.RequestTypes.RISC_PROVVIGIONI, this.$enums.RequestTypes.COMMISSION_MANUAL_ADD].includes(value)
+            ? this.$enums.WalletTypes.DEPOSIT
+            : this.$enums.WalletTypes.COMMISION
 
-    this.formData.currency = this.$enums.CurrencyType.EURO;
+    this.formData.currency = this.$enums.CurrencyType.EURO
   }
 
-  @Watch("formData.autoWithdrawlAll", {immediate: true})
-  onAutoWithdrawlAllChange(value: number) {
+  @Watch('formData.autoWithdrawlAll', { immediate: true })
+  onAutoWithdrawlAllChange (value: number) {
     if (!value) {
       this.formData.autoWithdrawlAllRecursively = false
-      this.formData.amount = 0;
+      this.formData.amount = 0
     } else {
-      this.formData.amount = "La somma disponibile l'ultimo del mese"
+      this.formData.amount = 'La somma disponibile l\'ultimo del mese'
     }
   }
 
-  async mounted() {
-    this.actions = new RequestsTableActions(this);
+  async mounted () {
+    this.actions = new RequestsTableActions(this)
 
     /*
     If the request has a status different from new, don't try to fetch the user's wallet
@@ -586,16 +584,16 @@
         this.close()
       }
 
-      return;
+      return
     }
 
-    const data: any = {};
+    const data: any = {}
 
-    if (this.$store.getters["user/userIsAdmin"]) {
-      data.userId = this.formData.userId;
+    if (this.$store.getters['user/userIsAdmin']) {
+      data.userId = this.formData.userId
     }
 
-    await this.$store.dispatch("user/updateWallets", {apiCalls: this.$apiCalls, data});
+    await this.$store.dispatch('user/updateWallets', { apiCalls: this.$apiCalls, data })
 
     this.formData.type = this.incomingData.type
     this.formData.gold = this.$auth.user.gold

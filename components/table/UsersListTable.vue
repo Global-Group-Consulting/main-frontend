@@ -124,6 +124,10 @@ export default defineComponent({
       }
     ])
 
+    //********************************************************
+    // COMPUTED PROPS
+    //********************************************************
+
     // show only basic tabs and eventually show also filters tab if user has filters active
     const visibileTabsList: ComputedRef<PaginatedTab[]> = computed(() => {
       return tabsList.value.filter(tab => {
@@ -138,10 +142,6 @@ export default defineComponent({
         return true
       })
     })
-
-    //********************************************************
-    // COMPUTED PROPS
-    //********************************************************
 
     const selectedTabId = computed(() => {
       return visibileTabsList.value[currentTab.value].id
