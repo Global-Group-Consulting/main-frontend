@@ -44,105 +44,104 @@
 </template>
 
 <script lang="ts">
-import {Component, Prop, Vue, Watch} from "vue-property-decorator";
-import {ActionItem, ActionItemOptions} from "~/@types/ActionItem";
-import DynamicFilters from "~/components/filters/DynamicFilters.vue";
-import MobileMenuActions from "~/components/MobileMenuActions.vue";
-import PageToolbarSingleSlot from "~/components/blocks/pageToolbar/PageToolbarSingleSlot.vue";
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import { ActionItem, ActionItemOptions } from '~/@types/ActionItem'
+import DynamicFilters from '~/components/filters/DynamicFilters.vue'
+import MobileMenuActions from '~/components/MobileMenuActions.vue'
+import PageToolbarSingleSlot from '~/components/blocks/pageToolbar/PageToolbarSingleSlot.vue'
 
 @Component({
-  components: {PageToolbarSingleSlot, MobileMenuActions, DynamicFilters}
+  components: { PageToolbarSingleSlot, MobileMenuActions, DynamicFilters }
 })
 export default class PageToolbar extends Vue {
-  @Prop({type: Boolean, default: false})
-  public alwaysVisible!: boolean;
+  @Prop({ type: Boolean, default: false })
+  public alwaysVisible!: boolean
 
-  @Prop({type: Array as () => ActionItem[], default: () => [],})
-  public actionsList!: ActionItem[];
+  @Prop({ type: Array as () => ActionItem[], default: () => [] })
+  public actionsList!: ActionItem[]
 
-  @Prop({type: String})
+  @Prop({ type: String })
   filtersSchema!: string
 
-  @Prop({type: Boolean, default: false})
+  @Prop({ type: Boolean, default: false })
   filtersExpanded!: boolean
 
-  @Prop({type: Boolean, default: true})
+  @Prop({ type: Boolean, default: true })
   useStore!: boolean
 
-  @Prop({type: Boolean, default: false})
+  @Prop({ type: Boolean, default: false })
   borderBottom!: boolean
 
-  @Prop({type: Object, default: () => ({})})
+  @Prop({ type: Object, default: () => ({}) })
   value!: any
 
-  @Prop({type: Object, default: () => ({outlined: true, elevation: 2, rounded: true})})
+  @Prop({ type: Object, default: () => ({ outlined: true, elevation: 2, rounded: true }) })
   styles!: any
 
-  @Prop({type: Boolean, default: false})
+  @Prop({ type: Boolean, default: false })
   hideFiltersButton!: boolean
 
-
-  get includeFilters() {
-    return !!this.filtersSchema;
+  get includeFilters () {
+    return !!this.filtersSchema
   }
 
-  get filtersExpand() {
+  get filtersExpand () {
     if (this.useStore) {
-      return this.$store.getters["filters/expanded"];
+      return this.$store.getters['filters/expanded']
     } else {
       return this.filtersExpanded
     }
   }
 
-  get countActiveFilters(): number {
-    return this.$store.getters["filters/countActiveFilters"]
+  get countActiveFilters (): number {
+    return this.$store.getters['filters/countActiveFilters']
   }
 
-  get leftActionsList(): ActionItem[] {
+  get leftActionsList (): ActionItem[] {
     return this.actionsList
-      .filter((action: ActionItem) => {
-          return action.position === "left" && !action.onlyInMobile
-        }
-      )
+        .filter((action: ActionItem) => {
+              return action.position === 'left' && !action.onlyInMobile
+            }
+        )
   }
 
-  get centerActionsList(): ActionItem[] {
+  get centerActionsList (): ActionItem[] {
     return this.actionsList
-      .filter((action: ActionItem) => {
-          return (action.position === "center" || !action.position) && !action.onlyInMobile
-        }
-      )
+        .filter((action: ActionItem) => {
+              return (action.position === 'center' || !action.position) && !action.onlyInMobile
+            }
+        )
   }
 
-  get rightActionsList(): ActionItem[] {
+  get rightActionsList (): ActionItem[] {
     const toReturn: ActionItem[] = this.actionsList
-      .filter((action: ActionItem) => {
-        return action.position === "right" && !action.onlyInMobile
-      })
+        .filter((action: ActionItem) => {
+          return action.position === 'right' && !action.onlyInMobile
+        })
 
     if (this.includeFilters && !this.hideFiltersButton) {
       // By default adds filter button, only if there is a schema to use
       toReturn.push({
-        text: "",
-        html: this.$t("actions.filters-btn") + (this.countActiveFilters ? ` (${this.countActiveFilters})` : ''),
-        icon: this.filtersExpand ? "mdi-filter-minus-outline" : "mdi-filter-menu",
+        text: '',
+        html: this.$t('actions.filters-btn') + (this.countActiveFilters ? ` (${this.countActiveFilters})` : ''),
+        icon: this.filtersExpand ? 'mdi-filter-minus-outline' : 'mdi-filter-menu',
         click: () => {
-          this.$store.dispatch("filters/updateExpanded", !this.filtersExpand) //this.filtersExpand = !this.filtersExpand,
-          this.$emit("expandedChanged", !this.filtersExpand)
+          this.$store.dispatch('filters/updateExpanded', !this.filtersExpand) //this.filtersExpand = !this.filtersExpand,
+          this.$emit('expandedChanged', !this.filtersExpand)
         },
-        onlyInDesktop: true,
+        onlyInDesktop: true
       })
     }
 
     return toReturn
   }
 
-  onAppliedFilter(activeFilters: any) {
-    this.$emit("appliedFilters", activeFilters)
+  onAppliedFilter (activeFilters: any) {
+    this.$emit('appliedFilters', activeFilters)
   }
 
-  @Watch("filtersExpanded", {immediate: true})
-  onExpandedPropChange(value: boolean) {
+  @Watch('filtersExpanded', { immediate: true })
+  onExpandedPropChange (value: boolean) {
 
   }
 }
