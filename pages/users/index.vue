@@ -3,13 +3,6 @@
     <v-flex>
       <page-header page-name="users"></page-header>
 
-      <!--      <dashboard-blocks :dashboard-data="usersDataBlocks"
-                              class="mb-6"
-                              readonly
-                              page="users"
-                              format-as-int
-                              :loading="!$store.getters['users/initialized']"
-            ></dashboard-blocks>-->
       <UserProfileBlocks></UserProfileBlocks>
 
       <page-toolbar always-visible :actions-list="actionsList" filters-schema="users"></page-toolbar>
@@ -44,6 +37,7 @@ import NewUsersFAB from '../../components/actions/NewUsersFAB.vue'
 import UserProfileBlocks from '../../components/dashboard/UserProfileBlocks.vue'
 
 import { useNewUserActions } from '@/composables/newUserActions'
+import UserRoles from '@/enums/UserRoles'
 
 export default {
   name: 'index',
@@ -67,44 +61,18 @@ export default {
     const lastTab = ref(0)
     const permissions = Permissions(root)
     const usersPageData = usersPage(root)
-    const newUserActions = useNewUserActions($store, $i18n)
+    const newUserActions = useNewUserActions($store, $apiCalls, $router, root.$nuxt)
 
     //********************************************************
     // COMPUTED PROPS
     //********************************************************
 
-    const actionsList = computed(() => ([
-      ...newUserActions.list.value.reduce((acc, curr) => {
-        acc.push({
-          text: 'users-add-' + $enums.UserRoles.getIdName(curr.type),
-          if: curr.if && $vuetify.breakpoint.xsOnly,
-          icon: 'mdi-account',
-          click: () => $router.push(`/users/new?type=${curr.type}`),
-          onlyInMobile: true,
-          options: {
-            color: $enums.UserRoles.get(curr.type).color
-          }
-        })
-
-        return acc
-      }, [])
-    ]))
+    const actionsList = computed(() => newUserActions.list.value)
     const getTabColor = computed(() => {
       const selectedTable = usersPageData.usersList.value[currentTab.value]
 
       return selectedTable ? $enums.UserRoles.get(selectedTable.id).color : ''
     })
-
-    /* const usersDataBlocks = computed(() => {
-       // TODO:: Dati devono essere recuperati da API direttamente qui
-       const userIsAgente = $store.getters['user/userIsAgente']
-       const usersStatistics = $store.getters['users/usersStatistics']
-       const agentUsersStatistics = $store.getters['users/agentUsersStatistics']
-
-       return {
-         blocks: userIsAgente ? agentUsersStatistics : usersStatistics
-       }
-     })*/
 
     //********************************************************
     // FUNCTIONS
@@ -116,7 +84,8 @@ export default {
       permissions,
       getTabColor,
       currentTab,
-      actionsList
+      actionsList,
+      newUserActions
       // usersDataBlocks
     }
   }

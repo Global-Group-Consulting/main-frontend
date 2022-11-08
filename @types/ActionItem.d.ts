@@ -1,4 +1,4 @@
-import {ComputedRef} from "@vue/composition-api"
+import { ComputedRef } from '@vue/composition-api'
 
 export interface ActionItemOptions {
   text?: boolean,
@@ -9,11 +9,12 @@ export interface ActionItem {
   text: string
   html?: string
   tooltip?: string
-  position?: "left" | "center" | "right"
+  position?: 'left' | 'center' | 'right'
   icon?: string
   options?: ActionItemOptions
   disabled?: ComputedRef
   if?: ComputedRef | boolean
+  loading?: boolean
   /**
    * Indicated if this element must be shown only in the mobile menu
    */
@@ -23,8 +24,8 @@ export interface ActionItem {
     text: string
     icon?: string
     options?: ActionItemOptions
-    click?(event: any, action: ActionItem): void
+    click? (event: any, action: ActionItem): void
   }[]
-
-  click?(event: any, action: ActionItem): void
+  
+  click? (event: any, action: ActionItem): void
 }
