@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex">
-    <v-autocomplete :items="items"
+    <v-autocomplete :items="selectOptions"
                     :value="value"
                     :search-input.sync="search"
                     :loading="loading"
@@ -32,24 +32,25 @@ export default defineComponent({
     asyncFn: {
       type: Function as PropType<(search: string) => Promise<any[]>>,
       required: true
-    }
+    },
+    items: Array
   },
   setup (props, { emit, root }) {
-    const items: Ref<any[]> = ref([])
+    const selectOptions: Ref<any[]> = ref([])
     const search = ref('')
     const loading = ref(false)
     const justChanged = ref(false)
 
     function onChange (value: string) {
       console.log('onChange', value)
-      items.value = []
+      selectOptions.value = []
       justChanged.value = true
 
       emit('change', value)
     }
 
     function onClickClear () {
-      items.value = []
+      selectOptions.value = []
 
       emit('change', '')
     }
@@ -63,7 +64,7 @@ export default defineComponent({
         toReturn = 'Inserisci almeno 3 caratteri'
       } else if (loading.value) {
         toReturn = 'Sto cercando..'
-      } else if (items.value.length === 0) {
+      } else if (selectOptions.value.length === 0) {
         toReturn = 'Nessun risultato trovato'
       }
 
@@ -79,7 +80,7 @@ export default defineComponent({
       }
 
       if (!value || value.length < 3) {
-        items.value = []
+        selectOptions.value = []
 
         return
       }
@@ -87,7 +88,7 @@ export default defineComponent({
       loading.value = true
 
       try {
-        items.value = await props.asyncFn.call(root.$apiCalls.selectOptions, value)
+        selectOptions.value = await props.asyncFn.call(root.$apiCalls.selectOptions, value)
       } catch (e) {
         console.error(e)
       }
@@ -95,8 +96,18 @@ export default defineComponent({
       loading.value = false
     }, 300))
 
+    watch(() => props.items, (value) => {
+      if (!value || loading.value) {
+        return
+      }
+
+      console.log('watch items', value)
+
+      selectOptions.value = value
+    }, { immediate: true })
+
     return {
-      items,
+      selectOptions,
       search,
       loading,
       noDataText,

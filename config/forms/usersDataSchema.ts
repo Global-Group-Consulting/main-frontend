@@ -549,10 +549,16 @@ export function extraData (formContext: FormContext) {
         },
         'referenceAgent': {
           if: formContext.showReferenceAgent && canChangeAgenteRif.value,
-          component: canChangeAgenteRif.value ? 'v-select' : null,
+          component: canChangeAgenteRif.value ? 'async-autocomplete' : null,
           disabled: !canChangeAgenteRif.value,
           clearable: true,
-          formatter: !canChangeAgenteRif.value ? (value: string) => {
+          asyncFn: formContext.$apiCalls.selectOptions.getAgentsList,
+          items: formContext.formData.referenceAgentData ? [{
+            rawData: formContext.formData.referenceAgentData,
+            text: formContext.formData.referenceAgentData.firstName + ' ' + formContext.formData.referenceAgentData.lastName,
+            value: formContext.formData.referenceAgentData.id
+          }] : []
+          /*formatter: !canChangeAgenteRif.value ? (value: string) => {
             if (!value) {
               return
             }
@@ -593,7 +599,7 @@ export function extraData (formContext: FormContext) {
               })
               
               return acc
-            }, [])
+            }, [])*/
         },
         'referenceAgentData': {
           if: formContext.showReferenceAgent && !canChangeAgenteRif.value,

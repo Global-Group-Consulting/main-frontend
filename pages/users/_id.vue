@@ -231,7 +231,6 @@
           center-active
           show-arrows
           class="ml-3"
-
         >
           <v-tab
             v-for="(section, index) in formTabs"
