@@ -32,7 +32,7 @@
             <v-icon>mdi-account</v-icon>
           </v-btn>
         </template>
-        <span>{{ userBtn.text }}</span>
+        <span>{{ $t("actions." + userBtn.text) }}</span>
       </v-tooltip>
     </v-speed-dial>
   </v-fab-transition>
@@ -47,7 +47,7 @@ export default defineComponent({
   setup (props, { root }) {
     const opened = ref(false)
     const { $store, $apiCalls, $router } = root
-    const newUserActions = useNewUserActions($store, $apiCalls, $router)
+    const newUserActions = useNewUserActions($store, $apiCalls, $router, root.$nuxt)
 
     return {
       opened,
