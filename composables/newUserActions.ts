@@ -1,37 +1,81 @@
-import { computed } from '@vue/composition-api'
+import { computed, ComputedRef } from '@vue/composition-api'
 import UserRoles from '~/enums/UserRoles'
+import { ApiCalls } from '~/plugins/apiCalls'
+import jsFileDownload from 'js-file-download'
 
 /**
  *
  * @param {any} $store
- * @param {any} $i18n
+ * @param {any} $apiCalls
+ * @param {any} $router
  */
-export function useNewUserActions ($store: any, $i18n: any) {
+export function useNewUserActions ($store: any, $apiCalls: ApiCalls, $router: any) {
   
   const list = computed(() => [
     {
       type: UserRoles.ADMIN,
       color: UserRoles.get(UserRoles.ADMIN).color,
-      text: $i18n.t('enums.UserRoles.' + UserRoles.getIdName(UserRoles.ADMIN)),
+      icon: 'mdi-account-plus',
+      onlyInMobile: true,
+      options: {
+        color: UserRoles.get(UserRoles.ADMIN).color
+      },
+      text: 'users.add-admin',
+      click: () => $router.push(`/users/new?type=${UserRoles.ADMIN}`),
       if: $store.getters['user/canAddUsers_admin']
     },
     {
       type: UserRoles.SERV_CLIENTI,
       color: UserRoles.get(UserRoles.SERV_CLIENTI).color,
-      text: $i18n.t('enums.UserRoles.' + UserRoles.getIdName(UserRoles.SERV_CLIENTI)),
+      icon: 'mdi-account-plus',
+      onlyInMobile: true,
+      options: {
+        color: UserRoles.get(UserRoles.SERV_CLIENTI).color
+      },
+      text: 'users.add-servClienti',
+      click: () => $router.push(`/users/new?type=${UserRoles.SERV_CLIENTI}`),
       if: $store.getters['user/canAddUsers_servClienti']
     },
     {
       type: UserRoles.AGENTE,
       color: UserRoles.get(UserRoles.AGENTE).color,
-      text: $i18n.t('enums.UserRoles.' + UserRoles.getIdName(UserRoles.AGENTE)),
+      icon: 'mdi-account-plus',
+      onlyInMobile: true,
+      options: {
+        color: UserRoles.get(UserRoles.AGENTE).color
+      },
+      text: 'users.add-agente',
+      click: () => $router.push(`/users/new?type=${UserRoles.AGENTE}`),
       if: $store.getters['user/canAddUsers_agente']
     },
     {
       type: UserRoles.CLIENTE,
       color: UserRoles.get(UserRoles.CLIENTE).color,
-      text: $i18n.t('enums.UserRoles.' + UserRoles.getIdName(UserRoles.CLIENTE)),
+      icon: 'mdi-account-plus',
+      onlyInMobile: true,
+      options: {
+        color: UserRoles.get(UserRoles.CLIENTE).color
+      },
+      text: 'users.add-cliente',
+      click: () => $router.push(`/users/new?type=${UserRoles.CLIENTE}`),
       if: $store.getters['user/canAddUsers_cliente']
+    },
+    {
+      icon: 'mdi-account-arrow-down',
+      onlyInDesktop: true,
+      text: 'users.download-filtered',
+      tooltip: 'users.download-filtered-tooltip',
+      loading: false,
+      click: async function () {
+        this.loading = true
+        
+        // const file = await $apiCalls.userApi.downloadFiltered($store.getters['filters/activeFilters'])
+        
+        // jsFileDownload(file.data, 'utenti_filtrati_' + Date.now(), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+  
+        // this.loading = false
+      },
+      if: $store.getters['user/userIsAdmin']// && $store.getters['filters/areActiveFilters']
     }
   ].filter(_entry => _entry.if))
   

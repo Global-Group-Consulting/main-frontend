@@ -46,8 +46,8 @@ export default defineComponent({
   name: 'NewUsersFAB',
   setup (props, { root }) {
     const opened = ref(false)
-    const { $store, $i18n } = root
-    const newUserActions = useNewUserActions($store, $i18n)
+    const { $store, $apiCalls, $router } = root
+    const newUserActions = useNewUserActions($store, $apiCalls, $router)
 
     return {
       opened,

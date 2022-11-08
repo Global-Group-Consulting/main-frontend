@@ -36,4 +36,12 @@ export class UserApi extends BasicApiCall {
       endPoint: `/api/users/select/agents`
     })
   }
+  
+  async downloadFiltered (filters: any) {
+    return await this._call({
+      endPoint: `/api/users/downloadFiltered`,
+      params: { filters },
+      downloadMode: true
+    })
+  }
 }
