@@ -1,4 +1,4 @@
-import { computed, ComputedRef } from '@vue/composition-api'
+import { computed, ComputedRef, SetupContext } from '@vue/composition-api'
 import UserRoles from '~/enums/UserRoles'
 import { ApiCalls } from '~/plugins/apiCalls'
 import jsFileDownload from 'js-file-download'
@@ -9,7 +9,7 @@ import jsFileDownload from 'js-file-download'
  * @param {any} $apiCalls
  * @param {any} $router
  */
-export function useNewUserActions ($store: any, $apiCalls: ApiCalls, $router: any) {
+export function useNewUserActions ($store: any, $apiCalls: ApiCalls, $router: any, $nuxt: any) {
   
   const list = computed(() => [
     {
@@ -67,15 +67,19 @@ export function useNewUserActions ($store: any, $apiCalls: ApiCalls, $router: an
       tooltip: 'users.download-filtered-tooltip',
       loading: false,
       click: async function () {
-        this.loading = true
+        $nuxt.$loading.start()
         
-        // const file = await $apiCalls.userApi.downloadFiltered($store.getters['filters/activeFilters'])
+        try {
+          const file = await $apiCalls.userApi.downloadFiltered($store.getters['filters/activeFilters'])
+          
+          jsFileDownload(file.data, 'utenti_filtrati_' + Date.now(), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        } catch (e) {
+          console.error(e)
+        }
         
-        // jsFileDownload(file.data, 'utenti_filtrati_' + Date.now(), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-  
-        // this.loading = false
+        $nuxt.$loading.finish()
       },
-      if: $store.getters['user/userIsAdmin']// && $store.getters['filters/areActiveFilters']
+      if: $store.getters['user/userIsAdmin'] && $store.getters['filters/areActiveFilters']
     }
   ].filter(_entry => _entry.if))
   

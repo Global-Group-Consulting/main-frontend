@@ -7,7 +7,6 @@
 
       <page-toolbar always-visible :actions-list="actionsList" filters-schema="users"></page-toolbar>
 
-      {{actionsList}}
       <UsersListTable></UsersListTable>
 
       <!-- Floating action button -->
@@ -62,7 +61,7 @@ export default {
     const lastTab = ref(0)
     const permissions = Permissions(root)
     const usersPageData = usersPage(root)
-    const newUserActions = useNewUserActions($store, $apiCalls, $router)
+    const newUserActions = useNewUserActions($store, $apiCalls, $router, root.$nuxt)
 
     //********************************************************
     // COMPUTED PROPS
@@ -85,7 +84,8 @@ export default {
       permissions,
       getTabColor,
       currentTab,
-      actionsList
+      actionsList,
+      newUserActions
       // usersDataBlocks
     }
   }

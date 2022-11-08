@@ -2,14 +2,13 @@
   <div v-if="actionsList && actionsList.length > 0" class="d-flex">
     <template v-for="action of actionsList"
               v-if="('if' in action ? action.if : true)">
-      {{ action.loading }}
       <tooltip-btn :tooltip="action.tooltip ? $t(`actions.${action.tooltip}`) : ''"
                    v-bind="prepareOptions(action.options)"
                    :icon-name="action.icon"
                    @click="onClick(action, $event)"
                    :disabled="action.disabled"
                    v-if="!action.menuOptions"
-                   :loading="action.loading"
+                   :loading="action.hasOwnProperty('loading') ? action.loading || globalLoading : false"
                    tile
                    height="100%"
       >
@@ -66,6 +65,11 @@ import { ActionItem, ActionItemOptions } from '~/@types/ActionItem'
 export default class PageToolbarSingleSlot extends Vue {
   @Prop({ type: Array })
   actionsList!: ActionItem[]
+
+  get globalLoading () {
+    // @ts-ignore
+    return this.$nuxt.$loading['show'] as any
+  }
 
   prepareOptions (newSettings: ActionItemOptions, attrs?: any) {
     const defaults = { text: true }
