@@ -46,6 +46,7 @@
           :disabled="disabled"
           :range="range"
           locale="it"
+          first-day-of-week="1"
           :show-adjacent-months="true"
           flat
           style="border-top-right-radius: 0;"
