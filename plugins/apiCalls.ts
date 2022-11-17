@@ -17,6 +17,7 @@ import { ClubApi } from '~/plugins/apiCalls/ClubApi'
 import { GeolocationApi } from '~/plugins/apiCalls/GeolocationApi'
 import { NewsApi } from '~/plugins/apiCalls/News'
 import { SelectOptionsApi } from '~/plugins/apiCalls/SelectOptionsApi'
+import { StatisticsApi } from '~/plugins/apiCalls/StatisticsApi'
 
 interface IApiCalls extends ApiCalls {
   [key: string]: any
@@ -59,6 +60,7 @@ export class ApiCalls extends BasicApiCall {
   public geo!: GeolocationApi
   public news!: NewsApi
   public selectOptions!: SelectOptionsApi
+  public statisticsApi!: StatisticsApi
   
   constructor (context: any) {
     super(context)
@@ -74,6 +76,7 @@ export class ApiCalls extends BasicApiCall {
     this.geo = new GeolocationApi(context)
     this.news = new NewsApi(context)
     this.selectOptions = new SelectOptionsApi(context)
+    this.statisticsApi = new StatisticsApi(context)
   }
   
   async userCreate (data: any) {
