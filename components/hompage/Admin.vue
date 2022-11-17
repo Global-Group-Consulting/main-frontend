@@ -2,8 +2,10 @@
   <v-layout column>
     <NewsBox></NewsBox>
 
+    <!-- Card dashboard statistiche -->
     <admin-cards></admin-cards>
 
+    <!-- Sezione richieste da evadere -->
     <v-card class="mb-5">
       <v-card-title class="p-relative">
         <v-icon>mdi-fire</v-icon>
@@ -128,9 +130,9 @@ export default class Admin extends Vue {
 
   async mounted () {
     try {
-      const result = await this.$apiCalls.dashboardFetch()
+      // const result = await this.$apiCalls.dashboardFetch()
 
-      this.dashboardData.pendingRequests = result.pendingRequests || []
+      // this.dashboardData.pendingRequests = result.pendingRequests || []
 
       this.loading = false
     } catch (er) {
