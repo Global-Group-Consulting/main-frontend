@@ -363,9 +363,11 @@ export default defineComponent({
     })
 
     onMounted(() => {
-      // fetch counters only when starting the component
+      // fetch counters only when starting the component and no tabs are selected
       // counters will be updated when the user loads data for each tab
-      fetchCounters()
+      if (!props.tabs || props.tabs.length === 0) {
+        fetchCounters()
+      }
     })
 
     return {

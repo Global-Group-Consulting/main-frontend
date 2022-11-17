@@ -1,6 +1,6 @@
 <template>
-  <v-tooltip bottom :disabled="!tooltip" :loading="loading">
-    <template v-slot:activator="{ on }">
+  <v-tooltip bottom :disabled="!tooltip" :loading="loading" :open-delay="delay">
+    <template v-slot:activator="{ on, attrs }">
       <v-btn v-on="on" v-bind="$attrs"
              @click="$emit('click', $event)"
              :depressed="loading"
@@ -31,6 +31,10 @@ export default {
     text: Boolean,
     noBreakpoint: Boolean,
     loading: Boolean,
+    delay: {
+      type: Number,
+      default: 300
+    },
     breakpoint: {
       type: String,
       default: 'sm'
