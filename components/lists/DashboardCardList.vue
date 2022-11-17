@@ -11,10 +11,10 @@
     </v-alert>
 
     <v-skeleton-loader v-if="loading"
-                       :type="'list-item-avatar-two-line@' + (items.length || 3)"
+                       :type="'list-item-avatar-two-line@' + ((items.length < 6 ? items.length : 5) || 3)"
     />
 
-    <v-list v-else-if="!hasError">
+    <v-list v-else-if="!hasError" :max-height="(62 * 6 + 16) + 'px'" style="overflow: auto">
       <v-list-item v-for="item in items" :key="item.id">
         <!-- Icon -->
         <v-list-item-avatar v-if="item.icon">
@@ -26,7 +26,7 @@
 
         <!-- Content -->
         <v-list-item-content>
-          <v-list-item-title class="font-weight-bold">{{ item.title }}</v-list-item-title>
+          <v-list-item-title class="font-weight-bold" v-html="item.title"></v-list-item-title>
           <v-list-item-subtitle v-html="item.subtitle"></v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
@@ -38,11 +38,11 @@
 import { defineComponent, PropType } from '@vue/composition-api'
 
 export interface DashboardCardListItem {
-  id: string
+  id: string | number
   title: string
   subtitle: string
   icon?: string
-  textIcon?: boolean
+  textIcon?: string
   color?: string
 }
 

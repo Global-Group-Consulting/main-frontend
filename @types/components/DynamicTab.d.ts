@@ -1,9 +1,11 @@
 import {Moment} from "moment";
+import { AsyncComponent, Component } from 'vue/types/options'
+import { Vue } from 'vue/types/vue'
 
 export interface DynamicTab {
   id: "briteTotal" | "briteUsed" | "briteAvailable" | string | number
   title?: string
-  component?: string
+  component?: typeof Vue
   data?: any[]
   updateMethod?: string
   dates?: { from: Moment, to: Moment },
