@@ -1,9 +1,10 @@
-import {Moment} from "moment";
+import { Moment } from 'moment'
 import { AsyncComponent, Component } from 'vue/types/options'
 import { Vue } from 'vue/types/vue'
+import { ExtraFiltersSchemaEntry } from '~/components/filters/DashboardCardFilters.vue'
 
 export interface DynamicTab {
-  id: "briteTotal" | "briteUsed" | "briteAvailable" | string | number
+  id: 'briteTotal' | 'briteUsed' | 'briteAvailable' | string | number
   title?: string
   component?: typeof Vue
   data?: any[]
@@ -21,4 +22,5 @@ export interface DynamicTab {
   loading?: boolean
   filters?: any
   filterMessages?: string[]
+  extraFiltersSchema?: ExtraFiltersSchemaEntry[]
 }
