@@ -22,45 +22,53 @@
           style="border-top-right-radius: 0;"
           :title-date-format="titleDateFormat"
       >
-        <!-- Card actions -->
-        <v-btn color="warning"
-               text
-               @click="onReset"
-        >
-          Svuota
-        </v-btn>
-
-        <v-spacer></v-spacer>
-
-        <v-btn
-            text
-            @click="onCancel"
-        >
-          Annulla
-        </v-btn>
-        <v-btn
-            text
-            color="primary"
-            @click="onConfirm"
-        >
-          OK
-        </v-btn>
       </v-date-picker>
 
       <v-divider vertical></v-divider>
 
       <!-- Predefined selections section -->
-      <div>
-        <v-card-title>Scelte rapide</v-card-title>
+      <div class="d-flex flex-column">
+        <v-card-title>Filtri</v-card-title>
 
-        <v-card-text>
-          <v-list dense>
-            <v-list-item v-for="(entry, i) in selectableDates" :key="i"
-                         @click="onPredefinedDateClick(entry)">
-              {{ entry.text }}
-            </v-list-item>
-          </v-list>
+        <v-card-text class="flex-grow-1">
+          <v-select v-model="formData.dates" :items="selectableDates"
+                    label="Periodo"
+                    clearable></v-select>
+
+          <component v-for="el of extraFiltersSchema" :key="el.key"
+                     :is="el.component"
+                     v-bind="el.componentOptions"
+                     v-model="formData[el.key]"
+          ></component>
         </v-card-text>
+
+        <v-divider></v-divider>
+
+        <!-- Card actions -->
+        <v-card-actions>
+          <v-btn color="warning"
+                 text
+                 @click="onReset"
+          >
+            Svuota
+          </v-btn>
+
+          <v-spacer></v-spacer>
+
+          <v-btn
+              text
+              @click="onCancel"
+          >
+            Annulla
+          </v-btn>
+          <v-btn
+              text
+              color="primary"
+              @click="onConfirm"
+          >
+            OK
+          </v-btn>
+        </v-card-actions>
       </div>
     </v-card>
   </v-menu>
@@ -84,11 +92,20 @@ interface FiltersSchemaEntry {
   message: (value: any) => string
 }
 
+export interface ExtraFiltersSchemaEntry extends FiltersSchemaEntry {
+  component: any,
+  componentOptions: any
+}
+
 export default defineComponent({
   name: 'DashboardCardFilters',
   props: {
     filters: {
       type: Object as PropType<Filters>,
+      default: () => ([])
+    },
+    extraFiltersSchema: {
+      type: Array as PropType<ExtraFiltersSchemaEntry[]>,
       default: () => ([])
     }
   },
@@ -100,26 +117,32 @@ export default defineComponent({
         key: 'dates',
         default: () => ([]),
         message: (value: string[]) => 'Periodo: ' + titleDateFormat(value, true)
-      }
+      },
+      ...props.extraFiltersSchema
     ]
     const formData: Ref<Filters> = ref({
-      dates: []
+      dates: [],
+      ...props.extraFiltersSchema.reduce((acc, el) => {
+        acc[el.key] = el.default()
+
+        return acc
+      }, {} as any)
     })
-    const selectableDates: Ref<SelectableDate[]> = ref([
+    const selectableDates: Ref<any[]> = ref([
       {
-        range: [$moment().subtract(3, 'month').format('YYYY-MM'), $moment().format('YYYY-MM')],
+        value: [$moment().subtract(3, 'month').format('YYYY-MM'), $moment().format('YYYY-MM')],
         text: 'Ultimi 3 mesi'
       }, {
-        range: [$moment().subtract(6, 'month').format('YYYY-MM'), $moment().format('YYYY-MM')],
+        value: [$moment().subtract(6, 'month').format('YYYY-MM'), $moment().format('YYYY-MM')],
         text: 'Ultimi 6 mesi'
       }, {
-        range: [$moment().subtract(9, 'month').format('YYYY-MM'), $moment().format('YYYY-MM')],
+        value: [$moment().subtract(9, 'month').format('YYYY-MM'), $moment().format('YYYY-MM')],
         text: 'Ultimi 9 mesi'
       }, {
-        range: [$moment().subtract(12, 'month').format('YYYY-MM'), $moment().format('YYYY-MM')],
+        value: [$moment().subtract(12, 'month').format('YYYY-MM'), $moment().format('YYYY-MM')],
         text: 'Ultimo anno'
       }, {
-        range: [$moment().subtract(24, 'month').format('YYYY-MM'), $moment().format('YYYY-MM')],
+        value: [$moment().subtract(24, 'month').format('YYYY-MM'), $moment().format('YYYY-MM')],
         text: 'Ultimi 2 anni'
       }
     ])
@@ -196,7 +219,10 @@ export default defineComponent({
 
         if (areActiveFilters.value) {
           filtersSchema.forEach((field) => {
-            if (formData.value[field.key]) {
+            const value: any = formData.value[field.key]
+            const isDefined = value !== undefined && value !== null && value !== ''
+
+            if (isDefined && (value instanceof Array ? value.length > 0 : true)) {
               messages.push(field.message(formData.value[field.key]))
             }
           })
