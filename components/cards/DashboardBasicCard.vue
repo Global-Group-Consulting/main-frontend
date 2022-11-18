@@ -43,6 +43,7 @@
       <!-- Filters button and dropdown menu-->
       <template v-if="canFilter">
         <DashboardCardFilters :filters.sync="activeFilters"
+                              :extra-filters-schema="currentTab.extraFiltersSchema"
                               @update:filterMessages="currentTab.filterMessages = $event"></DashboardCardFilters>
       </template>
     </v-toolbar>
@@ -74,7 +75,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, Ref, ref } from '@vue/composition-api'
 import { DynamicTab } from '~/@types/components/DynamicTab'
-import DashboardCardFilters from '~/components/filters/DashboardCardFilters.vue'
+import DashboardCardFilters, { ExtraFiltersSchemaEntry } from '~/components/filters/DashboardCardFilters.vue'
 
 export default defineComponent({
   name: 'DashboardBasicCard',
@@ -84,7 +85,7 @@ export default defineComponent({
       type: Array as PropType<DynamicTab[]>,
       required: true
     },
-    canFilter: Boolean
+    canFilter: Boolean,
   },
   setup (props) {
     const currentTabIndex = ref(0)

@@ -1,16 +1,20 @@
 <template>
   <div>
     <v-row>
-      <v-col cols="12" md="6" lg="4">
+      <v-col cols="12" md="6" lg="3">
         <DashboardMoneySummary></DashboardMoneySummary>
       </v-col>
 
-      <v-col cols="12" md="6" lg="4">
+      <v-col cols="12" md="6" lg="3">
         <DashboardUsersStatus></DashboardUsersStatus>
       </v-col>
 
-      <v-col cols="12" md="6" lg="4">
+      <v-col cols="12" md="6" lg="3">
         <DashboardAgentsChart></DashboardAgentsChart>
+      </v-col>
+
+      <v-col cols="12" md="6" lg="3">
+        <DashboardReportsChart></DashboardReportsChart>
       </v-col>
     </v-row>
 
@@ -32,6 +36,7 @@ import SingleCard from '~/components/elements/cards/SingleCard.vue'
 import { LargeCard } from '~/components/elements/cards/Cards'
 import DashboardMoneySummary from '~/components/cards/DashboardMoneySummary.vue'
 import DashboardUsersStatus from '~/components/cards/DashboardUsersStatus.vue'
+import DashboardReportsChart from '~/components/cards/DashboardReportsChart.vue'
 import { moneyFormatter } from '~/plugins/filters/moneyFormatter'
 import AccountStatuses from '~/enums/AccountStatuses'
 import { BlockData } from '~/config/blocks/dashboardBlocks'
@@ -39,7 +44,7 @@ import { MenuListItem } from '~/@types/components/MenuListItem'
 import CardMultiTab from '~/components/elements/cards/CardMultiTab.vue'
 
 @Component({
-  components: { CardMultiTab, SingleCard, DashboardMoneySummary, DashboardUsersStatus }
+  components: { CardMultiTab, SingleCard, DashboardMoneySummary, DashboardUsersStatus, DashboardReportsChart }
 })
 export default class AdminCards extends Vue {
   public dashboardData = {

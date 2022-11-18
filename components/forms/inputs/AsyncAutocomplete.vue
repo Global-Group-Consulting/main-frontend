@@ -46,12 +46,14 @@ export default defineComponent({
       selectOptions.value = []
       justChanged.value = true
 
+      emit('input', value)
       emit('change', value)
     }
 
     function onClickClear () {
       selectOptions.value = []
 
+      emit('input', '')
       emit('change', '')
     }
 

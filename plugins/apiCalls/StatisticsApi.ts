@@ -5,6 +5,9 @@ import { UserTotalsDto } from '~/@types/dto/statistics/UserTotalsDto'
 import { NewUsersCountDto } from '~/@types/dto/statistics/NewUsersCountDto'
 import { AgentNewUsersCountDto } from '~/@types/dto/statistics/AgentNewUsersCountDto'
 import { AgentNewDepositsCountDto } from '~/@types/dto/statistics/AgentNewDepositsCountDto'
+import { RefundReportDto } from '~/@types/dto/statistics/RefundReportDto'
+import { WithdrawalDepositReportDto } from '~/@types/dto/statistics/WithdrawalDepositReportDto'
+import { WithdrawalInterestReportDto } from '~/@types/dto/statistics/WithdrawalInterestReportDto'
 
 export class StatisticsApi extends BasicApiCall {
   async getSystemTotals (filters?: any): Promise<SystemTotalsDto> {
@@ -45,6 +48,27 @@ export class StatisticsApi extends BasicApiCall {
   async getAgentNewDepositsCount (filters?: any): Promise<AgentNewDepositsCountDto[]> {
     return await this.get({
       endPoint: '/api/statistics/agents/newDepositsCount',
+      params: { filters }
+    })
+  }
+  
+  async getRefundReport (filters?: any): Promise<RefundReportDto[]> {
+    return await this.get({
+      endPoint: '/api/statistics/refundReport',
+      params: { filters }
+    })
+  }
+  
+  async getWithdrawalDepositReport (filters?: any): Promise<WithdrawalDepositReportDto[]> {
+    return await this.get({
+      endPoint: '/api/statistics/withdrawalDepositReport',
+      params: { filters }
+    })
+  }
+  
+  async getWithdrawalInterestReport (filters?: any): Promise<WithdrawalInterestReportDto[]> {
+    return await this.get({
+      endPoint: '/api/statistics/withdrawalInterestReport',
       params: { filters }
     })
   }
