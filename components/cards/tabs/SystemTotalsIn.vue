@@ -46,8 +46,7 @@ export default defineComponent({
         subtitle: 'Nuovo Deposito',
         icon: 'mdi-bank-transfer-in',
         color: 'indigo lighten-2',
-        details: [
-        ]
+        details: []
       }, {
         id: 'interests',
         title: '',

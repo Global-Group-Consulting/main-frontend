@@ -17,7 +17,7 @@
     <v-list v-else-if="!hasError" :max-height="(62 * 6 + 16) + 'px'" style="overflow: auto">
       <component :is="item.details && item.details.length ? 'v-list-group' : 'v-list-item'"
                  v-for="item in items" :key="item.id">
-        <template v-slot:activator v-if="item.details && item.details.length">
+        <template v-slot:activator v-if="item.details && item.details.length > 0">
           <DashboardCardListItem :item="item"/>
         </template>
 
