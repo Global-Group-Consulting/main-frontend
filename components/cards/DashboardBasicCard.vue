@@ -55,7 +55,7 @@
       {{ currentTab.filterMessages.join(', ') }}
     </v-card-subtitle>
 
-    <v-card-text class="pt-0">
+    <v-card-text class="pt-0 ps-0">
       <v-tabs-items v-model="currentTabIndex">
         <v-tab-item v-for="tab in tabs" :key="tab.id">
 
