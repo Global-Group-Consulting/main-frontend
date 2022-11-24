@@ -15,27 +15,30 @@
     />
 
     <v-list v-else-if="!hasError" :max-height="(62 * 6 + 16) + 'px'" style="overflow: auto">
-      <v-list-item v-for="item in items" :key="item.id">
-        <!-- Icon -->
-        <v-list-item-avatar v-if="item.icon">
-          <v-icon class="grey lighten-3" :color="item.color">{{ item.icon }}</v-icon>
-        </v-list-item-avatar>
-        <v-list-item-avatar v-if="item.textIcon">
-          <text-icon class="grey lighten-3" :color="item.color">{{ item.textIcon }}</text-icon>
-        </v-list-item-avatar>
+      <component :is="item.details && item.details.length ? 'v-list-group' : 'v-list-item'"
+                 v-for="item in items" :key="item.id">
+        <template v-slot:activator v-if="item.details && item.details.length">
+          <DashboardCardListItem :item="item"/>
+        </template>
 
-        <!-- Content -->
-        <v-list-item-content>
-          <v-list-item-title class="font-weight-bold" v-html="item.title"></v-list-item-title>
-          <v-list-item-subtitle v-html="item.subtitle"></v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
+        <DashboardCardListItem :item="item" v-else/>
+
+        <div class="grey lighten-4">
+          <v-list-item
+              v-for="child in item.details"
+              :key="child.title"
+          >
+            <DashboardCardListItem :item="child"/>
+          </v-list-item>
+        </div>
+      </component>
     </v-list>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from '@vue/composition-api'
+import DashboardCardListItem from '~/components/lists/DashboardCardListItem.vue'
 
 export interface DashboardCardListItem {
   id: string | number
@@ -44,10 +47,15 @@ export interface DashboardCardListItem {
   icon?: string
   textIcon?: string
   color?: string
+  tooltip?: string
+  details?: Exclude<DashboardCardListItem, 'details'>[]
 }
 
 export default defineComponent({
   name: 'DashboardCardList',
+  components: {
+    DashboardCardListItem
+  },
   props: {
     items: Array as PropType<DashboardCardListItem[]>,
     hasError: Boolean,
