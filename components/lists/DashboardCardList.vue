@@ -15,27 +15,26 @@
     />
 
     <v-list v-else-if="!hasError" :max-height="(62 * 6 + 16) + 'px'" style="overflow: auto">
-      <component :is="item.details ? 'v-list-group' : 'v-list-item'"
-                 v-for="item in items" :key="item.id">
-        <template v-slot:activator v-if="item.details">
-          <DashboardCardListItem :item="item"/>
-        </template>
+      <template v-for="item in items">
+        <v-list-group v-if="item.details && item.details.length > 0" :key="item.id" >
+          <template v-slot:activator>
+            <DashboardCardListItem :item="item"/>
+          </template>
 
-        <DashboardCardListItem :item="item" v-else/>
-
-        <div class="grey lighten-4">
-          <template v-if="item.details && item.details.length > 0">
+          <div class="grey lighten-4" v-if="item.details && item.details.length > 0">
             <v-list-item
                 v-for="child in item.details"
                 :key="child.title"
             >
               <DashboardCardListItem :item="child"/>
             </v-list-item>
-          </template>
+          </div>
+        </v-list-group>
 
-          <v-list-item v-else>Nessun dato disponibile</v-list-item>
-        </div>
-      </component>
+        <v-list-item v-else :key="item.id">
+          <DashboardCardListItem :item="item"/>
+        </v-list-item>
+      </template>
     </v-list>
   </div>
 </template>
