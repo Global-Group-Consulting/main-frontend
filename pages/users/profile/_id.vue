@@ -7,23 +7,6 @@
             <v-col md="6" cols="12">
               {{ userData.firstName + ' ' + userData.lastName }}
             </v-col>
-            <v-col md="6" cols="12">
-              <!--              <div>{{ $t("pages.club.brite.totalUsableBrite") }}: <strong>
-                              Br' {{ clubStatistics.totalAmount|moneyFormatter(true) }}</strong></div>
-                            <ul class="pl-4" style="list-style: none; font-size: 20px; line-height: 1;">
-                              <li v-for="(entry, i) of clubStatistics.expirations" :key="i">
-                                <div v-html="$t('pages.club.brite.totalExpiresAt', {
-                                            amount: $options.filters.moneyFormatter(entry.amount, true),
-                                            expiresAt: $options.filters.dateFormatter(entry.expiresAt)
-                                            })"/>
-                                <ul class="mb-2" style="list-style: none; font-size: 16px; line-height: 1;">
-                                  <li v-for="pack of Object.entries(entry.byPack)" v-if="pack[1] > 0">
-                                    {{ $t("enums.ClubPacks." + pack[0]) }} : {{ pack[1] }}
-                                  </li>
-                                </ul>
-                              </li>
-                            </ul>-->
-            </v-col>
           </v-row>
         </template>
       </page-header>
@@ -134,7 +117,7 @@ export default class Profile extends Vue {
   movementsFn = MovementsFn(this)
   loading = true
 
-  userDashboardData: any = {
+  /*userDashboardData: any = {
     user: null,
     blocks: {
       deposit: 0,
@@ -151,7 +134,7 @@ export default class Profile extends Vue {
       collectedCommissions: 0,
       clientsTotalDeposit: 0
     }
-  }
+  }*/
 
   clubBlocks: any = {}
 
@@ -351,13 +334,13 @@ export default class Profile extends Vue {
 
       // this.clubBlocks = await this.$apiCalls.clubFetchBlocks(this.userId)
 
-      if (this.showAgentBlocks) {
+      /*if (this.showAgentBlocks) {
         const resultCommissions = await this.$apiCalls.fetchCommissionsStatus(this.userId)
 
         this.agentDashboardData.blocks = resultCommissions.blocks
         this.agentDashboardData.blocks.collectedCommissions = resultCommissions.blocks.collectedCommissions.total
         this.agentDashboardData.user = this.userData
-      }
+      }*/
     } catch (er) {
       this.$alerts.error(er)
     } finally {

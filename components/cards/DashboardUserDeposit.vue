@@ -77,7 +77,8 @@ export default defineComponent({
       deposit: 0,
       interestAmount: 0,
       depositCollected: 0,
-      interestsCollected: 0
+      interestsCollected: 0,
+      clubRepayment: 0
     })
 
     const blocksActions = {
@@ -205,6 +206,12 @@ export default defineComponent({
             action: blocksActions.collectDeposit,
             if: root.$store.getters['user/current']._id === props.userId || root.$store.getters['user/userIsAdmin']
           }]
+        }, {
+          label: 'Rimborsi Club',
+          icon: 'mdi-chart-sankey-variant',
+          color: 'yellow',
+          value: data.value.clubRepayment,
+          actions: []
         }
       ].map((el) => {
         el.actions = el.actions.filter((item: DashboardBlockAction) => item.if ?? true)
