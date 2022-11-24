@@ -32,6 +32,7 @@
             :edit-mode="editMode && !row.disableEditMode"
             @change="onChange(key, $event)"
             @input="onInput(key, $event)"
+            @keyup.enter="$emit('enterPressed')"
           >
             <template v-slot:label>
               <dynamic-label :field="field" :fieldKey="key"

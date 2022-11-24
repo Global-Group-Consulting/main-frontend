@@ -10,17 +10,18 @@
         <v-card-text>
           <dynamic-fieldset :schema="formSchema"
                             v-model="activeFilters"
-                            immediate-update/>
+                            immediate-update
+                            @enterPressed="onEnterPressed"/>
         </v-card-text>
 
         <v-divider/>
 
         <v-card-actions class="justify-center grey lighten-4">
           <v-btn color="primary" @click="applyFilters" :loading="loading||loadingData">
-            {{ $t("filters.filter-btn") }}
+            {{ $t('filters.filter-btn') }}
           </v-btn>
 
-          <v-btn @click="onClearClick" :disabled="loading" elevation="0">{{ $t("filters.cancel-btn") }}</v-btn>
+          <v-btn @click="onClearClick" :disabled="loading" elevation="0">{{ $t('filters.cancel-btn') }}</v-btn>
         </v-card-actions>
       </v-card>
 
@@ -33,12 +34,12 @@
 </template>
 
 <script lang="ts">
-import {Component, Prop, Vue, Watch} from "vue-property-decorator";
-import {CollapseTransition} from "@ivanv/vue-collapse-transition"
-import DynamicFieldset from "../DynamicFieldset.vue";
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import { CollapseTransition } from '@ivanv/vue-collapse-transition'
+import DynamicFieldset from '../DynamicFieldset.vue'
 
-import {FiltersSchemasType, schemas} from "~/config/forms/filters/index";
-import {FormSchema, FormSchemaField} from "~/@types/FormSchema";
+import { FiltersSchemasType, schemas } from '~/config/forms/filters/index'
+import { FormSchema, FormSchemaField } from '~/@types/FormSchema'
 
 @Component({
   components: {
@@ -47,25 +48,28 @@ import {FormSchema, FormSchemaField} from "~/@types/FormSchema";
   }
 })
 export default class DynamicFilters extends Vue {
-  @Prop({type: String})
+  @Prop({ type: String })
   schema!: FiltersSchemasType
 
-  @Prop({type: Boolean, default: false})
+  @Prop({ type: Boolean, default: false })
   expand!: boolean
 
-  @Prop({type: Object, default: () => ({})})
+  @Prop({ type: Object, default: () => ({}) })
   value!: any
 
-  @Prop({type: Object})
+  @Prop({ type: Object })
   inputsData!: any
 
-  @Prop({type: Boolean, default: true})
+  @Prop({ type: Boolean, default: true })
   useStore!: boolean
 
-  @Prop({type: Boolean, default: false})
+  @Prop({ type: Boolean, default: false })
   loading!: boolean
 
-  @Prop({type: String})
+  @Prop({ type: Boolean, default: false })
+  submitOnEnter!: boolean
+
+  @Prop({ type: String })
   filtersKey!: string
 
   activeFilters: any = {}
@@ -74,25 +78,25 @@ export default class DynamicFilters extends Vue {
    * The idea is that all filters are imported through the index file and when using the component,
    * i just need to specify the name of the schema to use, without needing to import the real schema.
    */
-  get formSchema(): FormSchema[] {
-    let schema = this.schema ? schemas[this.schema + "FiltersSchema"] : null
+  get formSchema (): FormSchema[] {
+    let schema = this.schema ? schemas[this.schema + 'FiltersSchema'] : null
 
     return schema ? schema.call(this) : schema
   }
 
-  get storedActiveFilters() {
-    return this.$store.getters["filters/activeFilters"];
+  get storedActiveFilters () {
+    return this.$store.getters['filters/activeFilters']
   }
 
-  get loadingData() {
-    return this.$store.state.filters.loading;
+  get loadingData () {
+    return this.$store.state.filters.loading
   }
 
-  resetFilters() {
+  resetFilters () {
     const fields: Record<string, FormSchemaField> = this.formSchema.reduce((acc: any, curr: FormSchema) => {
       Object.entries(curr.cols).forEach(entry => {
-        acc[entry[0]] = entry[1];
-      });
+        acc[entry[0]] = entry[1]
+      })
 
       return acc
     }, {})
@@ -102,56 +106,62 @@ export default class DynamicFilters extends Vue {
     }
   }
 
-  applyFilters() {
+  applyFilters () {
     this.$nextTick(() => {
       const filters = Object.entries(this.activeFilters).reduce((acc: any, entry) => {
-        const key: string = entry[0];
-        const value: any = entry[1];
+        const key: string = entry[0]
+        const value: any = entry[1]
 
-        if (![null, undefined].includes(value) && value !== "") {
+        if (![null, undefined].includes(value) && value !== '') {
           acc[key] = value
         }
 
-        return acc;
+        return acc
       }, {})
 
       if (!this.useStore) {
-        return this.$emit("applyFilters", filters)
+        return this.$emit('applyFilters', filters)
       }
 
-      this.$store.dispatch("filters/updatePage", {
+      this.$store.dispatch('filters/updatePage', {
         page: this.$route.path,
         activeFilters: filters
       })
     })
   }
 
-  onClearClick() {
+  onClearClick () {
     if (!this.useStore) {
-      return this.$emit("resetFilters")
+      return this.$emit('resetFilters')
     }
 
-    this.$store.dispatch("filters/updatePage", {
+    this.$store.dispatch('filters/updatePage', {
       page: this.$route.path,
       activeFilters: null
     })
   }
 
-  @Watch("storedActiveFilters")
-  onStoredActiveFiltersChange(value: any) {
+  onEnterPressed () {
+    if (this.submitOnEnter) {
+      this.applyFilters()
+    }
+  }
+
+  @Watch('storedActiveFilters')
+  onStoredActiveFiltersChange (value: any) {
     if (!value || Object.keys(value).length === 0) {
       this.resetFilters()
     }
   }
 
-  @Watch('value', {deep: true, immediate: true})
-  onValueChange(val: any) {
+  @Watch('value', { deep: true, immediate: true })
+  onValueChange (val: any) {
     this.activeFilters = val
   }
 
-  @Watch("activeFilters")
-  onActiveFiltersChange(val: any) {
-    this.$emit("input", val)
+  @Watch('activeFilters')
+  onActiveFiltersChange (val: any) {
+    this.$emit('input', val)
   }
 }
 </script>

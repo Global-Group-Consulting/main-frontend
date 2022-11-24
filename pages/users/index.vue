@@ -5,7 +5,8 @@
 
       <UserProfileBlocks></UserProfileBlocks>
 
-      <page-toolbar always-visible :actions-list="actionsList" filters-schema="users"></page-toolbar>
+      <page-toolbar always-visible :actions-list="actionsList" filters-schema="users"
+                    filter-on-enter></page-toolbar>
 
       <UsersListTable></UsersListTable>
 
