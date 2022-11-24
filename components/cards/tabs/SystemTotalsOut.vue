@@ -12,7 +12,7 @@ import { SystemTotalsDto } from '~/@types/dto/statistics/SystemTotalsDto'
 import { useDashboardTabLogic } from '~/composables/dashboardTabLogic'
 
 export default defineComponent({
-  name: 'SystemTotals',
+  name: 'SystemTotalsOut',
   components: { DashboardCardList },
   props: {
     mustReload: Boolean,
@@ -21,24 +21,19 @@ export default defineComponent({
   },
   setup (props, ctx) {
     const { $apiCalls } = ctx.root
+
     const sections: Ref<DashboardCardListItem[]> = ref([
       {
-        id: 'deposit',
+        id: 'withdrewDeposit',
         title: '',
-        subtitle: 'Deposito',
-        icon: 'mdi-cloud-upload',
-        color: 'blue'
-      }, {
-        id: 'interests',
-        title: '',
-        subtitle: 'Rendite',
-        icon: 'mdi-chart-timeline-variant',
-        color: 'green'
+        subtitle: 'Deposito prelevato',
+        icon: 'mdi-bank-transfer-out',
+        color: 'red'
       }, {
         id: 'withdrewInterests',
         title: '',
         subtitle: 'Rendite riscosse (Classic)',
-        icon: 'mdi-chart-sankey-variant',
+        icon: 'mdi-bank-minus',
         color: 'orange'
       }, {
         id: 'goldWithdrewInterests',
@@ -46,24 +41,12 @@ export default defineComponent({
         subtitle: 'Rendite riscosse (GOLD)',
         icon: 'mdi-diamond-stone',
         color: '#d4973b'
-      }, {
-        id: 'withdrewDeposit',
-        title: '',
-        subtitle: 'Deposito prelevato',
-        icon: 'mdi-cloud-download',
-        color: 'red'
-      }, {
-        id: 'repayments',
-        title: '',
-        subtitle: 'Rimborsi',
-        icon: 'mdi-cloud-alert',
-        color: 'warning'
       }
     ])
     const dashboardTabLogic = useDashboardTabLogic<SystemTotalsDto>(ctx, props, sections)
 
     dashboardTabLogic.setFetchFunction(async (filters) => {
-      return $apiCalls.statisticsApi.getSystemTotals(props.filters)
+      return $apiCalls.statisticsApi.getSystemTotalsOut(props.filters)
     })
 
     dashboardTabLogic.setOnDataChange((newData) => {

@@ -1,5 +1,5 @@
 import { BasicApiCall } from '~/classes/BasicApiCall'
-import { SystemTotalsDto } from '~/@types/dto/statistics/SystemTotalsDto'
+import { SystemTotalsInDto, SystemTotalsOutDto } from '~/@types/dto/statistics/SystemTotalsDto'
 import { CommissionTotalsDto } from '~/@types/dto/statistics/CommissionTotalsDto'
 import { UserTotalsDto } from '~/@types/dto/statistics/UserTotalsDto'
 import { NewUsersCountDto } from '~/@types/dto/statistics/NewUsersCountDto'
@@ -10,9 +10,16 @@ import { WithdrawalDepositReportDto } from '~/@types/dto/statistics/WithdrawalDe
 import { WithdrawalInterestReportDto } from '~/@types/dto/statistics/WithdrawalInterestReportDto'
 
 export class StatisticsApi extends BasicApiCall {
-  async getSystemTotals (filters?: any): Promise<SystemTotalsDto> {
+  async getSystemTotalsIn (filters?: any): Promise<SystemTotalsInDto> {
     return await this.get({
-      endPoint: '/api/statistics/systemTotals',
+      endPoint: '/api/statistics/systemTotalsIn',
+      params: { filters }
+    })
+  }
+  
+  async getSystemTotalsOut (filters?: any): Promise<SystemTotalsOutDto> {
+    return await this.get({
+      endPoint: '/api/statistics/systemTotalsOut',
       params: { filters }
     })
   }
