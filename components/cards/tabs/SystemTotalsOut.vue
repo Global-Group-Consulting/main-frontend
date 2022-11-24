@@ -8,7 +8,7 @@
 import { defineComponent, onMounted, ref, Ref, watch } from '@vue/composition-api'
 import { moneyFormatter } from '~/plugins/filters/moneyFormatter'
 import DashboardCardList, { DashboardCardListItem } from '~/components/lists/DashboardCardList.vue'
-import { SystemTotalsDto } from '~/@types/dto/statistics/SystemTotalsDto'
+import { SystemTotalsOutDto } from '~/@types/dto/statistics/SystemTotalsDto'
 import { useDashboardTabLogic } from '~/composables/dashboardTabLogic'
 
 export default defineComponent({
@@ -43,7 +43,7 @@ export default defineComponent({
         color: '#d4973b'
       }
     ])
-    const dashboardTabLogic = useDashboardTabLogic<SystemTotalsDto>(ctx, props, sections)
+    const dashboardTabLogic = useDashboardTabLogic<SystemTotalsOutDto>(ctx, props, sections)
 
     dashboardTabLogic.setFetchFunction(async (filters) => {
       return $apiCalls.statisticsApi.getSystemTotalsOut(props.filters)
@@ -51,7 +51,7 @@ export default defineComponent({
 
     dashboardTabLogic.setOnDataChange((newData) => {
       sections.value.forEach(section => {
-        section.title = '€ ' + moneyFormatter(newData[section.id as keyof SystemTotalsDto] || 0)
+        section.title = '€ ' + moneyFormatter(newData[section.id as keyof SystemTotalsOutDto] || 0)
       })
     })
 
