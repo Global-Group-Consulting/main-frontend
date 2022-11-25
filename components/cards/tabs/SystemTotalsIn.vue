@@ -67,7 +67,7 @@ export default defineComponent({
         section.title = '€ ' + moneyFormatter(newData[section.id as keyof Omit<SystemTotalsInDto, 'details'>] || 0)
 
         if (section.details && newData.details) {
-          section.details = []
+          section.details.splice(0, section.details.length-1)
 
           Object.keys(newData.details).forEach(key => {
             const value = newData.details[key as any]
