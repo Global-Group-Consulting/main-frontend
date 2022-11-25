@@ -9,6 +9,7 @@ export interface SystemTotalsInDto {
 
 export interface SystemTotalsOutDto {
   withdrewInterests: number;
+  briteWithdrewInterests: number;
   goldWithdrewInterests: number;
   withdrewDeposit: number;
 }

@@ -36,10 +36,16 @@ export default defineComponent({
         icon: 'mdi-bank-minus',
         color: 'orange'
       }, {
-        id: 'goldWithdrewInterests',
+        id: 'briteWithdrewInterests',
         title: '',
         subtitle: 'Rendite riscosse (GOLD)',
         icon: 'mdi-diamond-stone',
+        color: '#d4973b'
+      }, {
+        id: 'goldWithdrewInterests',
+        title: '',
+        subtitle: 'Rendite riscosse (Oro fisico)',
+        icon: 'mdi-gold',
         color: '#d4973b'
       }
     ])
