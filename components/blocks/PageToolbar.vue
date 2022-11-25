@@ -32,6 +32,7 @@
                        :schema="filtersSchema"
                        :expand="useStore ? filtersExpand : filtersExpanded"
                        :value="value"
+                       :submit-on-enter="filterOnEnter"
                        @input="$emit('input', $event)"
       ></dynamic-filters>
     </slot>
@@ -65,6 +66,9 @@ export default class PageToolbar extends Vue {
 
   @Prop({ type: Boolean, default: false })
   filtersExpanded!: boolean
+
+  @Prop({ type: Boolean, default: false })
+  filterOnEnter!: boolean
 
   @Prop({ type: Boolean, default: true })
   useStore!: boolean

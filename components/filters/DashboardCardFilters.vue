@@ -75,7 +75,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, Ref, ref, watch } from '@vue/composition-api'
+import { computed, defineComponent, onMounted, PropType, Ref, ref, watch } from '@vue/composition-api'
 
 interface SelectableDate {
   text: string
@@ -130,14 +130,17 @@ export default defineComponent({
     })
     const selectableDates: Ref<any[]> = ref([
       {
+        value: [$moment().format('YYYY-MM'), $moment().format('YYYY-MM')],
+        text: 'Mese Corrente'
+      }, {
+        value: [$moment().subtract(1, 'month').format('YYYY-MM'), $moment().subtract(1, 'month').format('YYYY-MM')],
+        text: 'Mese Scorso'
+      }, {
         value: [$moment().subtract(3, 'month').format('YYYY-MM'), $moment().format('YYYY-MM')],
         text: 'Ultimi 3 mesi'
       }, {
         value: [$moment().subtract(6, 'month').format('YYYY-MM'), $moment().format('YYYY-MM')],
         text: 'Ultimi 6 mesi'
-      }, {
-        value: [$moment().subtract(9, 'month').format('YYYY-MM'), $moment().format('YYYY-MM')],
-        text: 'Ultimi 9 mesi'
       }, {
         value: [$moment().subtract(12, 'month').format('YYYY-MM'), $moment().format('YYYY-MM')],
         text: 'Ultimo anno'
@@ -213,6 +216,10 @@ export default defineComponent({
       // first emit the filters so that props.filters gets updated
       emit('update:filters', formData.value)
 
+      emitFiltersMessages()
+    }
+
+    function emitFiltersMessages () {
       // wait for the update to happen
       root.$nextTick(() => {
         const messages: any[] = []
@@ -257,7 +264,11 @@ export default defineComponent({
 
     watch(() => props.filters, (newVal) => {
       mergeFilters()
-    }, { deep: true })
+
+      if (areActiveFilters.value) {
+        emitFiltersMessages()
+      }
+    }, { deep: true, immediate: true })
 
     return {
       menuOpened,

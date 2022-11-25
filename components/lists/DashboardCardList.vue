@@ -15,27 +15,33 @@
     />
 
     <v-list v-else-if="!hasError" :max-height="(62 * 6 + 16) + 'px'" style="overflow: auto">
-      <v-list-item v-for="item in items" :key="item.id">
-        <!-- Icon -->
-        <v-list-item-avatar v-if="item.icon">
-          <v-icon class="grey lighten-3" :color="item.color">{{ item.icon }}</v-icon>
-        </v-list-item-avatar>
-        <v-list-item-avatar v-if="item.textIcon">
-          <text-icon class="grey lighten-3" :color="item.color">{{ item.textIcon }}</text-icon>
-        </v-list-item-avatar>
+      <template v-for="item in items">
+        <v-list-group v-if="item.details && item.details.length > 0" :key="item.id" >
+          <template v-slot:activator>
+            <DashboardCardListItem :item="item"/>
+          </template>
 
-        <!-- Content -->
-        <v-list-item-content>
-          <v-list-item-title class="font-weight-bold" v-html="item.title"></v-list-item-title>
-          <v-list-item-subtitle v-html="item.subtitle"></v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
+          <div class="grey lighten-4" v-if="item.details && item.details.length > 0">
+            <v-list-item
+                v-for="child in item.details"
+                :key="child.title"
+            >
+              <DashboardCardListItem :item="child"/>
+            </v-list-item>
+          </div>
+        </v-list-group>
+
+        <v-list-item v-else :key="item.id">
+          <DashboardCardListItem :item="item"/>
+        </v-list-item>
+      </template>
     </v-list>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from '@vue/composition-api'
+import DashboardCardListItem from '~/components/lists/DashboardCardListItem.vue'
 
 export interface DashboardCardListItem {
   id: string | number
@@ -44,10 +50,15 @@ export interface DashboardCardListItem {
   icon?: string
   textIcon?: string
   color?: string
+  tooltip?: string
+  details?: Exclude<DashboardCardListItem, 'details'>[]
 }
 
 export default defineComponent({
   name: 'DashboardCardList',
+  components: {
+    DashboardCardListItem
+  },
   props: {
     items: Array as PropType<DashboardCardListItem[]>,
     hasError: Boolean,

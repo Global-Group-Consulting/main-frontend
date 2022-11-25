@@ -6,6 +6,7 @@
       ></page-header>
 
       <page-toolbar :actions-list="actionsList" filters-schema="requests" always-visible
+                    filter-on-enter
       ></page-toolbar>
 
       <RequestsListTable :user-id="$auth.user._id" ref="requestsListTable"></RequestsListTable>
@@ -137,12 +138,12 @@ export default defineComponent({
 
     const routeHash = computed(() => $route.hash)
 
-    watch(() => routeHash.value, onHashChange, {immediate: true})
+    watch(() => routeHash.value, onHashChange, { immediate: true })
 
     // when closing the dialog remove the hash from the url
     watch(() => $store.getters['dialog/dialogState'], (value: boolean) => {
       if (!value) {
-        window.location.hash = ""
+        window.location.hash = ''
       }
     })
 
@@ -153,7 +154,7 @@ export default defineComponent({
       $nuxt.$on('requests:newAdded', onNewRequestAdded)
 
       window.addEventListener('hashchange', () => {
-        console.log("[hash change!!!]", window.location.hash)
+        console.log('[hash change!!!]', window.location.hash)
         onHashChange()
       })
     })
