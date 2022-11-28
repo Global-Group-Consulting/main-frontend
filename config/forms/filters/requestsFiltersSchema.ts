@@ -176,14 +176,14 @@ export default function (this: Vue): FormSchema[] {
           if: userAdmin
         },
         // disabled because i can't filter by a subRelation
-        /*referenceAgent: {
+        referenceAgent: {
           label: "filters-reference-agent",
           component: "async-autocomplete",
           items: [],
           asyncFn: this.$apiCalls.selectOptions.getAgentsList,
           clearable: true,
           if: userAdmin
-        },*/
+        },
         createdAt: {
           label: "filters-creation-date",
           component: "date-picker-range",
