@@ -16,9 +16,8 @@
           locale="it"
           first-day-of-week="1"
           :show-adjacent-months="true"
-          type="month"
           flat
-          :max="new Date().toISOString()"
+          :max="$moment().add(1, 'month').toISOString()"
           style="border-top-right-radius: 0;"
           :title-date-format="titleDateFormat"
       >
@@ -76,6 +75,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, PropType, Ref, ref, watch } from '@vue/composition-api'
+import { useDatesSelectOptions } from '~/composables/datesSelectOptions'
 
 interface SelectableDate {
   text: string
@@ -128,27 +128,8 @@ export default defineComponent({
         return acc
       }, {} as any)
     })
-    const selectableDates: Ref<any[]> = ref([
-      {
-        value: [$moment().format('YYYY-MM'), $moment().format('YYYY-MM')],
-        text: 'Mese Corrente'
-      }, {
-        value: [$moment().subtract(1, 'month').format('YYYY-MM'), $moment().subtract(1, 'month').format('YYYY-MM')],
-        text: 'Mese Scorso'
-      }, {
-        value: [$moment().subtract(3, 'month').format('YYYY-MM'), $moment().format('YYYY-MM')],
-        text: 'Ultimi 3 mesi'
-      }, {
-        value: [$moment().subtract(6, 'month').format('YYYY-MM'), $moment().format('YYYY-MM')],
-        text: 'Ultimi 6 mesi'
-      }, {
-        value: [$moment().subtract(12, 'month').format('YYYY-MM'), $moment().format('YYYY-MM')],
-        text: 'Ultimo anno'
-      }, {
-        value: [$moment().subtract(24, 'month').format('YYYY-MM'), $moment().format('YYYY-MM')],
-        text: 'Ultimi 2 anni'
-      }
-    ])
+    const datesSelectOptions = useDatesSelectOptions();
+    const selectableDates: Ref<any[]> = ref(datesSelectOptions.getSelectableDates())
 
     const areActiveFilters = computed(() => {
       const length = Object.keys(props.filters).length > 0
@@ -181,7 +162,7 @@ export default defineComponent({
       const sortedDates = [...dates].sort((a, b) => a > b ? 1 : -1)
 
       sortedDates.forEach(date => {
-        toReturn.push($moment(date).format('MMM \'YY'))
+        toReturn.push($moment(date).format('DD MMM \'YY'))
       })
 
       if (sortedDates.length === 1) {

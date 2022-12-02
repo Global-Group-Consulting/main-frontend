@@ -175,7 +175,6 @@ export default function (this: Vue): FormSchema[] {
           clearable: true,
           if: userAdmin
         },
-        // disabled because i can't filter by a subRelation
         referenceAgent: {
           label: "filters-reference-agent",
           component: "async-autocomplete",
