@@ -143,6 +143,10 @@ export default class MovementsListTable extends Vue {
       text = this.$i18n.t(`enums.RequestTypes.${this.$enums.RequestTypes.getIdName(reqType)}`)
     }
 
+    if (item.movementType === this.$enums.MovementTypes.DEPOSIT_REPAYMENT && item.app === "club") {
+      text += ' Club'
+    }
+
     if (item.movementType === MovementTypes.INTEREST_RECAPITALIZED) {
       return `<strong>${text}</strong>`
     }
