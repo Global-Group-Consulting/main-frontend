@@ -44,7 +44,7 @@ export default {
   },
   'RequestTypes': {
     'admin': 'Admin',
-    'versamento': 'Versamento (integrazione)',
+    'versamento': 'Integrazione',
     'versamento_iniziale': 'Versamento iniziale',
     'risc_provvigioni': 'Riscossione provvigioni',
     'risc_capitale': 'Prelievo deposito',
@@ -74,7 +74,7 @@ export default {
   },
   'MovementTypes': {
     "initialDeposit": "Versamento iniziale",
-    "depositAdded": "Nuovo Versamento",
+    "depositAdded": "Integrazione",
     "interestRecapitalized": "Ricapitalizzazione mensile",
     "interestCollected": "Riscossione rendite",
     "depositCollected": "Prelievo deposito",
