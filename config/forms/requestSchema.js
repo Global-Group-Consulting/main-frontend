@@ -33,15 +33,17 @@ function getRequestTypeList(list, context) {
     if (isAgent && [RequestTypes.RISC_PROVVIGIONI].includes(el.value) && context.incomingData.type === RequestTypes.RISC_PROVVIGIONI) {
       mustReturn = true;
     }
-
+    
     return mustReturn
   })
 
-  return data.map(el => {
+  const toReturn = data.map(el => {
     el.text = context.$i18n.t(`enums.RequestTypes.${el.text}`)
 
     return el
   })
+  
+  return toReturn
 }
 
 function getAmountMessage(context) {
