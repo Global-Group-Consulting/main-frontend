@@ -11,6 +11,8 @@ export interface IMovement {
   requestType: number,
 
   commissionType: string,
+  
+  app?: string,
 
   // Percentuale di interesse attualmente attiva.
   interestPercentage: number,
