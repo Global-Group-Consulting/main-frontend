@@ -22,6 +22,8 @@ export interface RequestFormData {
   amountBrite?: number
   amountEuro?: number
   briteConversionPercentage?: number
+  
+  clubRepayment?: boolean
 
   rejectReason: string
   created_at: string

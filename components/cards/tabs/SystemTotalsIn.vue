@@ -63,11 +63,14 @@ export default defineComponent({
     })
 
     dashboardTabLogic.setOnDataChange((newData) => {
+
       sections.value.forEach(section => {
         section.title = '€ ' + moneyFormatter(newData[section.id as keyof Omit<SystemTotalsInDto, 'details'>] || 0)
 
         if (section.details && newData.details) {
-          section.details.splice(0, section.details.length-1)
+          // section.details.splice(0, section.details.length-1)
+          // reset current details
+          section.details = []
 
           Object.keys(newData.details).forEach(key => {
             const value = newData.details[key as any]

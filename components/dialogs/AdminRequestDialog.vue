@@ -61,7 +61,8 @@ export default class AdminRequestDialog extends Vue {
     gold: false,
     clubPack: this.$enums.ClubPacks.UNSUBSCRIBED,
     autoWithdrawlAll: null,
-    autoWithdrawlAllRecursively: false
+    autoWithdrawlAllRecursively: false,
+    clubRepayment: false,
   }
 
   dataLoaded = false
@@ -151,6 +152,7 @@ export default class AdminRequestDialog extends Vue {
         currency: this.formData.currency,
         notes: this.formData.notes,
         requestAttachment: this.formData.requestAttachment,
+        clubRepayment: this.formData.clubRepayment,
       };
 
       if ((data.amount || 0) <= this.wallet.interestAmount

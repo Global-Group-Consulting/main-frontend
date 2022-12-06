@@ -53,6 +53,7 @@ export interface FormSchemaField {
   clearable?: boolean,
   multiple?: boolean,
   max?: string | number,
+  maxValue?: string | number,
   min?: string | number,
   showBrite?: boolean,
   onlyBrite?: boolean,

@@ -11,11 +11,15 @@ import CommissionsTotal from '~/components/cards/tabs/CommissionsTotal.vue'
 import SystemTotalsIn from '~/components/cards/tabs/SystemTotalsIn.vue'
 import SystemTotalsOut from '~/components/cards/tabs/SystemTotalsOut.vue'
 import moment from 'moment'
+import { useDatesSelectOptions } from '~/composables/datesSelectOptions'
 
 export default defineComponent({
   name: 'DashboardMoneySummary',
   components: { DashboardBasicCard },
   setup () {
+    const dateSelectOptions = useDatesSelectOptions()
+    const currentMonth = dateSelectOptions.getCurrentMonthDates()
+
     const tabs: Ref<DynamicTab[]> = ref([
       {
         id: 'systemTotalsIn',
@@ -24,7 +28,7 @@ export default defineComponent({
         mustReload: false,
         loading: true,
         filters: {
-          dates: [moment().format('YYYY-MM'), moment().format('YYYY-MM')]
+          dates: [currentMonth.start.format(dateSelectOptions.format), currentMonth.end.format(dateSelectOptions.format)]
         }
       }, {
         id: 'systemTotalsOut',
@@ -33,7 +37,7 @@ export default defineComponent({
         mustReload: false,
         loading: true,
         filters: {
-          dates: [moment().format('YYYY-MM'), moment().format('YYYY-MM')]
+          dates: [currentMonth.start.format(dateSelectOptions.format), currentMonth.end.format(dateSelectOptions.format)]
         }
       }, {
         id: 'commissionsTotals',
@@ -42,7 +46,7 @@ export default defineComponent({
         mustReload: false,
         loading: true,
         filters: {
-          dates: [moment().format('YYYY-MM'), moment().format('YYYY-MM')]
+          dates: [currentMonth.start.format(dateSelectOptions.format), currentMonth.end.format(dateSelectOptions.format)]
         }
       }
     ] as DynamicTab[])

@@ -11,10 +11,13 @@ import AsyncAutocomplete from '~/components/forms/inputs/AsyncAutocomplete.vue'
 import { VSelect } from 'vuetify/lib'
 import WithdrawalDepositChart from '~/components/cards/tabs/WithdrawalDepositChart.vue'
 import WithdrawalInterestsChart from '~/components/cards/tabs/WithdrawalInterestsChart.vue'
+import { useDatesSelectOptions } from '~/composables/datesSelectOptions'
 
 export default defineComponent({
   name: 'DashboardReportsChart',
   setup (props, { root }) {
+    const dateSelectOptions = useDatesSelectOptions()
+
     const usersFilter = {
       key: 'userId',
       default: () => undefined,
@@ -34,7 +37,7 @@ export default defineComponent({
         component: RefundChart,
         mustReload: false,
         loading: true,
-        filters: {},
+        filters: { dates: dateSelectOptions.getSelectableDates()[1].value },
         extraFiltersSchema: [
           usersFilter, {
             key: 'fromClub',
@@ -62,7 +65,7 @@ export default defineComponent({
         component: WithdrawalDepositChart,
         mustReload: false,
         loading: true,
-        filters: {},
+        filters: { dates: dateSelectOptions.getSelectableDates()[1].value },
         extraFiltersSchema: [usersFilter]
       }, {
         id: 'interestWithdrawalReport',
@@ -70,7 +73,7 @@ export default defineComponent({
         component: WithdrawalInterestsChart,
         mustReload: false,
         loading: true,
-        filters: {},
+        filters: { dates: dateSelectOptions.getSelectableDates()[1].value },
         extraFiltersSchema: [usersFilter]
       }
     ] as DynamicTab[])

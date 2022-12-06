@@ -127,6 +127,7 @@ export default {
   'auto-withdrawl-all': "Preleva tutto alla fine di questo mese",
   'auto-withdrawl-all-recursively': "Preleva tutto anche nei mesi successivi",
   'gold-amount': "Grammi oro",
+  'club-repayment': "Rimborso Club",
 
   //settings
   'requests-block-time': "Intervallo creazione richieste",

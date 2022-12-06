@@ -9,10 +9,13 @@ import UsersStatus from '~/components/cards/tabs/UsersStatus.vue'
 import NewUsersCount from '~/components/cards/tabs/NewUsersCount.vue'
 import AgentNewUsersCount from '~/components/cards/tabs/AgentNewUsersCount.vue'
 import AgentNewDepositsCount from '~/components/cards/tabs/AgentNewDepositsCount.vue'
+import { useDatesSelectOptions } from '~/composables/datesSelectOptions'
 
 export default defineComponent({
   name: 'DashboardAgentsChart',
   setup (props, { root }) {
+    const dateSelectOptions = useDatesSelectOptions()
+
     const tabs: Ref<DynamicTab[]> = ref([
       {
         id: 'agentNewUsersCount',
@@ -20,14 +23,14 @@ export default defineComponent({
         component: AgentNewUsersCount,
         mustReload: false,
         loading: true,
-        filters: {}
-      },{
+        filters: { dates: dateSelectOptions.getSelectableDates()[1].value }
+      }, {
         id: 'agentNewDepositsCount',
         title: 'Agenti - Nuovi versamenti',
         component: AgentNewDepositsCount,
         mustReload: false,
         loading: true,
-        filters: {}
+        filters: { dates: dateSelectOptions.getSelectableDates()[1].value }
       }
     ] as DynamicTab[])
 
