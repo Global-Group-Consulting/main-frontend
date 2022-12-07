@@ -73,22 +73,31 @@ export default defineComponent({
           section.details = []
 
           Object.keys(newData.details).forEach(key => {
-            const value = newData.details[key as any]
-            const typeId = +(MovementTypes.get(key).index as any);
+            // store original key for safety reasons
+            const originalKey = key
+
+            // Store the details app if any
+            const app = originalKey.split('_')[1]
+
+            // update the key by removing extra info
+            key = originalKey.split('_')[0]
+
+            const value = newData.details[originalKey as any]
+            const typeId = +(MovementTypes.get(key).index as any)
             let mustPush = false
 
             if (section.id === 'deposit' && MovementTypes.IN_DEPOSIT_TYPES.includes(typeId)) {
               mustPush = true
-            }else if (section.id === 'interests' && [...MovementTypes.IN_INTEREST_TYPES, MovementTypes.INTEREST_RECAPITALIZED].includes(typeId)) {
+            } else if (section.id === 'interests' && [...MovementTypes.IN_INTEREST_TYPES, MovementTypes.INTEREST_RECAPITALIZED].includes(typeId)) {
               mustPush = true
             }
 
             if (mustPush) {
               section.details?.push({
-                id: key,
+                id: originalKey,
                 title: '€ ' + moneyFormatter(value),
-                subtitle: $i18n.t('enums.MovementTypes.' + key) as string,
-                textIcon: " "
+                subtitle: $i18n.t('enums.MovementTypes.' + key) as string + (app ? ' ' + app : ''),
+                textIcon: ' '
                 // color: section.color
               })
             }
