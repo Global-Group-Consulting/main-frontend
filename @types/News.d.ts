@@ -17,6 +17,7 @@ export interface INews {
   createdBy: string;
   startAt: Date;
   endAt: Date;
+  coverImg: string;
   createdAt: Date;
   updatedAt: Date;
   _id: string,
