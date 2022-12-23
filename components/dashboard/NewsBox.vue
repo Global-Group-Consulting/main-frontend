@@ -33,7 +33,7 @@
           </div>
 
           <v-row no-gutters class="overflow-auto">
-            <v-col cols="12" md="4">
+            <v-col cols="12" md="4" v-if="news.coverImg">
               <a :href="news.coverImg" target="_blank" class="d-flex" style="height: 100%">
                 <img :src="news.coverImg" alt=""
                      class="pr-md-3"
@@ -42,7 +42,7 @@
               </a>
             </v-col>
 
-            <v-col cols="12" md="8" class="mb-5 mb-md-0">
+            <v-col cols="12" :md="news.coverImg ? 8 : 12" class="mb-5 mb-md-0">
               <div>
                 <strong class="text-h4">{{ news.title }}</strong>
 
@@ -58,7 +58,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, Ref, ref } from '@vue/composition-api'
+import { computed, defineComponent, onMounted, Ref, ref } from '@vue/composition-api'
 import { INews } from '~/@types/News'
 
 export default defineComponent({
