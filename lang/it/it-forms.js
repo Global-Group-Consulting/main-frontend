@@ -74,6 +74,7 @@ export default {
   'role': 'Ruolo',
   'vat-number': 'Partita IVA',
   'available-amount': 'Importo disponibile',
+  'movement-type': 'Tipologia movimento',
   'request-type': 'Tipologia richiesta',
   'request-amount': 'Importo',
   'request-date': 'Data richiesta',

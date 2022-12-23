@@ -5,7 +5,8 @@
                  :value="minValue"
                  v-bind="$attrs"
                  @input="onInput('minValue', $event)"
-                 @change="onChange"/>
+                 @change="onChange"
+                 @keyup="$emit('keyup', $event)"/>
 
     <span class="mx-3"> - </span>
 
@@ -14,7 +15,8 @@
                  :value="maxValue"
                  v-bind="$attrs"
                  @input="onInput('maxValue', $event)"
-                 @change="onChange"/>
+                 @change="onChange"
+                 @keyup="$emit('keyup', $event)"/>
   </div>
 </template>
 

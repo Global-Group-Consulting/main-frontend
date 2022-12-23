@@ -10,6 +10,7 @@
     @focus="onFocus"
     @blur="onBlur"
     @click:clear="onClear"
+    @keyup.enter="$emit('keyup', $event)"
     ref="textInput"
     :messages="message"
   >

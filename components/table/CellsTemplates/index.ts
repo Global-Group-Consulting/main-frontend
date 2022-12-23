@@ -37,6 +37,10 @@ import CellReportMovementType from "~/components/table/CellsTemplates/CellReport
 import CellReportReferenceAgent from "~/components/table/CellsTemplates/CellReportReferenceAgent.vue";
 import CellReportCards from "~/components/table/CellsTemplates/CellReportCards.vue";
 
+import CellMovementAmount from "~/components/table/CellsTemplates/CellMovementAmount.vue";
+import CellMovementType from "~/components/table/CellsTemplates/CellMovementType.vue";
+import CellMovementActions from "~/components/table/CellsTemplates/CellMovementActions.vue";
+
 export default {
   CellUserAccountStatus,
   CellUserName,
@@ -69,5 +73,8 @@ export default {
   CellReportNotes,
   CellReportMovementType,
   CellReportReferenceAgent,
-  CellReportCards
+  CellReportCards,
+  CellMovementAmount,
+  CellMovementType,
+  CellMovementActions
 }
