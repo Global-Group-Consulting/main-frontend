@@ -45,7 +45,7 @@ export const actions = {
        *  interestPercentage: number
        * }}
        */
-      const result = await apiCalls.fetchWalletStatus(data)
+      const result = await apiCalls.movementApi.fetchWalletStatus(data)
       
       commit('UPDATE_WALLETS', [{
         ...result,

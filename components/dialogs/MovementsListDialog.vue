@@ -159,7 +159,7 @@ export default {
         await $alerts.askBeforeAction({
           key: "movements-import",
           preConfirm: async () => {
-            const result = await $apiCalls.importMovementsList({
+            const result = await $apiCalls.movementApi.importMovementsList({
               fileToImport: file,
               userId: user.id,
               overwrite

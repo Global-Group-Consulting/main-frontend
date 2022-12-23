@@ -1,14 +1,16 @@
 <template>
   <v-layout>
     <v-flex>
-      <page-header
-        page-name="movements"></page-header>
+      <page-header page-name="movements"></page-header>
+
+      <page-toolbar filters-schema="movements"
+                    always-visible
+                    filter-on-enter
+      ></page-toolbar>
 
       <v-row>
         <v-col cols="12">
-          <v-card flat outlined>
-            <movements-list-table :user-id="$auth.user.id"/>
-          </v-card>
+            <movements-list-table :user-id="userId" :flat="false"/>
         </v-col>
       </v-row>
     </v-flex>
@@ -16,17 +18,17 @@
 </template>
 
 <script>
-/** @typedef {import("../@types/Movement").IMovement} IMovement */
+/** @typedef {import('../@types/Movement').IMovement} IMovement */
 
-import {ref, onBeforeMount} from "@vue/composition-api";
+import { ref, onBeforeMount, computed } from '@vue/composition-api'
 
-import DataTable from "../components/table/DataTable";
-import MovementTypes from "../enums/MovementTypes";
+import DataTable from '../components/table/DataTable'
+import MovementTypes from '../enums/MovementTypes'
 
-import pageBasicFn from "../functions/pageBasic";
-import PageHeader from "@/components/blocks/PageHeader";
-import MovementsListTable from "../components/table/MovementsListTable";
-import {MovementsPermissions} from "../functions/acl/enums/movements.permissions";
+import pageBasicFn from '../functions/pageBasic'
+import PageHeader from '@/components/blocks/PageHeader'
+import MovementsListTable from '../components/table/MovementsListTable'
+import { MovementsPermissions } from '../functions/acl/enums/movements.permissions'
 
 export default {
   components: {
@@ -37,14 +39,15 @@ export default {
   meta: {
     permissions: [MovementsPermissions.ACL_MOVEMENTS_SELF_READ]
   },
-  setup(props, {root}) {
-    const {$apiCalls, $set, $options, $i18n} = root;
+  setup (props, { root }) {
+    const userId = computed(() => root.$auth.user.id)
 
     return {
-      ...pageBasicFn(root, "movements"),
-    };
+      ...pageBasicFn(root, 'movements'),
+      userId
+    }
   }
-};
+}
 </script>
 
 <style scoped></style>

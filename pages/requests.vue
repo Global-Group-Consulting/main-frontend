@@ -1,9 +1,7 @@
 <template>
   <v-layout>
     <v-flex>
-      <page-header
-          page-name="requests"
-      ></page-header>
+      <page-header page-name="requests"></page-header>
 
       <page-toolbar :actions-list="actionsList" filters-schema="requests" always-visible
                     filter-on-enter
