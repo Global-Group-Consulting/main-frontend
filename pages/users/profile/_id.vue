@@ -114,6 +114,7 @@ import { userFormatter } from '~/plugins/filters'
 })
 export default class Profile extends Vue {
   userData: User | any = {}
+  // @ts-ignore
   movementsFn = MovementsFn(this)
   loading = true
 
@@ -140,7 +141,7 @@ export default class Profile extends Vue {
 
   $refs!: {
     commissions_list_table: CommissionsListTable[]
-    movements_list_table: typeof MovementsListTable[]
+    movements_list_table: any[]
   }
 
   get actionsList (): ActionItem[] {
