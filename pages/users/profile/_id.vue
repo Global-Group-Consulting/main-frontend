@@ -140,7 +140,7 @@ export default class Profile extends Vue {
 
   $refs!: {
     commissions_list_table: CommissionsListTable[]
-    movements_list_table: MovementsListTable[]
+    movements_list_table: typeof MovementsListTable[]
   }
 
   get actionsList (): ActionItem[] {
