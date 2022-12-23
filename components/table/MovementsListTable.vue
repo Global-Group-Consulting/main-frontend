@@ -1,209 +1,229 @@
 <template>
-  <data-table
-      :items="movements"
-      table-key="movements"
-      schema="movementsSchema"
-      :loading="loading"
-      :items-per-page="25"
-      :item-class="getItemClass"
-      :options="{
-        sortBy: ['created_at'],
-        sortDesc: [true]
-      }"
-  >
-    <template v-slot:item.amountChange="{ item }">
-      <div v-html="formatAmountChange(item)"></div>
-    </template>
+  <div>
+    <v-tabs v-model="currentTab" v-if="visibileTabsList.length > 1">
+      <v-tab v-for="(tab, i) of visibileTabsList" :key="i">
+        <v-icon class="mr-2" small>
+          {{ tab.icon }}
+        </v-icon>
 
-    <template v-slot:item.movementType="{ item }">
-      <v-menu offset-y v-if="item.notes">
-        <template v-slot:activator="{ on, attrs }">
-          <a class="text-decoration-underline-dotted" v-on="on" v-bind="attrs"
-             v-html="formatMovementType(item)"></a>
-        </template>
-        <v-card
-            color="white"
-            elevation="1"
-        >
-          <v-card-text v-html="item.notes"></v-card-text>
-        </v-card>
-      </v-menu>
+        {{ tab.title }}
+        <template v-if="tab.counter"> ({{ tab.counter }})</template>
+      </v-tab>
+    </v-tabs>
 
-      <!--      <v-tooltip bottom v-if="item.notes">
-              <template v-slot:activator="{ on }">
-                <a class="text-decoration-underline-dotted" v-on="on" v-html="formatMovementType(item)"></a>
-              </template>
+    <v-card flat :outlined="!flat">
+      <v-card-text :class="flat ? 'px-0 pb-0' : ''">
 
-              <span v-html="item.notes"></span>
-            </v-tooltip>-->
+        <v-tabs-items :value="currentTab">
+          <v-tab-item v-for="(tab, i) of visibileTabsList" :key="i">
+            <v-skeleton-loader type="table-thead, table-tbody, table-tfoot" :loading="!tab.data">
+              <PaginatedTable :paginated-data="tab.data"
+                              :columns="tableSchema"
+                              :condition="tab.id"
+                              table-key="movements"
+                              :options="tab.tableOptions"
+                              :loading="tab.loading"
+                              @update:pagination="onPaginationChanged"
+              ></PaginatedTable>
+            </v-skeleton-loader>
+          </v-tab-item>
+        </v-tabs-items>
 
-      <div v-else v-html="formatMovementType(item)"></div>
-    </template>
-
-    <template v-slot:item.deposit="{ item }">
-        <span class="text-no-wrap">
-          € {{ $options.filters.moneyFormatter(item.deposit) }}
-        </span>
-    </template>
-
-    <template v-slot:item.interestAmount="{ item }">
-        <span class="text-no-wrap">
-          € {{ $options.filters.moneyFormatter(item.interestAmount) }}
-        </span>
-    </template>
-
-    <template v-slot:item.actions="{ item }">
-      <v-menu offset-y v-if="getCrudActions(item).length > 0">
-        <template v-slot:activator="{ on }">
-          <v-btn color="primary" icon v-on="on" :loading="downloadLoading === item.id">
-            <v-icon>mdi-dots-vertical</v-icon>
-          </v-btn>
-        </template>
-        <v-list>
-          <template v-for="entry in getCrudActions(item)">
-            <v-divider
-                v-if="entry.divider"
-                :key="'divider_' + entry.value"
-            ></v-divider>
-            <v-list-item :key="entry.value" :entry="entry" @click="entry.action(item)">
-              <v-list-item-title>{{
-                  $t('menus.' + entry.value)
-                }}
-              </v-list-item-title>
-            </v-list-item>
-          </template>
-        </v-list>
-      </v-menu>
-    </template>
-  </data-table>
+      </v-card-text>
+    </v-card>
+  </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
-import { IMovement, Movement } from '~/@types/Movement'
+
+import { computed, ComputedRef, defineComponent, onMounted, Ref, ref, watch } from '@vue/composition-api'
 import DataTable from '~/components/table/DataTable.vue'
 import MovementTypes from '~/enums/MovementTypes'
+import { Movement } from '~/@types/Movement'
+import { PaginatedTab } from '~/@types/pagination/PaginatedTab'
+import RequestStatus from '~/enums/RequestStatus'
+import movementsSchema from '~/config/tables/movementsSchema'
+import { PaginationDto } from '~/@types/pagination/PaginationDto'
+import { Filter } from '~/@types/Filter'
 
-import jsFileDownload from 'js-file-download'
-import UserRoles from '~/enums/UserRoles'
+export default defineComponent({
+  components: { DataTable },
+  props: {
+    userId: { type: String, required: true },
+    flat: { type: Boolean, default: true }
+  },
+  setup (props, { root }) {
+    const { $i18n } = root
+    const movements: Ref<Movement[]> = ref([])
+    const currentTab = ref(0)
+    const tableSchema = movementsSchema
 
-interface CrudAction {
-  value: string
-  if?: boolean
-  divider?: string
-
-  action (entry: IMovement): void
-}
-
-@Component({
-  components: { DataTable }
-})
-export default class MovementsListTable extends Vue {
-  @Prop({ type: String, required: true })
-  userId!: string
-
-  movements: IMovement[] = []
-  loading = false
-  downloadLoading = ''
-
-  get authUserType (): 'user' | 'admin' {
-    return [UserRoles.AGENTE, UserRoles.CLIENTE].includes(this.$auth.user.role) ? 'user' : 'admin'
-  }
-
-  formatAmountChange (item: any) {
-    const sign = [
-      MovementTypes.INTEREST_COLLECTED,
-      MovementTypes.DEPOSIT_COLLECTED,
-      MovementTypes.COMMISSION_COLLECTED,
-      MovementTypes.CANCEL_DEPOSIT_ADDED,
-      MovementTypes.MANUAL_INTEREST_COLLECTED
-    ].includes(item.movementType)
-        ? '-'
-        : '+'
-    const color = sign === '-' ? 'red--text' : 'green--text'
-
-    return `<span class="text-no-wrap ${color}">€ ${sign}${this.$options?.filters?.moneyFormatter(
-        item.amountChange.toFixed(2)
-    )}</span>`
-  }
-
-  formatMovementType (item: IMovement) {
-    const reqType = item.requestType
-    const movementId = MovementTypes.get(item.movementType).id
-    let text = this.$i18n.t(`enums.MovementTypes.${movementId}`)
-    let movementToAvoid = [
-      this.$enums.MovementTypes.CANCEL_INTEREST_COLLECTED,
-      this.$enums.MovementTypes.CANCEL_DEPOSIT_COLLECTED,
-      this.$enums.MovementTypes.CANCEL_COMMISSION_COLLECTED,
-      this.$enums.MovementTypes.CANCEL_DEPOSIT_ADDED,
-      this.$enums.MovementTypes.INITIAL_DEPOSIT
-    ]
-
-    if (reqType && !movementToAvoid.includes(item.movementType)) {
-      text = this.$i18n.t(`enums.RequestTypes.${this.$enums.RequestTypes.getIdName(reqType)}`)
-    }
-
-    if (item.movementType === this.$enums.MovementTypes.DEPOSIT_REPAYMENT && item.app === "club") {
-      text += ' Club'
-    }
-
-    if (item.movementType === MovementTypes.INTEREST_RECAPITALIZED) {
-      return `<strong>${text}</strong>`
-    }
-
-    return text
-  }
-
-  getItemClass (item: IMovement) {
-    if (item.movementType === MovementTypes.INTEREST_RECAPITALIZED) {
-      return 'yellow lighten-5'
-    }
-  }
-
-  getCrudActions (item: Movement): CrudAction[] {
-    return [
+    const tabsList: Ref<PaginatedTab[]> = ref([
       {
-        value: 'downloadReceipt',
-        action: (movement: IMovement) => this.downloadReceipt(item.id, movement),
-        if: this.authUserType === 'user' && item.movementType === this.$enums.MovementTypes.DEPOSIT_ADDED
+        id: 'tutti',
+        title: 'Tutti i movimenti',
+        data: null,
+        color: 'blue',
+        icon: 'mdi-timer-sand',
+        tableKey: 'requests',
+        loading: false,
+        lastFetch: null,
+        counter: 0,
+        paginationDto: {
+          sortBy: ['created_at'],
+          sortDesc: [true]
+        }
+      }, {
+        id: 'filters',
+        title: 'Risultati ricerca',
+        data: null,
+        paginationDto: {
+          sortBy: ['created_at'],
+          sortDesc: [true]
+        },
+        tableKey: 'requestsFilter',
+        loading: false,
+        lastFetch: null,
+        counter: 0
       }
-    ].filter(el => 'if' in el ? el.if : true)
-  }
+    ])
 
-  public async updateData () {
-    this.loading = true
+    //********************************************************
+    // COMPUTED PROPS
+    //********************************************************
 
-    try {
-      this.movements = await this.$apiCalls.fetchMovementsList(this.userId)
-    } catch (er) {
-      console.error(er)
+    // show only basic tabs and eventually show also filters tab if user has filters active
+    const visibileTabsList: ComputedRef<PaginatedTab[]> = computed(() => {
+      return tabsList.value.filter(tab => {
+        if (tab.id === 'filters') {
+          return areActiveFilters.value
+        }
+
+        /*if (props.tabs) {
+          return props.tabs.includes(tab.id)
+        }*/
+
+        if (tab.hasOwnProperty('if')) {
+          return tab.if
+        }
+
+        return true
+      })
+    })
+
+    const selectedTabId = computed(() => {
+      return visibileTabsList.value[currentTab.value]?.id
+    })
+
+    const selectedTab: ComputedRef<PaginatedTab> = computed(() => {
+      return tabsList.value.find(tab => tab.id === selectedTabId.value) as PaginatedTab
+    })
+
+    const filtersTab: ComputedRef<PaginatedTab> = computed(() => {
+      return tabsList.value.find(tab => tab.id === 'filters') as PaginatedTab
+    })
+
+    const activeFilters: ComputedRef<Filter> = computed(() => {
+      return root.$store.getters['filters/activeFilters']
+    })
+
+    const areActiveFilters = computed(() => {
+      return root.$store.getters['filters/areActiveFilters']
+    })
+
+    //********************************************************
+    // FUNCTIONS
+    //********************************************************
+
+    /**
+     * Get class for each row. If the row refers to a recapitalization, highlight it.
+     * @param {Movement} item
+     */
+    function getItemClass (item: Movement) {
+      if (item.movementType === MovementTypes.INTEREST_RECAPITALIZED) {
+        return 'yellow lighten-5'
+      }
     }
 
-    this.loading = false
-  }
+    /**
+     * Fetch data from API
+     */
+    async function fetchData (paginationSettings: PaginationDto, tab?: PaginatedTab, filtering?: boolean) {
+      const targetTab = tab ?? selectedTab.value
 
-  async downloadReceipt (movementId: string, movement: IMovement) {
-    let toReturn = false
+      if (filtering) {
+        if (root.$store.state.filters.loading) {
+          return
+        }
 
-    this.downloadLoading = movement.id
+        root.$store.dispatch('filters/updateLoading', true)
+      }
 
-    try {
-      const result = await this.$apiCalls.requests.downloadRequestReceipt(movementId, 'movement')
+      try {
+        // store selectedTab internally so if in the meanwhile this changes,
+        // we store the data for the correct tab
 
-      jsFileDownload(result.data, result.headers['x-file-name'])
+        // if the tab is already loading, do nothing
+        if (targetTab.loading) {
+          return
+        }
 
-      toReturn = true
-    } catch (er) {
-      this.$alerts.error(er)
+        targetTab.loading = true
+
+        targetTab.data = await root.$apiCalls.movementApi.filter(props.userId, paginationSettings)
+        targetTab.counter = targetTab.data?.total ?? 0
+
+      } catch (er) {
+        console.error(er)
+      }
+
+      targetTab.loading = false
+
+      if (filtering) {
+        root.$store.dispatch('filters/updateLoading', false)
+        currentTab.value = tabsList.value.findIndex(tab => tab.id === 'filters')
+      }
     }
 
-    this.downloadLoading = ''
+    async function onPaginationChanged (paginationDto: any, tab?: PaginatedTab) {
+      const targetTab = tab ?? selectedTab.value
 
-    return toReturn
-  }
+      targetTab.paginationDto = paginationDto
 
-  async mounted () {
-    await this.updateData()
+      await fetchData(paginationDto, targetTab)
+    }
+
+    /**
+     * When the active filters change, fetches the data for the filters tab
+     * and eventually shows the filters tab
+     */
+    watch(() => activeFilters.value, () => {
+      if (root.$store.getters['filters/areActiveFilters']) {
+        fetchData({
+          filters: activeFilters.value,
+          sortBy: filtersTab.value.paginationDto?.sortBy,
+          sortDesc: filtersTab.value.paginationDto?.sortDesc
+        }, filtersTab.value, true)
+      } else {
+        if (currentTab.value === tabsList.value.findIndex(tab => tab.id === 'filters')) {
+          currentTab.value = 0
+        }
+      }
+    })
+
+    onMounted(() => {
+      fetchData(selectedTab.value.paginationDto as PaginationDto)
+    })
+
+    return {
+      movements,
+      currentTab,
+      tableSchema,
+      visibileTabsList,
+      tabsList,
+      getItemClass,
+      onPaginationChanged
+    }
   }
-}
+})
 </script>

@@ -18,6 +18,7 @@ import { GeolocationApi } from '~/plugins/apiCalls/GeolocationApi'
 import { NewsApi } from '~/plugins/apiCalls/News'
 import { SelectOptionsApi } from '~/plugins/apiCalls/SelectOptionsApi'
 import { StatisticsApi } from '~/plugins/apiCalls/StatisticsApi'
+import { MovementApi } from '~/plugins/apiCalls/Movement'
 
 interface IApiCalls extends ApiCalls {
   [key: string]: any
@@ -61,6 +62,7 @@ export class ApiCalls extends BasicApiCall {
   public news!: NewsApi
   public selectOptions!: SelectOptionsApi
   public statisticsApi!: StatisticsApi
+  public movementApi!: MovementApi
   
   constructor (context: any) {
     super(context)
@@ -77,6 +79,7 @@ export class ApiCalls extends BasicApiCall {
     this.news = new NewsApi(context)
     this.selectOptions = new SelectOptionsApi(context)
     this.statisticsApi = new StatisticsApi(context)
+    this.movementApi = new MovementApi(context)
   }
   
   async userCreate (data: any) {
@@ -185,20 +188,7 @@ export class ApiCalls extends BasicApiCall {
     )
   }
   
-  async fetchMovementsList (_id: string) {
-    return (await this.get({
-      endPoint: `/api/movements/list` + (_id ? `/${_id}` : '')
-    }))
-  }
-  
-  async importMovementsList (body: any) {
-    return (await this._call({
-      method: 'POST',
-      endPoint: `/api/movements/import`,
-      body,
-      uploadMode: true
-    }))
-  }
+
   
   async importContract (body: any) {
     return (await this._call({
@@ -288,18 +278,6 @@ export class ApiCalls extends BasicApiCall {
     })
   }
   
-  /**
-   * @returns {{
-   *  deposit: number
-   *  interestAmount: number
-   *  interestPercentage: number
-   * }}
-   */
-  async fetchWalletStatus (data?: any) {
-    return await this.get({
-      endPoint: '/api/movements/status' + (data && data.userId ? `/${data.userId}` : '')
-    })
-  }
   
   async fetchCommissionsStatus (userId?: string) {
     return await this.get({
