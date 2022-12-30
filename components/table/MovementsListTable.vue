@@ -23,6 +23,7 @@
                               table-key="movements"
                               :options="tab.tableOptions"
                               :loading="tab.loading"
+                              :item-class="getItemClass"
                               @update:pagination="onPaginationChanged"
               ></PaginatedTable>
             </v-skeleton-loader>
@@ -222,7 +223,7 @@ export default defineComponent({
       visibileTabsList,
       tabsList,
       getItemClass,
-      onPaginationChanged
+      onPaginationChanged,
     }
   }
 })
