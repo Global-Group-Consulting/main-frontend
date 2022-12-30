@@ -16,6 +16,7 @@
       multi-sort
       class="data-table"
       :loading="loading"
+      :item-class="itemClass"
       loading-text="Caricamento in corso... Prego attendere"
       @click:row="$emit('click:row', $event)"
       @update:options="onOptionsChange"
@@ -76,7 +77,8 @@ export default defineComponent({
     },
     condition: [String, Number],
     options: Object,
-    loading: Boolean
+    loading: Boolean,
+    itemClass: [Object, Function]
   },
   emits: {
     'update:pagination': (paginationDto: PaginationDto) => true
@@ -93,14 +95,14 @@ export default defineComponent({
     const headers: ComputedRef<any[]> = computed(() => {
       const roleName = UserRoles.getIdName($auth.user.role)
       const colPath = `${roleName}.tables.${props.tableKey}.columns`
-      const colDefaultPath = `defaults.tables.${props.tableKey}.columns`;
+      const colDefaultPath = `defaults.tables.${props.tableKey}.columns`
       const toReturn: any[] = []
 
       let columns: string[] | [string, [number | string]][] = _get(roleBasedConfig, colPath)
 
       // Fallback to the defaults
       if (!columns) {
-        columns = _get(roleBasedConfig, colDefaultPath);
+        columns = _get(roleBasedConfig, colDefaultPath)
       }
 
       if (!columns) {
