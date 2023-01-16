@@ -47,5 +47,9 @@ export default {
     'add-admin': 'Nuovo Amministrazione',
     'download-filtered': 'Scarica filtrati',
     'download-filtered-tooltip': 'Scarica un file Excel con i dati filtrati'
+  },
+  calendar: {
+    'add-event': 'Aggiungi Evento',
+    'add-event-tooltip': 'Aggiungi un evento al calendario'
   }
 }
