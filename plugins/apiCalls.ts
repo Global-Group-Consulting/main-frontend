@@ -1,3 +1,5 @@
+// @ts-ignore
+
 import { BasicApiCall } from '../classes/BasicApiCall'
 
 import UserRoles from '../enums/UserRoles'
@@ -19,11 +21,13 @@ import { NewsApi } from '~/plugins/apiCalls/News'
 import { SelectOptionsApi } from '~/plugins/apiCalls/SelectOptionsApi'
 import { StatisticsApi } from '~/plugins/apiCalls/StatisticsApi'
 import { MovementApi } from '~/plugins/apiCalls/Movement'
+import { CalendarEventsApi } from '~/plugins/apiCalls/CalendarEventsApi'
 
 interface IApiCalls extends ApiCalls {
   [key: string]: any
 }
 
+// @ts-ignore
 declare module 'vue/types/vue' {
   // this.$myInjectedFunction inside Vue components
   interface Vue {
@@ -63,6 +67,7 @@ export class ApiCalls extends BasicApiCall {
   public selectOptions!: SelectOptionsApi
   public statisticsApi!: StatisticsApi
   public movementApi!: MovementApi
+  public calendarEventsApi!: CalendarEventsApi
   
   constructor (context: any) {
     super(context)
@@ -80,6 +85,7 @@ export class ApiCalls extends BasicApiCall {
     this.selectOptions = new SelectOptionsApi(context)
     this.statisticsApi = new StatisticsApi(context)
     this.movementApi = new MovementApi(context)
+    this.calendarEventsApi = new CalendarEventsApi(context)
   }
   
   async userCreate (data: any) {
