@@ -7,7 +7,7 @@
 
       <v-row class="my-5">
         <v-col sm="12" md="8">
-          <v-card flat outlined>
+          <v-card flat outlined height="100%" class="d-flex flex-column" max-height="700px">
             <v-card-text class="pb-0 d-flex align-center">
               <span class="me-3">
                 <tooltip-btn text outlined @click="setToday">Oggi</tooltip-btn>
@@ -27,35 +27,48 @@
                         append-icon="mdi-chevron-down"></v-select>
             </v-card-text>
 
-            <v-card-text>
+            <v-card-text class="flex-grow-1 overflow-hidden">
               <v-calendar ref="calendar"
                           :type="calType"
                           v-model="calValue"
                           :weekdays="[1,2,3,4,5,6,0]"
-                          locale="it-IT"
+                          :locale="$i18n.locale"
                           :events="events"
                           :event-color="getEventColor"
+                          :event-more="true"
+                          :categories="categories"
+                          event-more-text="Altri"
                           @change="calendarChange"
                           @click:event="showEvent"
                           @click:date="createEvent"
+                          @click:more="showMoreEvents"
               ></v-calendar>
 
               <CalendarEventPreview
                   :selected-element="activeEvent.selectedElement"
                   :selected-event="activeEvent.selectedEvent"
+                  :left="activeEvent.left"
+                  :bottom="activeEvent.bottom"
                   @event-deleted="onEventDeleted"
+                  @close="onPreviewClose"
               ></CalendarEventPreview>
+
+              <!--              <CalendarEventMore :more-events="moreEvents.events"
+                                               :selected-element="moreEvents.selectedElement"
+                            ></CalendarEventMore>-->
 
             </v-card-text>
           </v-card>
         </v-col>
 
         <v-col sm="12" md="4">
-          <v-card>
-            <v-card-text>
+          <v-card height="100%" max-height="700px" flat outlined class="overflow-hidden">
+            <v-card-text class="d-flex flex-column h-100">
               <h2 class="lh-1 my-3 " v-html="calTitle"></h2>
 
-              <CalendarEventsList :events="events"></CalendarEventsList>
+              <CalendarEventsList :events="visibleEvents"
+                                  class="flex-grow-1 overflow-auto"
+                                  @eventClick="showEvent"></CalendarEventsList>
             </v-card-text>
           </v-card>
         </v-col>
@@ -78,17 +91,19 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, onMounted, reactive, Ref, ref } from '@vue/composition-api'
+import { computed, ComputedRef, defineComponent, nextTick, onMounted, reactive, Ref, ref } from '@vue/composition-api'
 import { ActionItem } from '~/@types/ActionItem'
 import moment from 'moment-timezone'
 import { CalendarEvent } from '~/@types/Calendar/CalendarEvent'
 import CalendarEventsList from '~/components/calendar/CalendarEventsList.vue'
 import CalendarEventPreview from '~/components/calendar/CalendarEventPreview.vue'
+import CalendarEventMore from '~/components/calendar/CalendarEventMore.vue'
+import { CalendarCategory } from '~/@types/Calendar/CalendarCategory'
 
 export default defineComponent({
   name: 'Calendar',
   components: {
-    CalendarEventsList, CalendarEventPreview
+    CalendarEventsList, CalendarEventPreview, CalendarEventMore
   },
   setup (props, { root }) {
     const { $apiCalls, $store, $i18n, $alerts } = root
@@ -97,7 +112,13 @@ export default defineComponent({
     const calValue = ref('')
     const currentMonth = ref('')
     const activeEvent = reactive({
-      selectedEvent: {},
+      selectedEvent: {} as CalendarEvent,
+      selectedElement: null,
+      left: false,
+      bottom: false
+    })
+    const moreEvents: Ref<{ events: CalendarEvent[], selectedElement: null | HTMLElement }> = ref({
+      events: [],
       selectedElement: null
     })
     const actionsList: ComputedRef<ActionItem[]> = computed(() => {
@@ -125,6 +146,7 @@ export default defineComponent({
       ]
     })
 
+    const categories: Ref<CalendarCategory[]> = ref([])
     const events: Ref<CalendarEvent[]> = ref([])
 
     const availableCalTypes = [
@@ -146,6 +168,22 @@ export default defineComponent({
       return toReturn.join(' ')
     })
 
+    const visibleEvents = computed(() => {
+      return events.value.filter(e => {
+        const start = moment(e.start)
+        const end = moment(e.end)
+        const current = moment(currentMonth.value)
+
+        if (calType.value === 'month') {
+          return start.isSame(current, 'month') || end.isSame(current, 'month')
+        } else if (calType.value === 'week') {
+          return start.isSame(current, 'week') || end.isSame(current, 'week')
+        } else if (calType.value === 'day') {
+          return start.isSame(current, 'day') || end.isSame(current, 'day')
+        }
+      })
+    })
+
     function setToday () {
       calValue.value = ''
     }
@@ -163,12 +201,32 @@ export default defineComponent({
     }
 
     function getEventColor (event: CalendarEvent) {
-      return event.color ?? 'primary'
+      return event.category?.color ?? 'primary'
     }
 
-    function showEvent ({ nativeEvent, event }: any) {
-      activeEvent.selectedEvent = event
-      activeEvent.selectedElement = nativeEvent.target
+    function showEvent (data: any) {
+      const { nativeEvent, event } = data
+
+      nextTick(() => {
+        activeEvent.selectedEvent = event
+        activeEvent.selectedElement = nativeEvent.target
+        activeEvent.left = data.left
+      })
+    }
+
+    function showMoreEvents (ev: any, nativeEvent: any) {
+      calType.value = 'day'
+      calValue.value = ev.date
+      /*const { date } = ev
+      moreEvents.value.selectedElement = nativeEvent.target as HTMLElement
+
+      moreEvents.value.events = events.value.filter(e => {
+        const start = moment(e.start)
+        const end = moment(e.end)
+
+        return start.isSame(date, 'day') || end.isSame(date, 'day')
+      })
+      console.log(events)*/
     }
 
     function createEvent (date: any) {
@@ -204,12 +262,12 @@ export default defineComponent({
     }
 
     function onEventCreated (event: CalendarEvent) {
-      $alerts.toastSuccess('alerts.calendarEvents.crate-success')
+      $alerts.toastSuccess('calendarEvents.create-event-success')
       fetchData()
     }
 
     function onEventUpdated (event: CalendarEvent) {
-      $alerts.toastSuccess('alerts.calendarEvents.update-success')
+      $alerts.toastSuccess('calendarEvents.update-event-success')
       fetchData()
     }
 
@@ -217,22 +275,38 @@ export default defineComponent({
       fetchData()
     }
 
-    async function fetchData () {
-      events.value = await $apiCalls.calendarEventsApi.all()
+    function onPreviewClose () {
+      // activeEvent.selectedEvent = {}
+      // activeEvent.selectedElement = null
     }
 
-    /*
-        todo:: le date devono essere inviate con la timezone dell'utnete che sta creando l'evento
-        A db poi viene salvato con utc 0.*/
+    async function fetchData () {
+      events.value = await $apiCalls.calendarEventsApi.all()
+
+      if (activeEvent.selectedEvent?._id) {
+        const foundEvent = events.value.find(e => e._id === activeEvent.selectedEvent._id)
+
+        if (foundEvent) {
+          activeEvent.selectedEvent = foundEvent
+        }
+      }
+    }
+
+    async function fetchCategories () {
+      categories.value = await $apiCalls.calendarCategoriesApi.all()
+    }
 
     onMounted(async () => {
       calendar.value.checkChange()
 
+      // await fetchCategories()
       await fetchData()
     })
 
     return {
       events,
+      visibleEvents,
+      categories,
       calendar,
       calValue,
       actionsList,
@@ -241,6 +315,7 @@ export default defineComponent({
       calType,
       calTitle,
       availableCalTypes,
+      moreEvents,
       setToday,
       next,
       prev,
@@ -249,7 +324,9 @@ export default defineComponent({
       onEventCreated,
       onEventUpdated,
       onEventDeleted,
+      onPreviewClose,
       showEvent,
+      showMoreEvents,
       createEvent
     }
   }

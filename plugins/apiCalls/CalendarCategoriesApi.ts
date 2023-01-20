@@ -7,14 +7,10 @@ export class CalendarCategoriesApi extends BasicApiCall {
     return this.get({ endPoint: '/api/calendarCategories/' })
   }
   
-  async create (data: any): Promise<CalendarCategory> {
-    return await this.post({ endPoint: '/api/calendarCategories/', data })
-  }
-  
-  async update (data: any, id: string): Promise<CalendarCategory> {
+  async upsert (data: any, id?: string): Promise<CalendarCategory> {
     return await this._call({
-      endPoint: '/api/calendarCategories/' + id,
-      method: 'PATCH',
+      endPoint: '/api/calendarCategories/' + (id ?? ''),
+      method: 'POST',
       body: data
     })
   }

@@ -4,6 +4,9 @@
       :close-on-content-click="false"
       :activator="selectedElement"
       offset-x
+      max-width="400px"
+      :left="left"
+      :bottom="bottom"
   >
     <v-card
         color="grey lighten-4"
@@ -11,7 +14,7 @@
         flat
     >
       <v-toolbar
-          :color="selectedEvent.color"
+          :color="color"
           dense
           dark
       >
@@ -36,26 +39,23 @@
         <v-list-item class="ps-0" dense
                      v-for="(section, i) in sections" :key="'sec_' + i">
           <v-list-item-icon class="me-2">
-            <v-icon>{{ section.icon }}</v-icon>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon v-bind="attrs"
+                        v-on="on">{{ section.icon }}
+                </v-icon>
+              </template>
+
+              <span>{{ section.tooltip }}</span>
+            </v-tooltip>
+
           </v-list-item-icon>
 
           <v-list-item-content>
             <v-list-item-title v-html="section.text"></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-
-        <span v-html="selectedEvent.notes"></span>
       </v-card-text>
-
-      <!--      <v-card-actions>
-              <v-btn
-                  text
-                  color="secondary"
-                  @click="selectedOpen = false"
-              >
-                Cancel
-              </v-btn>
-            </v-card-actions>-->
     </v-card>
   </v-menu>
 </template>
@@ -77,7 +77,9 @@ export default defineComponent({
     selectedElement: {
       type: HTMLElement as PropType<HTMLElement>,
       default: null
-    }
+    },
+    left: Boolean,
+    bottom: Boolean
   },
   events: ['event-deleted'],
   setup (props, { root, emit }) {
@@ -90,29 +92,39 @@ export default defineComponent({
       return [
         {
           icon: 'mdi-map-marker',
-          text: props.selectedEvent?.place
+          text: props.selectedEvent?.place,
+          tooltip: 'Luogo'
         },
         {
           icon: 'mdi-shape',
-          text: props.selectedEvent?.category
+          text: props.selectedEvent?.category?.name,
+          tooltip: 'Categoria'
+
         },
         {
           icon: 'mdi-text',
-          text: props.selectedEvent?.notes
+          text: props.selectedEvent?.notes,
+          tooltip: 'Note'
         },
         {
           icon: 'mdi-badge-account',
-          text: props.selectedEvent?.userId?._id
+          text: props.selectedEvent?.user ? props.selectedEvent?.user?.firstName + ' ' + props.selectedEvent?.user?.lastName : '',
+          tooltip: 'Utente'
         },
         {
           icon: 'mdi-account-multiple-outline',
-          text: props.selectedEvent?.clientId?._id
+          text: props.selectedEvent?.client ? props.selectedEvent?.client?.firstName + ' ' + props.selectedEvent?.client?.lastName : '',
+          tooltip: 'Cliente'
         }
       ].filter((section) => !!section.text)
     })
 
     const subtitle = computed(() => {
       return start.value.format('dddd, D MMMM') + ' | ' + start.value.format('HH:mm') + ' - ' + end.value.format('HH:mm')
+    })
+
+    const color = computed(() => {
+      return props.selectedEvent.category?.color ?? 'primary'
     })
 
     const changeState = (newState: boolean) => {
@@ -154,7 +166,6 @@ export default defineComponent({
     }
 
     watch(() => props.selectedElement, () => {
-
       if (selectedOpen.value) {
         selectedOpen.value = false
         requestAnimationFrame(() => requestAnimationFrame(() => changeState(true)))
@@ -163,10 +174,17 @@ export default defineComponent({
       }
     })
 
+    watch(() => selectedOpen.value, (newVal) => {
+      if (!newVal) {
+        changeState(false)
+      }
+    })
+
     return {
       selectedOpen,
       subtitle,
       sections,
+      color,
       onEditClick,
       onDeleteClick
     }

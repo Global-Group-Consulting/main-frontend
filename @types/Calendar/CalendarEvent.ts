@@ -1,3 +1,6 @@
+import { CalendarCategory } from '~/@types/Calendar/CalendarCategory'
+import { User } from '~/@types/UserFormData'
+
 export interface CalendarEvent {
   readonly _id: string
   name: string;
@@ -8,7 +11,9 @@ export interface CalendarEvent {
    * false for all day events, true for timed events
    */
   timed: boolean
-  category: string
+  categoryId: string
+  
+  category?: CalendarCategory
   
   notes: string
   place: string
@@ -23,8 +28,12 @@ export interface CalendarEvent {
    */
   userId: string
   
+  user: Pick<User, '_id' | 'firstName' | 'lastName'>
+  
   /**
    * the client indirectly related to the event
    */
   clientId: string
+  
+  client: Pick<User, '_id' | 'firstName' | 'lastName'>
 }

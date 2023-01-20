@@ -1,32 +1,24 @@
 <template>
   <div>
     <portal to="dialog-content">
-      <v-data-table
-          :headers="headers"
-          :items="categories"
+      <!-- Navbar -->
+      <v-toolbar flat dense class="mb-3">
+        <v-spacer/>
+
+        <CalendarCategoriesUpsertDialog
+            :category="selectedCategory"
+            @closed="onDialogClosed"
+            @category:saved="onCategorySaved"/>
+
+        <v-spacer/>
+      </v-toolbar>
+
+      <v-data-table v-if="categories && categories.length > 0"
+                    :headers="headers"
+                    :items="categories"
+                    :locale="$i18n.locale"
       >
-        <template v-slot:top>
-          <v-toolbar flat>
-            <v-divider
-                class="mx-4"
-                inset
-                vertical
-            ></v-divider>
-
-            <v-spacer></v-spacer>
-
-            <v-btn
-                color="primary"
-                dark
-                class="mb-2"
-                @click="addRow"
-            >
-              Aggiungi
-            </v-btn>
-
-          </v-toolbar>
-        </template>
-
+        <!-- actions for each table row -->
         <template v-slot:item.actions="{ item }">
           <v-icon
               small
@@ -35,6 +27,7 @@
           >
             mdi-pencil
           </v-icon>
+
           <v-icon
               small
               @click="deleteItem(item)"
@@ -43,52 +36,16 @@
           </v-icon>
         </template>
 
-        <template v-slot:no-data>
-          <v-alert>Nessuna categoria disponibile. Premere su "Aggiungi" per crearne una.</v-alert>
-        </template>
-
-        <template v-for="category in ['name', 'color']" v-slot:[`item.${category}`]="props">
-          <v-edit-dialog
-              :return-value.sync="props.item[category]"
-              large
-              persistent
-              @save="save"
-              @cancel="cancel"
-              @open="open"
-              @close="close"
-          >
-            {{ props.item[category] }}
-            <template v-slot:input>
-              <v-text-field v-if="category !== 'color'"
-                            v-model="props.item[category]"
-                            label="Edit"
-                            single-line
-                            counter
-              ></v-text-field>
-
-              <v-color-picker v-else
-                              disabled
-                              dot-size="25"
-                              hide-canvas
-                              hide-inputs
-                              hide-mode-switch
-                              hide-sliders
-                              show-swatches
-                              swatches-max-height="200"
-                              v-model="props.item[category]"
-              ></v-color-picker>
-            </template>
-          </v-edit-dialog>
+        <template v-slot:item.color="{item}">
+          <v-icon :color="item.color">mdi-checkbox-blank-circle</v-icon>
         </template>
       </v-data-table>
-    </portal>
 
-    <portal to="dialog-actions-left">
-      <v-btn color="success"
-             text
-             @click="addRow">
-        Aggiungi
-      </v-btn>
+      <v-alert v-else class="text-center"
+               color="warning"
+               outlined>
+        Nessuna categoria disponibile. Premere su "Aggiungi" per crearne una.
+      </v-alert>
     </portal>
 
     <portal to="dialog-actions-right">
@@ -102,37 +59,53 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, Ref, ref } from '@vue/composition-api'
+import {
+  ComponentInstance,
+  ComponentInternalInstance,
+  ComputedOptions,
+  defineComponent,
+  onMounted,
+  Ref,
+  ref,
+  SetupContext, SetupFunction
+} from '@vue/composition-api'
 import { CalendarCategory } from '~/@types/Calendar/CalendarCategory'
+import CalendarCategoriesUpsertDialog from '~/components/calendar/CalendarCategoriesUpsertDialog.vue'
+import { ApiCalls } from '~/plugins/apiCalls'
+import { Alerts } from '~/plugins/alerts'
 
 export default defineComponent({
   name: 'CalendarCategoriesDialog',
+  components: { CalendarCategoriesUpsertDialog },
   setup (props, { root }) {
-    const { $apiCalls, $alerts } = root
+    const { $apiCalls, $alerts, $store } = root as { $apiCalls: ApiCalls, $alerts: Alerts, $store: any }
+    const selectedCategory = ref<CalendarCategory | null>(null)
     const categories: Ref<CalendarCategory[]> = ref([])
     const headers = [
       {
         text: 'Nome',
-        value: 'name'
+        value: 'name',
+        width: '60%'
       },
       {
         text: 'Colore',
         value: 'color',
+        align: 'center',
         sortable: false
       },
-      { text: '', value: 'actions', sortable: false }
+      { text: '', value: 'actions', sortable: false, align: 'right' }
     ]
 
-    function save () {
-    }
-
-    function cancel () {
-    }
-
-    function open () {
-    }
-
     function close () {
+      $store.dispatch('dialog/updateStatus', false)
+    }
+
+    function onCategorySaved () {
+      fetchData()
+    }
+
+    function onDialogClosed () {
+      selectedCategory.value = null
     }
 
     function addRow () {
@@ -141,6 +114,25 @@ export default defineComponent({
         name: '-',
         color: '-'
       })
+    }
+
+    function editItem (item: CalendarCategory) {
+      selectedCategory.value = item
+    }
+
+    async function deleteItem (item: CalendarCategory) {
+      try {
+        await $alerts.ask({
+          title: 'Sei sicuro di voler eliminare questa categoria?',
+          confirmButtonText: 'Si, elimina'
+        })
+
+        await $apiCalls.calendarCategoriesApi.delete(item._id)
+
+        await fetchData()
+      } catch (e) {
+        //
+      }
     }
 
     async function fetchData () {
@@ -158,11 +150,13 @@ export default defineComponent({
     return {
       headers,
       categories,
-      open,
+      selectedCategory,
       close,
-      save,
-      cancel,
-      addRow
+      addRow,
+      onCategorySaved,
+      onDialogClosed,
+      editItem,
+      deleteItem
     }
   }
 })

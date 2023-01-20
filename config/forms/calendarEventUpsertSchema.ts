@@ -1,9 +1,11 @@
 import { FormSchema } from '~/@types/FormSchema'
 import { dateFormatter } from '~/plugins/filters'
+import { ApiCalls } from '~/plugins/apiCalls'
 
-export default function (formData: any): FormSchema[] {
+export default function (formData: any, categories: any[], $apiCalls: ApiCalls): FormSchema[] {
   return [
     {
+      colsBreakpoints: { cols: '12', sm: '6' },
       cols: {
         name: {
           label: 'calendarEvent.title',
@@ -17,18 +19,38 @@ export default function (formData: any): FormSchema[] {
         },
         categoryId: {
           label: 'calendarEvent.category',
+          component: 'v-select',
+          items: categories,
           validations: {
             required: {}
           }
         },
+        userId: {
+          label: 'calendarEvent.agent',
+          component: 'async-autocomplete',
+          asyncFn: $apiCalls.selectOptions.getAgentsList,
+          items: formData.user ? [{
+            rawData: formData.user,
+            text: formData.user.firstName + ' ' + formData.user.lastName,
+            value: formData.userId
+          }] : [],
+          validations: {}
+        },
         clientId: {
           label: 'calendarEvent.client',
+          component: 'async-autocomplete',
+          asyncFn: $apiCalls.selectOptions.getUsersList,
+          items: formData.client ? [{
+            rawData: formData.client,
+            text: formData.client.firstName + ' ' + formData.client.lastName,
+            value: formData.clientId
+          }] : [],
           validations: {}
         }
       }
     },
     {
-      colsBreakpoints: { 'cols': '12' },
+      colsBreakpoints: { cols: '12' },
       cols: {
         notes: {
           component: 'v-textarea',
@@ -40,6 +62,7 @@ export default function (formData: any): FormSchema[] {
       }
     },
     {
+      colsBreakpoints: { cols: '6' },
       cols: {
         startDate: {
           label: 'calendarEvent.startDate',
@@ -62,7 +85,7 @@ export default function (formData: any): FormSchema[] {
           startByYear: false,
           validations: {
             required: {},
-            minValue: { params: new Date(formData.value.startDate) }
+            // minValue: { params: formData.startDate }
           }
         },
         endTime: {

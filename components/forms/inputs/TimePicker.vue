@@ -35,7 +35,23 @@
         full-width
         format="24hr"
         @change="onChange"
-    ></v-time-picker>
+    >
+      <v-spacer></v-spacer>
+      <v-btn
+          text
+          color="primary"
+          @click="menuOpen = false"
+      >
+        Annulla
+      </v-btn>
+      <v-btn
+          text
+          color="primary"
+          @click="onChange(time)"
+      >
+        OK
+      </v-btn>
+    </v-time-picker>
   </v-menu>
 </template>
 

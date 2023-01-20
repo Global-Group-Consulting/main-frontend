@@ -1,7 +1,7 @@
 <template>
   <v-row justify="center" class="dynamic-dialog"
          style="position: fixed"
-         v-if="dialogState" >
+         v-if="dialogState">
     <v-dialog
         :value="dialogState"
         :persistent="true"
@@ -39,7 +39,8 @@
             <portal-target
                 name="dialog-content"
                 :slot-props="dialogData"
-            ></portal-target>
+            >
+            </portal-target>
           </v-card-text>
         </div>
 
@@ -77,37 +78,37 @@
 </template>
 
 <script>
-import {mapGetters} from "vuex";
+import { mapGetters } from 'vuex'
 
-import {onUnmounted} from "@vue/composition-api";
+import { onUnmounted } from '@vue/composition-api'
 
 export default {
-  name: "DynamicDialog",
-  setup() {
+  name: 'DynamicDialog',
+  setup () {
     onUnmounted(() => {
-    });
+    })
   },
-  data() {
-    return {};
+  data () {
+    return {}
   },
   computed: {
     ...mapGetters({
-      dialogData: "dialog/dialogData",
-      dialogState: "dialog/dialogState"
+      dialogData: 'dialog/dialogData',
+      dialogState: 'dialog/dialogState'
     }),
-    darkMode() {
+    darkMode () {
       return this.dialogData.theme === 'global-club'
     }
   },
   methods: {
-    close() {
+    close () {
       try {
-        this.$store.dispatch("dialog/updateStatus", false);
+        this.$store.dispatch('dialog/updateStatus', false)
       } catch (er) {
       }
     }
   }
-};
+}
 </script>
 
 <style lang="scss">
@@ -141,4 +142,5 @@ export default {
     }
   }
 }
+
 </style>

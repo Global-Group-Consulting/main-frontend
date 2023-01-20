@@ -10,7 +10,8 @@ export class CalendarEventsApi extends BasicApiCall {
       return {
         ...event,
         start: event.start ? new Date(event.start) : null,
-        end: event.end ? new Date(event.end) : null
+        end: event.end ? new Date(event.end) : (null),
+        timed: true
       }
     })
   }
