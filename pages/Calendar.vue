@@ -36,7 +36,15 @@
                           :events="events"
                           :event-color="getEventColor"
                           @change="calendarChange"
+                          @click:event="showEvent"
+                          @click:date="createEvent"
               ></v-calendar>
+
+              <CalendarEventPreview
+                  :selected-element="activeEvent.selectedElement"
+                  :selected-event="activeEvent.selectedEvent"
+                  @event-deleted="onEventDeleted"
+              ></CalendarEventPreview>
 
             </v-card-text>
           </v-card>
@@ -52,29 +60,46 @@
           </v-card>
         </v-col>
       </v-row>
+
+      <CalendarEventUpsertDialog
+          v-if="$store.getters['dialog/dialogId'] === 'CalendarEventUpsertDialog'"
+          @event-created="onEventCreated"
+          @event-updated="onEventUpdated"
+      />
+
+      <CalendarCategoriesDialog
+          v-if="$store.getters['dialog/dialogId'] === 'CalendarCategoriesDialog'"
+      />
+
     </v-flex>
   </v-layout>
+
+
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, onMounted, Ref, ref } from '@vue/composition-api'
+import { computed, ComputedRef, defineComponent, onMounted, reactive, Ref, ref } from '@vue/composition-api'
 import { ActionItem } from '~/@types/ActionItem'
 import moment from 'moment-timezone'
 import { CalendarEvent } from '~/@types/Calendar/CalendarEvent'
-import CalendarEventsList from '~/components/lists/CalendarEventsList.vue'
-import calendarEventsList from '~/components/lists/CalendarEventsList.vue'
+import CalendarEventsList from '~/components/calendar/CalendarEventsList.vue'
+import CalendarEventPreview from '~/components/calendar/CalendarEventPreview.vue'
 
 export default defineComponent({
   name: 'Calendar',
   components: {
-    CalendarEventsList
+    CalendarEventsList, CalendarEventPreview
   },
   setup (props, { root }) {
-    const { $apiCalls } = root
+    const { $apiCalls, $store, $i18n, $alerts } = root
     const calendar = ref()
     const calType = ref('month')
     const calValue = ref('')
     const currentMonth = ref('')
+    const activeEvent = reactive({
+      selectedEvent: {},
+      selectedElement: null
+    })
     const actionsList: ComputedRef<ActionItem[]> = computed(() => {
       return [
         {
@@ -84,57 +109,23 @@ export default defineComponent({
           icon: 'mdi-calendar-plus',
           options: {
             color: 'primary'
-          }
+          },
+          click: createEvent
+        },
+        {
+          text: 'calendar.view-categories',
+          tooltip: 'calendar.view-categories-tooltip',
+          position: 'center',
+          icon: 'mdi-shape',
+          options: {
+            color: 'secondary'
+          },
+          click: viewCategories
         }
       ]
     })
 
-    const events: Ref<CalendarEvent[]> = ref([
-      {
-        name: 'Event 1',
-        description: 'Event 1 description',
-        start: '2023-01-01T19:30',
-        end: '2023-01-01T21:30',
-        color: 'primary',
-        timed: true,
-        category: 'pippo'
-      },
-      {
-        name: 'Event 2',
-        description: 'Event 2 description',
-        start: '2023-01-06T19:30',
-        end: '2023-01-06T21:30',
-        color: 'success',
-        timed: true,
-        category: 'event'
-      },
-      {
-        name: 'Event 3',
-        description: 'Event 3 description',
-        start: '2023-01-06T19:30',
-        end: '2023-01-06T21:30',
-        color: 'primary',
-        timed: false,
-        category: 'pluto'
-      },
-      {
-        name: 'Event 4',
-        description: 'Event 4 description',
-        start: '2023-01-20T19:30',
-        end: '2023-01-20T21:30',
-        color: 'success',
-        timed: true,
-        category: 'pluto'
-      }, {
-        name: 'Event 5',
-        description: 'Event 5 description',
-        start: '2023-01-30T19:30',
-        end: '2023-01-30T21:30',
-        color: 'secondary',
-        timed: true,
-        category: 'pluto'
-      }
-    ])
+    const events: Ref<CalendarEvent[]> = ref([])
 
     const availableCalTypes = [
       { text: 'Giorno', value: 'day' },
@@ -172,15 +163,67 @@ export default defineComponent({
     }
 
     function getEventColor (event: CalendarEvent) {
-      return event.color
+      return event.color ?? 'primary'
+    }
+
+    function showEvent ({ nativeEvent, event }: any) {
+      activeEvent.selectedEvent = event
+      activeEvent.selectedElement = nativeEvent.target
+    }
+
+    function createEvent (date: any) {
+      const start = moment(date.date).add(1, 'hour')
+      const end = start.clone().add(1, 'hour')
+
+      $store.dispatch('dialog/updateStatus', {
+        id: 'CalendarEventUpsertDialog',
+        title: $i18n.t('dialogs.calendarEventDialog.title-add') as string,
+        texts: {
+          cancelBtn: 'dialogs.calendarEventDialog.btn-cancel',
+          confirmBtn: 'dialogs.calendarEventDialog.btn-add'
+        },
+        data: {
+          event: {
+            name: 'Nuovo evento',
+            start,
+            end
+          }
+        }
+      })
+    }
+
+    function viewCategories () {
+      $store.dispatch('dialog/updateStatus', {
+        id: 'CalendarCategoriesDialog',
+        title: $i18n.t('dialogs.calendarCategoriesDialog.title') as string,
+        texts: {
+          cancelBtn: 'dialogs.calendarCategoriesDialog.btn-cancel',
+          confirmBtn: 'dialogs.calendarCategoriesDialog.btn-confirm'
+        }
+      })
+    }
+
+    function onEventCreated (event: CalendarEvent) {
+      $alerts.toastSuccess('alerts.calendarEvents.crate-success')
+      fetchData()
+    }
+
+    function onEventUpdated (event: CalendarEvent) {
+      $alerts.toastSuccess('alerts.calendarEvents.update-success')
+      fetchData()
+    }
+
+    function onEventDeleted (event: CalendarEvent) {
+      fetchData()
     }
 
     async function fetchData () {
       events.value = await $apiCalls.calendarEventsApi.all()
     }
 
-    todo:: le date devono essere inviate con la timezone dell'utnete che sta creando l'evento
-    A db poi viene salvato con utc 0.
+    /*
+        todo:: le date devono essere inviate con la timezone dell'utnete che sta creando l'evento
+        A db poi viene salvato con utc 0.*/
 
     onMounted(async () => {
       calendar.value.checkChange()
@@ -194,14 +237,20 @@ export default defineComponent({
       calValue,
       actionsList,
       currentMonth,
+      activeEvent,
+      calType,
+      calTitle,
+      availableCalTypes,
       setToday,
       next,
       prev,
       calendarChange,
       getEventColor,
-      calType,
-      calTitle,
-      availableCalTypes
+      onEventCreated,
+      onEventUpdated,
+      onEventDeleted,
+      showEvent,
+      createEvent
     }
   }
 })

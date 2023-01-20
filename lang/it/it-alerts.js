@@ -243,5 +243,14 @@ export default {
     "set-read-confirmBtnText": "Si, segna come letta",
     "set-read-cancelBtnText": "Annulla",
     "set-read-success": "News aggiornata correttamente!",
+  },
+  calendarEvents: {
+    "delete-event-title": "",
+    "delete-event-text": "Sei sicuro di voler cancellare l'evento <strong>{title}</strong>? L'operazione non è reversibile.",
+    "delete-event-confirmBtnText": "Si, cancella",
+    "delete-event-cancelBtnText": "Annulla",
+    "delete-event-success": "Evento cancellato correttamente!",
+    "create-event-success": "Evento creato correttamente!",
+    "update-event-success": "Evento aggiornato correttamente!",
   }
 }

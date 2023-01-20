@@ -22,6 +22,7 @@ import { SelectOptionsApi } from '~/plugins/apiCalls/SelectOptionsApi'
 import { StatisticsApi } from '~/plugins/apiCalls/StatisticsApi'
 import { MovementApi } from '~/plugins/apiCalls/Movement'
 import { CalendarEventsApi } from '~/plugins/apiCalls/CalendarEventsApi'
+import { CalendarCategoriesApi } from '~/plugins/apiCalls/CalendarCategoriesApi'
 
 interface IApiCalls extends ApiCalls {
   [key: string]: any
@@ -68,6 +69,7 @@ export class ApiCalls extends BasicApiCall {
   public statisticsApi!: StatisticsApi
   public movementApi!: MovementApi
   public calendarEventsApi!: CalendarEventsApi
+  public calendarCategoriesApi!: CalendarCategoriesApi
   
   constructor (context: any) {
     super(context)
@@ -86,6 +88,7 @@ export class ApiCalls extends BasicApiCall {
     this.statisticsApi = new StatisticsApi(context)
     this.movementApi = new MovementApi(context)
     this.calendarEventsApi = new CalendarEventsApi(context)
+    this.calendarCategoriesApi = new CalendarCategoriesApi(context)
   }
   
   async userCreate (data: any) {

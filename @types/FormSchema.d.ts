@@ -8,6 +8,7 @@ type ValidatorRules = "required" |
   "maxLength" |
   "minValue" |
   "maxValue" |
+  "minDate" |
   "between" |
   "alpha" |
   "alphaNum" |

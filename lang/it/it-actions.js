@@ -50,6 +50,8 @@ export default {
   },
   calendar: {
     'add-event': 'Aggiungi Evento',
-    'add-event-tooltip': 'Aggiungi un evento al calendario'
+    'add-event-tooltip': 'Aggiungi un evento al calendario',
+    'view-categories': 'Categorie',
+    'view-categories-tooltip': 'Mostra la lista delle categorie'
   }
 }

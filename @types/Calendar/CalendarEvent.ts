@@ -1,8 +1,8 @@
 export interface CalendarEvent {
+  readonly _id: string
   name: string;
-  description: string;
-  start: string;
-  end: string;
+  start: Date;
+  end: Date;
   
   /**
    * false for all day events, true for timed events
