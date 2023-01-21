@@ -1,32 +1,32 @@
 <template>
   <v-menu
-    ref="menu"
-    v-model="menuOpened"
-    :close-on-content-click="false"
-    :nudge-right="40"
-    transition="scale-transition"
-    offset-y
-    :disabled="readonly"
-    min-width="290px"
+      ref="menu"
+      v-model="menuOpened"
+      :close-on-content-click="false"
+      :nudge-right="40"
+      transition="scale-transition"
+      offset-y
+      :disabled="readonly"
+      min-width="290px"
   >
     <template v-slot:activator="{ on }">
       <v-text-field
-        ref="textField"
-        :value="dateValue | dateFormatter"
-        :label="label"
-        :prepend-icon="
+          ref="textField"
+          :value="dateValue | dateFormatter"
+          :label="label"
+          :prepend-icon="
           typeof $attrs['prepend-icon'] === 'string'
             ? $attrs['prepend-icon']
             : 'mdi-calendar'
         "
-        readonly
-        v-on="on"
-        v-bind="$attrs"
-        @change="onInput"
-        @click:clear="onClear"
-        :clearable="clearable"
-        :disabled="disabled"
-        :class="{ 'edit-mode': editMode }"
+          readonly
+          v-on="on"
+          v-bind="$attrs"
+          @change="onInput"
+          @click:clear="onClear"
+          :clearable="clearable"
+          :disabled="disabled"
+          :class="{ 'edit-mode': editMode }"
       >
         <template v-slot:prepend>
           <slot name="prepend"></slot>
@@ -40,45 +40,46 @@
     </template>
 
     <v-date-picker
-      ref="picker"
-      v-model="dateValue"
-      @input="onInput"
-      :readonly="readonly"
-      :disabled="disabled"
-      :picker-date="pickerDate"
-      :min="minDate"
-      :max="max"
-      locale="it"
+        ref="picker"
+        v-model="dateValue"
+        @input="onInput"
+        :readonly="readonly"
+        :disabled="disabled"
+        :picker-date="pickerDate"
+        :min="minDate"
+        :max="max"
+        locale="it"
     >
     </v-date-picker>
+
   </v-menu>
 </template>
 
 <script lang="ts">
-import {Component, Prop, Vue, Watch} from "vue-property-decorator";
-import {datePickerFormatter} from "~/plugins/filters";
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import { datePickerFormatter } from '~/plugins/filters'
 
 @Component
 export default class DatePicker extends Vue {
-  @Prop({type: String})
+  @Prop({ type: String })
   value!: string
-  @Prop({type: String})
+  @Prop({ type: String })
   label!: string
-  @Prop({type: String})
+  @Prop({ type: String })
   initialDate!: string
-  @Prop({type: String})
+  @Prop({ type: String })
   min!: string
-  @Prop({type: String})
+  @Prop({ type: String })
   max!: string
-  @Prop({type: Boolean, default: true})
+  @Prop({ type: Boolean, default: true })
   startByYear!: boolean
-  @Prop({type: Boolean})
+  @Prop({ type: Boolean })
   readonly!: boolean
-  @Prop({type: Boolean})
+  @Prop({ type: Boolean })
   disabled!: boolean
-  @Prop({type: Boolean})
+  @Prop({ type: Boolean })
   editMode!: boolean
-  @Prop({type: String, default: "date"})
+  @Prop({ type: String, default: 'date' })
   type!: string
 
   $refs!: {
@@ -89,53 +90,53 @@ export default class DatePicker extends Vue {
   menuOpened: boolean = false
   dateValue: string | null = this.value ? datePickerFormatter(this.value) : null
 
-  get clearable() {
+  get clearable () {
     return this.$attrs.clearable ?? (!this.readonly && !this.disabled)
   }
 
-  get pickerDate() {
+  get pickerDate () {
     return this.dateValue ? '' : datePickerFormatter(this.initialDate)
   }
 
-  get minDate() {
+  get minDate () {
     return datePickerFormatter(this.min)
   }
 
-  onInput(value: string) {
+  onInput (value: string) {
     if (this.menuOpened) {
-      this.menuOpened = false;
+      this.menuOpened = false
     }
 
     if (this.dateValue !== value) {
       this.dateValue = value
     }
 
-    this.$emit("change", value);
+    this.$emit('change', value)
   }
 
-  onClear() {
+  onClear () {
     this.dateValue = null
 
     setTimeout(() => {
-      this.$refs.textField.blur();
+      this.$refs.textField.blur()
     })
 
-    this.$emit("change", null);
+    this.$emit('change', null)
   }
 
-  @Watch("value")
-  onValueChange(value: string) {
-    const newValue = datePickerFormatter(value);
+  @Watch('value')
+  onValueChange (value: string) {
+    const newValue = datePickerFormatter(value)
 
     if (this.dateValue !== newValue) {
-      this.dateValue = newValue;
+      this.dateValue = newValue
     }
   }
 
-  @Watch("menuOpened")
-  onOpenedChange(val: string) {
+  @Watch('menuOpened')
+  onOpenedChange (val: string) {
     if (this.startByYear) {
-      val && setTimeout(() => (this.$refs.picker.activePicker = "YEAR"));
+      val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'))
     }
   }
 }

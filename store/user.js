@@ -121,6 +121,7 @@ export const getters = {
   canSeeSuperAdmins: (state, getters) => !!getters.userIsSuperAdmin,
   seeAllUsers: (state, getters) => getters.userType === 'admin',
   seeOwnUsers: (state, getters) => getters.userRole === UserRoles.AGENTE,
-  canSeeOtherUsers: (state, getters) => getters.seeAllUsers || getters.seeOwnUsers
+  canSeeOtherUsers: (state, getters) => getters.seeAllUsers || getters.seeOwnUsers,
+  canSeeCalendar: (state, getters) => getters.userIsAdmin || getters.userIsAgente
   
 }

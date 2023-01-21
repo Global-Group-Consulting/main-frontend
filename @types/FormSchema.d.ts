@@ -1,36 +1,37 @@
-import {Formatters} from "./Formatters";
-import CurrencyType from "~/enums/CurrencyType";
+import { Formatters } from './Formatters'
+import CurrencyType from '~/enums/CurrencyType'
 
-type ValidatorRules = "required" |
-  "requiredIf" |
-  "requiredUnless" |
-  "minLength" |
-  "maxLength" |
-  "minValue" |
-  "maxValue" |
-  "between" |
-  "alpha" |
-  "alphaNum" |
-  "numeric" |
-  "integer" |
-  "decimal" |
-  "email" |
-  "ipAddress" |
-  "macAddress" |
-  "sameAs" |
-  "url" |
-  "not" |
-  "or" |
-  "and" | "phoneNumber"
+type ValidatorRules = 'required' |
+  'requiredIf' |
+  'requiredUnless' |
+  'minLength' |
+  'maxLength' |
+  'minValue' |
+  'maxValue' |
+  'minDate' |
+  'between' |
+  'alpha' |
+  'alphaNum' |
+  'numeric' |
+  'integer' |
+  'decimal' |
+  'email' |
+  'ipAddress' |
+  'macAddress' |
+  'sameAs' |
+  'url' |
+  'not' |
+  'or' |
+  'and' | 'phoneNumber'
 
 export type FormSchemaValidations = Partial<Record<ValidatorRules, {
   params?: any
 }>>
 
 export interface FormSchemaField {
-  component?: "v-select" | "date-picker" | "date-picker-range" | "time-picker" | "time-picker-range" | "file-uploader"
-    | "agent-commissions-select" | "contract-doc" | "money-input" | "money-input-range" | "phone-input"
-    | "v-switch" | "v-autocomplete" | "v-textarea" | "rich-text-editor" | "async-autocomplete" | "",
+  component?: 'v-select' | 'date-picker' | 'date-picker-range' | 'time-picker' | 'time-picker-range' | 'file-uploader'
+    | 'agent-commissions-select' | 'contract-doc' | 'money-input' | 'money-input-range' | 'phone-input'
+    | 'v-switch' | 'v-autocomplete' | 'v-textarea' | 'rich-text-editor' | 'async-autocomplete' | '',
   label?: string,
   minLabel?: string,
   maxLabel?: string,
@@ -74,7 +75,12 @@ export interface FormSchema {
   disableEditMode?: boolean,
   class?: string,
   maxCols?: number,
-  colsBreakpoints?: Record<"cols" | "sm" | "md" | "lg", string>
+  colsBreakpoints?: {
+    cols?: string,
+    sm?: string,
+    md?: string,
+    lg?: string,
+  }
   cols: {
     [key: string]: FormSchemaField
   }

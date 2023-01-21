@@ -58,7 +58,7 @@ declare module 'vuex/types/index' {
 }
 
 
-class Alerts {
+export class Alerts {
   private i18n
   private store
 
