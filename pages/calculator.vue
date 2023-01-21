@@ -27,7 +27,7 @@
 
       </v-form>
 
-      <v-card falt outlined>
+      <v-card flat outlined>
         <data-table
           id="quotationTable"
           tableKey="calculator"

@@ -214,5 +214,8 @@ export default {
   },
   reports: {
     title: "Report uscite"
+  },
+  calendar: {
+    title: "Calendario"
   }
 }

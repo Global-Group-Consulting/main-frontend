@@ -31,6 +31,20 @@ Validators.multipleOf = ({ step, until }) => helpers.withParams(
   }
 );
 
+Validators.minDate =  (value, a, b) => {
+  console.log('minDate', value, a, b);
+  if (!value) {
+    return true;
+  }
+  /**
+   * @type {string}
+   */
+  // const valueToTest = ;
+  
+  // return !!valueToTest.match(/(\+[0-9]{2}[0-9]{5,})/g);
+  return true;
+};
+
 export const validationRules = schema => {
   const toReturn = {};
 

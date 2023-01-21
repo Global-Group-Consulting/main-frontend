@@ -9,7 +9,7 @@ export interface ActionItem {
   text: string
   html?: string
   tooltip?: string
-  position?: 'left' | 'center' | 'right'
+  position?: 'left' | 'center' | 'right' | any
   icon?: string
   options?: ActionItemOptions
   disabled?: ComputedRef
