@@ -38,6 +38,17 @@
           Segnala un problema
         </v-tooltip>
 
+        <v-tooltip bottom v-if="$store.getters['user/canSeeCalendar']">
+          <template v-slot:activator="{on}">
+            <v-btn v-on="on" color="primary"
+                   icon
+                   href="/calendar">
+              <v-icon>mdi-calendar</v-icon>
+            </v-btn>
+          </template>
+          Calendario
+        </v-tooltip>
+
         <v-menu offset-y max-width="350"
                 :disabled="!notifications.connected">
           <template v-slot:activator="{ on, attrs }">
@@ -62,7 +73,7 @@
 
           <v-list>
             <v-list-item v-if="unreadMessages.length === 0">
-              <v-list-item-title class="font-italic grey--text">{{ $t("menus.noNotifications") }}...</v-list-item-title>
+              <v-list-item-title class="font-italic grey--text">{{ $t('menus.noNotifications') }}...</v-list-item-title>
             </v-list-item>
 
             <v-list-item v-for="message of unreadMessages"
@@ -75,7 +86,7 @@
               <v-list-item-content>
 
                 <v-list-item-title class="d-flex align-end">
-                  <span class="flex-fill text-truncate">{{ $t("enums.NotificationTypes." + message.type) }}</span>
+                  <span class="flex-fill text-truncate">{{ $t('enums.NotificationTypes.' + message.type) }}</span>
                   <small class="ml-3">{{ message.created_at | dateHourFormatter(true) }}</small>
                 </v-list-item-title>
                 <v-list-item-subtitle>{{ getNotificationMessage(message) }}</v-list-item-subtitle>
@@ -104,8 +115,8 @@
       </div>
 
       <bug-send-dialog
-        v-if="$store.getters['dialog/dialogId'] === 'BugSendDialog'"
-        @communicationAdded="onBugReported"
+          v-if="$store.getters['dialog/dialogId'] === 'BugSendDialog'"
+          @communicationAdded="onBugReported"
       ></bug-send-dialog>
 
     </v-app-bar>
@@ -113,29 +124,29 @@
 </template>
 
 <script>
-import socketNotificationsFn from "~/functions/socket/notifications";
-import socketAccountFn from "~/functions/socket/account";
-import {computed, onMounted, ref} from "@vue/composition-api";
-import CommunicationNewDialog from "~/components/dialogs/CommunicationNewDialog";
-import AccountMenu from "~/components/elements/AccountMenu";
-import BugSendDialog from "../dialogs/BugSendDialog";
+import socketNotificationsFn from '~/functions/socket/notifications'
+import socketAccountFn from '~/functions/socket/account'
+import { computed, onMounted, ref } from '@vue/composition-api'
+import CommunicationNewDialog from '~/components/dialogs/CommunicationNewDialog'
+import AccountMenu from '~/components/elements/AccountMenu'
+import BugSendDialog from '../dialogs/BugSendDialog'
 
 export default {
-  name: "MainNavbar",
-  components: {BugSendDialog, AccountMenu, CommunicationNewDialog},
-  setup(props, {root}) {
-    let scrollElement;
+  name: 'MainNavbar',
+  components: { BugSendDialog, AccountMenu, CommunicationNewDialog },
+  setup (props, { root }) {
+    let scrollElement
     let scrollTop = ref(0)
 
     const dynamicClasses = computed(() => {
       return {
-        "v-app-bar--hide-shadow": scrollTop.value == 0
+        'v-app-bar--hide-shadow': scrollTop.value == 0
       }
     })
 
-    async function openBugReport() {
-      root.$store.dispatch("dialog/updateStatus", {
-        id: "BugSendDialog",
+    async function openBugReport () {
+      root.$store.dispatch('dialog/updateStatus', {
+        id: 'BugSendDialog',
         title: root.$t(`dialogs.communicationNewDialog.title-bug-report`),
         fullscreen: false,
         readonly: false,
@@ -144,22 +155,21 @@ export default {
           receiver: root.$enums.UserRoles.ADMIN,
           subject: `Segnalazione BUG - ${root.$auth.user.firstName} ${root.$auth.user.lastName}`
         }
-      });
+      })
     }
 
-    async function onBugReported() {
+    async function onBugReported () {
 
     }
 
-    function handleScroll() {
+    function handleScroll () {
       scrollTop.value = scrollElement.scrollTop
     }
 
-
     onMounted(() => {
-      scrollElement = document.querySelector("main")
+      scrollElement = document.querySelector('main')
 
-      scrollElement.addEventListener('scroll', handleScroll);
+      scrollElement.addEventListener('scroll', handleScroll)
 
       handleScroll()
     })
@@ -169,9 +179,9 @@ export default {
       onBugReported,
       dynamicClasses,
       // ...socketAccountFn(root),
-      ...socketNotificationsFn(root),
+      ...socketNotificationsFn(root)
     }
-  },
+  }
 }
 </script>
 

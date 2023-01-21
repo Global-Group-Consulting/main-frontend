@@ -109,9 +109,13 @@ import CalendarEventsList from '~/components/calendar/CalendarEventsList.vue'
 import CalendarEventPreview from '~/components/calendar/CalendarEventPreview.vue'
 import CalendarEventMore from '~/components/calendar/CalendarEventMore.vue'
 import { CalendarCategory } from '~/@types/Calendar/CalendarCategory'
+import { CalendarPermissions } from '~/functions/acl/enums/calendar.permissions'
 
 export default defineComponent({
   name: 'Calendar',
+  meta: {
+    permissions: [CalendarPermissions.ALL_READ, CalendarPermissions.TEAM_READ]
+  },
   components: {
     CalendarEventsList, CalendarEventPreview, CalendarEventMore
   },
@@ -152,7 +156,7 @@ export default defineComponent({
             color: 'secondary'
           },
           click: viewCategories,
-          if: $store.getters['auth/isAdmin']
+          if: $store.getters['user/userIsAdmin']
         }
       ].filter((action) => action.hasOwnProperty('if') ? action.if : true)
     })

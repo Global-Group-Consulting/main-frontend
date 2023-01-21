@@ -2,15 +2,15 @@ import { BasicApiCall } from '~/classes/BasicApiCall'
 import { CalendarEvent } from '~/@types/Calendar/CalendarEvent'
 
 export class CalendarEventsApi extends BasicApiCall {
-  async all (start: string, end: string) {
+  async all (start: string, end: string): Promise<CalendarEvent[]> {
     const data: CalendarEvent[] = await this.get({ endPoint: '/api/calendarEvents/', params: { start, end } })
     
     return data.map((event) => {
       // Update the event's start and end dates to be Date objects
       return {
         ...event,
-        start: event.start ? new Date(event.start) : null,
-        end: event.end ? new Date(event.end) : (null),
+        start: new Date(event.start),
+        end: new Date(event.end),
         timed: true
       }
     })
