@@ -287,7 +287,8 @@ export default class Profile extends Vue {
   async onAdminNewRequestAdded () {
     await this.fetchUserDetails()
     // TODO:: update movementsList correctly maybe by a global event
-    // await this.$refs.movements_list_table[0]?.updateData()
+    await this.$refs.movements_list_table[0]?.reloadData()
+
   }
 
   async fetchUserDetails () {

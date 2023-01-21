@@ -1,11 +1,14 @@
 import Vue from 'vue'
-import moment from 'moment'
+import moment from 'moment-timezone'
 // @ts-ignore
 import * as Cleave from 'cleave.js/src/Cleave';
 
 import {capitalize, kebabCase, upperFirst as _upperFirst} from "lodash"
 import {moneyFormatter} from "~/plugins/filters/moneyFormatter";
 import {Plugin} from "@nuxt/types";
+
+
+const workingTimezone = "Europe/Rome";
 
 export function contractNumberFormatter(value: any) {
   if (!value) {
@@ -51,9 +54,9 @@ export function dateFormatter(value: any, includeHours?: boolean, humanFormat?: 
   }
 
   if (humanFormat && momentDate.isSameOrAfter(moment().subtract(2, "days"))) {
-    toReturn = momentDate.fromNow()
+    toReturn = momentDate.tz(workingTimezone).fromNow()
   } else {
-    toReturn = momentDate.format(format)
+    toReturn = momentDate.tz(workingTimezone).format(format)
   }
 
   return toReturn
@@ -67,12 +70,13 @@ export function datePickerFormatter(value: any) {
   if (!value) {
     return ''
   }
+  
 
   if (!isNaN(Number(value))) {
-    return moment(Number(value)).format('YYYY-MM-DD')
+    return moment(Number(value)).tz(workingTimezone).format('YYYY-MM-DD')
   }
 
-  return moment(value).format('YYYY-MM-DD')
+  return moment(value).tz(workingTimezone).format('YYYY-MM-DD')
 }
 
 /*

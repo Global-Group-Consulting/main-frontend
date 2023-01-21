@@ -212,6 +212,10 @@ export default defineComponent({
       }
     })
 
+    function reloadData () {
+      fetchData(selectedTab.value.paginationDto as PaginationDto)
+    }
+
     onMounted(() => {
       fetchData(selectedTab.value.paginationDto as PaginationDto)
     })
@@ -224,6 +228,7 @@ export default defineComponent({
       tabsList,
       getItemClass,
       onPaginationChanged,
+      reloadData
     }
   }
 })
