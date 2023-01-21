@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, nextTick, PropType, ref, watch } from '@vue/composition-api'
+import { computed, ComputedRef, defineComponent, nextTick, PropType, ref, watch } from '@vue/composition-api'
 import { CalendarEvent } from '~/@types/Calendar/CalendarEvent'
 import moment from 'moment-timezone'
 import * as events from 'events'
@@ -119,8 +119,14 @@ export default defineComponent({
       ].filter((section) => !!section.text)
     })
 
-    const subtitle = computed(() => {
-      return start.value.format('dddd, D MMMM') + ' | ' + start.value.format('HH:mm') + ' - ' + end.value.format('HH:mm')
+    const subtitle: ComputedRef<string> = computed(() => {
+      let toReturn = [start.value.format('dddd, D MMMM'), '|', start.value.format('HH:mm'), '-', end.value.format('HH:mm')]
+
+      if (!start.value.isSame(end.value, 'day')) {
+        toReturn = [start.value.format('ddd, D MMM HH:mm'), '|', end.value.format('ddd, D MMM HH:mm')]
+      }
+
+      return toReturn.join(' ')
     })
 
     const color = computed(() => {

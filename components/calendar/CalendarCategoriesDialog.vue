@@ -131,7 +131,7 @@ export default defineComponent({
 
         await fetchData()
       } catch (e) {
-        //
+        $alerts.error(e)
       }
     }
 

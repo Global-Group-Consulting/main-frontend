@@ -220,6 +220,7 @@ export default {
     'place': 'Luogo',
     'category': 'Categoria',
     'client': 'Cliente',
+    'agent': 'Agente',
     'notes': 'Note'
   }
 }

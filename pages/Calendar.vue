@@ -7,7 +7,7 @@
 
       <v-row class="my-5">
         <v-col sm="12" md="8">
-          <v-card flat outlined height="100%" class="d-flex flex-column" max-height="700px">
+          <v-card flat outlined class="d-flex flex-column" height="700px">
             <v-card-text class="pb-0 d-flex align-center">
               <span class="me-3">
                 <tooltip-btn text outlined @click="setToday">Oggi</tooltip-btn>
@@ -91,7 +91,17 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, nextTick, onMounted, reactive, Ref, ref } from '@vue/composition-api'
+import {
+  computed,
+  ComputedRef,
+  defineComponent,
+  nextTick,
+  onMounted,
+  reactive,
+  Ref,
+  ref,
+  watch
+} from '@vue/composition-api'
 import { ActionItem } from '~/@types/ActionItem'
 import moment from 'moment-timezone'
 import { CalendarEvent } from '~/@types/Calendar/CalendarEvent'
@@ -141,9 +151,10 @@ export default defineComponent({
           options: {
             color: 'secondary'
           },
-          click: viewCategories
+          click: viewCategories,
+          if: $store.getters['auth/isAdmin']
         }
-      ]
+      ].filter((action) => action.hasOwnProperty('if') ? action.if : true)
     })
 
     const categories: Ref<CalendarCategory[]> = ref([])
@@ -190,10 +201,18 @@ export default defineComponent({
 
     function next () {
       calendar.value.next()
+
+      nextTick(() => {
+        fetchData()
+      })
     }
 
     function prev () {
       calendar.value.prev()
+
+      nextTick(() => {
+        fetchData()
+      })
     }
 
     function calendarChange (e: any) {
@@ -281,20 +300,31 @@ export default defineComponent({
     }
 
     async function fetchData () {
-      events.value = await $apiCalls.calendarEventsApi.all()
+      const start = moment(calendar.value.lastStart.date).startOf('month').format('YYYY-MM-DD')
+      const end = moment(calendar.value.lastEnd.date).endOf('month').format('YYYY-MM-DD')
 
-      if (activeEvent.selectedEvent?._id) {
-        const foundEvent = events.value.find(e => e._id === activeEvent.selectedEvent._id)
+      try {
+        events.value = await $apiCalls.calendarEventsApi.all(start, end)
 
-        if (foundEvent) {
-          activeEvent.selectedEvent = foundEvent
+        if (activeEvent.selectedEvent?._id) {
+          const foundEvent = events.value.find(e => e._id === activeEvent.selectedEvent._id)
+
+          if (foundEvent) {
+            activeEvent.selectedEvent = foundEvent
+          }
         }
+      } catch (e) {
+        $alerts.error(e)
       }
     }
 
     async function fetchCategories () {
       categories.value = await $apiCalls.calendarCategoriesApi.all()
     }
+
+    watch(() => calType.value, () => {
+      fetchData()
+    })
 
     onMounted(async () => {
       calendar.value.checkChange()

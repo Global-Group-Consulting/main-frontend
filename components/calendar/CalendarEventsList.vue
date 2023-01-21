@@ -37,7 +37,16 @@ export default defineComponent({
     }
 
     function getSubtitle (event: CalendarEvent) {
-      return moment(event.start).format('ddd DD, HH:mm')
+      const start = moment(event.start)
+      const end = moment(event.end)
+
+      let toReturn = [start.format('ddd, D MMM'), '|', start.format('HH:mm'), '-', end.format('HH:mm')]
+
+      if (!start.isSame(end, 'day')) {
+        toReturn = [start.format('ddd, D MMM HH:mm'), '|', end.format('ddd, D MMM HH:mm')]
+      }
+
+      return toReturn.join(' ')
     }
 
     function onEventClick (event: CalendarEvent, nativeEvent: MouseEvent) {
