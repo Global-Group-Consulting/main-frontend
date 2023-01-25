@@ -379,7 +379,7 @@ export default defineComponent({
       const end = moment(calendar.value.lastEnd.date).endOf('month').format('YYYY-MM-DD')
 
       try {
-        events.value = await $apiCalls.calendarEventsApi.all({ start, end })
+        events.value = (await $apiCalls.calendarEventsApi.all({ start, end })) as CalendarEvent[]
 
         if (activeEvent.selectedEvent?._id) {
           const foundEvent = events.value.find(e => e._id === activeEvent.selectedEvent._id)
@@ -395,9 +395,9 @@ export default defineComponent({
 
     async function filterData (append?: boolean) {
       try {
-        const result = await $apiCalls.calendarEventsApi.all(activeFilters.value, {
+        const result: PaginatedResult<CalendarEvent[]> = (await $apiCalls.calendarEventsApi.all(activeFilters.value, {
           page: append ? filteredPagination.value?.page : 1
-        })
+        })) as PaginatedResult<CalendarEvent[]>
 
         if (append) {
           filteredPagination.value = {
