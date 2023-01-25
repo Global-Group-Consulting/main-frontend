@@ -76,8 +76,8 @@
                                       @eventClick="showEvent"></CalendarEventsList>
                 </v-card-text>
               </div>
-              <div v-else key="el-2">
-                <v-card-text>
+              <div v-else key="el-2" class="h-100">
+                <v-card-text class="d-flex flex-column h-100">
                   <h2 class="lh-1 mt-3 mb-4">Risultati ricerca</h2>
 
                   <v-alert type="info" icon="mdi-magnify"
