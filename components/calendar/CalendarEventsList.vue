@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-list v-if="events && events.length">
+  <div class="d-flex flex-column">
+    <v-list v-if="events && events.length" class="flex-grow-1 overflow-auto">
       <v-list-item v-for="(event, i) in events" :key="event.name + '_' + i" class="ps-0"
                    @click="onEventClick(event, $event)">
         <v-list-item-icon class="me-3">
@@ -10,6 +10,14 @@
         <v-list-item-content>
           <v-list-item-title v-html="event.name"></v-list-item-title>
           <v-list-item-subtitle v-html="getSubtitle(event)"></v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item v-if="totalPages > 1 && page < totalPages">
+        <v-list-item-content>
+          <v-btn outlined color="primary" @click="$emit('load:more')">
+            Carica altri eventi
+          </v-btn>
         </v-list-item-content>
       </v-list-item>
     </v-list>
@@ -29,8 +37,17 @@ export default defineComponent({
     events: {
       type: Array as PropType<CalendarEvent[]>,
       required: true
+    },
+    page: {
+      type: Number,
+      default: 1
+    },
+    totalPages: {
+      type: Number,
+      default: 1
     }
   },
+  emits: ['load:more'],
   setup (props, { emit }) {
     function getIconColor (event: CalendarEvent) {
       return event.category?.color || 'primary'

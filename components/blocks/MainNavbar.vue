@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="z-index: 5">
     <v-alert tile class="mb-0"
              v-if="$store.getters['settings/isReadonly']"
              :type="$store.getters['settings/maintenanceMode'] ? 'error' : 'warning'"

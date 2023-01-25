@@ -1,11 +1,27 @@
 import { BasicApiCall } from '~/classes/BasicApiCall'
 import { CalendarEvent } from '~/@types/Calendar/CalendarEvent'
+import { PaginationDto } from '~/@types/pagination/PaginationDto'
+import { PaginatedResult } from '~/@types/pagination/PaginatedResult'
 
 export class CalendarEventsApi extends BasicApiCall {
-  async all (start: string, end: string): Promise<CalendarEvent[]> {
-    const data: CalendarEvent[] = await this.get({ endPoint: '/api/calendarEvents/', params: { start, end } })
+  async all (filters: any, paginationDto?: PaginationDto): Promise<CalendarEvent[] | PaginatedResult<CalendarEvent>> {
+    const params: any = {}
     
-    return data.map((event) => {
+    if (paginationDto) {
+      Object.assign(params, paginationDto)
+      params.paginate = true
+    }
+    
+    params.filters = filters
+    
+    const result = await this.get({ endPoint: '/api/calendarEvents/', params })
+    let data: CalendarEvent[] = result
+    
+    if (paginationDto) {
+      data = result.data
+    }
+    
+    data = data.map((event) => {
       // Update the event's start and end dates to be Date objects
       return {
         ...event,
@@ -14,6 +30,15 @@ export class CalendarEventsApi extends BasicApiCall {
         timed: true
       }
     })
+    
+    if (paginationDto) {
+      return {
+        ...result,
+        data
+      }
+    }
+    
+    return data
   }
   
   async create (data: any): Promise<CalendarEvent> {

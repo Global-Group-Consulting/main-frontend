@@ -48,8 +48,8 @@ import { FormSchema, FormSchemaField } from '~/@types/FormSchema'
   }
 })
 export default class DynamicFilters extends Vue {
-  @Prop({ type: String })
-  schema!: FiltersSchemasType
+  @Prop({ type: [String, Array] })
+  schema!: FiltersSchemasType | []
 
   @Prop({ type: Boolean, default: false })
   expand!: boolean
@@ -79,6 +79,10 @@ export default class DynamicFilters extends Vue {
    * i just need to specify the name of the schema to use, without needing to import the real schema.
    */
   get formSchema (): FormSchema[] {
+    if (this.schema && this.schema instanceof Array) {
+      return this.schema
+    }
+
     let schema = this.schema ? schemas[this.schema + 'FiltersSchema'] : null
 
     return schema ? schema.call(this) : schema
