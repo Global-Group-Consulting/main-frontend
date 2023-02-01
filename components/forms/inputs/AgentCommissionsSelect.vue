@@ -1,8 +1,8 @@
 <template>
   <v-item-group
-    multiple
-    v-model="selection"
-    @change="onChange"
+      multiple
+      v-model="selection"
+      @change="onChange"
   >
     <v-item v-slot="{ active, toggle }"
             v-for="(item, i) in items" :key="item.name"
@@ -42,48 +42,63 @@
 </template>
 
 <script>
-import {ref, watch} from "@vue/composition-api";
+import { computed, ref, watch } from '@vue/composition-api'
+import AgentTeamType from '~/enums/AgentTeamType'
 
 export default {
-  name: "AgentCommissionsSelect",
+  name: 'AgentCommissionsSelect',
   props: {
     value: {
       type: Array,
       default: () => ([])
     },
     refAgent: Object,
-    disabled: Boolean
+    disabled: Boolean,
+    agentTeamType: String
   },
-  setup(props, {root, emit}) {
+  setup (props, { root, emit }) {
     const selection = ref([])
-    const items = ref([{
-      name: "newDeposit",
-      label: "new-deposit",
-      input: true,
-      defaultValue: 5,
-      value: 5,
-      maxValue: getRefAgentPercentage()
-    },
-      {
-        name: "totalDeposit",
-        label: "total-deposit",
-      },
-      {
-        name: "annualDeposit",
-        label: "annual-deposit",
-        input: true,
-        defaultValue: 6,
-        value: 6
-      }])
 
-    function getRefAgentPercentage() {
+    const items = computed(() => {
+      return [
+        {
+          name: 'personalClientDeposit',
+          label: 'personal-client-deposit',
+          input: true,
+          defaultValue: 5,
+          value: 5,
+          if: props.agentTeamType === AgentTeamType.GROUP_PERCENTAGE
+        },
+        {
+          name: 'newDeposit',
+          label: 'new-deposit' + (props.agentTeamType === AgentTeamType.GROUP_PERCENTAGE ? '-group' : ''),
+          input: true,
+          defaultValue: 5,
+          value: 5,
+          maxValue: getRefAgentPercentage()
+        },
+        {
+          name: 'totalDeposit',
+          label: 'total-deposit'
+        },
+        {
+          name: 'annualDeposit',
+          label: 'annual-deposit',
+          input: true,
+          defaultValue: 6,
+          value: 6
+        }
+      ].filter(_item => _item?.if ?? true)
+    })
+
+    function getRefAgentPercentage () {
       const rightCommission = props.refAgent?.commissionsAssigned.find(_comm => _comm.name === root.$enums.CommissionType.NEW_DEPOSIT)
 
       return rightCommission ? rightCommission.percent : 0
     }
 
-    function onChange() {
-      emit("change", selection.value.reduce((acc, curr) => {
+    function onChange () {
+      emit('change', selection.value.reduce((acc, curr) => {
         const currItem = items.value.find(_item => _item.name === curr)
 
         // i'm using an array because in the future i could add more info on each element
@@ -114,7 +129,7 @@ export default {
           item.value = newValueItem.percent || item.defaultValue
         }
       }
-    }, {immediate: true, deep: true})
+    }, { immediate: true, deep: true })
 
     return {
       selection,
