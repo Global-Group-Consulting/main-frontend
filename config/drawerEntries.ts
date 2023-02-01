@@ -16,7 +16,7 @@ export interface DrawerEntry {
   hideInMobile?: boolean
   if?: boolean
   type?: "group"
-  childs?: DrawerEntry
+  childs?: DrawerEntry[]
   roles? : AclUserRoles[]
 }
 
