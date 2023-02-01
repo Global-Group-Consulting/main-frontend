@@ -1,12 +1,11 @@
-import {PortfolioPermissions} from "~/functions/acl/enums/portfolio.permissions";
-import {UsersPermissions} from "~/functions/acl/enums/users.permissions";
-import {RequestsPermissions} from "~/functions/acl/enums/requests.permissions";
-import {AclPermissions} from "~/functions/acl/enums/acl.permissions";
-import {ClubPermissions} from "~/functions/acl/enums/club.permissions";
-import {CalculatorPermissions} from "~/functions/acl/enums/calculator.permissions";
-import {SettingPermissions} from "~/functions/acl/enums/setting.permissions";
-import {MagazinePermissions} from "~/functions/acl/enums/magazine.permissions";
-import {ReportsPermissions} from "~/functions/acl/enums/reports.permissions";
+import { PortfolioPermissions } from '~/functions/acl/enums/portfolio.permissions'
+import { UsersPermissions } from '~/functions/acl/enums/users.permissions'
+import { RequestsPermissions } from '~/functions/acl/enums/requests.permissions'
+import { CalculatorPermissions } from '~/functions/acl/enums/calculator.permissions'
+import { SettingPermissions } from '~/functions/acl/enums/setting.permissions'
+import { MagazinePermissions } from '~/functions/acl/enums/magazine.permissions'
+import { ReportsPermissions } from '~/functions/acl/enums/reports.permissions'
+import { AclUserRoles } from '~/enums/AclUserRoles'
 
 export interface DrawerEntry {
   id?: string
@@ -18,6 +17,7 @@ export interface DrawerEntry {
   if?: boolean
   type?: "group"
   childs?: DrawerEntry[]
+  roles? : AclUserRoles[]
 }
 
 export default function (context: Vue): DrawerEntry[] {
@@ -33,6 +33,7 @@ export default function (context: Vue): DrawerEntry[] {
     {
       type: 'group',
       text: 'portfolio',
+      roles: [AclUserRoles.AGENT],
       childs: [
         {
           id: 'users',
@@ -73,6 +74,7 @@ export default function (context: Vue): DrawerEntry[] {
           icon: 'mdi-swap-horizontal-bold',
           link: '/movements',
           permissions: ["movements.self:read"],
+          roles: [AclUserRoles.AGENT, AclUserRoles.CLIENT],
           hideInMobile: true
         },
         {
