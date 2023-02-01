@@ -16,7 +16,8 @@ export interface DrawerEntry {
   hideInMobile?: boolean
   if?: boolean
   type?: "group"
-  childs?: DrawerEntry[]
+  childs?: DrawerEntry
+  roles? : AclUserRoles[]
 }
 
 export default function (context: Vue): DrawerEntry[] {
@@ -32,6 +33,7 @@ export default function (context: Vue): DrawerEntry[] {
     {
       type: 'group',
       text: 'portfolio',
+      roles: [AclUserRoles.AGENT],
       childs: [
         {
           id: 'users',
