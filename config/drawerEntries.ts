@@ -1,12 +1,11 @@
 import { PortfolioPermissions } from '~/functions/acl/enums/portfolio.permissions'
 import { UsersPermissions } from '~/functions/acl/enums/users.permissions'
 import { RequestsPermissions } from '~/functions/acl/enums/requests.permissions'
-import { AclPermissions } from '~/functions/acl/enums/acl.permissions'
-import { ClubPermissions } from '~/functions/acl/enums/club.permissions'
 import { CalculatorPermissions } from '~/functions/acl/enums/calculator.permissions'
 import { SettingPermissions } from '~/functions/acl/enums/setting.permissions'
 import { MagazinePermissions } from '~/functions/acl/enums/magazine.permissions'
 import { ReportsPermissions } from '~/functions/acl/enums/reports.permissions'
+import { AclUserRoles } from '~/enums/AclUserRoles'
 
 export interface DrawerEntry {
   id?: string
@@ -16,12 +15,12 @@ export interface DrawerEntry {
   permissions?: string[]
   hideInMobile?: boolean
   if?: boolean
-  type?: 'group'
+  type?: "group"
   childs?: DrawerEntry[]
 }
 
 export default function (context: Vue): DrawerEntry[] {
-  
+
   return [
     {
       id: 'dashboard',
@@ -44,16 +43,16 @@ export default function (context: Vue): DrawerEntry[] {
         },
         {
           id: 'wallet',
-          text: 'wallet',
+          text: "wallet",
           icon: 'mdi-wallet',
           link: '/wallet',
-          permissions: [PortfolioPermissions.ACL_PORTFOLIO_SELF_READ]
+          permissions: [PortfolioPermissions.ACL_PORTFOLIO_SELF_READ],
         }
       ]
     },
     {
       type: 'group',
-      text: 'pippo',
+      text: "pippo",
       /* text: [UserRoles.SUPER_ADMIN,
          UserRoles.ADMIN,
          UserRoles.SERV_CLIENTI]
@@ -72,7 +71,8 @@ export default function (context: Vue): DrawerEntry[] {
           text: 'movements',
           icon: 'mdi-swap-horizontal-bold',
           link: '/movements',
-          permissions: ['movements.self:read'],
+          permissions: ["movements.self:read"],
+          roles: [AclUserRoles.AGENT, AclUserRoles.CLIENT],
           hideInMobile: true
         },
         {
@@ -82,7 +82,7 @@ export default function (context: Vue): DrawerEntry[] {
           link: '/requests',
           permissions: [RequestsPermissions.ACL_REQUESTS_SELF_READ, RequestsPermissions.ACL_REQUESTS_ALL_READ],
           hideInMobile: true
-        }
+        },
       ]
     },
     /*{
@@ -113,7 +113,7 @@ export default function (context: Vue): DrawerEntry[] {
           id: 'comunications',
           text: 'comunications',
           icon: 'mdi-email-multiple',
-          link: '/communications'
+          link: '/communications',
           // permissions: [CommunicationsPermissions.ACL_COMMUNICATIONS_SELF_READ, CommunicationsPermissions.ACL_COMMUNICATIONS_ALL_READ]
         },
         {
@@ -137,7 +137,7 @@ export default function (context: Vue): DrawerEntry[] {
           link: '/traduzioni',
           permissions: ["translations:read"]
         },*/
-        
+
         /*{
           id: 'emailStatuses',
           text: 'emailStatuses',
@@ -153,19 +153,11 @@ export default function (context: Vue): DrawerEntry[] {
       ]
     }
   ]
-  
+
 }
 
-export function BottomDrawerEntries (context: Vue): DrawerEntry[] {
+export function BottomDrawerEntries(context: Vue): DrawerEntry[] {
   return [
-    {
-      id: 'calendar',
-      text: 'calendar',
-      icon: 'mdi-calendar',
-      link: '/calendar',
-      // @ts-ignore
-      if: context.$store.getters['user/canSeeCalendar']
-    },
     {
       id: 'reports',
       text: 'reports',
