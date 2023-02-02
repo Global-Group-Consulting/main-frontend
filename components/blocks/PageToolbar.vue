@@ -61,8 +61,8 @@ export default class PageToolbar extends Vue {
   @Prop({ type: Array as () => ActionItem[], default: () => [] })
   public actionsList!: ActionItem[]
 
-  @Prop({ type: String })
-  filtersSchema!: string
+  @Prop({ })
+  filtersSchema!: any
 
   @Prop({ type: Boolean, default: false })
   filtersExpanded!: boolean

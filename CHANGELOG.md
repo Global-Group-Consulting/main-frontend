@@ -1,5 +1,19 @@
 [comment]: <> (## Non ancora rilasciato)
 
+## v 2.0.0 - <small>21/01/2023</small>
+### Miglioramenti
+- Aggiunto paginazione lato server sulla pagina utenti e richieste
+- Migliorata velocità caricamento dati
+- Migliorati filtri su tutte le pagine
+- Migliorata gestione rimborso club
+- Aggiornate card dashboard
+- Spostato sezione CLUB in app dedicata
+- Migliorato profilo utente
+
+### Aggiunte
+- Aggiunta possibilità di filtrare i movimenti di un utente
+- Aggiunta pagina calendario
+
 ## v 1.9.0 - <small>02/02/2022</small>
 ### Miglioaremnti
 - Miglioramenti generali prestazioni

@@ -1,5 +1,5 @@
-export interface PaginatedResult {
-  data: any[];
+export interface PaginatedResult<T=any> {
+  data: T[];
   lastPage: number;
   page: number;
   perPage: number;

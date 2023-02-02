@@ -3,11 +3,15 @@
     <v-flex>
       <PageHeader page-name="calendar"></PageHeader>
 
-      <PageToolbar :actions-list="actionsList"></PageToolbar>
+      <PageToolbar :actions-list="actionsList"
+                   :filters-schema="calendarFiltersSchema"
+                   always-visible
+                   filter-on-enter></PageToolbar>
 
       <v-row class="my-5">
         <v-col sm="12" md="8">
-          <v-card flat outlined class="d-flex flex-column" height="700px">
+          <v-card flat outlined class="d-flex flex-column calendar-card" height="700px"
+                  :class="{'disabled': areActiveFilters}">
             <v-card-text class="pb-0 d-flex align-center">
               <span class="me-3">
                 <tooltip-btn text outlined @click="setToday">Oggi</tooltip-btn>
@@ -37,12 +41,17 @@
                           :event-color="getEventColor"
                           :event-more="true"
                           :categories="categories"
+                          :disabled="areActiveFilters"
                           event-more-text="Altri"
                           @change="calendarChange"
                           @click:event="showEvent"
                           @click:date="createEvent"
                           @click:more="showMoreEvents"
               ></v-calendar>
+
+              <transition name="fade">
+                <div class="calendar-overlay" v-if="areActiveFilters"></div>
+              </transition>
 
               <CalendarEventPreview
                   :selected-element="activeEvent.selectedElement"
@@ -52,24 +61,44 @@
                   @event-deleted="onEventDeleted"
                   @close="onPreviewClose"
               ></CalendarEventPreview>
-
-              <!--              <CalendarEventMore :more-events="moreEvents.events"
-                                               :selected-element="moreEvents.selectedElement"
-                            ></CalendarEventMore>-->
-
             </v-card-text>
           </v-card>
         </v-col>
 
         <v-col sm="12" md="4">
           <v-card height="100%" max-height="700px" flat outlined class="overflow-hidden">
-            <v-card-text class="d-flex flex-column h-100">
-              <h2 class="lh-1 my-3 " v-html="calTitle"></h2>
+            <transition name="fade" mode="out-in" :duration="300">
+              <div v-if="!areActiveFilters" key="el-1" class="h-100">
+                <v-card-text class="d-flex flex-column h-100">
+                  <h2 class="lh-1 my-3 " v-html="calTitle"></h2>
+                  <CalendarEventsList :events="visibleEvents"
+                                      class="flex-grow-1 overflow-auto"
+                                      @eventClick="showEvent"></CalendarEventsList>
+                </v-card-text>
+              </div>
+              <div v-else key="el-2" class="h-100">
+                <v-card-text class="d-flex flex-column h-100">
+                  <h2 class="lh-1 mt-3 mb-4">Risultati ricerca</h2>
 
-              <CalendarEventsList :events="visibleEvents"
-                                  class="flex-grow-1 overflow-auto"
-                                  @eventClick="showEvent"></CalendarEventsList>
-            </v-card-text>
+                  <v-alert type="info" icon="mdi-magnify"
+                           close-label="aa"
+                           border="left"
+                           outlined
+                           dismissible
+                           @input="clearFilters">
+                    Sono stati trovati {{ filteredPagination.total }} risultati.
+                  </v-alert>
+
+                  <CalendarEventsList :events="filteredEvents"
+                                      :page="filteredPagination.page"
+                                      :total-pages="filteredPagination.lastPage"
+                                      class="flex-grow-1 overflow-auto"
+                                      v-show="filteredPagination.total"
+                                      @load:more="loadMoreFilteredEvents"
+                                      @eventClick="showEvent"></CalendarEventsList>
+                </v-card-text>
+              </div>
+            </transition>
           </v-card>
         </v-col>
       </v-row>
@@ -82,6 +111,7 @@
 
       <CalendarCategoriesDialog
           v-if="$store.getters['dialog/dialogId'] === 'CalendarCategoriesDialog'"
+          @category:saved="onCategorySaved"
       />
 
     </v-flex>
@@ -109,9 +139,16 @@ import CalendarEventsList from '~/components/calendar/CalendarEventsList.vue'
 import CalendarEventPreview from '~/components/calendar/CalendarEventPreview.vue'
 import CalendarEventMore from '~/components/calendar/CalendarEventMore.vue'
 import { CalendarCategory } from '~/@types/Calendar/CalendarCategory'
+import { CalendarPermissions } from '~/functions/acl/enums/calendar.permissions'
+import { Filter } from '~/@types/Filter'
+import CalendarFiltersSchema from '~/config/forms/filters/calendarFiltersSchema'
+import { PaginatedResult } from '~/@types/pagination/PaginatedResult'
 
 export default defineComponent({
   name: 'Calendar',
+  meta: {
+    permissions: [CalendarPermissions.ALL_READ, CalendarPermissions.TEAM_READ]
+  },
   components: {
     CalendarEventsList, CalendarEventPreview, CalendarEventMore
   },
@@ -131,6 +168,19 @@ export default defineComponent({
       events: [],
       selectedElement: null
     })
+    const filteredPagination: Ref<PaginatedResult<CalendarEvent[]>> = ref({
+      page: 1,
+      sortBy: [],
+      sortDesc: [],
+      data: [],
+      lastPage: 100,
+      perPage: 3,
+      total: 0,
+      filters: {}
+    })
+    const categories: Ref<CalendarCategory[]> = ref([])
+    const events: Ref<CalendarEvent[]> = ref([])
+
     const actionsList: ComputedRef<ActionItem[]> = computed(() => {
       return [
         {
@@ -152,13 +202,10 @@ export default defineComponent({
             color: 'secondary'
           },
           click: viewCategories,
-          if: $store.getters['auth/isAdmin']
+          if: $store.getters['user/userIsAdmin']
         }
       ].filter((action) => action.hasOwnProperty('if') ? action.if : true)
     })
-
-    const categories: Ref<CalendarCategory[]> = ref([])
-    const events: Ref<CalendarEvent[]> = ref([])
 
     const availableCalTypes = [
       { text: 'Giorno', value: 'day' },
@@ -178,7 +225,6 @@ export default defineComponent({
 
       return toReturn.join(' ')
     })
-
     const visibleEvents = computed(() => {
       return events.value.filter(e => {
         const start = moment(e.start)
@@ -193,6 +239,20 @@ export default defineComponent({
           return start.isSame(current, 'day') || end.isSame(current, 'day')
         }
       })
+    })
+    const activeFilters: ComputedRef<Filter> = computed(() => {
+      return root.$store.getters['filters/activeFilters']
+    })
+    const areActiveFilters = computed(() => {
+      return root.$store.getters['filters/areActiveFilters']
+    })
+    const calendarFiltersSchema = computed(() => CalendarFiltersSchema(categories.value, $apiCalls))
+    const filteredEvents = computed(() => {
+      if (!filteredPagination.value) {
+        return []
+      }
+
+      return filteredPagination.value?.data
     })
 
     function setToday () {
@@ -299,12 +359,27 @@ export default defineComponent({
       // activeEvent.selectedElement = null
     }
 
+    function onCategorySaved () {
+      fetchCategories()
+    }
+
+    function clearFilters (input: boolean) {
+      if (!input) {
+        $store.dispatch('filters/updatePage', {
+          page: root.$route.path,
+          activeFilters: null
+        })
+
+        $store.dispatch('filters/updateExpanded')
+      }
+    }
+
     async function fetchData () {
       const start = moment(calendar.value.lastStart.date).startOf('month').format('YYYY-MM-DD')
       const end = moment(calendar.value.lastEnd.date).endOf('month').format('YYYY-MM-DD')
 
       try {
-        events.value = await $apiCalls.calendarEventsApi.all(start, end)
+        events.value = (await $apiCalls.calendarEventsApi.all({ start, end })) as CalendarEvent[]
 
         if (activeEvent.selectedEvent?._id) {
           const foundEvent = events.value.find(e => e._id === activeEvent.selectedEvent._id)
@@ -318,24 +393,67 @@ export default defineComponent({
       }
     }
 
+    async function filterData (append?: boolean) {
+      try {
+        const result: PaginatedResult<CalendarEvent[]> = (await $apiCalls.calendarEventsApi.all(activeFilters.value, {
+          page: append ? filteredPagination.value?.page : 1
+        })) as PaginatedResult<CalendarEvent[]>
+
+        if (append) {
+          filteredPagination.value = {
+            ...result,
+            data: [...filteredPagination.value?.data ?? [], ...result.data]
+          }
+        } else {
+          filteredPagination.value = result
+        }
+
+      } catch (e) {
+        $alerts.error(e)
+      }
+    }
+
     async function fetchCategories () {
       categories.value = await $apiCalls.calendarCategoriesApi.all()
+    }
+
+    function loadMoreFilteredEvents () {
+      if (filteredPagination.value?.page) {
+        filteredPagination.value.page++
+        filterData(true)
+      }
     }
 
     watch(() => calType.value, () => {
       fetchData()
     })
 
+    /**
+     * When the active filters change, fetches the data for the filters tab
+     * and eventually shows the filters tab
+     */
+    watch(() => activeFilters.value, () => {
+      if (root.$store.getters['filters/areActiveFilters']) {
+        filterData()
+      } else {
+        /*if (currentTab.value === tabsList.value.findIndex(tab => tab.id === 'filters')) {
+          currentTab.value = 0
+        }*/
+      }
+    })
+
     onMounted(async () => {
       calendar.value.checkChange()
 
-      // await fetchCategories()
+      await fetchCategories()
       await fetchData()
     })
 
     return {
       events,
       visibleEvents,
+      filteredEvents,
+      filteredPagination,
       categories,
       calendar,
       calValue,
@@ -346,6 +464,8 @@ export default defineComponent({
       calTitle,
       availableCalTypes,
       moreEvents,
+      areActiveFilters,
+      calendarFiltersSchema,
       setToday,
       next,
       prev,
@@ -355,14 +475,46 @@ export default defineComponent({
       onEventUpdated,
       onEventDeleted,
       onPreviewClose,
+      onCategorySaved,
       showEvent,
       showMoreEvents,
-      createEvent
+      loadMoreFilteredEvents,
+      createEvent,
+      clearFilters
     }
   }
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.calendar-card {
+  transition: opacity .3s;
 
+  &.disabled {
+    opacity: .5;
+  }
+}
+
+.calendar-overlay {
+  position: absolute;
+  background: rgba(255, 255, 255, .7);
+  backdrop-filter: blur(2px);
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 4;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 </style>

@@ -77,7 +77,8 @@ import { Alerts } from '~/plugins/alerts'
 export default defineComponent({
   name: 'CalendarCategoriesDialog',
   components: { CalendarCategoriesUpsertDialog },
-  setup (props, { root }) {
+  emits: ['category:saved'],
+  setup (props, { root, emit }) {
     const { $apiCalls, $alerts, $store } = root as { $apiCalls: ApiCalls, $alerts: Alerts, $store: any }
     const selectedCategory = ref<CalendarCategory | null>(null)
     const categories: Ref<CalendarCategory[]> = ref([])
@@ -102,6 +103,7 @@ export default defineComponent({
 
     function onCategorySaved () {
       fetchData()
+      emit('category:saved')
     }
 
     function onDialogClosed () {

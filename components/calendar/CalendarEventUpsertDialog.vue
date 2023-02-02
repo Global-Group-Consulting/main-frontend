@@ -86,7 +86,7 @@ export default defineComponent({
     }
 
     async function onSubmitClick () {
-      let action
+      let action: 'update' | 'create'
 
       if (!(await form.value.validate())) {
         return

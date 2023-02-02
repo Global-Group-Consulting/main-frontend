@@ -56,29 +56,38 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import { defineComponent, Ref, ref, watch } from '@vue/composition-api'
 
-@Component
-export default class TimePicker extends Vue {
-  @Prop({ type: String })
-  value!: string
+export default defineComponent({
+  name: 'TimePicker',
+  props: {
+    value: {
+      type: String,
+      required: true
+    }
+  },
+  setup (props, { emit }) {
+    const menu = ref()
+    const menuOpen = ref(false)
+    const time = ref('')
 
-  menuOpen: boolean = false
-  time: string = ''
+    const onChange = (time: any) => {
+      menu.value.save(time)
+      emit('change', time)
+    }
 
-  onChange (time) {
-    this.$refs.menu.save(time)
-    this.$emit('change', time)
+    watch(() => props.value, (value: string) => {
+      time.value = value
+    }, { immediate: true })
+
+    return {
+      menu,
+      menuOpen,
+      time,
+      onChange
+    }
   }
-
-  @Watch('value', { immediate: true })
-  onValueChange (value: string) {
-    this.time = value
-
-    // this.$emit('input', value)
-  }
-
-}
+})
 </script>
 
 <style scoped>

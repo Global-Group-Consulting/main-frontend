@@ -319,7 +319,8 @@ export function agentData (formContext: FormContext) {
         'commissionsAssigned': {
           component: 'agent-commissions-select',
           disabled: !canChangeCommissions.value,
-          refAgent: formContext.formData.referenceAgentData
+          refAgent: formContext.formData.referenceAgentData,
+          agentTeamType: formContext.formData.agentTeamType,
         }
       }
     }
