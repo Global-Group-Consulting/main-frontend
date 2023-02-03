@@ -9,9 +9,17 @@
                     @change="onChange"
                     @click:clear="onClickClear"
                     v-bind="$attrs"
+                    :small-chips="multiple"
+                    :chips="multiple"
+                    :deletable-chips="multiple"
+                    :multiple="multiple"
     >
       <template v-slot:label>
         <slot name="label"></slot>
+      </template>
+
+      <template v-slot:prepend-item>
+        <slot name="prepend-item"></slot>
       </template>
 
       <template v-slot:prepend>
@@ -28,12 +36,13 @@ import { debounce } from 'lodash'
 export default defineComponent({
   name: 'AsyncAutocomplete',
   props: {
-    value: String,
+    value: [String, Array],
     asyncFn: {
       type: Function as PropType<(search: string) => Promise<any[]>>,
       required: true
     },
-    items: Array
+    items: Array,
+    multiple: Boolean
   },
   setup (props, { emit, root }) {
     const selectOptions: Ref<any[]> = ref([])

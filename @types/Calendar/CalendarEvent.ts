@@ -26,9 +26,9 @@ export interface CalendarEvent {
   /**
    * the user who the event belongs to. This is the user who will see the event in their calendar. For admins, this could be empty, indicating global events.
    */
-  userId: string
+  userIds: string
   
-  user: Pick<User, '_id' | 'firstName' | 'lastName'>
+  users: Pick<User, '_id' | 'firstName' | 'lastName'>[]
   
   /**
    * the client indirectly related to the event
@@ -36,4 +36,6 @@ export interface CalendarEvent {
   clientId: string
   
   client: Pick<User, '_id' | 'firstName' | 'lastName'>
+  
+  isPublic: boolean
 }

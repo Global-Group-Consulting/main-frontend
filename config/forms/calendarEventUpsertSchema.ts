@@ -1,6 +1,7 @@
 import { FormSchema } from '~/@types/FormSchema'
 import { dateFormatter } from '~/plugins/filters'
 import { ApiCalls } from '~/plugins/apiCalls'
+import { User } from '~/@types/UserFormData'
 
 export default function (formData: any, categories: any[], $apiCalls: ApiCalls): FormSchema[] {
   return [
@@ -25,17 +26,7 @@ export default function (formData: any, categories: any[], $apiCalls: ApiCalls):
             required: {}
           }
         },
-        userId: {
-          label: 'calendarEvent.agent',
-          component: 'async-autocomplete',
-          asyncFn: $apiCalls.selectOptions.getAgentsList,
-          items: formData.user ? [{
-            rawData: formData.user,
-            text: formData.user.firstName + ' ' + formData.user.lastName,
-            value: formData.userId
-          }] : [],
-          validations: {}
-        },
+        
         clientId: {
           label: 'calendarEvent.client',
           component: 'async-autocomplete',
@@ -45,6 +36,23 @@ export default function (formData: any, categories: any[], $apiCalls: ApiCalls):
             text: formData.client.firstName + ' ' + formData.client.lastName,
             value: formData.clientId
           }] : [],
+          validations: {}
+        }
+      }
+    },
+    {
+      colsBreakpoints: { cols: '12' },
+      cols: {
+        userIds: {
+          label: 'calendarEvent.agent',
+          component: 'async-autocomplete',
+          multiple: true,
+          asyncFn: $apiCalls.selectOptions.getAgentsList,
+          items: formData.users ? formData.users.map((user: Partial<User>) => ({
+            rawData: user,
+            text: user.firstName + ' ' + user.lastName,
+            value: user._id
+          })) : [],
           validations: {}
         }
       }
@@ -84,7 +92,7 @@ export default function (formData: any, categories: any[], $apiCalls: ApiCalls):
           component: 'date-picker',
           startByYear: false,
           validations: {
-            required: {},
+            required: {}
             // minValue: { params: formData.startDate }
           }
         },

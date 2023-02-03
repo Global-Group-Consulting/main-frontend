@@ -130,11 +130,12 @@ export class Alerts {
       errData = errData[0]
     }
 
-    if (errData.error) {
+    if (errData && errData.error) {
       errData = errData.error
     }
 
-    let text = this.i18n.t('errors.default')
+    // use default error message if no message is provided
+    let text = settings.text ? settings.text : this.i18n.t('errors.default')
 
     if (errData && errData.message) {
       if (this.i18n.te('errors.' + errData.message)) {

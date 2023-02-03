@@ -20,12 +20,21 @@
       >
         <v-spacer></v-spacer>
 
-        <v-btn icon @click="onEditClick">
-          <v-icon>mdi-pencil</v-icon>
-        </v-btn>
-        <v-btn icon @click="onDeleteClick">
-          <v-icon>mdi-delete</v-icon>
-        </v-btn>
+        <template v-if="!showAsPreview">
+          <v-btn icon @click="onEditClick" v-if="!isReadonly">
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
+          <v-btn icon @click="onDeleteClick" v-if="!isReadonly">
+            <v-icon>mdi-delete</v-icon>
+          </v-btn>
+        </template>
+        <template v-else-if="selectedEvent && selectedEvent.start">
+          <v-btn icon
+                 :to="`/calendar?date=${$moment(selectedEvent.start).format('YYYY-MM-DD')}&_id=${selectedEvent._id}`">
+            <v-icon>mdi-calendar</v-icon>
+          </v-btn>
+        </template>
+
         <v-btn icon @click="selectedOpen = false">
           <v-icon>mdi-close</v-icon>
         </v-btn>
@@ -65,6 +74,7 @@ import { computed, ComputedRef, defineComponent, nextTick, PropType, ref, watch 
 import { CalendarEvent } from '~/@types/Calendar/CalendarEvent'
 import moment from 'moment-timezone'
 import * as events from 'events'
+import { dateFormatter } from '~/plugins/filters'
 
 export default defineComponent({
   name: 'CalendarEventPreview',
@@ -79,7 +89,8 @@ export default defineComponent({
       default: null
     },
     left: Boolean,
-    bottom: Boolean
+    bottom: Boolean,
+    showAsPreview: Boolean
   },
   events: ['event-deleted'],
   setup (props, { root, emit }) {
@@ -99,7 +110,6 @@ export default defineComponent({
           icon: 'mdi-shape',
           text: props.selectedEvent?.category?.name,
           tooltip: 'Categoria'
-
         },
         {
           icon: 'mdi-text',
@@ -108,8 +118,8 @@ export default defineComponent({
         },
         {
           icon: 'mdi-badge-account',
-          text: props.selectedEvent?.user ? props.selectedEvent?.user?.firstName + ' ' + props.selectedEvent?.user?.lastName : '',
-          tooltip: 'Utente'
+          text: props.selectedEvent?.users?.length ? props.selectedEvent.users.map(user => user.firstName + ' ' + user.lastName).join('<br>') : '',
+          tooltip: 'Agent' + (props.selectedEvent?.users?.length > 1 ? 'i' : 'e')
         },
         {
           icon: 'mdi-account-multiple-outline',
@@ -131,6 +141,13 @@ export default defineComponent({
 
     const color = computed(() => {
       return props.selectedEvent.category?.color ?? 'primary'
+    })
+
+    /**
+     * If the event is not public, only admins can edit it
+     */
+    const isReadonly = computed(() => {
+      return props.selectedEvent.isPublic && !$store.getters['user/userIsAdmin']
     })
 
     const changeState = (newState: boolean) => {
@@ -191,6 +208,7 @@ export default defineComponent({
       subtitle,
       sections,
       color,
+      isReadonly,
       onEditClick,
       onDeleteClick
     }

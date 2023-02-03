@@ -18,6 +18,8 @@
           readonly
           v-bind="attrs"
           v-on="on"
+          :disabled="disabled"
+
       >
         <template v-slot:prepend>
           <slot name="prepend"></slot>
@@ -64,7 +66,8 @@ export default defineComponent({
     value: {
       type: String,
       required: true
-    }
+    },
+    disabled: Boolean
   },
   setup (props, { emit }) {
     const menu = ref()

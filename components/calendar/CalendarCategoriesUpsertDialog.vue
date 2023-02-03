@@ -34,6 +34,15 @@
                 :rules="[v => !!v || 'Il nome è obbligatorio']"
             ></v-text-field>
 
+            <v-select
+                v-model="formData.visibility"
+                label="Utilizzabile da"
+                :items="visibilityOptions"
+                required
+
+            >
+            </v-select>
+
             <v-label>Colore</v-label>
             <v-color-picker dot-size="25"
                             hide-canvas
@@ -74,6 +83,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, Ref, ref, watch } from '@vue/composition-api'
 import { CalendarCategory } from '~/@types/Calendar/CalendarCategory'
+import CalendarCategoryVisibility from '~/enums/CalendarCategoryVisibility'
 
 export default defineComponent({
   name: 'CalendarCategoriesUpsertDialog',
@@ -85,10 +95,11 @@ export default defineComponent({
   },
   emits: ['category:saved'],
   setup (props, { root, emit }) {
-    const { $apiCalls, $alerts } = root
+    const { $apiCalls, $alerts, $i18n } = root
     const defaultFormData = {
       name: '',
-      color: '#03A9F4FF'
+      color: '#03A9F4FF',
+      visibility: CalendarCategoryVisibility.ALL
     }
     const form = ref()
     const dialog = ref(false)
@@ -96,6 +107,29 @@ export default defineComponent({
     const valid = ref(false)
     const formData: Ref<Partial<CalendarCategory>> = ref({ ...defaultFormData })
     const formTitle = computed(() => props.category ? 'Modifica categoria' : 'Nuova categoria')
+
+    const visibilityOptions = [
+      {
+        text: $i18n.t('forms.calendarEventCategory.' + CalendarCategoryVisibility.ALL),
+        value: CalendarCategoryVisibility.ALL
+      },
+      {
+        text: $i18n.t('forms.calendarEventCategory.' + CalendarCategoryVisibility.ME),
+        value: CalendarCategoryVisibility.ME
+      },
+      {
+        text: $i18n.t('forms.calendarEventCategory.' + CalendarCategoryVisibility.ADMINS),
+        value: CalendarCategoryVisibility.ADMINS
+      },
+      {
+        text: $i18n.t('forms.calendarEventCategory.' + CalendarCategoryVisibility.CUSTOMER_SERVICES),
+        value: CalendarCategoryVisibility.CUSTOMER_SERVICES
+      },
+      {
+        text: $i18n.t('forms.calendarEventCategory.' + CalendarCategoryVisibility.AGENTS),
+        value: CalendarCategoryVisibility.AGENTS
+      }
+    ]
 
     function close () {
       dialog.value = false
@@ -149,6 +183,7 @@ export default defineComponent({
       loading,
       formData,
       formTitle,
+      visibilityOptions,
       close,
       save
     }

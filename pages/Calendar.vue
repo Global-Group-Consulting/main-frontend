@@ -32,7 +32,7 @@
             </v-card-text>
 
             <v-card-text class="flex-grow-1 overflow-hidden">
-              <v-calendar ref="calendar"
+              <v-calendar ref="calendarDiv"
                           :type="calType"
                           v-model="calValue"
                           :weekdays="[1,2,3,4,5,6,0]"
@@ -44,7 +44,7 @@
                           :disabled="areActiveFilters"
                           event-more-text="Altri"
                           @change="calendarChange"
-                          @click:event="showEvent"
+                          @click:event="calendar.showEvent"
                           @click:date="createEvent"
                           @click:more="showMoreEvents"
               ></v-calendar>
@@ -54,10 +54,10 @@
               </transition>
 
               <CalendarEventPreview
-                  :selected-element="activeEvent.selectedElement"
-                  :selected-event="activeEvent.selectedEvent"
-                  :left="activeEvent.left"
-                  :bottom="activeEvent.bottom"
+                  :selected-element="calendar.activeEvent.value.selectedElement"
+                  :selected-event="calendar.activeEvent.value.selectedEvent"
+                  :left="calendar.activeEvent.value.left"
+                  :bottom="calendar.activeEvent.value.bottom"
                   @event-deleted="onEventDeleted"
                   @close="onPreviewClose"
               ></CalendarEventPreview>
@@ -68,35 +68,44 @@
         <v-col sm="12" md="4">
           <v-card height="100%" max-height="700px" flat outlined class="overflow-hidden">
             <transition name="fade" mode="out-in" :duration="300">
-              <div v-if="!areActiveFilters" key="el-1" class="h-100">
-                <v-card-text class="d-flex flex-column h-100">
-                  <h2 class="lh-1 my-3 " v-html="calTitle"></h2>
-                  <CalendarEventsList :events="visibleEvents"
-                                      class="flex-grow-1 overflow-auto"
-                                      @eventClick="showEvent"></CalendarEventsList>
+              <div v-if="!areActiveFilters" key="el-1" class="h-100 d-flex flex-column">
+                <v-card-text>
+                  <h2 class="lh-1 grey--text text--darken-2" :class="{'mt-3': calType === 'month'}"
+                      v-html="calTitle"></h2>
                 </v-card-text>
+
+                <CalendarEventsList :events="visibleEvents"
+                                    class="flex-grow-1 overflow-auto"
+                                    @eventClick="calendar.showEvent"></CalendarEventsList>
               </div>
-              <div v-else key="el-2" class="h-100">
-                <v-card-text class="d-flex flex-column h-100">
+              <div v-else key="el-2" class="d-flex flex-column h-100">
+                <v-card-text>
                   <h2 class="lh-1 mt-3 mb-4">Risultati ricerca</h2>
 
-                  <v-alert type="info" icon="mdi-magnify"
+                  <v-alert type="info" icon="mdi-magnify" class="mb-0"
                            close-label="aa"
                            border="left"
                            outlined
                            dismissible
                            @input="clearFilters">
-                    Sono stati trovati {{ filteredPagination.total }} risultati.
+                    Sono stati trovati {{ calendar.filteredPagination.value.total }} risultati.
                   </v-alert>
 
-                  <CalendarEventsList :events="filteredEvents"
-                                      :page="filteredPagination.page"
-                                      :total-pages="filteredPagination.lastPage"
-                                      class="flex-grow-1 overflow-auto"
-                                      v-show="filteredPagination.total"
-                                      @load:more="loadMoreFilteredEvents"
-                                      @eventClick="showEvent"></CalendarEventsList>
+                  <div class="pt-3" v-if="calendar.filteredPagination.value.total">
+                    <v-btn color="warning" outlined block @click.prevent="downloadFilteredData"
+                           :loading="downloadingFile">
+                      <i class="mdi mdi-download-circle-outline"></i>Scarica risultati in Excel
+                    </v-btn>
+                  </div>
                 </v-card-text>
+
+                <CalendarEventsList :events="calendar.filteredEvents.value"
+                                    :page="calendar.filteredPagination.value.page"
+                                    :total-pages="calendar.filteredPagination.value.lastPage"
+                                    class="flex-grow-1 overflow-auto"
+                                    v-show="calendar.filteredPagination.value.total"
+                                    @load:more="calendar.loadMoreFilteredEvents"
+                                    @eventClick="calendar.showEvent"></CalendarEventsList>
               </div>
             </transition>
           </v-card>
@@ -143,6 +152,9 @@ import { CalendarPermissions } from '~/functions/acl/enums/calendar.permissions'
 import { Filter } from '~/@types/Filter'
 import CalendarFiltersSchema from '~/config/forms/filters/calendarFiltersSchema'
 import { PaginatedResult } from '~/@types/pagination/PaginatedResult'
+import jsFileDownload from 'js-file-download'
+import { useFileDownloader } from '~/composables/fileDownloader'
+import { useCalendar } from '~/composables/useCalendar'
 
 export default defineComponent({
   name: 'Calendar',
@@ -153,31 +165,20 @@ export default defineComponent({
     CalendarEventsList, CalendarEventPreview, CalendarEventMore
   },
   setup (props, { root }) {
-    const { $apiCalls, $store, $i18n, $alerts } = root
-    const calendar = ref()
+    const { $apiCalls, $store, $i18n, $alerts, $route, $router } = root
+    const calendar = useCalendar($apiCalls, $alerts, $store)
+    const fileDownloader = useFileDownloader($alerts)
+    const calendarDiv = ref()
+    const downloadingFile = ref(false)
     const calType = ref('month')
     const calValue = ref('')
     const currentMonth = ref('')
-    const activeEvent = reactive({
-      selectedEvent: {} as CalendarEvent,
-      selectedElement: null,
-      left: false,
-      bottom: false
-    })
     const moreEvents: Ref<{ events: CalendarEvent[], selectedElement: null | HTMLElement }> = ref({
       events: [],
       selectedElement: null
     })
-    const filteredPagination: Ref<PaginatedResult<CalendarEvent[]>> = ref({
-      page: 1,
-      sortBy: [],
-      sortDesc: [],
-      data: [],
-      lastPage: 100,
-      perPage: 3,
-      total: 0,
-      filters: {}
-    })
+    const pendingToHighlight: Ref<string | null> = ref(null)
+
     const categories: Ref<CalendarCategory[]> = ref([])
     const events: Ref<CalendarEvent[]> = ref([])
 
@@ -247,20 +248,17 @@ export default defineComponent({
       return root.$store.getters['filters/areActiveFilters']
     })
     const calendarFiltersSchema = computed(() => CalendarFiltersSchema(categories.value, $apiCalls))
-    const filteredEvents = computed(() => {
-      if (!filteredPagination.value) {
-        return []
-      }
-
-      return filteredPagination.value?.data
-    })
 
     function setToday () {
       calValue.value = ''
+
+      nextTick(() => {
+        fetchData()
+      })
     }
 
     function next () {
-      calendar.value.next()
+      calendarDiv.value.next()
 
       nextTick(() => {
         fetchData()
@@ -268,7 +266,7 @@ export default defineComponent({
     }
 
     function prev () {
-      calendar.value.prev()
+      calendarDiv.value.prev()
 
       nextTick(() => {
         fetchData()
@@ -281,16 +279,6 @@ export default defineComponent({
 
     function getEventColor (event: CalendarEvent) {
       return event.category?.color ?? 'primary'
-    }
-
-    function showEvent (data: any) {
-      const { nativeEvent, event } = data
-
-      nextTick(() => {
-        activeEvent.selectedEvent = event
-        activeEvent.selectedElement = nativeEvent.target
-        activeEvent.left = data.left
-      })
     }
 
     function showMoreEvents (ev: any, nativeEvent: any) {
@@ -375,39 +363,19 @@ export default defineComponent({
     }
 
     async function fetchData () {
-      const start = moment(calendar.value.lastStart.date).startOf('month').format('YYYY-MM-DD')
-      const end = moment(calendar.value.lastEnd.date).endOf('month').format('YYYY-MM-DD')
+      const start = moment(calendarDiv.value.lastStart.date).startOf('month').format('YYYY-MM-DD')
+      const end = moment(calendarDiv.value.lastEnd.date).endOf('month').format('YYYY-MM-DD')
 
       try {
         events.value = (await $apiCalls.calendarEventsApi.all({ start, end })) as CalendarEvent[]
 
-        if (activeEvent.selectedEvent?._id) {
-          const foundEvent = events.value.find(e => e._id === activeEvent.selectedEvent._id)
+        if (calendar.activeEvent.value.selectedEvent?._id) {
+          const foundEvent = events.value.find(e => e._id === calendar.activeEvent.value.selectedEvent._id)
 
           if (foundEvent) {
-            activeEvent.selectedEvent = foundEvent
+            calendar.activeEvent.value.selectedEvent = foundEvent
           }
         }
-      } catch (e) {
-        $alerts.error(e)
-      }
-    }
-
-    async function filterData (append?: boolean) {
-      try {
-        const result: PaginatedResult<CalendarEvent[]> = (await $apiCalls.calendarEventsApi.all(activeFilters.value, {
-          page: append ? filteredPagination.value?.page : 1
-        })) as PaginatedResult<CalendarEvent[]>
-
-        if (append) {
-          filteredPagination.value = {
-            ...result,
-            data: [...filteredPagination.value?.data ?? [], ...result.data]
-          }
-        } else {
-          filteredPagination.value = result
-        }
-
       } catch (e) {
         $alerts.error(e)
       }
@@ -417,15 +385,48 @@ export default defineComponent({
       categories.value = await $apiCalls.calendarCategoriesApi.all()
     }
 
-    function loadMoreFilteredEvents () {
-      if (filteredPagination.value?.page) {
-        filteredPagination.value.page++
-        filterData(true)
+    async function downloadFilteredData () {
+      downloadingFile.value = true
+      await fileDownloader.download(() => $apiCalls.calendarEventsApi.download(activeFilters.value), 'export calendario')
+      downloadingFile.value = false
+    }
+
+    /**
+     * When the user opens the page after clicking on an event from the dashboard,
+     * must open the calendar to the day of the event
+     */
+    function highlightUrlEvent (): boolean {
+      const routeData = $route.query
+
+      if (routeData.date && routeData._id) {
+        calValue.value = routeData.date
+        calType.value = 'day'
+        pendingToHighlight.value = routeData._id
+
+        $router.replace({ query: {} })
+
+        return true
       }
+
+      return false
     }
 
     watch(() => calType.value, () => {
-      fetchData()
+      fetchData().then(() => {
+        if (pendingToHighlight.value) {
+          const event = events.value.find(e => e._id === pendingToHighlight.value)
+
+          // reset pending to highlight
+          pendingToHighlight.value = null;
+
+          if (event) {
+            nextTick(() => {
+              calendarDiv.value.scrollToTime(moment(event.start).format('HH:mm'))
+            })
+          }
+        }
+      })
+
     })
 
     /**
@@ -434,7 +435,7 @@ export default defineComponent({
      */
     watch(() => activeFilters.value, () => {
       if (root.$store.getters['filters/areActiveFilters']) {
-        filterData()
+        calendar.filterData()
       } else {
         /*if (currentTab.value === tabsList.value.findIndex(tab => tab.id === 'filters')) {
           currentTab.value = 0
@@ -443,29 +444,31 @@ export default defineComponent({
     })
 
     onMounted(async () => {
-      calendar.value.checkChange()
+      calendarDiv.value.checkChange()
 
       await fetchCategories()
-      await fetchData()
+
+      if (!highlightUrlEvent()) {
+        await fetchData()
+      }
     })
 
     return {
       events,
       visibleEvents,
-      filteredEvents,
-      filteredPagination,
       categories,
+      calendarDiv,
       calendar,
       calValue,
       actionsList,
       currentMonth,
-      activeEvent,
       calType,
       calTitle,
       availableCalTypes,
       moreEvents,
       areActiveFilters,
       calendarFiltersSchema,
+      downloadingFile,
       setToday,
       next,
       prev,
@@ -476,11 +479,10 @@ export default defineComponent({
       onEventDeleted,
       onPreviewClose,
       onCategorySaved,
-      showEvent,
       showMoreEvents,
-      loadMoreFilteredEvents,
       createEvent,
-      clearFilters
+      clearFilters,
+      downloadFilteredData
     }
   }
 })
