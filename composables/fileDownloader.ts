@@ -10,7 +10,6 @@ export const useFileDownloader = function ($alerts: Alerts) {
   const download = async (fetchData: () => Promise<AxiosResponse>, fileName: string, type: string = types.XLSX) => {
     try {
       const content = await fetchData()
-      debugger
       
       jsFileDownload(content.data, fileName, type)
     } catch (e) {

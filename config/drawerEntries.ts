@@ -180,7 +180,7 @@ export function BottomDrawerEntries(context: Vue): DrawerEntry[] {
       text: 'magazine',
       icon: 'mdi-book-open-page-variant',
       link: '/magazine',
-      permissions: [MagazinePermissions.MAGAZINE_READ]
+      permissions: [MagazinePermissions.MAGAZINE_WRITE]
     },
     {
       id: 'settings',

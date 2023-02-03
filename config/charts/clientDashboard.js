@@ -26,13 +26,15 @@ export default {
       id: 'deposit',
       borderColor: '#91c839',
       // backgroundColor: 'rgba(140, 195, 43, .9)',
-      data: []
+      data: [],
+      label: ""
     },
     {
       id: 'interestAmount',
       borderColor: '#39c8c8',
       // backgroundColor: 'rgba(46, 193, 194, .9)',
-      data: []
+      data: [],
+      label: ""
     },
     /*
     {

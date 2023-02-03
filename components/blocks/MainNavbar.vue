@@ -42,7 +42,7 @@
           <template v-slot:activator="{on}">
             <v-btn v-on="on" color="primary"
                    icon
-                   href="/calendar">
+                   to="/calendar">
               <v-icon>mdi-calendar</v-icon>
             </v-btn>
           </template>

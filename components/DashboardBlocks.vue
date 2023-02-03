@@ -1,6 +1,6 @@
 <template>
   <v-row class="">
-    <v-col v-for="(block, i) of blocksList" :key="block.id" md="3" sm="6">
+    <v-col v-for="(block, i) of blocksList" :key="block.id" v-bind:md="md" v-bind:sm="sm">
       <v-card class="flex-fill flex-row d-flex align-start" style="height: 100%">
         <v-skeleton-loader :loading="loading"
                            class="flex-fill"
@@ -81,6 +81,12 @@ export default class DashboardBlocks extends Vue {
 
   @Prop({type: String})
   forRole!: string
+
+  @Prop({type: String, default: "4"})
+  md!: string
+
+  @Prop({type: String, default: "6"})
+  sm!: string
 
   get authUserIsRealAdmin() {
     return this.$store.getters["user/userIsRealAdmin"]

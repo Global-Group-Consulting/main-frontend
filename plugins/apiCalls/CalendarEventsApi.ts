@@ -4,7 +4,10 @@ import { PaginationDto } from '~/@types/pagination/PaginationDto'
 import { PaginatedResult } from '~/@types/pagination/PaginatedResult'
 
 export class CalendarEventsApi extends BasicApiCall {
-  async all (filters: any, paginationDto?: PaginationDto): Promise<CalendarEvent[] | PaginatedResult<CalendarEvent[]>> {
+  // @ts-ignore
+  async all (filters: any): Promise<CalendarEvent[]>;
+  async all (filters: any, paginationDto: PaginationDto): Promise<PaginatedResult<CalendarEvent>>;
+  async all (filters: any, paginationDto?: PaginationDto): Promise<any> {
     const params: any = {}
     
     if (paginationDto) {
@@ -38,7 +41,7 @@ export class CalendarEventsApi extends BasicApiCall {
       }
     }
     
-    return data
+    return data as any
   }
   
   async create (data: any): Promise<CalendarEvent> {
