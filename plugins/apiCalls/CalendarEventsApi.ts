@@ -2,6 +2,7 @@ import { BasicApiCall } from '~/classes/BasicApiCall'
 import { CalendarEvent } from '~/@types/Calendar/CalendarEvent'
 import { PaginationDto } from '~/@types/pagination/PaginationDto'
 import { PaginatedResult } from '~/@types/pagination/PaginatedResult'
+import { AxiosResponse } from 'axios'
 
 export class CalendarEventsApi extends BasicApiCall {
   // @ts-ignore
@@ -63,7 +64,7 @@ export class CalendarEventsApi extends BasicApiCall {
     })
   }
   
-  async download (filters: any): Promise<void> {
+  async download (filters: any): Promise<AxiosResponse> {
     return await this._call({
       endPoint: '/api/calendarEvents/download',
       method: 'GET',

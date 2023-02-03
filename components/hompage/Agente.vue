@@ -172,7 +172,7 @@ export default defineComponent({
         const label = root.$t(`charts.current-${set.id}`)
 
         set.data = (data[set.id] || []).reverse()
-        set.label = label
+        set.label = label as string
 
         return set
       })
@@ -218,7 +218,7 @@ export default defineComponent({
     }),
     chartsAdminDataset () {
       return agentDashboardChart.datasets.map(set => {
-        set.label = this.$t(set.label)
+        set.label = this.$t(set.label)  as string
 
         return set
       })

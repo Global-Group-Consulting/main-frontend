@@ -399,9 +399,9 @@ export default defineComponent({
       const routeData = $route.query
 
       if (routeData.date && routeData._id) {
-        calValue.value = routeData.date
+        calValue.value = routeData.date as string
         calType.value = 'day'
-        pendingToHighlight.value = routeData._id
+        pendingToHighlight.value = routeData._id as string
 
         $router.replace({ query: {} })
 
