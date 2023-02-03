@@ -68,19 +68,21 @@
         <v-col sm="12" md="4">
           <v-card height="100%" max-height="700px" flat outlined class="overflow-hidden">
             <transition name="fade" mode="out-in" :duration="300">
-              <div v-if="!areActiveFilters" key="el-1" class="h-100">
-                <v-card-text class="d-flex flex-column h-100">
-                  <h2 class="lh-1 my-3 " v-html="calTitle"></h2>
-                  <CalendarEventsList :events="visibleEvents"
-                                      class="flex-grow-1 overflow-auto"
-                                      @eventClick="showEvent"></CalendarEventsList>
+              <div v-if="!areActiveFilters" key="el-1" class="h-100 d-flex flex-column">
+                <v-card-text>
+                  <h2 class="lh-1 grey--text text--darken-2" :class="{'mt-3': calType === 'month'}"
+                      v-html="calTitle"></h2>
                 </v-card-text>
+
+                <CalendarEventsList :events="visibleEvents"
+                                    class="flex-grow-1 overflow-auto"
+                                    @eventClick="showEvent"></CalendarEventsList>
               </div>
-              <div v-else key="el-2" class="h-100">
-                <v-card-text class="d-flex flex-column h-100">
+              <div v-else key="el-2" class="d-flex flex-column h-100">
+                <v-card-text>
                   <h2 class="lh-1 mt-3 mb-4">Risultati ricerca</h2>
 
-                  <v-alert type="info" icon="mdi-magnify"
+                  <v-alert type="info" icon="mdi-magnify" class="mb-0"
                            close-label="aa"
                            border="left"
                            outlined
@@ -89,14 +91,21 @@
                     Sono stati trovati {{ filteredPagination.total }} risultati.
                   </v-alert>
 
-                  <CalendarEventsList :events="filteredEvents"
-                                      :page="filteredPagination.page"
-                                      :total-pages="filteredPagination.lastPage"
-                                      class="flex-grow-1 overflow-auto"
-                                      v-show="filteredPagination.total"
-                                      @load:more="loadMoreFilteredEvents"
-                                      @eventClick="showEvent"></CalendarEventsList>
+                  <div class="pt-3" v-if="filteredPagination.total">
+                    <v-btn color="warning" outlined block @click.prevent="downloadFilteredData"
+                           :loading="downloadingFile">
+                      <i class="mdi mdi-download-circle-outline"></i>Scarica risultati in Excel
+                    </v-btn>
+                  </div>
                 </v-card-text>
+
+                <CalendarEventsList :events="filteredEvents"
+                                    :page="filteredPagination.page"
+                                    :total-pages="filteredPagination.lastPage"
+                                    class="flex-grow-1 overflow-auto"
+                                    v-show="filteredPagination.total"
+                                    @load:more="loadMoreFilteredEvents"
+                                    @eventClick="showEvent"></CalendarEventsList>
               </div>
             </transition>
           </v-card>
@@ -143,6 +152,8 @@ import { CalendarPermissions } from '~/functions/acl/enums/calendar.permissions'
 import { Filter } from '~/@types/Filter'
 import CalendarFiltersSchema from '~/config/forms/filters/calendarFiltersSchema'
 import { PaginatedResult } from '~/@types/pagination/PaginatedResult'
+import jsFileDownload from 'js-file-download'
+import { useFileDownloader } from '~/composables/fileDownloader'
 
 export default defineComponent({
   name: 'Calendar',
@@ -154,7 +165,9 @@ export default defineComponent({
   },
   setup (props, { root }) {
     const { $apiCalls, $store, $i18n, $alerts } = root
+    const fileDownloader = useFileDownloader($alerts)
     const calendar = ref()
+    const downloadingFile = ref(false)
     const calType = ref('month')
     const calValue = ref('')
     const currentMonth = ref('')
@@ -257,6 +270,10 @@ export default defineComponent({
 
     function setToday () {
       calValue.value = ''
+
+      nextTick(() => {
+        fetchData()
+      })
     }
 
     function next () {
@@ -424,6 +441,12 @@ export default defineComponent({
       }
     }
 
+    async function downloadFilteredData () {
+      downloadingFile.value = true
+      await fileDownloader.download(() => $apiCalls.calendarEventsApi.download(activeFilters.value), 'export calendario')
+      downloadingFile.value = false
+    }
+
     watch(() => calType.value, () => {
       fetchData()
     })
@@ -466,6 +489,7 @@ export default defineComponent({
       moreEvents,
       areActiveFilters,
       calendarFiltersSchema,
+      downloadingFile,
       setToday,
       next,
       prev,
@@ -480,7 +504,8 @@ export default defineComponent({
       showMoreEvents,
       loadMoreFilteredEvents,
       createEvent,
-      clearFilters
+      clearFilters,
+      downloadFilteredData
     }
   }
 })

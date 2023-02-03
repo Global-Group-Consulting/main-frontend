@@ -34,6 +34,15 @@
                 :rules="[v => !!v || 'Il nome è obbligatorio']"
             ></v-text-field>
 
+            <v-select
+                v-model="formData.visibility"
+                label="Visibile a"
+                :items="visibilityOptions"
+                required
+
+            >
+            </v-select>
+
             <v-label>Colore</v-label>
             <v-color-picker dot-size="25"
                             hide-canvas
@@ -75,6 +84,14 @@
 import { computed, defineComponent, PropType, Ref, ref, watch } from '@vue/composition-api'
 import { CalendarCategory } from '~/@types/Calendar/CalendarCategory'
 
+export enum CalendarCategoryVisibility {
+  ALL = 'all',
+  ME = 'author',
+  ADMINS = 'admin',
+  CUSTOMER_SERVICES = 'clients_service',
+  AGENTS = 'agent'
+}
+
 export default defineComponent({
   name: 'CalendarCategoriesUpsertDialog',
   props: {
@@ -88,7 +105,8 @@ export default defineComponent({
     const { $apiCalls, $alerts } = root
     const defaultFormData = {
       name: '',
-      color: '#03A9F4FF'
+      color: '#03A9F4FF',
+      visibility: CalendarCategoryVisibility.ALL
     }
     const form = ref()
     const dialog = ref(false)
@@ -96,6 +114,14 @@ export default defineComponent({
     const valid = ref(false)
     const formData: Ref<Partial<CalendarCategory>> = ref({ ...defaultFormData })
     const formTitle = computed(() => props.category ? 'Modifica categoria' : 'Nuova categoria')
+
+    const visibilityOptions = [
+      { text: 'Tutti', value: CalendarCategoryVisibility.ALL },
+      { text: 'Solo a me', value: CalendarCategoryVisibility.ME },
+      { text: 'Admin', value: CalendarCategoryVisibility.ADMINS },
+      { text: 'Servizio Clienti', value: CalendarCategoryVisibility.CUSTOMER_SERVICES },
+      { text: 'Agenti', value: CalendarCategoryVisibility.AGENTS }
+    ]
 
     function close () {
       dialog.value = false
@@ -149,6 +175,7 @@ export default defineComponent({
       loading,
       formData,
       formTitle,
+      visibilityOptions,
       close,
       save
     }

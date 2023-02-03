@@ -161,6 +161,14 @@ export default function (context: Vue): DrawerEntry[] {
 export function BottomDrawerEntries(context: Vue): DrawerEntry[] {
   return [
     {
+      id: 'calendar',
+      text: 'calendar',
+      icon: 'mdi-calendar',
+      link: '/calendar',
+      // @ts-ignore
+      if: context.$store.getters['user/canSeeCalendar']
+    },
+    {
       id: 'reports',
       text: 'reports',
       icon: 'mdi-file-chart',
@@ -174,13 +182,6 @@ export function BottomDrawerEntries(context: Vue): DrawerEntry[] {
       link: '/magazine',
       permissions: [MagazinePermissions.MAGAZINE_READ]
     },
-    /*{
-      id: 'acl',
-      text: 'acl',
-      icon: 'mdi-shield-account',
-      link: '/acl',
-      permissions: [AclPermissions.ACL_ACL_READ, AclPermissions.ACL_ACL_WRITE]
-    },*/
     {
       id: 'settings',
       text: 'settings',

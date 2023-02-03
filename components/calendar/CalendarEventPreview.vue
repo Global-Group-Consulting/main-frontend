@@ -20,10 +20,10 @@
       >
         <v-spacer></v-spacer>
 
-        <v-btn icon @click="onEditClick">
+        <v-btn icon @click="onEditClick" v-if="!isReadonly">
           <v-icon>mdi-pencil</v-icon>
         </v-btn>
-        <v-btn icon @click="onDeleteClick">
+        <v-btn icon @click="onDeleteClick" v-if="!isReadonly">
           <v-icon>mdi-delete</v-icon>
         </v-btn>
         <v-btn icon @click="selectedOpen = false">
@@ -99,7 +99,6 @@ export default defineComponent({
           icon: 'mdi-shape',
           text: props.selectedEvent?.category?.name,
           tooltip: 'Categoria'
-
         },
         {
           icon: 'mdi-text',
@@ -108,8 +107,8 @@ export default defineComponent({
         },
         {
           icon: 'mdi-badge-account',
-          text: props.selectedEvent?.user ? props.selectedEvent?.user?.firstName + ' ' + props.selectedEvent?.user?.lastName : '',
-          tooltip: 'Utente'
+          text: props.selectedEvent?.users?.length ? props.selectedEvent.users.map(user => user.firstName + ' ' + user.lastName).join("<br>") : '',
+          tooltip: 'Agent' + (props.selectedEvent?.users?.length > 1 ? 'i' : 'e')
         },
         {
           icon: 'mdi-account-multiple-outline',
@@ -131,6 +130,13 @@ export default defineComponent({
 
     const color = computed(() => {
       return props.selectedEvent.category?.color ?? 'primary'
+    })
+
+    /**
+     * If the event is not public, only admins can edit it
+     */
+    const isReadonly = computed(() => {
+      return props.selectedEvent.isPublic && !$store.getters['user/userIsAdmin']
     })
 
     const changeState = (newState: boolean) => {
@@ -191,6 +197,7 @@ export default defineComponent({
       subtitle,
       sections,
       color,
+      isReadonly,
       onEditClick,
       onDeleteClick
     }

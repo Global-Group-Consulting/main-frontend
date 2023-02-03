@@ -86,7 +86,11 @@ export default defineComponent({
       {
         text: 'Nome',
         value: 'name',
-        width: '60%'
+        width: '40%'
+      },
+      {
+        text: 'Visibilità',
+        value: 'visibility',
       },
       {
         text: 'Colore',

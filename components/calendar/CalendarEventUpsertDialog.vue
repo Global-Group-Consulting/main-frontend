@@ -5,6 +5,7 @@
                         v-model="formData"
                         immediate-update
                         ref="form"
+                        :readonly="isReadonly"
       ></dynamic-fieldset>
     </portal>
 
@@ -30,7 +31,7 @@ import {
   defineComponent,
   nextTick,
   onMounted,
-  reactive,
+  reactive, readonly,
   Ref,
   ref,
   watch
@@ -42,6 +43,7 @@ import { CalendarCategory } from '~/@types/Calendar/CalendarCategory'
 
 export default defineComponent({
   name: 'CalendarEventUpsertDialog',
+  methods: { readonly },
   emits: ['event-created', 'event-updated'],
   setup (props, { root, emit }) {
     const { $store, $apiCalls, $alerts } = root
@@ -52,8 +54,8 @@ export default defineComponent({
       categoryId: '',
       clientId: '',
       client: {},
-      userId: '',
-      user: {},
+      userIds: '',
+      users: [] as any[],
       notes: '',
       startDate: '',
       startTime: '',
@@ -77,8 +79,15 @@ export default defineComponent({
       return $store.getters['dialog/dialogData']
     })
 
-    const incomingData = computed(() => {
+    const incomingData: ComputedRef<{ event: CalendarEvent }> = computed(() => {
       return dialogData.value.data
+    })
+
+    /**
+     * If the event is not public, only admins can edit it
+     */
+    const isReadonly = computed(() => {
+      return incomingData.value.event.isPublic && !$store.getters['user/userIsAdmin']
     })
 
     function close () {
@@ -143,8 +152,8 @@ export default defineComponent({
         formData.value.categoryId = data.event.categoryId
         formData.value.clientId = data.event.clientId
         formData.value.client = data.event.client
-        formData.value.userId = data.event.userId
-        formData.value.user = data.event.user
+        formData.value.userIds = data.event.userIds
+        formData.value.users = data.event.users
         formData.value.notes = data.event.notes
         formData.value.startDate = start.format('YYYY-MM-DD')
         formData.value.startTime = start.format('HH:mm')
@@ -179,7 +188,8 @@ export default defineComponent({
       form,
       calendarEventUpsertSchema,
       close,
-      onSubmitClick
+      onSubmitClick,
+      isReadonly
     }
   }
 })

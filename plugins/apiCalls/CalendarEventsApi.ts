@@ -59,4 +59,13 @@ export class CalendarEventsApi extends BasicApiCall {
       method: 'DELETE'
     })
   }
+  
+  async download (filters: any): Promise<void> {
+    return await this._call({
+      endPoint: '/api/calendarEvents/download',
+      method: 'GET',
+      downloadMode: true,
+      params: { filters }
+    })
+  }
 }

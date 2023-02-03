@@ -1,7 +1,8 @@
 <template>
   <div class="d-flex flex-column">
     <v-list v-if="events && events.length" class="flex-grow-1 overflow-auto">
-      <v-list-item v-for="(event, i) in events" :key="event.name + '_' + i" class="ps-0"
+      <v-list-item v-for="(event, i) in events" :key="event.name + '_' + i"
+                   class=""
                    @click="onEventClick(event, $event)">
         <v-list-item-icon class="me-3">
           <v-icon small :color="getIconColor(event)">mdi-checkbox-blank-circle</v-icon>
@@ -22,7 +23,7 @@
       </v-list-item>
     </v-list>
 
-    <v-alert outlined color="warning" class="mt-4" v-else>Nessun evento per il periodo selezionato</v-alert>
+    <v-alert outlined color="warning" class="mx-4" v-else>Nessun evento per il periodo selezionato</v-alert>
   </div>
 </template>
 
