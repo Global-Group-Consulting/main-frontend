@@ -54,7 +54,7 @@
       </v-col>
 
       <v-col md="4">
-        <!--        <MagazineCard/>-->
+        <MagazineCard/>
       </v-col>
     </v-row>
 
