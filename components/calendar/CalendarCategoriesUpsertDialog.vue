@@ -36,7 +36,7 @@
 
             <v-select
                 v-model="formData.visibility"
-                label="Visibile a"
+                label="Utilizzabile da"
                 :items="visibilityOptions"
                 required
 
@@ -83,14 +83,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, Ref, ref, watch } from '@vue/composition-api'
 import { CalendarCategory } from '~/@types/Calendar/CalendarCategory'
-
-export enum CalendarCategoryVisibility {
-  ALL = 'all',
-  ME = 'author',
-  ADMINS = 'admin',
-  CUSTOMER_SERVICES = 'clients_service',
-  AGENTS = 'agent'
-}
+import CalendarCategoryVisibility from '~/enums/CalendarCategoryVisibility'
 
 export default defineComponent({
   name: 'CalendarCategoriesUpsertDialog',
@@ -102,7 +95,7 @@ export default defineComponent({
   },
   emits: ['category:saved'],
   setup (props, { root, emit }) {
-    const { $apiCalls, $alerts } = root
+    const { $apiCalls, $alerts, $i18n } = root
     const defaultFormData = {
       name: '',
       color: '#03A9F4FF',
@@ -116,11 +109,26 @@ export default defineComponent({
     const formTitle = computed(() => props.category ? 'Modifica categoria' : 'Nuova categoria')
 
     const visibilityOptions = [
-      { text: 'Tutti', value: CalendarCategoryVisibility.ALL },
-      { text: 'Solo a me', value: CalendarCategoryVisibility.ME },
-      { text: 'Admin', value: CalendarCategoryVisibility.ADMINS },
-      { text: 'Servizio Clienti', value: CalendarCategoryVisibility.CUSTOMER_SERVICES },
-      { text: 'Agenti', value: CalendarCategoryVisibility.AGENTS }
+      {
+        text: $i18n.t('forms.calendarEventCategory.' + CalendarCategoryVisibility.ALL),
+        value: CalendarCategoryVisibility.ALL
+      },
+      {
+        text: $i18n.t('forms.calendarEventCategory.' + CalendarCategoryVisibility.ME),
+        value: CalendarCategoryVisibility.ME
+      },
+      {
+        text: $i18n.t('forms.calendarEventCategory.' + CalendarCategoryVisibility.ADMINS),
+        value: CalendarCategoryVisibility.ADMINS
+      },
+      {
+        text: $i18n.t('forms.calendarEventCategory.' + CalendarCategoryVisibility.CUSTOMER_SERVICES),
+        value: CalendarCategoryVisibility.CUSTOMER_SERVICES
+      },
+      {
+        text: $i18n.t('forms.calendarEventCategory.' + CalendarCategoryVisibility.AGENTS),
+        value: CalendarCategoryVisibility.AGENTS
+      }
     ]
 
     function close () {

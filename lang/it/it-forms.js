@@ -1,3 +1,5 @@
+import CalendarCategoryVisibility from '../../enums/CalendarCategoryVisibility'
+
 export default {
   'activated-at': 'Account attivato il',
   'created-at': 'Account registrato il',
@@ -226,5 +228,12 @@ export default {
     'client': 'Cliente',
     'agent': 'Agente',
     'notes': 'Note'
+  },
+  calendarEventCategory: {
+    [CalendarCategoryVisibility.ALL]: 'Tutti',
+    [CalendarCategoryVisibility.ME]: 'Solo a me',
+    [CalendarCategoryVisibility.ADMINS]: 'Admin',
+    [CalendarCategoryVisibility.CUSTOMER_SERVICES]: 'Servizio Clienti',
+    [CalendarCategoryVisibility.AGENTS]: 'Agenti'
   }
 }

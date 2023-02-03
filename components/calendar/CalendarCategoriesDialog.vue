@@ -36,6 +36,12 @@
           </v-icon>
         </template>
 
+        <template v-slot:item.visibility="{item}">
+          <span v-if="item.visibility">
+          {{ $i18n.t('forms.calendarEventCategory.' + item.visibility) }}
+          </span>
+        </template>
+
         <template v-slot:item.color="{item}">
           <v-icon :color="item.color">mdi-checkbox-blank-circle</v-icon>
         </template>
@@ -89,8 +95,8 @@ export default defineComponent({
         width: '40%'
       },
       {
-        text: 'Visibilità',
-        value: 'visibility',
+        text: 'Utilizzabile da',
+        value: 'visibility'
       },
       {
         text: 'Colore',
