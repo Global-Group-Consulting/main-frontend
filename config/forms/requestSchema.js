@@ -12,6 +12,7 @@ import {computed} from "@vue/composition-api";
 import UserRoles from "~/enums/UserRoles";
 import {moneyFormatter, userFormatter} from "~/plugins/filters";
 import {CardsList} from '~/config/cardsList';
+import moment from 'moment-timezone'
 
 function getRequestTypeList(list, context) {
   const userType = [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(+context.$auth.user.role) ? "admin" : "user";
@@ -260,9 +261,9 @@ export default function (context) {
           disabled: readonly,
           previewOnly: readonly,
           files: context.formData.files,
-          validations: context.formData.autoWithdrawlAll ? {} : {
+          validations: moment().isSameOrAfter(moment('2023-02-16')) ? {
             required: {},
-          }
+          } : {}
         },
       }
     },

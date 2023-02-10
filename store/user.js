@@ -4,6 +4,7 @@ import WalletTypes from '../enums/WalletTypes'
 import { computed } from '@vue/composition-api'
 import acl from '~/plugins/acl'
 import { AclUserRoles } from '~/enums/AclUserRoles'
+import moment from 'moment-timezone'
 
 const emptyWallets = [{
   type: WalletTypes.DEPOSIT,
@@ -122,6 +123,6 @@ export const getters = {
   seeAllUsers: (state, getters) => getters.userType === 'admin',
   seeOwnUsers: (state, getters) => getters.userRole === UserRoles.AGENTE,
   canSeeOtherUsers: (state, getters) => getters.seeAllUsers || getters.seeOwnUsers,
-  canSeeCalendar: (state, getters) => getters.userIsAdmin || getters.userIsAgente
+  canSeeCalendar: (state, getters) => (getters.userIsAdmin || getters.userIsAgente) && moment().isSameOrAfter(moment('2023-02-16'))
   
 }
