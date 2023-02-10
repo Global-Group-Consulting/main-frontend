@@ -1,5 +1,9 @@
 [comment]: <> (## Non ancora rilasciato)
 
+## v 2.0.1 - <small>10/02/2023</small>
+### Aggiunte
+- Calendario Agenti per gestione appuntamenti
+
 ## v 2.0.0 - <small>21/01/2023</small>
 ### Miglioramenti
 - Aggiunto paginazione lato server sulla pagina utenti e richieste
