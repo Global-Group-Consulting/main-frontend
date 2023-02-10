@@ -260,6 +260,9 @@ export default function (context) {
           disabled: readonly,
           previewOnly: readonly,
           files: context.formData.files,
+          validations: context.formData.autoWithdrawlAll ? {} : {
+            required: {},
+          }
         },
       }
     },
