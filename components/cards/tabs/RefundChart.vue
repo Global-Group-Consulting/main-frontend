@@ -33,6 +33,10 @@ export default defineComponent({
       sections.value = []
 
       newData.forEach((section) => {
+        if(!section.user){
+          return
+        }
+
         // show details only if there are more than 1 item
         const showDetails = section.totals.length > 1
         let title = '€ ' + moneyFormatter(section.totalSum)
