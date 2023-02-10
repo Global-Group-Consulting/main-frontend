@@ -55,12 +55,16 @@ export function basicData (formContext: FormContext): FormSchema[] {
     {
       cols: {
         'personType': {
-          component: userIsAdmin.value ? '' : 'v-select',
-          formatter: userIsAdmin.value ? (value: any) => {
+          // component: userIsAdmin.value ? '' : 'v-select',
+          /*formatter: userIsAdmin.value ? (value: any) => {
             return formContext.$i18n.t('enums.PersonTypes.' + PersonTypes.getIdName(value))
-          } : 'numberCasting',
-          items: PersonTypes,
-          disabled: userIsAdmin.value,
+          } : 'numberCasting',*/
+          formatter: (value: any) => {
+            return formContext.$i18n.t('enums.PersonTypes.' + PersonTypes.getIdName(value))
+          },
+          // items: PersonTypes,
+          disabled: true,
+          readonly: true,
           validations: {
             required: {}
           }
@@ -320,7 +324,7 @@ export function agentData (formContext: FormContext) {
           component: 'agent-commissions-select',
           disabled: !canChangeCommissions.value,
           refAgent: formContext.formData.referenceAgentData,
-          agentTeamType: formContext.formData.agentTeamType,
+          agentTeamType: formContext.formData.agentTeamType
         }
       }
     }
