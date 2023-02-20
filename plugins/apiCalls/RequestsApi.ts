@@ -14,20 +14,31 @@ export class RequestsApi extends BasicApiCall {
     })
   }
   
-  async filter (paginationDto: PaginationDto): Promise<PaginatedResult | undefined> {
+  async filter (paginationDto: PaginationDto, userId?: string): Promise<PaginatedResult | undefined> {
     // filter only if I have something to filter
     if (!paginationDto.filters || Object.keys(paginationDto.filters).length === 0) {
       return
     }
-    
+  
+    if (userId) {
+      paginationDto.filters.userId = userId
+    }
+  
     return await this._call({
       endPoint: `/api/requests`,
       params: paginationDto ?? {}
     })
   }
   
-  async fetchCounters (filters: any): Promise<GetCountersDto[]> {
-    return await this._call({ endPoint: `/api/requests/count`, params: { filters } })
+  async fetchCounters (filters: any, userId?: string): Promise<GetCountersDto[]> {
+    if (userId) {
+      filters.userId = userId
+    }
+    
+    return await this._call({
+      endPoint: `/api/requests/count`,
+      params: { filters }
+    })
   }
   
   async getStatistics (statisticType: string): Promise<GetStatisticsDto[]> {

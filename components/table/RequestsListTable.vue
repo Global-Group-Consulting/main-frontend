@@ -51,6 +51,7 @@ import { Filter } from '~/@types/Filter'
 import RequestStatus from '~/enums/RequestStatus'
 import { Request } from 'express'
 import { RequestFormData } from '~/@types/Requests'
+import RequestTypes from '~/enums/RequestTypes'
 
 export default defineComponent({
   components: { CellRequestActions, DataTable },
@@ -64,7 +65,7 @@ export default defineComponent({
     tableSchema: String
   },
   setup (props, { root, emit }) {
-    const { $i18n, $alerts, $apiCalls, $router } = root
+    const { $i18n, $alerts, $apiCalls, $router, $store } = root
     const currentTab = ref(0)
 
     const tabsList: Ref<PaginatedTab[]> = ref([
@@ -210,8 +211,12 @@ export default defineComponent({
         status: targetTab.customKey
       }
 
+      if ($store.getters['user/userIsAgente'] && props.userId !== $store.getters['user/current']._id) {
+        paginationSettings.filters.type = RequestTypes.VERSAMENTO
+      }
+
       try {
-        targetTab.data = await $apiCalls.requests.filter(paginationSettings)
+        targetTab.data = await $apiCalls.requests.filter(paginationSettings, props.userId)
 
         // store the current time to avoid to many fetches
         targetTab.lastFetch = new Date()
@@ -228,7 +233,13 @@ export default defineComponent({
      */
     async function fetchCounters () {
       try {
-        const counters = await $apiCalls.requests.fetchCounters({})
+        const filters = {};
+
+        if ($store.getters['user/userIsAgente'] && props.userId !== $store.getters['user/current']._id) {
+          filters.type = RequestTypes.VERSAMENTO
+        }
+
+        const counters = await $apiCalls.requests.fetchCounters(filters, props.userId)
 
         tabsList.value.forEach(tab => {
           tab.counter = counters.find(c => c._id === tab.customKey)?.count || 0

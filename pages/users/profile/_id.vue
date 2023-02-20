@@ -14,33 +14,6 @@
 
       <ProfileDashboard :user="userData" @reloadCommissions="onReloadCommissions"></ProfileDashboard>
 
-      <!-- Blocchi resoconto dashboard -->
-      <!--      <h2>Deposito e Rendite</h2>-->
-      <!--
-            <dashboard-blocks :dashboard-data="userDashboardData"
-                              class="mb-6"
-                              :readonly="$store.getters['user/userIsAgente']"
-                              v-if="showUserBlocks"
-                              :loading="loading"
-                              include-commissions-add-dialog
-            >
-              <template v-slot:deposit_card-action="{item}"
-                        v-if="$store.getters['user/userIsAgente']">
-                <v-card-actions class="text-right pt-0 transparent">
-                  <v-btn link text small color="primary" @click="onAddRepayment">
-                    Rimborso
-                  </v-btn>
-                </v-card-actions>
-              </template>
-
-            </dashboard-blocks>
-      -->
-
-      <!--      <h2>Provvigioni</h2>-->
-      <!--      <agent-wallet-cards :user-id="userData.id" :user="userData" v-if="showAgentBlocks"
-                                @reloadCommissions="onReloadCommissions"></agent-wallet-cards>-->
-
-
       <div class="mt-10"></div>
 
       <page-toolbar :actions-list="actionsList"></page-toolbar>
@@ -57,6 +30,18 @@
           />
         </template>
       </dynamic-tabs>
+
+      <h2 >Richieste</h2>
+
+      <RequestsListTable :user-id="userId" ref="requestsListTable"></RequestsListTable>
+
+      <request-dialog
+          v-if="$store.getters['dialog/dialogId'] === 'RequestDialog'"
+      ></request-dialog>
+
+      <request-dialog-gold
+          v-if="$store.getters['dialog/dialogId'] === 'RequestDialogGold'"
+      ></request-dialog-gold>
 
       <admin-request-dialog
           v-if="$store.getters['user/userIsRealAdmin']
@@ -216,6 +201,26 @@ export default class Profile extends Vue {
         if: +this.userData.role !== this.$enums.UserRoles.CLIENTE
       }
     ].filter(el => this.userLoaded ? el.if : false)
+  }
+
+  get reqTabsList (): DynamicTab[] {
+    return [
+      {
+        id: 'working',
+        title: 'Da Evadere'
+      },
+      {
+        id: 'inProgres',
+        title: 'In lavorazione'
+      }, {
+        id: 'accepted',
+        title: 'Accettate'
+      },
+      {
+        id: 'rejected',
+        title: 'Rifiutate'
+      }
+    ]
   }
 
   get clubStatistics () {

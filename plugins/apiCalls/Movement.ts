@@ -15,7 +15,7 @@ export class MovementApi extends BasicApiCall {
     // }
     
     return await this._call({
-      endPoint: `/api/movements/` + (_id ? `/${_id}` : ''),
+      endPoint: `/api/movements/` + (_id ? `${_id}` : ''),
       params: paginationDto ?? {}
     })
   }
