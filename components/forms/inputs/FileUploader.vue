@@ -1,13 +1,14 @@
 <template>
   <div>
     <v-file-input
-      v-bind="$attrs"
-      :value="formattedValue"
-      :label="label"
-      :accept="accept || 'image/*,.pdf'"
-      @input="onInput"
-      @change="onChange"
-      v-if="!previewOnly"
+        v-bind="$attrs"
+        :value="formattedValue"
+        :label="label"
+        :accept="accept || 'image/*,.pdf'"
+        :multiple="multiple"
+        @input="onInput"
+        @change="onChange"
+        v-if="!previewOnly"
     >
       <template v-slot:label>
         <slot name="label"></slot>
@@ -25,22 +26,24 @@
       <v-tooltip top v-for="file of formattedValue" :key="file.name">
         <template v-slot:activator="{ on }">
           <v-sheet
-            width="60"
-            height="60"
-            elevation="1"
-            rounded
-            v-on="on"
-            class="d-flex align-center justify-center"
-            @click="previewFile(file)"
+              width="60"
+              height="60"
+              elevation="0"
+              outlined
+              rounded
+              v-on="on"
+              class="d-flex align-center justify-center"
+              @click="previewFile(file)"
           >
             <v-img
-              v-if="file.type.includes('image')"
-              width="100%"
-              height="100%"
-              contain
+                v-if="file.type.includes('image')"
+                width="100%"
+                height="100%"
+                contain
               :src="getFilePreview(file)"
             ></v-img>
 
+            <v-icon large v-else-if="file.type.includes('pdf')">mdi-file-pdf-box</v-icon>
             <v-icon large v-else>mdi-file</v-icon>
           </v-sheet>
         </template>
@@ -111,8 +114,8 @@ export default {
     preview: Boolean,
     toDelete: {
       type: Array,
-      default() {
-        return [];
+      default () {
+        return []
       }
     },
     readonly: Boolean,
@@ -121,7 +124,11 @@ export default {
       type: Boolean,
       default: true
     },
-    editMode: Boolean
+    editMode: Boolean,
+    multiple: {
+      type: Boolean,
+      default: false
+    }
   },
   setup(props, { root }) {
     /**
@@ -142,17 +149,17 @@ export default {
         : [];
     });
 
-    function getFilePreview(file) {
+    function getFilePreview (file) {
       if (file instanceof File) {
-        return URL.createObjectURL(file);
+        return URL.createObjectURL(file)
       }
 
       return new Promise(async (resolve, reject) => {
-        const result = await $apiCalls.downloadFile(file.id);
+        const result = await $apiCalls.downloadFile(file.id)
 
         resolve(
-          URL.createObjectURL(
-            new Blob([result.data], {
+            URL.createObjectURL(
+                new Blob([result.data], {
               type: `${file.type}/${file.subtype}`
             })
           )
@@ -237,12 +244,12 @@ export default {
 
               $delete(props.files, index);
             } catch (er) {
-              $alerts.error(er);
+              $alerts.error(er)
             }
           }
         });
       } catch (er) {
-        $alerts.error(er);
+        $alerts.error(er)
       }
     };
 
@@ -254,13 +261,21 @@ export default {
       openFile,
       previewFile,
       getFilePreview
-    };
+    }
   },
   methods: {
     onChange(value) {
-      this.$emit("change", value);
+      if (!this.multiple && value instanceof Array) {
+        return this.$emit('change', value[0])
+      }
+
+      this.$emit('change', value)
     },
     onInput(value) {
+      if (!this.multiple && value instanceof Array) {
+        return this.$emit('input', value[0])
+      }
+
       this.$emit("input", value);
     }
   }
