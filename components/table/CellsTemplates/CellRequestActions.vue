@@ -168,7 +168,7 @@ export default class CellRequestActions extends Vue {
   }
 
   get missingAttachment () {
-    return this.item.files.length === 0 && this.item.type === RequestTypes.VERSAMENTO
+    return this.item.files?.length === 0 && this.item.type === RequestTypes.VERSAMENTO
   }
 
   async addAttachment () {
@@ -186,7 +186,7 @@ export default class CellRequestActions extends Vue {
             'accept': 'image/*,application/pdf',
             'aria-label': 'Contabile'
           },
-          inputValidator: (file: File) => {
+          inputValidator: (file: any) => {
             return !file && 'E\' necessario selezionare un file'
           }
         }

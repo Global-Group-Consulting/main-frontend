@@ -233,7 +233,7 @@ export default defineComponent({
      */
     async function fetchCounters () {
       try {
-        const filters = {};
+        const filters: any = {};
 
         if ($store.getters['user/userIsAgente'] && props.userId !== $store.getters['user/current']._id) {
           filters.type = RequestTypes.VERSAMENTO
