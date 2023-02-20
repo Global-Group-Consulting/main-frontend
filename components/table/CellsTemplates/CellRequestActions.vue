@@ -187,7 +187,7 @@ export default class CellRequestActions extends Vue {
             'aria-label': 'Contabile'
           },
           inputValidator: (file: any) => {
-            return !file && 'E\' necessario selezionare un file'
+            return !file ? 'E\' necessario selezionare un file' : null
           }
         }
       })
