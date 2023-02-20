@@ -1,5 +1,15 @@
 <template>
-  <div class="text-no-wrap">
+  <div class="text-no-wrap text-right">
+
+    <v-tooltip bottom v-if="missingAttachment">
+      <template v-slot:activator="{ on }">
+        <v-btn icon v-on="on" @click.stop="addAttachment">
+          <v-icon color="error">mdi-file-alert</v-icon>
+        </v-btn>
+      </template>
+
+      <span>Contabile assente</span>
+    </v-tooltip>
 
     <v-tooltip bottom v-for="(menu, i) of alwaysVisibleOptions" :key="i">
       <template v-slot:activator="{ on }">
@@ -58,7 +68,9 @@ import {RequestsTableActions} from "~/functions/requestsTableActions";
 import RequestTypes from "~/enums/RequestTypes";
 import RequestStatus from "~/enums/RequestStatus";
 
-
+/**
+ * @this Vue
+ */
 @Component({})
 export default class CellRequestActions extends Vue {
   @Prop({type: Object})
@@ -147,16 +159,47 @@ export default class CellRequestActions extends Vue {
     });
   }
 
-  get alwaysVisibleOptions(): CrudMenuItem[] {
+  get alwaysVisibleOptions (): CrudMenuItem[] {
     return this.menuOptions.filter(el => el.alwaysVisible && (el.if ?? true))
   }
 
-  get alwaysGroupedOptions(): CrudMenuItem[] {
+  get alwaysGroupedOptions (): CrudMenuItem[] {
     return this.menuOptions.filter(el => !el.alwaysVisible && (el.if ?? true))
   }
 
-  mounted() {
-    this.actions = new RequestsTableActions(this);
+  get missingAttachment () {
+    return this.item.files.length === 0 && this.item.type === RequestTypes.VERSAMENTO
+  }
+
+  async addAttachment () {
+    try {
+
+      await this.$alerts.askBeforeAction({
+        key: 'requests.attachment',
+        preConfirm: (file: File) => {
+          return this.$apiCalls.requests.uploadAttachment(this.item._id, file)
+        },
+        settings: {
+          icon: 'info',
+          input: 'file',
+          inputAttributes: {
+            'accept': 'image/*,application/pdf',
+            'aria-label': 'Contabile'
+          },
+          inputValidator: (file: File) => {
+            return !file && 'E\' necessario selezionare un file'
+          }
+        }
+      })
+
+      this.$emit('refresh')
+    } catch (e) {
+      //
+    }
+  }
+
+  mounted () {
+    this.actions = new RequestsTableActions(this)
   }
 }
 </script>

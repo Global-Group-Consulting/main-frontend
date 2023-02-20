@@ -26,6 +26,7 @@
                               :loading="tab.loading"
                               @update:pagination="onPaginationChanged"
                               @click:row="onRowClick"
+                              @refresh="onRefreshRequired"
               ></PaginatedTable>
             </v-skeleton-loader>
           </v-tab-item>
@@ -321,6 +322,10 @@ export default defineComponent({
       }
     }
 
+    function onRefreshRequired(){
+      refreshTabData()
+    }
+
     /**
      * When the currentTab changes, eventually fetches the data for the selected tab
      */
@@ -377,7 +382,8 @@ export default defineComponent({
       onPaginationChanged,
       refreshTabData,
       setActiveTab,
-      onRowClick
+      onRowClick,
+      onRefreshRequired
     }
   }
 })

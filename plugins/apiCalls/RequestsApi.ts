@@ -104,4 +104,13 @@ export class RequestsApi extends BasicApiCall {
     })
   }
   
+  async uploadAttachment (reqId: string, file: File) {
+    return await this._call({
+      method: 'POST',
+      endPoint: `/api/requests/${reqId}/attachments`,
+      body: { "requestAttachment": file },
+      uploadMode: true
+    })
+  }
+  
 }
