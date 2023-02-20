@@ -111,7 +111,8 @@ export default function (context) {
 
     return !(userIsGold && userClubUnsubscribed);
   })
-
+  const showAttachmentInput = computed(() => readonly && context.formData.files && context.formData.files.length > 0)
+  const attachmentRequired = computed(() => !readonly && context.formData.type === context.$enums.RequestTypes.VERSAMENTO)
 
   return [
     {
@@ -257,11 +258,11 @@ export default function (context) {
           component: 'file-uploader',
           "prepend-icon": "",
           "prepend-inner-icon": "$file",
-          if: (readonly && context.formData.files && context.formData.files.length > 0) || (!readonly && context.formData.type === context.$enums.RequestTypes.VERSAMENTO),
+          if: showAttachmentInput.value || attachmentRequired.value,
           disabled: readonly,
           previewOnly: readonly,
           files: context.formData.files,
-          validations: moment().isSameOrAfter(moment('2023-02-16')) ? {
+          validations: moment().isSameOrAfter(moment('2023-02-16')) && attachmentRequired.value ? {
             required: {},
           } : {}
         },
