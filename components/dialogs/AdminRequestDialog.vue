@@ -205,7 +205,11 @@ export default class AdminRequestDialog extends Vue {
         }
       });
 
-      this.$emit("newRequestAdded", data);
+      try {
+        this.$emit('newRequestAdded', data)
+      } catch (er) {
+        console.log(er)
+      }
 
 
       this.close();

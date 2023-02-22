@@ -112,7 +112,7 @@ export default function (context) {
     return !(userIsGold && userClubUnsubscribed);
   })
   const showAttachmentInput = computed(() => readonly && context.formData.files && context.formData.files.length > 0)
-  const attachmentRequired = computed(() => !readonly && context.formData.type === context.$enums.RequestTypes.VERSAMENTO)
+  const attachmentRequired = computed(() => !readonly && context.formData.type === context.$enums.RequestTypes.VERSAMENTO && context.$auth.user.role === UserRoles.AGENTE)
 
   return [
     {
