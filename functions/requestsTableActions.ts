@@ -8,6 +8,7 @@ import moment from 'moment'
 import { HTMLInputCleave, HTMLInputCurrency } from '~/functions/classes/HTMLInputCurrency'
 import MessageTypes from '~/enums/MessageTypes'
 import RequestStatus from '~/enums/RequestStatus'
+import RequestsSchema from '~/config/tables/requestsSchema'
 
 export class RequestsTableActions {
   private ctx: Vue
@@ -94,6 +95,10 @@ export class RequestsTableActions {
       throw new Error('Missing request argument')
     }
     const currentRequest = request
+    
+    if (request.type === RequestTypes.VERSAMENTO && !request.files?.length) {
+      return this.ctx.$alerts.error(null, {text: this.ctx.$t('alerts.requests.missing-files-error')})
+    }
     
     try {
       const alertData = {
