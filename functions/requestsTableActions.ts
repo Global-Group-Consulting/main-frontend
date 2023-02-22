@@ -97,7 +97,9 @@ export class RequestsTableActions {
     const currentRequest = request
     
     if (request.type === RequestTypes.VERSAMENTO && !request.files?.length) {
-      return this.ctx.$alerts.error(null, {text: this.ctx.$t('alerts.requests.missing-files-error')})
+      this.ctx.$alerts.error(null, { text: this.ctx.$t('alerts.requests.missing-files-error') as string })
+      
+      return false
     }
     
     try {
