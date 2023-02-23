@@ -168,7 +168,8 @@ export default class CellRequestActions extends Vue {
   }
 
   get missingAttachment () {
-    return this.item.files?.length === 0 && this.item.type === RequestTypes.VERSAMENTO
+    return this.item.type === RequestTypes.VERSAMENTO &&
+        (this.item.files?.length === 0 && this.item.hasAttachments === false)
   }
 
   async addAttachment () {
