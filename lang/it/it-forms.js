@@ -29,7 +29,7 @@ export default {
   'contract-initial-investment-gold': 'Investimento iniziale (Oro)',
   'contract-initial-payment-method': 'Metodo di pagamento',
   'contract-initial-payment-method-other': 'Altro metodo',
-  'contract-investment-attachment': 'Contabile versamento iniziale',
+  'contract-investment-attachment': 'Contabili versamenti',
   'contract-doc': 'Contratto firmato',
   'contract-doc-sign-log': 'Autenticazione firma contratto',
   'contract-terms-condition': 'Termini e Condizioni',
