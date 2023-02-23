@@ -98,7 +98,7 @@ export default defineComponent({
         counter: 0,
         paginationDto: {
           sortBy: ['updated_at', 'created_at'],
-          sortDesc: [true]
+          sortDesc: [true, true]
         }
       },
       {
@@ -114,7 +114,7 @@ export default defineComponent({
         counter: 0,
         paginationDto: {
           sortBy: ['completed_at', 'created_at'],
-          sortDesc: [true, false]
+          sortDesc: [true, true]
         }
       },
       {
@@ -130,13 +130,13 @@ export default defineComponent({
         counter: 0,
         paginationDto: {
           sortBy: ['completed_at', 'created_at'],
-          sortDesc: [true, false]
+          sortDesc: [true, true]
         }
       }, {
         id: 'filters',
         title: 'Risultati ricerca',
         data: null,
-        paginationDto: { sortBy: ['completed_at', 'created_at'] },
+        paginationDto: { sortBy: ['completed_at', 'created_at'], sortDesc: [true, true] },
         tableKey: 'requestsFilter',
         loading: false,
         lastFetch: null,
