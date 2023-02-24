@@ -11,7 +11,7 @@ const activeEvent = ref({
   selectedElement: null,
   left: false,
   bottom: false,
-  setFromCalendar: true
+  setFromCalendar: false
 })
 
 export const useCalendar = function ($apiCalls: ApiCalls, $alerts: Alerts, $store: any) {
@@ -57,9 +57,9 @@ export const useCalendar = function ($apiCalls: ApiCalls, $alerts: Alerts, $stor
   }
   
   function resetActiveEvent () {
-    debugger
-    activeEvent.value.selectedEvent = {} as CalendarEvent
-    activeEvent.value.selectedElement = null
+    // activeEvent.value.selectedEvent = {} as CalendarEvent
+    // activeEvent.value.selectedElement = null
+    activeEvent.value.setFromCalendar = false
   }
   
   async function filterData (append?: boolean, filters: any = null, paginationData?: PaginationDto) {

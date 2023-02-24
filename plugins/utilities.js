@@ -65,10 +65,21 @@ function compileString(string, data = {}) {
   return tmpl(data)
 }
 
+/**
+ * Set the first letter of each word to uppercase
+ *
+ * @param {string} string
+ * @return {*}
+ */
+export function ucWords(string) {
+  return string.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())
+}
+
 export default (context, inject) => {
   const utilities = {
     formDataFromObject,
-    compileString
+    compileString,
+    ucWords
   }
 
   // Inject $hello(msg) in Vue, context and store.

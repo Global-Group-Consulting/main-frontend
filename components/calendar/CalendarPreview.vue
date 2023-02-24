@@ -17,7 +17,10 @@
                 style="width: 150px"
                 :items="availableCalTypes"
                 v-model="calType"
-                append-icon="mdi-chevron-down"></v-select>
+                append-icon="mdi-chevron-down"
+                :clearable="calType !== 'month'"
+                @click:clear.prevent.stop="$nextTick(() => calType = 'month')"
+      ></v-select>
     </v-card-text>
 
     <v-card-text class="flex-grow-1 overflow-hidden">

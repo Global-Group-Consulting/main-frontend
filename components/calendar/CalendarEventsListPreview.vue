@@ -1,10 +1,11 @@
 <template>
   <v-card class="text-left flex-grow-1 d-flex flex-column overflow-auto h-100">
-    <v-card-text class="d-flex align-center">
+    <v-card-text class="d-flex align-center pt-5">
       <h2 class="lh-1 grey--text text--darken-2" v-html="title || 'Prossimi eventi'"/>
 
-      <v-btn icon to="/calendar" class="ms-auto" color="primary">
-        <v-icon>mdi-calendar</v-icon>
+      <v-btn text to="/calendar" class="ms-auto" color="primary" small>
+        Apri
+        <v-icon class="ms-2">mdi-calendar</v-icon>
       </v-btn>
     </v-card-text>
 

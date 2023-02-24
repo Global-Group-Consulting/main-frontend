@@ -29,7 +29,11 @@
                         style="width: 150px"
                         :items="availableCalTypes"
                         v-model="calType"
-                        append-icon="mdi-chevron-down"></v-select>
+                        append-icon="mdi-chevron-down"
+                        :clearable="calType !== 'month'"
+                        @click:clear.prevent.stop="$nextTick(() => calType = 'month')"
+              >
+              </v-select>
             </v-card-text>
 
             <v-card-text class="flex-grow-1 overflow-hidden">
@@ -364,8 +368,8 @@ export default defineComponent({
     }
 
     async function fetchData () {
-      const start = moment(calendarDiv.value.lastStart.date).startOf('month').format('YYYY-MM-DD')
-      const end = moment(calendarDiv.value.lastEnd.date).endOf('month').format('YYYY-MM-DD')
+      const start = moment(calValue.value || calendarDiv.value.lastStart.date).startOf('month').format('YYYY-MM-DD')
+      const end = moment(calValue.value || calendarDiv.value.lastEnd.date).endOf('month').format('YYYY-MM-DD')
 
       try {
         events.value = (await $apiCalls.calendarEventsApi.all({ start, end })) as CalendarEvent[]
@@ -392,6 +396,21 @@ export default defineComponent({
       downloadingFile.value = false
     }
 
+    function scrollToEvent (eventId: string) {
+      if (calendar.activeEvent.value.setFromCalendar || calType.value === 'month') {
+        return
+      }
+
+      const event = events.value.find(e => e._id === eventId)
+
+      if (event) {
+        nextTick(() => nextTick(() => {
+              calendarDiv.value.scrollToTime(moment(event.start).format('HH:mm'))
+            })
+        )
+      }
+    }
+
     /**
      * When the user opens the page after clicking on an event from the dashboard,
      * must open the calendar to the day of the event
@@ -415,16 +434,7 @@ export default defineComponent({
     watch(() => calType.value, () => {
       fetchData().then(() => {
         if (pendingToHighlight.value) {
-          const event = events.value.find(e => e._id === pendingToHighlight.value)
-
-          // reset pending to highlight
-          pendingToHighlight.value = null;
-
-          if (event) {
-            nextTick(() => {
-              calendarDiv.value.scrollToTime(moment(event.start).format('HH:mm'))
-            })
-          }
+          scrollToEvent(pendingToHighlight.value)
         }
       })
     })
@@ -445,6 +455,7 @@ export default defineComponent({
 
     onMounted(async () => {
       calendarDiv.value.checkChange()
+      calendar.resetActiveEvent()
 
       await fetchCategories()
 

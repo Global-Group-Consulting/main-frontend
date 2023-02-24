@@ -29,9 +29,10 @@
           </v-btn>
         </template>
         <template v-else-if="selectedEvent && selectedEvent.start">
-          <v-btn icon
+          <v-btn text
                  :to="`/calendar?date=${$moment(selectedEvent.start).format('YYYY-MM-DD')}&_id=${selectedEvent._id}`">
-            <v-icon>mdi-calendar</v-icon>
+            Apri calendario
+            <v-icon class="ms-2">mdi-calendar</v-icon>
           </v-btn>
         </template>
 
@@ -123,7 +124,9 @@ export default defineComponent({
         },
         {
           icon: 'mdi-account-multiple-outline',
-          text: props.selectedEvent?.client ? props.selectedEvent?.client?.firstName + ' ' + props.selectedEvent?.client?.lastName : '',
+          text: props.selectedEvent?.client
+              ? props.selectedEvent?.client?.firstName + ' ' + props.selectedEvent?.client?.lastName
+              : (props.selectedEvent.clientName ?? ''),
           tooltip: 'Cliente'
         }
       ].filter((section) => !!section.text)
