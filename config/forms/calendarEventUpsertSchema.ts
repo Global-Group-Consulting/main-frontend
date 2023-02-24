@@ -14,6 +14,29 @@ export default function (formData: any, categories: any[], $apiCalls: ApiCalls):
             required: {}
           }
         },
+        clientId: {
+          label: 'calendarEvent.client',
+          component: 'async-autocomplete',
+          componentProps: { allowNewItems: true },
+          asyncFn: $apiCalls.selectOptions.getUsersList,
+          items: formData.client
+            // case where a valid client is selected
+            ? [{
+              rawData: formData.client,
+              text: formData.client.firstName + ' ' + formData.client.lastName,
+              value: formData.clientId
+            }]
+            // case where an unknown clientName is selected
+            : (formData.clientName ? [{
+                  rawData: formData.clientName,
+                  text: formData.clientName,
+                  value: formData.clientName
+                }]
+                // case where nothing is provided
+                : []
+            ),
+          validations: {}
+        },
         place: {
           label: 'calendarEvent.place',
           validations: {}
@@ -25,18 +48,6 @@ export default function (formData: any, categories: any[], $apiCalls: ApiCalls):
           validations: {
             required: {}
           }
-        },
-        
-        clientId: {
-          label: 'calendarEvent.client',
-          component: 'async-autocomplete',
-          asyncFn: $apiCalls.selectOptions.getUsersList,
-          items: formData.client ? [{
-            rawData: formData.client,
-            text: formData.client.firstName + ' ' + formData.client.lastName,
-            value: formData.clientId
-          }] : [],
-          validations: {}
         }
       }
     },
@@ -65,7 +76,10 @@ export default function (formData: any, categories: any[], $apiCalls: ApiCalls):
           label: 'calendarEvent.notes',
           rows: 2,
           autoGrow: true,
-          validations: {}
+          validations: {
+            required: {},
+            minLength: { params: 10 }
+          }
         }
       }
     },

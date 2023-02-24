@@ -53,6 +53,7 @@ export default defineComponent({
       place: '',
       categoryId: '',
       clientId: '',
+      clientName: '',
       client: {},
       userIds: '',
       users: [] as any[],
@@ -108,6 +109,7 @@ export default defineComponent({
       }
 
       try {
+        const data: any = { ...formData.value }
         const dates = {
           start: {
             original: formData.value.startDate + ' ' + formData.value.startTime,
@@ -119,8 +121,17 @@ export default defineComponent({
           }
         }
 
+        // If clientId is set and is not a valid mongo ObjectId
+        if (data.clientId && !data.clientId.match(/^[0-9a-fA-F]{24}$/)){
+          // store username in clientName field
+          data.clientName = data.clientId;
+
+          // reset clientId field
+          data.clientId = '';
+        }
+
         const result = await $apiCalls.calendarEventsApi[action]({
-          ...formData.value,
+          ...data,
           start: dates.start.formatted.toISOString(),
           end: dates.end.formatted.toISOString()
         }, incomingData.value.event?._id)
@@ -150,8 +161,9 @@ export default defineComponent({
         formData.value.name = data.event.name
         formData.value.place = data.event.place
         formData.value.categoryId = data.event.categoryId
-        formData.value.clientId = data.event.clientId
+        formData.value.clientId = data.event.clientName ?? data.event.clientId
         formData.value.client = data.event.client
+        formData.value.clientName = data.event.clientName ?? ''
         formData.value.userIds = data.event.userIds
         formData.value.users = data.event.users
         formData.value.notes = data.event.notes

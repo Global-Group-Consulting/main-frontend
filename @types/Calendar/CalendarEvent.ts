@@ -36,6 +36,7 @@ export interface CalendarEvent {
   clientId: string
   
   client: Pick<User, '_id' | 'firstName' | 'lastName'>
+  clientName?: string
   
   isPublic: boolean
 }
