@@ -12,6 +12,7 @@
         <v-col sm="12" md="8">
           <v-card flat outlined class="d-flex flex-column calendar-card" height="700px"
                   :class="{'disabled': areActiveFilters}">
+            <!-- Calendar tooolbar -->
             <v-card-text class="pb-0 d-flex align-center">
               <span class="me-3">
                 <tooltip-btn text outlined @click="setToday">Oggi</tooltip-btn>
@@ -426,7 +427,6 @@ export default defineComponent({
           }
         }
       })
-
     })
 
     /**

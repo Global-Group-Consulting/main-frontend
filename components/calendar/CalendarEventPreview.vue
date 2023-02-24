@@ -151,7 +151,9 @@ export default defineComponent({
     })
 
     const changeState = (newState: boolean) => {
-      requestAnimationFrame(() => requestAnimationFrame(() => selectedOpen.value = newState))
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        selectedOpen.value = newState
+      }))
     }
 
     function onEditClick () {
@@ -200,6 +202,8 @@ export default defineComponent({
     watch(() => selectedOpen.value, (newVal) => {
       if (!newVal) {
         changeState(false)
+      }else{
+        emit("opened")
       }
     })
 
