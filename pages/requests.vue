@@ -7,7 +7,8 @@
                     filter-on-enter
       ></page-toolbar>
 
-      <RequestsListTable :user-id="$auth.user._id" ref="requestsListTable"></RequestsListTable>
+      <RequestsListTable :user-id="!$store.getters['user/userIsAdmin'] ? $auth.user._id : null"
+                         ref="requestsListTable"></RequestsListTable>
     </v-flex>
 
     <request-dialog

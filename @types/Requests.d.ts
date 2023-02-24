@@ -38,9 +38,11 @@ export interface RequestFormData {
   targetUserId: string
   canCancel: boolean
   goldAmount: number
-
+  
   briteMovementId: string
   movementId: string
   
-
+  files?: any[]
+  
+  hasAttachments?: boolean
 }

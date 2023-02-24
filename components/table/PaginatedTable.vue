@@ -26,7 +26,7 @@
               v-slot:[`item.${(col.id||col.value)}`]="{ item, value }">
       <slot :name="'item.' + (col.id || col.value)"
             v-bind:item="item"
-            v-bind:value="value">
+            v-bind:value="value" >
         <template v-if="col.component">
           <component :is="col.component"
                      :item="getItem(col, item)"
@@ -34,6 +34,7 @@
                      :col-config="col"
                      :table-data="data"
                      v-bind="col.componentSettings"
+                     @refresh="$emit('refresh', $event)"
           ></component>
         </template>
         <template v-else>

@@ -30,7 +30,6 @@
             :error-messages="errorMessages[key]"
             :class="{ 'edit-mode': editMode && !row.disableEditMode }"
             :edit-mode="editMode && !row.disableEditMode"
-            :disabled="readonly"
             @change="onChange(key, $event)"
             @input="onInput(key, $event)"
             @keyup.enter="$emit('enterPressed')"

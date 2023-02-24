@@ -64,7 +64,6 @@ export function basicData (formContext: FormContext): FormSchema[] {
           },
           // items: PersonTypes,
           disabled: true,
-          readonly: true,
           validations: {
             required: {}
           }
