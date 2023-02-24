@@ -225,7 +225,7 @@ export default {
     'end-time': 'Ora fine',
     'place': 'Luogo',
     'category': 'Categoria',
-    'client': 'Cliente',
+    'client': 'Nome e Cognome',
     'agent': 'Agente',
     'notes': 'Note'
   },
