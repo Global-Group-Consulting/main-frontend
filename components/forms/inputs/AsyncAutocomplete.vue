@@ -65,7 +65,14 @@ export default defineComponent({
     const loading = ref(false)
     const justChanged = ref(false)
 
+    const allowNewItems = computed(() => props.componentProps && props.componentProps.allowNewItems)
+
     const showUseUnknownUser = computed(() => {
+      // show only if the component is configured to allow new items
+      if (!allowNewItems.value) {
+        return false
+      }
+
       const isCached = autocompleteDiv.value?.cachedItems.find((el: any) => el.value === search.value)
 
       return !loading.value && search.value && !selectOptions.value.length && !isCached

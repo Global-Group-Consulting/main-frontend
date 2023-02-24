@@ -150,7 +150,12 @@ export default defineComponent({
      * If the event is not public, only admins can edit it
      */
     const isReadonly = computed(() => {
-      return props.selectedEvent.isPublic && !$store.getters['user/userIsAdmin']
+      // if user is admin, all events are editable
+      if ($store.getters['user/userIsAdmin']) {
+        return false
+      }
+
+      return props.selectedEvent.isPublic || props.selectedEvent.authorId !== $store.getters['user/current']._id
     })
 
     const changeState = (newState: boolean) => {
