@@ -2,8 +2,20 @@ import { FormSchema } from '~/@types/FormSchema'
 import { dateFormatter } from '~/plugins/filters'
 import { ApiCalls } from '~/plugins/apiCalls'
 import { User } from '~/@types/UserFormData'
+import { CalendarEvent } from '~/@types/Calendar/CalendarEvent'
+import { Store } from 'vuex'
+import { I18n } from '~/@types/I18nPlugin'
+import moment from 'moment-timezone'
 
-export default function (formData: any, categories: any[], $apiCalls: ApiCalls): FormSchema[] {
+export default function (formData: any, categories: any[], $apiCalls: ApiCalls, $store: Store<any>, $i18n: I18n, originalEvent?: CalendarEvent): FormSchema[] {
+  const userIsAgent = $store.getters['user/userIsAgente']
+  const showReturnDate = true //userIsAgent
+  const isNewEvent = !originalEvent?._id
+  const canEditReturnDate = showReturnDate && (originalEvent && !originalEvent.returnEventId || isNewEvent)
+  const hasReturnEvent = !!originalEvent?.returnEventId
+  const isReturnEvent = originalEvent?.isReturnEvent
+  const required = $store.getters['user/userIsAdmin'] ? false : (userIsAgent && !isReturnEvent)
+  
   return [
     {
       colsBreakpoints: { cols: '12', sm: '6' },
@@ -90,6 +102,7 @@ export default function (formData: any, categories: any[], $apiCalls: ApiCalls):
           label: 'calendarEvent.startDate',
           component: 'date-picker',
           startByYear: false,
+          clearable: false,
           validations: {
             required: {}
           }
@@ -104,10 +117,10 @@ export default function (formData: any, categories: any[], $apiCalls: ApiCalls):
         endDate: {
           label: 'calendarEvent.endDate',
           component: 'date-picker',
+          clearable: false,
           startByYear: false,
           validations: {
             required: {}
-            // minValue: { params: formData.startDate }
           }
         },
         endTime: {
@@ -116,6 +129,31 @@ export default function (formData: any, categories: any[], $apiCalls: ApiCalls):
           validations: {
             required: {}
           }
+        },
+        returnDate: {
+          label: 'calendarEvent.returnDate',
+          component: 'date-picker',
+          startByYear: false,
+          if: showReturnDate,
+          messages: hasReturnEvent ? $i18n.t('forms.calendarEvent.returnDateHint', {
+            date: originalEvent && originalEvent.returnDate ? moment(originalEvent.returnDate).format('YYYY-MM-DD') : '',
+            id: originalEvent?.returnEventId
+          }) as string : '',
+          disabled: !canEditReturnDate,
+          validations: canEditReturnDate ? {
+            ...(required ? { required: {} } : {}),
+            // required: {},
+            minDate: { params: { min: formData.endDate, canBeEqual: true } }
+          } : {}
+        },
+        returnTime: {
+          label: 'calendarEvent.returnTime',
+          component: 'time-picker',
+          if: showReturnDate,
+          disabled: !canEditReturnDate,
+          validations: canEditReturnDate ? {
+            ...(required ? { required: {} } : {})
+          } : {}
         }
       }
     }

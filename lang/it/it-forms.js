@@ -227,7 +227,11 @@ export default {
     'category': 'Categoria',
     'client': 'Nome e Cognome',
     'agent': 'Agente',
-    'notes': 'Note'
+    'notes': 'Note',
+    'creation-date': 'Data creazione',
+    'return-date': 'Data ricontatto',
+    'return-time': 'ora ricontatto',
+    'returnDateHint': 'Per cambiare la data di ricontatto, <a href="/calendar?date={date}&_id={id}" target="_blank">modificare l\'evento associato</a>'
   },
   calendarEventCategory: {
     [CalendarCategoryVisibility.ALL]: 'Tutti',

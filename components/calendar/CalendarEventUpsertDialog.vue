@@ -46,7 +46,7 @@ export default defineComponent({
   methods: { readonly },
   emits: ['event-created', 'event-updated'],
   setup (props, { root, emit }) {
-    const { $store, $apiCalls, $alerts } = root
+    const { $store, $apiCalls, $alerts, $i18n } = root
     const form = ref()
     const formData = ref({
       name: '',
@@ -55,13 +55,15 @@ export default defineComponent({
       clientId: '',
       clientName: '',
       client: {},
-      userIds: '',
+      userIds: [] as string[],
       users: [] as any[],
       notes: '',
       startDate: '',
       startTime: '',
       endDate: '',
-      endTime: ''
+      endTime: '',
+      returnDate: '',
+      returnTime: ''
     })
     const categories: Ref<CalendarCategory[]> = ref([])
 
@@ -74,7 +76,7 @@ export default defineComponent({
         }
       })
     })
-    const formSchema = computed(() => calendarEventUpsertSchema(formData.value, categoriesOptions.value, $apiCalls))
+    const formSchema = computed(() => calendarEventUpsertSchema(formData.value, categoriesOptions.value, $apiCalls, $store, $i18n, incomingData.value.event))
 
     const dialogData = computed(() => {
       return $store.getters['dialog/dialogData']
@@ -118,6 +120,10 @@ export default defineComponent({
           end: {
             original: formData.value.endDate + ' ' + formData.value.endTime,
             formatted: moment(formData.value.endDate + ' ' + formData.value.endTime)
+          },
+          return: {
+            original: formData.value.returnDate + ' ' + formData.value.returnTime,
+            formatted: moment(formData.value.returnDate + ' ' + formData.value.returnTime)
           }
         }
 
@@ -133,7 +139,8 @@ export default defineComponent({
         const result = await $apiCalls.calendarEventsApi[action]({
           ...data,
           start: dates.start.formatted.toISOString(),
-          end: dates.end.formatted.toISOString()
+          end: dates.end.formatted.toISOString(),
+          returnDate: dates.return.formatted.toISOString()
         }, incomingData.value.event?._id)
 
         if (result) {
@@ -157,6 +164,7 @@ export default defineComponent({
       if (data.hasOwnProperty('event')) {
         const start = moment(data.event.start)
         const end = moment(data.event.end)
+        const returnDate = data.event.returnDate ? moment(data.event.returnDate) : null
 
         formData.value.name = data.event.name
         formData.value.place = data.event.place
@@ -171,6 +179,8 @@ export default defineComponent({
         formData.value.startTime = start.format('HH:mm')
         formData.value.endDate = end.format('YYYY-MM-DD')
         formData.value.endTime = end.format('HH:mm')
+        formData.value.returnDate = returnDate ? returnDate.format('YYYY-MM-DD') : ''
+        formData.value.returnTime = returnDate ? returnDate.format('HH:mm') : ''
       }
     }, { immediate: true, deep: true })
 
@@ -190,6 +200,12 @@ export default defineComponent({
 
     onMounted(async () => {
       await fetchCategories()
+
+      // If the user is an agent, and the event is not set, set the agent as the initial user
+      if ($store.getters['user/userIsAgente'] && incomingData.value.hasOwnProperty('event') && !incomingData.value.event._id) {
+        formData.value.userIds = [$store.getters['user/current']._id]
+        formData.value.users = [$store.getters['user/current']]
+      }
     })
 
     return {

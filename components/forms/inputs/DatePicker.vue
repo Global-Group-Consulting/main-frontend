@@ -33,8 +33,11 @@
         </template>
 
         <template v-slot:label>
-
           <slot name="label"></slot>
+        </template>
+
+        <template v-slot:message="item">
+          <span v-html="item.message"></span>
         </template>
       </v-text-field>
     </template>

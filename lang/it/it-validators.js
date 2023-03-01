@@ -13,5 +13,6 @@ export default {
   date: "La data inserita non è valida. Deve avere un formato di tipo \"gg/mm/aaaa\".",
   dateBeforeRecapitalization: "Non è possibile inserire una data antecedente al 1 del mese corrente in quanto la ricapitalizzazione dei clienti e degli agenti per il mese precedente è già avvenuta.",
   dateToOld: "Non è possibile inserire una data antecedente al 1 del mese precedente.",
-  multipleOf: "L'importo inserito deve essere un multiplo di {step}, in quanto la cifra è inferiore alla soglia minima di € {until}."
+  multipleOf: "L'importo inserito deve essere un multiplo di {step}, in quanto la cifra è inferiore alla soglia minima di € {until}.",
+  minDate: "La data inserita non è valida. Deve essere successiva a {min}.",
 }
