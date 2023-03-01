@@ -44,6 +44,7 @@ export interface FormSchemaField {
   readonly?: boolean | Function
   hideDetails?: boolean
   hint?: string
+  messages?: string | string[]
   persistentHint?: boolean
   falseValue?: boolean
   inputValue?: string | number | boolean
