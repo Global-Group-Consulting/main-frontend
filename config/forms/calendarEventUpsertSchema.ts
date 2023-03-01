@@ -14,7 +14,7 @@ export default function (formData: any, categories: any[], $apiCalls: ApiCalls, 
   const canEditReturnDate = showReturnDate && (originalEvent && !originalEvent.returnEventId || isNewEvent)
   const hasReturnEvent = !!originalEvent?.returnEventId
   const isReturnEvent = originalEvent?.isReturnEvent
-  const required = !$store.getters['user/userIsAdmin'] || (userIsAgent && !isReturnEvent)
+  const required = $store.getters['user/userIsAdmin'] ? false : (userIsAgent && !isReturnEvent)
   
   return [
     {
