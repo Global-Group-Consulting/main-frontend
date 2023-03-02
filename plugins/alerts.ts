@@ -1,6 +1,7 @@
 // @ts-ignore
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import Toasted from 'vue-toasted';
+// @ts-ignore
 import Vue from 'vue'
 
 import ToastedOptions from "../config/vue-toasted"
@@ -31,7 +32,7 @@ interface AlertSettings extends SweetAlertOptions {
  */
 }
 
-
+// @ts-ignore
 declare module 'vue/types/vue' {
   // this.$myInjectedFunction inside Vue components
   interface Vue {
@@ -141,12 +142,13 @@ export class Alerts {
       if (this.i18n.te('errors.' + errData.message)) {
         text = this.i18n.t('errors.' + errData.message)
       } else {
-        text += '<br><br>' + errData.message
+        // when no translation is found, use the message from the server without showing the generic message
+        text = errData.message
       }
     } else if (errData && errData.error) {
       text += '<br><br>' + JSON.stringify(errData.error)
     }
-
+  
     const defaultSettings = {
       title: this.i18n.t('errors.title'),
       html: text,
