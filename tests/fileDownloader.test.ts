@@ -8,6 +8,7 @@ describe('Testing srcUrl', () => {
   const downloader = useFileDownloader({} as any)
   
   test('should return an error', () => {
+    // @ts-ignore
     expect(() => downloader.srcUrl()).toThrow('Invalid url arguments')
   })
   
@@ -21,7 +22,9 @@ describe('Testing createApiUrl', () => {
   
   test('should return an error', () => {
     expect(() => downloader.createApiUrl()).toThrow('Invalid url arguments')
+    // @ts-ignore
     expect(() => downloader.createApiUrl("", undefined)).toThrow('Invalid url arguments')
+    // @ts-ignore
     expect(() => downloader.createApiUrl(null)).toThrow('Invalid url arguments')
   })
   
