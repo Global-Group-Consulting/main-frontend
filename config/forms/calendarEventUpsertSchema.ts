@@ -69,41 +69,6 @@ export default function (formData: any, categories: any[], $apiCalls: ApiCalls, 
       }
     },
     {
-      colsBreakpoints: { cols: '12' },
-      cols: {
-        userIds: {
-          label: 'calendarEvent.agent',
-          component: 'async-autocomplete',
-          multiple: true,
-          asyncFn: $apiCalls.selectOptions.getAgentsList,
-          items: formData.users ? formData.users.map((user: Partial<User>) => ({
-            rawData: user,
-            text: user.firstName + ' ' + user.lastName,
-            value: user._id
-          })) : [],
-          // ad admin can create an event without agent so that it will be public
-          validations: !userIsAdmin ? {
-            required: {}
-          } : {}
-        }
-      }
-    },
-    {
-      colsBreakpoints: { cols: '12' },
-      cols: {
-        notes: {
-          component: 'v-textarea',
-          label: 'calendarEvent.notes',
-          rows: 2,
-          autoGrow: true,
-          validations: {
-            required: {},
-            minLength: { params: 100 }
-          }
-        }
-      }
-    },
-    {
       colsBreakpoints: { cols: '6' },
       cols: {
         startDate: {
@@ -164,7 +129,42 @@ export default function (formData: any, categories: any[], $apiCalls: ApiCalls, 
           } : {}
         }
       }
-    }
+    },
+    {
+      colsBreakpoints: { cols: '12' },
+      cols: {
+        notes: {
+          component: 'v-textarea',
+          label: 'calendarEvent.notes',
+          rows: 2,
+          autoGrow: true,
+          validations: {
+            required: {},
+            minLength: { params: 100 }
+          }
+        }
+      }
+    },
+    {
+      colsBreakpoints: { cols: '12' },
+      cols: {
+        userIds: {
+          label: 'calendarEvent.agent',
+          component: 'async-autocomplete',
+          multiple: true,
+          asyncFn: $apiCalls.selectOptions.getAgentsList,
+          items: formData.users ? formData.users.map((user: Partial<User>) => ({
+            rawData: user,
+            text: user.firstName + ' ' + user.lastName,
+            value: user._id
+          })) : [],
+          // ad admin can create an event without agent so that it will be public
+          validations: !userIsAdmin ? {
+            required: {}
+          } : {}
+        }
+      }
+    },
   
   ]
 }
