@@ -83,6 +83,8 @@ export default function (formData: any, categories: any[], $apiCalls: ApiCalls, 
         startTime: {
           label: 'calendarEvent.startTime',
           component: 'time-picker',
+          min: "06:00",
+          max: "23:00",
           validations: {
             required: {}
           }
@@ -99,6 +101,8 @@ export default function (formData: any, categories: any[], $apiCalls: ApiCalls, 
         endTime: {
           label: 'calendarEvent.endTime',
           component: 'time-picker',
+          min: "06:00",
+          max: "23:00",
           validations: {
             required: {}
           }
@@ -124,6 +128,8 @@ export default function (formData: any, categories: any[], $apiCalls: ApiCalls, 
           component: 'time-picker',
           if: showReturnDate,
           disabled: !canEditReturnDate,
+          min: "06:00",
+          max: "23:00",
           validations: canEditReturnDate ? {
             ...(required ? { required: {} } : {})
           } : {}
