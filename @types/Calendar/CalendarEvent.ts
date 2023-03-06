@@ -7,6 +7,10 @@ export interface CalendarEvent {
   start: Date;
   end: Date;
   
+  returnDate?: Date;
+  returnEventId?: string;
+  isReturnEvent?: boolean;
+  
   /**
    * false for all day events, true for timed events
    */
@@ -26,7 +30,7 @@ export interface CalendarEvent {
   /**
    * the user who the event belongs to. This is the user who will see the event in their calendar. For admins, this could be empty, indicating global events.
    */
-  userIds: string
+  userIds: string[]
   
   users: Pick<User, '_id' | 'firstName' | 'lastName'>[]
   
@@ -36,6 +40,7 @@ export interface CalendarEvent {
   clientId: string
   
   client: Pick<User, '_id' | 'firstName' | 'lastName'>
+  clientName?: string
   
   isPublic: boolean
 }

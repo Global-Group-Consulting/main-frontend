@@ -41,13 +41,19 @@ export default function (categories: CalendarCategory[], $apiCalls: ApiCalls): F
           label: 'calendarEvent.client',
           component: 'async-autocomplete',
           asyncFn: $apiCalls.selectOptions.getUsersList,
-          clearable: true,
+          clearable: true
         },
         place: {
           label: 'calendarEvent.place',
-          clearable: true,
+          clearable: true
+        },
+        createdAt: {
+          label: 'calendarEvent.creation-date',
+          component: 'date-picker-range',
+          range: true,
+          startByYear: false,
+          clearable: true
         }
-        
       }
     }
   ]

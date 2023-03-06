@@ -1,15 +1,16 @@
-import * as Validators from 'vuelidate/lib/validators';
-import { helpers } from 'vuelidate/lib/validators';
-import { moneyFormatter } from '~/plugins/filters/moneyFormatter';
+import * as Validators from 'vuelidate/lib/validators'
+import { helpers } from 'vuelidate/lib/validators'
+import { moneyFormatter } from '~/plugins/filters/moneyFormatter'
+import { dateFormatter } from '~/plugins/filters'
 
 Validators.phoneNumber = (value) => {
   if (!value) {
-    return true;
+    return true
   }
   /**
    * @type {string}
    */
-  const valueToTest = value.toString().replace(/ /g, "");
+  const valueToTest = value.toString().replace(/ /g, '')
 
   return !!valueToTest.match(/(\+[0-9]{2}[0-9]{5,})/g);
 };
@@ -31,19 +32,23 @@ Validators.multipleOf = ({ step, until }) => helpers.withParams(
   }
 );
 
-Validators.minDate =  (value, a, b) => {
-  console.log('minDate', value, a, b);
-  if (!value) {
-    return true;
-  }
-  /**
-   * @type {string}
-   */
-  // const valueToTest = ;
-  
-  // return !!valueToTest.match(/(\+[0-9]{2}[0-9]{5,})/g);
-  return true;
-};
+Validators.minDate = (params) => helpers.withParams(
+  { type: 'minDate', min: dateFormatter(params.min, false) },
+  (value) => {
+    // if the field has no value or the reference field has no value, return true
+    if (!value || !params.min) {
+      return true
+    }
+    
+    const dateValue = new Date(value)
+    const dateRefValue = new Date(params.min)
+    
+    if (params.canBeEqual) {
+      return dateValue >= dateRefValue
+    }
+    
+    return dateValue > dateRefValue
+  })
 
 export const validationRules = schema => {
   const toReturn = {};

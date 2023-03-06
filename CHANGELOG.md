@@ -1,5 +1,10 @@
 [comment]: <> (## Non ancora rilasciato)
 
+## v 2.0.2 - <small>24/02/2023</small>
+### Aggiunte
+- Calendario completo su dashboard agenti
+- Possibilità di creare appuntamenti per clienti non ancora registrati
+
 ## v 2.0.1 - <small>10/02/2023</small>
 ### Aggiunte
 - Calendario Agenti per gestione appuntamenti

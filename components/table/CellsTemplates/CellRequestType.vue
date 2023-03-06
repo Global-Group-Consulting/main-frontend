@@ -48,7 +48,8 @@ export default class CellRequestType extends Vue {
       id = 'versamento_iniziale'
     }
 
-    return this.$t('enums.RequestTypes.' + id) + (isInitialMovement ? ' (<strong>Nuovo Cliente</strong>)' : '')
+    // return this.$t('enums.RequestTypes.' + id) + (isInitialMovement ? ' (<strong>Nuovo Cliente</strong>)' : '')
+    return this.$t('enums.RequestTypes.' + id)
   }
 
   async getTargetUser() {

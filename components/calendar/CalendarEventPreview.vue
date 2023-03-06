@@ -29,9 +29,10 @@
           </v-btn>
         </template>
         <template v-else-if="selectedEvent && selectedEvent.start">
-          <v-btn icon
+          <v-btn text
                  :to="`/calendar?date=${$moment(selectedEvent.start).format('YYYY-MM-DD')}&_id=${selectedEvent._id}`">
-            <v-icon>mdi-calendar</v-icon>
+            Apri calendario
+            <v-icon class="ms-2">mdi-calendar</v-icon>
           </v-btn>
         </template>
 
@@ -61,7 +62,7 @@
           </v-list-item-icon>
 
           <v-list-item-content>
-            <v-list-item-title v-html="section.text"></v-list-item-title>
+            <v-list-item-title class="text-wrap" v-html="section.text"></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-card-text>
@@ -123,7 +124,9 @@ export default defineComponent({
         },
         {
           icon: 'mdi-account-multiple-outline',
-          text: props.selectedEvent?.client ? props.selectedEvent?.client?.firstName + ' ' + props.selectedEvent?.client?.lastName : '',
+          text: props.selectedEvent?.client
+              ? props.selectedEvent?.client?.firstName + ' ' + props.selectedEvent?.client?.lastName
+              : (props.selectedEvent.clientName ?? ''),
           tooltip: 'Cliente'
         }
       ].filter((section) => !!section.text)
@@ -147,11 +150,18 @@ export default defineComponent({
      * If the event is not public, only admins can edit it
      */
     const isReadonly = computed(() => {
-      return props.selectedEvent.isPublic && !$store.getters['user/userIsAdmin']
+      // if user is admin, all events are editable
+      if ($store.getters['user/userIsAdmin']) {
+        return false
+      }
+
+      return props.selectedEvent.isPublic || props.selectedEvent.authorId !== $store.getters['user/current']._id
     })
 
     const changeState = (newState: boolean) => {
-      requestAnimationFrame(() => requestAnimationFrame(() => selectedOpen.value = newState))
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        selectedOpen.value = newState
+      }))
     }
 
     function onEditClick () {
@@ -200,6 +210,8 @@ export default defineComponent({
     watch(() => selectedOpen.value, (newVal) => {
       if (!newVal) {
         changeState(false)
+      }else{
+        emit("opened")
       }
     })
 

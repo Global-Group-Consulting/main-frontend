@@ -30,7 +30,6 @@
             :error-messages="errorMessages[key]"
             :class="{ 'edit-mode': editMode && !row.disableEditMode }"
             :edit-mode="editMode && !row.disableEditMode"
-            :disabled="readonly"
             @change="onChange(key, $event)"
             @input="onInput(key, $event)"
             @keyup.enter="$emit('enterPressed')"
@@ -233,11 +232,14 @@ export default {
       // stores the new value
       this.form[key] = value;
 
-      // trigger touch only if must be validated
-      mustValidate && this.$v.form[key].$touch();
+      // validate only if immediateUpdate is set
+      if (this.immediateUpdate) {
+        // trigger touch only if must be validated
+        mustValidate && this.$v.form[key].$touch();
 
-      // announce validation status only if must be validated
-      mustValidate && this.announceStatus();
+        // announce validation status only if must be validated
+        mustValidate && this.announceStatus();
+      }
 
       this.dataToEmit[key] = value;
 
@@ -245,9 +247,7 @@ export default {
     },
 
     onInput(key, value) {
-      if (this.immediateUpdate) {
-        this.update(key, value)
-      }
+      this.update(key, value)
     },
 
     onChange(key, value) {

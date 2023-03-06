@@ -230,6 +230,14 @@ export default {
     "admin-cancel-request-confirmBtnText": "Si, storna richiesta",
     "admin-cancel-request-cancelBtnText": "Torna indietro",
     "admin-cancel-request-success": "Richiesta stornata correttamente!",
+  
+    "attachment-title": "Scegli il file da caricare...",
+    "attachment-text": "",
+    "attachment-confirmBtnText": "Carica",
+    "attachment-cancelBtnText": "Annulla",
+    "attachment-success": "File caricato correttamente!",
+    
+    "missing-files-error": "Non è possibile approvare la richiesta in quanto manca la contabile.",
   },
   news: {
     "delete-news-title": "",

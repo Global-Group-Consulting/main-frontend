@@ -3,7 +3,8 @@
     <v-flex>
       <PageHeader page-name="calendar"></PageHeader>
 
-      <PageToolbar :actions-list="actionsList"
+      <PageToolbar ref="pageToolbarDiv"
+                   :actions-list="actionsList"
                    :filters-schema="calendarFiltersSchema"
                    always-visible
                    filter-on-enter></PageToolbar>
@@ -12,6 +13,7 @@
         <v-col sm="12" md="8">
           <v-card flat outlined class="d-flex flex-column calendar-card" height="700px"
                   :class="{'disabled': areActiveFilters}">
+            <!-- Calendar tooolbar -->
             <v-card-text class="pb-0 d-flex align-center">
               <span class="me-3">
                 <tooltip-btn text outlined @click="setToday">Oggi</tooltip-btn>
@@ -28,7 +30,11 @@
                         style="width: 150px"
                         :items="availableCalTypes"
                         v-model="calType"
-                        append-icon="mdi-chevron-down"></v-select>
+                        append-icon="mdi-chevron-down"
+                        :clearable="calType !== 'month'"
+                        @click:clear.prevent.stop="$nextTick(() => calType = 'month')"
+              >
+              </v-select>
             </v-card-text>
 
             <v-card-text class="flex-grow-1 overflow-hidden">
@@ -47,7 +53,17 @@
                           @click:event="calendar.showEvent"
                           @click:date="createEvent"
                           @click:more="showMoreEvents"
-              ></v-calendar>
+              >
+                <template v-slot:event="item" v-if="calType === 'day'">
+                  <div class="pl-1" :data-event-id="item.event._id">
+                    <strong>{{ item.event.name }}</strong>
+                    <template v-if="!item.singline"><br></template>
+                    <template v-else>,</template>
+                    {{ item.timeSummary() }}
+                  </div>
+                </template>
+              </v-calendar>
+              \
 
               <transition name="fade">
                 <div class="calendar-overlay" v-if="areActiveFilters"></div>
@@ -169,6 +185,7 @@ export default defineComponent({
     const calendar = useCalendar($apiCalls, $alerts, $store)
     const fileDownloader = useFileDownloader($alerts)
     const calendarDiv = ref()
+    const pageToolbarDiv = ref()
     const downloadingFile = ref(false)
     const calType = ref('month')
     const calValue = ref('')
@@ -363,8 +380,8 @@ export default defineComponent({
     }
 
     async function fetchData () {
-      const start = moment(calendarDiv.value.lastStart.date).startOf('month').format('YYYY-MM-DD')
-      const end = moment(calendarDiv.value.lastEnd.date).endOf('month').format('YYYY-MM-DD')
+      const start = moment(calValue.value || calendarDiv.value.lastStart.date).startOf('month').format('YYYY-MM-DD')
+      const end = moment(calValue.value || calendarDiv.value.lastEnd.date).endOf('month').format('YYYY-MM-DD')
 
       try {
         events.value = (await $apiCalls.calendarEventsApi.all({ start, end })) as CalendarEvent[]
@@ -391,6 +408,28 @@ export default defineComponent({
       downloadingFile.value = false
     }
 
+    function scrollToEvent (eventId: string) {
+      if (calendar.activeEvent.value.setFromCalendar || calType.value === 'month') {
+        return
+      }
+
+      const event = events.value.find(e => e._id === eventId)
+
+      if (event) {
+        nextTick(() => nextTick(() => {
+          calendarDiv.value.scrollToTime(moment(event.start).format('HH:mm'))
+
+          // find the div element with data-event-id attribute equal to the event id
+          const eventDiv = calendarDiv.value.$el.querySelector(`.v-event-timed [data-event-id="${event._id}"]`) as HTMLElement
+
+          if (eventDiv && eventDiv.parentElement) {
+            // click on the parent element to open the event preview
+            eventDiv.parentElement.click()
+          }
+        }))
+      }
+    }
+
     /**
      * When the user opens the page after clicking on an event from the dashboard,
      * must open the calendar to the day of the event
@@ -398,14 +437,36 @@ export default defineComponent({
     function highlightUrlEvent (): boolean {
       const routeData = $route.query
 
-      if (routeData.date && routeData._id) {
+      if (routeData.date) {
         calValue.value = routeData.date as string
         calType.value = 'day'
+      }
+
+      if (routeData._id) {
         pendingToHighlight.value = routeData._id as string
 
         $router.replace({ query: {} })
 
         return true
+      }
+
+      // if the user has applied filters, set them in the filters toolbar
+      if (routeData.filters) {
+        const filters = JSON.parse(routeData.filters as string)
+
+        // Set the filters in the filters toolbar so that the form can be filled
+        pageToolbarDiv.value.value = filters
+
+        // Dispatch the filters to the store so that the events can be loaded
+        $store.dispatch('filters/updatePage', {
+          page: $route.path,
+          activeFilters: filters
+        })
+
+        // I don't return true so that the initial fetch can occur as usual
+        // this will load the events for the current month
+        // and then the events for the filters will be loaded as well
+        // This is necessary when clearing the filters so that the events for the current month are shown
       }
 
       return false
@@ -414,19 +475,9 @@ export default defineComponent({
     watch(() => calType.value, () => {
       fetchData().then(() => {
         if (pendingToHighlight.value) {
-          const event = events.value.find(e => e._id === pendingToHighlight.value)
-
-          // reset pending to highlight
-          pendingToHighlight.value = null;
-
-          if (event) {
-            nextTick(() => {
-              calendarDiv.value.scrollToTime(moment(event.start).format('HH:mm'))
-            })
-          }
+          scrollToEvent(pendingToHighlight.value)
         }
       })
-
     })
 
     /**
@@ -445,6 +496,7 @@ export default defineComponent({
 
     onMounted(async () => {
       calendarDiv.value.checkChange()
+      calendar.resetActiveEvent()
 
       await fetchCategories()
 
@@ -458,6 +510,7 @@ export default defineComponent({
       visibleEvents,
       categories,
       calendarDiv,
+      pageToolbarDiv,
       calendar,
       calValue,
       actionsList,

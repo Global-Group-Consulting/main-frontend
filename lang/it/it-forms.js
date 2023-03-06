@@ -29,7 +29,7 @@ export default {
   'contract-initial-investment-gold': 'Investimento iniziale (Oro)',
   'contract-initial-payment-method': 'Metodo di pagamento',
   'contract-initial-payment-method-other': 'Altro metodo',
-  'contract-investment-attachment': 'Contabile versamento iniziale',
+  'contract-investment-attachment': 'Contabili versamenti',
   'contract-doc': 'Contratto firmato',
   'contract-doc-sign-log': 'Autenticazione firma contratto',
   'contract-terms-condition': 'Termini e Condizioni',
@@ -225,9 +225,13 @@ export default {
     'end-time': 'Ora fine',
     'place': 'Luogo',
     'category': 'Categoria',
-    'client': 'Cliente',
+    'client': 'Nome e Cognome',
     'agent': 'Agente',
-    'notes': 'Note'
+    'notes': 'Note',
+    'creation-date': 'Data creazione',
+    'return-date': 'Data ricontatto',
+    'return-time': 'Ora ricontatto',
+    'returnDateHint': 'Per cambiare la data di ricontatto, <a href="/calendar?date={date}&_id={id}" target="_blank">modificare l\'evento associato</a>'
   },
   calendarEventCategory: {
     [CalendarCategoryVisibility.ALL]: 'Tutti',

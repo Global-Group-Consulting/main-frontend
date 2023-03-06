@@ -5,7 +5,6 @@
         :schema="formSchema"
         v-model="formData"
         fill-row
-        immediateUpdate
         ref="loginForm"
         @input="saveStatus($event)"
       />

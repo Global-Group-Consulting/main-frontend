@@ -2,44 +2,21 @@
   <div>
     <NewsBox></NewsBox>
 
-    <v-row>
-      <v-col cols="12" sm="6" md="8">
-        <dashboard-blocks :dashboard-data="dashboardData" :loading="loading"
-                          md="6" sm="12"
-        ></dashboard-blocks>
+    <v-row class="my-5">
+      <v-col sm="12" md="8">
+        <CalendarPreview @update:visibleEvents="visibleEvents = $event"
+                         @update:calTitle="calendarTitle = $event"
+        ></CalendarPreview>
       </v-col>
-      <v-col cols="12" sm="6" md="4" class="d-flex flex-column overflow-auto">
-        <v-card class="text-left my-3 flex-grow-1 d-flex flex-column overflow-auto h-100">
-          <v-card-text class="d-flex align-center">
-            <h2 class="lh-1 grey--text text--darken-2">
-              Prossimi eventi
-            </h2>
 
-            <v-btn icon to="/calendar" class="ms-auto" color="primary">
-              <v-icon>mdi-calendar</v-icon>
-            </v-btn>
-          </v-card-text>
-
-          <CalendarEventsList :events="calendar.filteredEvents.value"
-                              :page="calendar.filteredPagination.value.page"
-                              :total-pages="calendar.filteredPagination.value.lastPage"
-                              class="flex-grow-1 overflow-auto"
-                              v-show="calendar.filteredPagination.value.total"
-                              @load:more="calendar.loadMoreFilteredEvents(calendarFilters, calendarPagination)"
-                              @eventClick="calendar.showEvent"
-                              style="height: 160px"
-          ></CalendarEventsList>
-
-          <CalendarEventPreview
-              :selected-element="calendar.activeEvent.value.selectedElement"
-              :selected-event="calendar.activeEvent.value.selectedEvent"
-              :left="calendar.activeEvent.value.left"
-              :bottom="calendar.activeEvent.value.bottom"
-              showAsPreview
-          ></CalendarEventPreview>
-        </v-card>
+      <v-col sm="12" md="4">
+        <CalendarEventsListPreview :events="visibleEvents" :title="calendarTitle"></CalendarEventsListPreview>
       </v-col>
     </v-row>
+
+    <dashboard-blocks :dashboard-data="dashboardData" :loading="loading"
+                      md="6" sm="12" lg="3"
+    ></dashboard-blocks>
 
     <v-row class="my-5">
       <v-col sm="12" md="8">
@@ -57,15 +34,6 @@
         <MagazineCard/>
       </v-col>
     </v-row>
-
-    <!--    <v-card width="100%" class="text-center mb-5">
-          <v-card-text>
-            <chart-lines
-              :labels="agentDashboardChart.labels"
-              :datasets="chartsAdminDataset"
-            />
-          </v-card-text>
-        </v-card>-->
   </div>
 </template>
 
@@ -80,16 +48,14 @@ import DashboardBlocks from '~/components/DashboardBlocks.vue'
 
 import { onBeforeMount, reactive, ref, computed, Ref, defineComponent } from '@vue/composition-api'
 import MagazineCard from '~/components/dashboard/MagazineCard.vue'
-import { PaginatedResult } from '~/@types/pagination/PaginatedResult'
-import { CalendarEvent } from '~/@types/Calendar/CalendarEvent'
-import { useCalendar } from '~/composables/useCalendar'
+import CalendarPreview from '~/components/calendar/CalendarPreview.vue'
+import CalendarEventsListPreview from '~/components/calendar/CalendarEventsListPreview.vue'
 
 export default defineComponent({
-  name: 'Cliente',
-  components: { MagazineCard, DashboardBlocks, ChartLines, Grafico },
+  name: 'Agente',
+  components: { CalendarPreview, CalendarEventsListPreview, MagazineCard, DashboardBlocks, ChartLines, Grafico },
   setup (props, { root }) {
     const { $apiCalls, $options, $moment, $alerts, $store } = root
-    const calendar = useCalendar($apiCalls, $alerts, $store)
     const monthsToShow = ref(12)
     const dashboardData = reactive({
       blocks: {
@@ -103,13 +69,9 @@ export default defineComponent({
       }
     })
     const loading = ref(true)
-    const calendarFilters = {
-      start: (new Date()).toISOString()
-    }
-    const calendarPagination = {
-      sortBy: ['start'],
-      sortDesc: [false]
-    }
+    const visibleEvents = ref([])
+    const calendarTitle = ref('')
+    const calendarActiveEvent = ref(null)
 
     const chartsClientDataset = computed(() => {
       const data: any = {
@@ -184,12 +146,7 @@ export default defineComponent({
       )
     })
 
-    async function fetchCalendarEvents () {
-      await calendar.filterData(true, calendarFilters, calendarPagination)
-    }
-
     onBeforeMount(async () => {
-      fetchCalendarEvents().then()
       const result = await $apiCalls.dashboardFetch()
 
       root.$set(dashboardData, 'blocks', result.blocks)
@@ -201,9 +158,9 @@ export default defineComponent({
     return {
       dashboardData, chartsClientDataset, chartsClientLabels,
       loading,
-      calendar,
-      calendarFilters,
-      calendarPagination
+      visibleEvents,
+      calendarTitle,
+      calendarActiveEvent
     }
   },
   data () {

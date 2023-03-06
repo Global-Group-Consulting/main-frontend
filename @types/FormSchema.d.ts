@@ -32,6 +32,7 @@ export interface FormSchemaField {
   component?: 'v-select' | 'date-picker' | 'date-picker-range' | 'time-picker' | 'time-picker-range' | 'file-uploader'
     | 'agent-commissions-select' | 'contract-doc' | 'money-input' | 'money-input-range' | 'phone-input'
     | 'v-switch' | 'v-autocomplete' | 'v-textarea' | 'rich-text-editor' | 'async-autocomplete' | '',
+  componentProps?: {}
   label?: string,
   minLabel?: string,
   maxLabel?: string,
@@ -43,6 +44,7 @@ export interface FormSchemaField {
   readonly?: boolean | Function
   hideDetails?: boolean
   hint?: string
+  messages?: string | string[]
   persistentHint?: boolean
   falseValue?: boolean
   inputValue?: string | number | boolean

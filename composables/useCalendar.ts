@@ -6,14 +6,15 @@ import { Alerts } from '~/plugins/alerts'
 import { Filter } from '~/@types/Filter'
 import { PaginationDto } from '~/@types/pagination/PaginationDto'
 
+const activeEvent = ref({
+  selectedEvent: {} as CalendarEvent,
+  selectedElement: null,
+  left: false,
+  bottom: false,
+  setFromCalendar: false
+})
+
 export const useCalendar = function ($apiCalls: ApiCalls, $alerts: Alerts, $store: any) {
-  const activeEvent = ref({
-    selectedEvent: {} as CalendarEvent,
-    selectedElement: null,
-    left: false,
-    bottom: false
-  })
-  
   const filteredPagination: Ref<PaginatedResult<CalendarEvent>> = ref({
     page: 1,
     sortBy: [],
@@ -44,14 +45,21 @@ export const useCalendar = function ($apiCalls: ApiCalls, $alerts: Alerts, $stor
     }
   }
   
-  function showEvent (data: any) {
+  function showEvent (data: any, setFromCalendar = true) {
     const { nativeEvent, event } = data
     
     nextTick(() => {
       activeEvent.value.selectedEvent = event
       activeEvent.value.selectedElement = nativeEvent.target
       activeEvent.value.left = data.left
+      activeEvent.value.setFromCalendar = setFromCalendar
     })
+  }
+  
+  function resetActiveEvent () {
+    // activeEvent.value.selectedEvent = {} as CalendarEvent
+    // activeEvent.value.selectedElement = null
+    activeEvent.value.setFromCalendar = false
   }
   
   async function filterData (append?: boolean, filters: any = null, paginationData?: PaginationDto) {
@@ -81,6 +89,7 @@ export const useCalendar = function ($apiCalls: ApiCalls, $alerts: Alerts, $stor
     filteredEvents,
     loadMoreFilteredEvents,
     filterData,
-    showEvent
+    showEvent,
+    resetActiveEvent
   }
 }

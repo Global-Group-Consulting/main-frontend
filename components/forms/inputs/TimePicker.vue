@@ -10,13 +10,13 @@
       max-width="290px"
       min-width="290px"
   >
-    <template v-slot:activator="{ on, attrs }">
+    <template v-slot:activator="{ on }">
       <v-text-field
           v-model="time"
           label="Picker in menu"
           prepend-icon="mdi-clock-time-four-outline"
           readonly
-          v-bind="attrs"
+          v-bind="$attrs"
           v-on="on"
           :disabled="disabled"
 

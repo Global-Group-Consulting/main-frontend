@@ -1,6 +1,7 @@
 <template>
   <div class="d-flex">
-    <v-autocomplete :items="selectOptions"
+    <v-autocomplete ref="autocompleteDiv"
+                    :items="selectOptions"
                     :value="value"
                     :search-input.sync="search"
                     :loading="loading"
@@ -25,6 +26,17 @@
       <template v-slot:prepend>
         <slot name="prepend"></slot>
       </template>
+
+      <template v-slot:append-item v-if="showUseUnknownUser">
+        <v-list-item link dense @click="onUserUnknownUserClick">
+          <v-list-item-icon class="me-3">
+            <v-icon>mdi-plus</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Aggiungi <strong>"{{ ucWords(search) }}"</strong></v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </template>
     </v-autocomplete>
   </div>
 </template>
@@ -32,6 +44,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, Ref, ref, watch } from '@vue/composition-api'
 import { debounce } from 'lodash'
+import { ucWords } from '~/plugins/utilities'
 
 export default defineComponent({
   name: 'AsyncAutocomplete',
@@ -42,29 +55,28 @@ export default defineComponent({
       required: true
     },
     items: Array,
-    multiple: Boolean
+    multiple: Boolean,
+    componentProps: Object as PropType<{ allowNewItems: Boolean }>
   },
   setup (props, { emit, root }) {
+    const autocompleteDiv = ref()
     const selectOptions: Ref<any[]> = ref([])
     const search = ref('')
     const loading = ref(false)
     const justChanged = ref(false)
 
-    function onChange (value: string) {
-      console.log('onChange', value)
-      selectOptions.value = []
-      justChanged.value = true
+    const allowNewItems = computed(() => props.componentProps && props.componentProps.allowNewItems)
 
-      emit('input', value)
-      emit('change', value)
-    }
+    const showUseUnknownUser = computed(() => {
+      // show only if the component is configured to allow new items
+      if (!allowNewItems.value) {
+        return false
+      }
 
-    function onClickClear () {
-      selectOptions.value = []
+      const isCached = autocompleteDiv.value?.cachedItems.find((el: any) => el.value === search.value)
 
-      emit('input', '')
-      emit('change', '')
-    }
+      return !loading.value && search.value && !selectOptions.value.length && !isCached
+    })
 
     const noDataText = computed(() => {
       let toReturn
@@ -82,8 +94,38 @@ export default defineComponent({
       return toReturn
     })
 
+    function onChange (value: string) {
+      // console.log('onChange', value)
+      selectOptions.value = []
+      justChanged.value = true
+
+      emit('input', value)
+      emit('change', value)
+    }
+
+    function onClickClear () {
+      selectOptions.value = []
+
+      emit('input', '')
+      emit('change', '')
+    }
+
+    function onUserUnknownUserClick () {
+      const value = ucWords(search.value)
+      const newUser = {
+        value,
+        text: value
+      }
+
+      selectOptions.value.push(newUser)
+      justChanged.value = true
+
+      emit('input', value)
+      emit('change', value)
+    }
+
     watch(search, debounce(async (value: string) => {
-      console.log('watch debounce', value)
+      // console.log('watch debounce', value)
 
       if (justChanged.value) {
         justChanged.value = false
@@ -112,18 +154,22 @@ export default defineComponent({
         return
       }
 
-      console.log('watch items', value)
+      // console.log('watch items', value)
 
       selectOptions.value = value
     }, { immediate: true })
 
     return {
+      autocompleteDiv,
       selectOptions,
       search,
       loading,
       noDataText,
+      showUseUnknownUser,
       onChange,
-      onClickClear
+      onClickClear,
+      onUserUnknownUserClick,
+      ucWords
     }
   }
 })
