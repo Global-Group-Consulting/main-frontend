@@ -43,8 +43,9 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, Ref, ref, watch } from '@vue/composition-api'
-import { debounce } from 'lodash'
+import { debounce, first } from 'lodash'
 import { ucWords } from '~/plugins/utilities'
+import { SweetAlertResult } from 'sweetalert2'
 
 export default defineComponent({
   name: 'AsyncAutocomplete',
@@ -56,7 +57,7 @@ export default defineComponent({
     },
     items: Array,
     multiple: Boolean,
-    componentProps: Object as PropType<{ allowNewItems: Boolean }>
+    componentProps: Object as PropType<{ allowNewItems: Boolean, newItemConfirm: Boolean }>
   },
   setup (props, { emit, root }) {
     const autocompleteDiv = ref()
@@ -69,13 +70,15 @@ export default defineComponent({
 
     const showUseUnknownUser = computed(() => {
       // show only if the component is configured to allow new items
-      if (!allowNewItems.value) {
+      /*if (!allowNewItems.value) {
         return false
-      }
+      }*/
 
-      const isCached = autocompleteDiv.value?.cachedItems.find((el: any) => el.value === search.value)
+      return allowNewItems.value && search.value && search.value.length >= 3
 
-      return !loading.value && search.value && !selectOptions.value.length && !isCached
+      // const isCached = autocompleteDiv.value?.cachedItems.find((el: any) => el.value === search.value)
+
+      // return !loading.value && search.value && !selectOptions.value.length && !isCached
     })
 
     const noDataText = computed(() => {
@@ -110,11 +113,54 @@ export default defineComponent({
       emit('change', '')
     }
 
-    function onUserUnknownUserClick () {
+    async function onUserUnknownUserClick () {
       const value = ucWords(search.value)
       const newUser = {
         value,
-        text: value
+        text: ucWords(value)
+      }
+
+      // if the component is configured to allow new items, ask for confirmation if this is required
+      if (props.componentProps?.newItemConfirm) {
+        try {
+          const name = newUser.text.split(' ')
+          const res: SweetAlertResult = await root.$alerts.ask({
+            title: 'Aggiungi nuovo utente',
+            confirmButtonText: 'Aggiungi',
+            cancelButtonText: 'Annulla',
+            html: `Indicare Nome e Cognome completo dell'utente da aggiungere!<br><br>
+                    <div>
+                      <label>Nome</label>
+                      <input id="swal-firstName" class="swal2-input" value="${name[0] ?? ''}">
+                    </div>
+                    <div>
+                      <label>Cognome</label>
+                      <input id="swal-lastName" class="swal2-input" value="${name[1] ?? ''}">
+                    </div>
+                    `,
+            preConfirm: () => {
+              const swalFirstName = (document.getElementById('swal-firstName') as HTMLInputElement).value.trim()
+              const swalLastName = (document.getElementById('swal-lastName') as HTMLInputElement).value.trim()
+
+              if (!swalFirstName || !swalLastName) {
+                root.$alerts.instance.showValidationMessage(
+                    `Inserire sia il Nome che il Cognome!`
+                )
+
+                return false
+              }
+
+              return [swalFirstName, swalLastName]
+            }
+          })
+
+          if (res.isConfirmed && res.value) {
+            newUser.value = res.value[0] + ' ' + res.value[1]
+            newUser.text = newUser.value
+          }
+        } catch (e) {
+          return
+        }
       }
 
       selectOptions.value.push(newUser)

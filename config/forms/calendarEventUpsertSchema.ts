@@ -30,7 +30,7 @@ export default function (formData: any, categories: any[], $apiCalls: ApiCalls, 
         clientId: {
           label: 'calendarEvent.client',
           component: 'async-autocomplete',
-          componentProps: { allowNewItems: true },
+          componentProps: { allowNewItems: true, newItemConfirm: true },
           asyncFn: $apiCalls.selectOptions.getUsersList,
           items: formData.client
             // case where a valid client is selected
