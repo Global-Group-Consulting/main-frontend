@@ -9,6 +9,7 @@ import moment from 'moment-timezone'
 
 export default function (formData: any, categories: any[], $apiCalls: ApiCalls, $store: Store<any>, $i18n: I18n, originalEvent?: CalendarEvent): FormSchema[] {
   const userIsAgent = $store.getters['user/userIsAgente']
+  const userIsAdmin = $store.getters['user/userIsAdmin']
   const showReturnDate = true //userIsAgent
   const isNewEvent = !originalEvent?._id
   const canEditReturnDate = showReturnDate && (originalEvent && !originalEvent.returnEventId || isNewEvent)
@@ -47,11 +48,15 @@ export default function (formData: any, categories: any[], $apiCalls: ApiCalls, 
                 // case where nothing is provided
                 : []
             ),
-          validations: {}
+          validations: {
+            required: {}
+          }
         },
         place: {
           label: 'calendarEvent.place',
-          validations: {}
+          validations: {
+            required: {}
+          }
         },
         categoryId: {
           label: 'calendarEvent.category',
@@ -59,38 +64,6 @@ export default function (formData: any, categories: any[], $apiCalls: ApiCalls, 
           items: categories,
           validations: {
             required: {}
-          }
-        }
-      }
-    },
-    {
-      colsBreakpoints: { cols: '12' },
-      cols: {
-        userIds: {
-          label: 'calendarEvent.agent',
-          component: 'async-autocomplete',
-          multiple: true,
-          asyncFn: $apiCalls.selectOptions.getAgentsList,
-          items: formData.users ? formData.users.map((user: Partial<User>) => ({
-            rawData: user,
-            text: user.firstName + ' ' + user.lastName,
-            value: user._id
-          })) : [],
-          validations: {}
-        }
-      }
-    },
-    {
-      colsBreakpoints: { cols: '12' },
-      cols: {
-        notes: {
-          component: 'v-textarea',
-          label: 'calendarEvent.notes',
-          rows: 2,
-          autoGrow: true,
-          validations: {
-            required: {},
-            minLength: { params: 10 }
           }
         }
       }
@@ -156,7 +129,42 @@ export default function (formData: any, categories: any[], $apiCalls: ApiCalls, 
           } : {}
         }
       }
-    }
+    },
+    {
+      colsBreakpoints: { cols: '12' },
+      cols: {
+        notes: {
+          component: 'v-textarea',
+          label: 'calendarEvent.notes',
+          rows: 2,
+          autoGrow: true,
+          validations: {
+            required: {},
+            minLength: { params: 100 }
+          }
+        }
+      }
+    },
+    {
+      colsBreakpoints: { cols: '12' },
+      cols: {
+        userIds: {
+          label: 'calendarEvent.agent',
+          component: 'async-autocomplete',
+          multiple: true,
+          asyncFn: $apiCalls.selectOptions.getAgentsList,
+          items: formData.users ? formData.users.map((user: Partial<User>) => ({
+            rawData: user,
+            text: user.firstName + ' ' + user.lastName,
+            value: user._id
+          })) : [],
+          // ad admin can create an event without agent so that it will be public
+          validations: !userIsAdmin ? {
+            required: {}
+          } : {}
+        }
+      }
+    },
   
   ]
 }
