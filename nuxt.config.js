@@ -135,7 +135,15 @@ export default {
   ** See https://nuxtjs.org/api/configuration-build/
   */
   build: {
-    transpile: ['@nuxtjs/auth']
+    transpile: ['@nuxtjs/auth'],
+    filenames: {
+      app: ({ isDev, isModern }) => isDev ? `[name]${isModern ? '.modern' : ''}.js` : `[contenthash:8]${isModern ? '.modern' : ''}.js`,
+      chunk: ({ isDev, isModern }) => isDev ? `[name]${isModern ? '.modern' : ''}.js` : `[contenthash:8]${isModern ? '.modern' : ''}.js`,
+      css: ({ isDev }) => isDev ? '[name].css' : 'css/[contenthash:8].css',
+      img: ({ isDev }) => isDev ? '[path][name].[ext]' : 'img/[name].[contenthash:8].[ext]',
+      font: ({ isDev }) => isDev ? '[path][name].[ext]' : 'fonts/[name].[contenthash:8].[ext]',
+      video: ({ isDev }) => isDev ? '[path][name].[ext]' : 'videos/[name].[contenthash:8].[ext]'
+    }
   },
 
   router: {
