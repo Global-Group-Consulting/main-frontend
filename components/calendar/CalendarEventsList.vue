@@ -9,7 +9,7 @@
         </v-list-item-icon>
 
         <v-list-item-content>
-          <v-list-item-title v-html="event.name"></v-list-item-title>
+          <v-list-item-title v-html="getTitle(event)" class="text-wrap"></v-list-item-title>
           <v-list-item-subtitle v-html="getSubtitle(event)"></v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
@@ -54,6 +54,21 @@ export default defineComponent({
       return event.category?.color || 'primary'
     }
 
+    function getTitle (event: CalendarEvent) {
+      const clientName = event.client ? event.client.firstName + ' ' + event.client.lastName : event.clientName
+      const title = []
+
+      if (clientName) {
+        title.push(clientName)
+      }
+
+      if (event.name) {
+        title.push(event.name)
+      }
+
+      return title.join(' - ')
+    }
+
     function getSubtitle (event: CalendarEvent) {
       const start = moment(event.start)
       const end = moment(event.end)
@@ -72,6 +87,7 @@ export default defineComponent({
     }
 
     return {
+      getTitle,
       getSubtitle,
       getIconColor,
       onEventClick
