@@ -137,8 +137,8 @@ export default {
   build: {
     transpile: ['@nuxtjs/auth'],
     filenames: {
-      app: ({ isDev, isModern }) => isDev ? `[name]${isModern ? '.modern' : ''}.js` : `[contenthash:8]${isModern ? '.modern' : ''}.js`,
-      chunk: ({ isDev, isModern }) => isDev ? `[name]${isModern ? '.modern' : ''}.js` : `[contenthash:8]${isModern ? '.modern' : ''}.js`,
+      app: ({ isDev, isModern }) => isDev ? `[name]${isModern ? '.modern' : ''}.js` : `[contenthash:8]_${Date.now()}${isModern ? '.modern' : ''}.js`,
+      chunk: ({ isDev, isModern }) => isDev ? `[name]${isModern ? '.modern' : ''}.js` : `[contenthash:8]_${Date.now()}${isModern ? '.modern' : ''}.js`,
       css: ({ isDev }) => isDev ? '[name].css' : 'css/[contenthash:8].css',
       img: ({ isDev }) => isDev ? '[path][name].[ext]' : 'img/[name].[contenthash:8].[ext]',
       font: ({ isDev }) => isDev ? '[path][name].[ext]' : 'fonts/[name].[contenthash:8].[ext]',
