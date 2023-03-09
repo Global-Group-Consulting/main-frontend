@@ -2,19 +2,19 @@
   <div>
     <v-row>
       <v-col cols="12" md="6" lg="3">
-        <DashboardMoneySummary></DashboardMoneySummary>
+        <DashboardMoneySummary :outlined="outlined"></DashboardMoneySummary>
       </v-col>
 
       <v-col cols="12" md="6" lg="3">
-        <DashboardUsersStatus></DashboardUsersStatus>
+        <DashboardUsersStatus :outlined="outlined"></DashboardUsersStatus>
       </v-col>
 
       <v-col cols="12" md="6" lg="3">
-        <DashboardAgentsChart></DashboardAgentsChart>
+        <DashboardAgentsChart :outlined="outlined"></DashboardAgentsChart>
       </v-col>
 
       <v-col cols="12" md="6" lg="3">
-        <DashboardReportsChart></DashboardReportsChart>
+        <DashboardReportsChart :outlined="outlined"></DashboardReportsChart>
       </v-col>
     </v-row>
 
@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import SingleCard from '~/components/elements/cards/SingleCard.vue'
 import { LargeCard } from '~/components/elements/cards/Cards'
 import DashboardMoneySummary from '~/components/cards/DashboardMoneySummary.vue'
@@ -47,6 +47,9 @@ import CardMultiTab from '~/components/elements/cards/CardMultiTab.vue'
   components: { CardMultiTab, SingleCard, DashboardMoneySummary, DashboardUsersStatus, DashboardReportsChart }
 })
 export default class AdminCards extends Vue {
+  @Prop({ default: false, type: Boolean})
+  public outlined!: boolean
+
   public dashboardData = {
     validatedUsers: [],
     pendingRequests: [],

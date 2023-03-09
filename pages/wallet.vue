@@ -6,6 +6,10 @@
 
     <dynamic-tabs :tabs-list="tabs"
                   outlined>
+      <template v-slot:tabContent_dashboard="{item}">
+        <admin-cards outlined></admin-cards>
+      </template>
+
       <template v-slot:tabContent_commissions="{item}">
         <commissions-list-table :user-id="$auth.user.id"></commissions-list-table>
       </template>
@@ -16,6 +20,11 @@
 
     </dynamic-tabs>
 
+    <RequestsListTable table-schema="requestsTeam"></RequestsListTable>
+
+    <request-dialog
+        v-if="$store.getters['dialog/dialogId'] === 'RequestDialog'"
+    ></request-dialog>
   </v-flex>
 </template>
 
@@ -54,17 +63,23 @@ export default class Wallet extends Vue {
 
   tabs: DynamicTab[] = [
     {
-      id: "commissions",
+      id: 'dashboard',
+      title: 'Dashboard',
+      sortBy: [],
+      sortDesc: []
+    },
+    {
+      id: 'commissions',
       title: this.$t(`pages.wallet.tabs.commissions`) as string,
-      sortBy: ["created_at"],
+      sortBy: ['created_at'],
       sortDesc: [true]
     },
     {
-      id: "agentBrites",
+      id: 'agentBrites',
       title: this.$t(`pages.wallet.tabs.agentBrites`) as string,
-      sortBy: ["created_at"],
+      sortBy: ['created_at'],
       sortDesc: [true]
-    },
+    }
   ]
 }
 </script>
