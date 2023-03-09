@@ -5,7 +5,7 @@
              outlined
              prominent
              type="error"
-             class="mb-0"
+             class="mb-0 ms-4"
     >
       Oops, non riesco a caricare i dati...
     </v-alert>
@@ -14,7 +14,7 @@
                        :type="'list-item-avatar-two-line@' + ((items.length < 6 ? items.length : 5) || 3)"
     />
 
-    <v-list v-else-if="!hasError" :max-height="(62 * 6 + 16) + 'px'" style="overflow: auto">
+    <v-list v-else-if="!hasError && items.length" :max-height="(62 * 6 + 16) + 'px'" style="overflow: auto">
       <template v-for="item in items">
         <v-list-group v-if="item.details && item.details.length > 0" :key="item.id" >
           <template v-slot:activator>
@@ -36,6 +36,16 @@
         </v-list-item>
       </template>
     </v-list>
+
+    <v-alert v-else-if="!hasError && !items.length"
+             border="left"
+             outlined
+             prominent
+             type="info"
+             class="mb-0 ms-4"
+    >
+      Oops, sembra non ci siano dati da visualizzare...
+    </v-alert>
   </div>
 </template>
 

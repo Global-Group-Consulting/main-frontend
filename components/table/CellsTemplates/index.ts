@@ -21,6 +21,7 @@ import CellRequestAmount from "./CellRequestAmount.vue";
 import CellRequestStatus from "./CellRequestStatus.vue";
 import CellRequestType from "./CellRequestType.vue";
 import CellRequestActions from "./CellRequestActions.vue";
+import CellRequestReferenceAgent from "./CellRequestReferenceAgent.vue";
 
 import CellCurrency from "./CellCurrency.vue";
 import CellPercentage from "./CellPercentage.vue";
@@ -62,6 +63,7 @@ export default {
   CellRequestStatus,
   CellRequestType,
   CellRequestActions,
+  CellRequestReferenceAgent,
   CellCurrency,
   CellPercentage,
   CellEuroValue,

@@ -58,7 +58,12 @@ export default defineComponent({
 
       sections.value.forEach((section) => {
         const currentSection = newData[section.id as UserTotalsKeys]
-        let title = currentSection.count.toString()
+
+        let title = '0'
+
+        if (currentSection.count) {
+          title = currentSection.count.toString()
+        }
 
         if (currentSection.suspended) {
           title += `<small class="font-italic"> (${currentSection.suspended} sospesi)</small>`

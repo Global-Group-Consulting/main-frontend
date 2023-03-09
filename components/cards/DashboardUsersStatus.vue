@@ -1,5 +1,5 @@
 <template>
-  <DashboardBasicCard :tabs.sync="tabs" :canFilter="false"></DashboardBasicCard>
+  <DashboardBasicCard :tabs.sync="tabs" :canFilter="false" :outlined="outlined"></DashboardBasicCard>
 </template>
 
 <script lang="ts">
@@ -10,6 +10,12 @@ import NewUsersCount from '~/components/cards/tabs/NewUsersCount.vue'
 
 export default defineComponent({
   name: 'DashboardUsersStatus',
+  props: {
+    outlined: {
+      type: Boolean,
+      default: false
+    }
+  },
   setup (props, { root }) {
     const tabs: Ref<DynamicTab[]> = ref([
       {

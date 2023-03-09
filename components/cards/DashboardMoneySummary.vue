@@ -1,5 +1,5 @@
 <template>
-  <DashboardBasicCard :tabs.sync="tabs" canFilter></DashboardBasicCard>
+  <DashboardBasicCard :tabs.sync="tabs" canFilter :outlined="outlined"></DashboardBasicCard>
 </template>
 
 <script lang="ts">
@@ -16,6 +16,12 @@ import { useDatesSelectOptions } from '~/composables/datesSelectOptions'
 export default defineComponent({
   name: 'DashboardMoneySummary',
   components: { DashboardBasicCard },
+  props: {
+    outlined: {
+      type: Boolean,
+      default: false
+    }
+  },
   setup () {
     const dateSelectOptions = useDatesSelectOptions()
     const currentMonth = dateSelectOptions.getCurrentMonthDates()
