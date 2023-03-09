@@ -6,7 +6,7 @@ import Vue from 'vue'
 
 import ToastedOptions from "../config/vue-toasted"
 import {Context, Plugin} from "@nuxt/types";
-import {SweetAlertOptions} from "sweetalert2";
+import { SweetAlertOptions, SweetAlertResult } from 'sweetalert2'
 
 Vue.use(Toasted, ToastedOptions)
 
@@ -62,10 +62,13 @@ declare module 'vuex/types/index' {
 export class Alerts {
   private i18n
   private store
+  
+  public instance: any
 
   constructor(context: Context) {
     this.i18n = context.app.i18n
     this.store = context.app.store
+    this.instance = Swal
   }
 
   close() {
@@ -161,7 +164,7 @@ export class Alerts {
     return Swal.fire(Object.assign({}, defaultSettings, settings))
   }
 
-  async ask(settings: AlertSettings = {}) {
+  async ask(settings: AlertSettings = {}): Promise<SweetAlertResult> {
     const defaultSettings = {
       title: '',
       text: '',

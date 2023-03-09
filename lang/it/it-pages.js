@@ -153,7 +153,7 @@ export default {
     "reject-message": "Ci dispiace che abbia rifiutato di firmare il contratto. Se pensa ci sia stato qualche tipo di errore, la invitiamo a contattare il nostro servizio clienti.<br><br>Cordiali saluti,<br>Global Group Consulting"
   },
   wallet: {
-    title: "Wallet provvigioni",
+    title: "Wallet agente",
     subtitle: "",
     monthCommissions: "Provvigioni guadagnate",
     reinvestedCommissions: "Provvigioni reinvestite",

@@ -48,6 +48,8 @@
                           :event-more="true"
                           :categories="categories"
                           :disabled="areActiveFilters"
+                          first-time="07:00"
+                          :interval-count="24-7"
                           event-more-text="Altri"
                           @change="calendarChange"
                           @click:event="calendar.showEvent"
@@ -63,7 +65,6 @@
                   </div>
                 </template>
               </v-calendar>
-              \
 
               <transition name="fade">
                 <div class="calendar-overlay" v-if="areActiveFilters"></div>

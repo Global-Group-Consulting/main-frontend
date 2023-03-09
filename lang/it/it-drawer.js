@@ -21,7 +21,7 @@ export default {
   'reports': "Report Uscite",
   'version': "Versione",
   'portfolio': "Portfolio agente",
-  'wallet': "Wallet provvigioni",
+  'wallet': "Wallet agente",
   'magazine': "Magazine",
   'bottom-home': "Home",
   'bottom-movements': "Movimenti",
