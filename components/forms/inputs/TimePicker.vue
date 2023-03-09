@@ -36,6 +36,8 @@
         v-model="time"
         full-width
         format="24hr"
+        :min="min || null"
+        :max="max || null"
         @change="onChange"
     >
       <v-spacer></v-spacer>
@@ -59,6 +61,7 @@
 
 <script lang="ts">
 import { defineComponent, Ref, ref, watch } from '@vue/composition-api'
+import { Prop } from 'vue-property-decorator'
 
 export default defineComponent({
   name: 'TimePicker',
@@ -67,7 +70,9 @@ export default defineComponent({
       type: String,
       required: true
     },
-    disabled: Boolean
+    disabled: Boolean,
+    min: String,
+    max: String
   },
   setup (props, { emit }) {
     const menu = ref()

@@ -32,6 +32,8 @@
                   :events="events"
                   :event-color="getEventColor"
                   :event-more="true"
+                  first-time="07:00"
+                  :interval-count="24-7"
                   event-more-text="Altri"
                   @change="calendarChange"
                   @click:event="data => calendar.showEvent(data, true)"

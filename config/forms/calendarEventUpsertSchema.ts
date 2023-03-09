@@ -21,16 +21,10 @@ export default function (formData: any, categories: any[], $apiCalls: ApiCalls, 
     {
       colsBreakpoints: { cols: '12', sm: '6' },
       cols: {
-        name: {
-          label: 'calendarEvent.title',
-          validations: {
-            required: {}
-          }
-        },
         clientId: {
           label: 'calendarEvent.client',
           component: 'async-autocomplete',
-          componentProps: { allowNewItems: true },
+          componentProps: { allowNewItems: true, newItemConfirm: true },
           asyncFn: $apiCalls.selectOptions.getUsersList,
           items: formData.client
             // case where a valid client is selected
@@ -48,6 +42,12 @@ export default function (formData: any, categories: any[], $apiCalls: ApiCalls, 
                 // case where nothing is provided
                 : []
             ),
+          validations: {
+            required: {}
+          }
+        },
+        name: {
+          label: 'calendarEvent.title',
           validations: {
             required: {}
           }
@@ -83,6 +83,8 @@ export default function (formData: any, categories: any[], $apiCalls: ApiCalls, 
         startTime: {
           label: 'calendarEvent.startTime',
           component: 'time-picker',
+          min: "07:00",
+          max: "23:00",
           validations: {
             required: {}
           }
@@ -99,6 +101,8 @@ export default function (formData: any, categories: any[], $apiCalls: ApiCalls, 
         endTime: {
           label: 'calendarEvent.endTime',
           component: 'time-picker',
+          min: "07:00",
+          max: "23:00",
           validations: {
             required: {}
           }
@@ -124,6 +128,8 @@ export default function (formData: any, categories: any[], $apiCalls: ApiCalls, 
           component: 'time-picker',
           if: showReturnDate,
           disabled: !canEditReturnDate,
+          min: "07:00",
+          max: "23:00",
           validations: canEditReturnDate ? {
             ...(required ? { required: {} } : {})
           } : {}
