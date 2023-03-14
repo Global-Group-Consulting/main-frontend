@@ -1,10 +1,10 @@
 <template>
   <v-tooltip bottom>
     <template v-slot:activator="{ on, attrs }">
-
       <text-icon class="me-1" :x-small="xSmall"
                  v-bind="attrs"
                  v-on="on"
+                 :color="color"
       >{{ calendarUtilities.getIcon(event) }}
       </text-icon>
     </template>
@@ -26,7 +26,8 @@ export default defineComponent({
       type: Object as PropType<CalendarEvent>,
       required: true
     },
-    xSmall: Boolean
+    xSmall: Boolean,
+    color: String
   },
   setup () {
     const calendarUtilities = useCalendarUtilities()

@@ -5,7 +5,7 @@
                    class=""
                    @click="onEventClick(event, $event)">
         <v-list-item-icon class="me-3">
-          <CalendarEventIcon :event="event"></CalendarEventIcon>
+          <CalendarEventIcon :event="event" :color="calendarUtilities.getColor(event)"></CalendarEventIcon>
         </v-list-item-icon>
 
         <v-list-item-content>
