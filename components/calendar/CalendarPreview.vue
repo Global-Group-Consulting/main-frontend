@@ -39,7 +39,21 @@
                   @click:event="data => calendar.showEvent(data, true)"
                   @click:date="showDayDetails"
                   @click:more="showDayDetails"
-      ></v-calendar>
+      >
+        <template v-slot:event="item">
+          <div class="pl-1" :data-event-id="item.event._id">
+            <CalendarEventIcon :event="item.event" x-small></CalendarEventIcon>
+
+            {{ calendarUtilities.getTitle(item.event) }}
+
+            <template v-if="calType !== 'month'">
+              <template v-if="!item.singline"><br></template>
+              <template v-else>,</template>
+              {{ item.timeSummary() }}
+            </template>
+          </div>
+        </template>
+      </v-calendar>
 
       <CalendarEventPreview
           :selected-element="calendar.activeEvent.value.selectedElement"
@@ -60,6 +74,7 @@ import { Filter } from '~/@types/Filter'
 import CalendarFiltersSchema from '~/config/forms/filters/calendarFiltersSchema'
 import { CalendarEvent } from '~/@types/Calendar/CalendarEvent'
 import { useCalendar } from '~/composables/useCalendar'
+import { useCalendarUtilities } from '~/composables/useCalendarUtilities'
 
 export default defineComponent({
   name: 'CalendarPreview',
@@ -67,6 +82,7 @@ export default defineComponent({
   props: {},
   setup (props, { root, emit }) {
     const calendar = useCalendar(root.$apiCalls, root.$alerts, root.$store)
+    const calendarUtilities = useCalendarUtilities()
     const calendarDiv = ref()
     const calType = ref('month')
     const calValue = ref('')
@@ -218,6 +234,7 @@ export default defineComponent({
       calType,
       calTitle,
       availableCalTypes,
+      calendarUtilities,
       setToday,
       next,
       prev,
