@@ -518,7 +518,7 @@ export function extraData (formContext: FormContext) {
   const { changeRole, changeAgenteRif, userRole } = formContext.permissions
   const loggedUser = formContext.$auth.user
   const canChangeAgenteRif = computed(() => {
-    return (formContext.userIsNew && userRole !== UserRoles.AGENTE)
+    return (formContext.userIsNew)
       || (loggedUser.hasSubAgents && formContext.formData.id !== loggedUser.id && formContext.formData.account_status === AccountStatuses.DRAFT)
       || changeAgenteRif
   })

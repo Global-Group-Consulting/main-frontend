@@ -5,11 +5,11 @@
                    class=""
                    @click="onEventClick(event, $event)">
         <v-list-item-icon class="me-3">
-          <v-icon small :color="getIconColor(event)">mdi-checkbox-blank-circle</v-icon>
+          <CalendarEventIcon :event="event"></CalendarEventIcon>
         </v-list-item-icon>
 
         <v-list-item-content>
-          <v-list-item-title v-html="event.name"></v-list-item-title>
+          <v-list-item-title v-html="calendarUtilities.getTitle(event)" class="text-wrap"></v-list-item-title>
           <v-list-item-subtitle v-html="getSubtitle(event)"></v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
@@ -30,10 +30,13 @@
 <script lang="ts">
 import { computed, defineComponent, PropType } from '@vue/composition-api'
 import { CalendarEvent } from '~/@types/Calendar/CalendarEvent'
+import TextIcon from '~/components/elements/TextIcon.vue'
 import moment from 'moment-timezone'
+import { useCalendarUtilities } from '~/composables/useCalendarUtilities'
 
 export default defineComponent({
   name: 'CalendarEventsList',
+  components: { TextIcon },
   props: {
     events: {
       type: Array as PropType<CalendarEvent[]>,
@@ -50,9 +53,7 @@ export default defineComponent({
   },
   emits: ['load:more'],
   setup (props, { emit }) {
-    function getIconColor (event: CalendarEvent) {
-      return event.category?.color || 'primary'
-    }
+    const calendarUtilities = useCalendarUtilities()
 
     function getSubtitle (event: CalendarEvent) {
       const start = moment(event.start)
@@ -72,8 +73,8 @@ export default defineComponent({
     }
 
     return {
+      calendarUtilities,
       getSubtitle,
-      getIconColor,
       onEventClick
     }
   }

@@ -72,7 +72,7 @@ function compileString(string, data = {}) {
  * @return {*}
  */
 export function ucWords(string) {
-  return string.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())
+  return (string ?? '').replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())
 }
 
 export default (context, inject) => {

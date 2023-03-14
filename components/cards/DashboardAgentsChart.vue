@@ -1,5 +1,5 @@
 <template>
-  <DashboardBasicCard :tabs.sync="tabs" can-filter></DashboardBasicCard>
+  <DashboardBasicCard :tabs.sync="tabs" can-filter :outlined="outlined"></DashboardBasicCard>
 </template>
 
 <script lang="ts">
@@ -13,6 +13,12 @@ import { useDatesSelectOptions } from '~/composables/datesSelectOptions'
 
 export default defineComponent({
   name: 'DashboardAgentsChart',
+  props: {
+    outlined: {
+      type: Boolean,
+      default: false
+    }
+  },
   setup (props, { root }) {
     const dateSelectOptions = useDatesSelectOptions()
 
