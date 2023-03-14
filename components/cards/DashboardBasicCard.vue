@@ -1,5 +1,6 @@
 <template>
-  <v-card @mouseenter="mouseOver = true" @mouseleave="mouseOver = false" min-height="100%">
+  <v-card @mouseenter="mouseOver = true" @mouseleave="mouseOver = false" min-height="100%"
+          :outlined="outlined">
     <!-- Menu for card title -->
     <v-toolbar flat>
       <v-toolbar-title class="text-h6 pl-0">
@@ -86,6 +87,10 @@ export default defineComponent({
       required: true
     },
     canFilter: Boolean,
+    outlined: {
+      type: Boolean,
+      default: false
+    }
   },
   setup (props) {
     const currentTabIndex = ref(0)

@@ -21,10 +21,18 @@ export class RequestsTableActions {
     return this.ctx.$store.getters['user/userIsAdmin']
   }
   
+  get userIsAgent () {
+    return this.ctx.$store.getters['user/userIsAgente']
+  }
+  
+  get userId () {
+    return this.ctx.$store.getters['user/current']._id
+  }
+  
   async openDetailsDialog (row: RequestFormData) {
     let title = this.ctx.$t('dialogs.requests.title-details')
     
-    if (this.userIsAdmin && row.user) {
+    if (row.user && (this.userIsAdmin || (this.userIsAgent && row.user._id !== this.userId))) {
       title += ` <small><em>(${userFormatter(row.user)} - ${contractNumberFormatter(row.user.contractNumber)})</em></small>`
     }
     

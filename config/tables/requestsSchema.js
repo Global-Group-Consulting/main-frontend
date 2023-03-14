@@ -26,7 +26,7 @@ const schema = {
   'referenceAgent': {
     text: 'tables.reference-agent',
     value: 'user.referenceAgentData',
-    component: "CellUserReferenceAgent",
+    component: "CellRequestReferenceAgent",
     sortable: false
   },
   'status': {text: 'tables.request-status', value: 'status', component: "CellRequestStatus"},

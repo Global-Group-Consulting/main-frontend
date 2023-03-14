@@ -56,12 +56,17 @@
                           @click:date="createEvent"
                           @click:more="showMoreEvents"
               >
-                <template v-slot:event="item" v-if="calType === 'day'">
+                <template v-slot:event="item">
                   <div class="pl-1" :data-event-id="item.event._id">
-                    <strong>{{ item.event.name }}</strong>
-                    <template v-if="!item.singline"><br></template>
-                    <template v-else>,</template>
-                    {{ item.timeSummary() }}
+                    <CalendarEventIcon :event="item.event" x-small></CalendarEventIcon>
+
+                    {{ calendarUtilities.getTitle(item.event) }}
+
+                    <template v-if="calType !== 'month'">
+                      <template v-if="!item.singline"><br></template>
+                      <template v-else>,</template>
+                      {{ item.timeSummary() }}
+                    </template>
                   </div>
                 </template>
               </v-calendar>
@@ -172,6 +177,7 @@ import { PaginatedResult } from '~/@types/pagination/PaginatedResult'
 import jsFileDownload from 'js-file-download'
 import { useFileDownloader } from '~/composables/fileDownloader'
 import { useCalendar } from '~/composables/useCalendar'
+import { useCalendarUtilities } from '~/composables/useCalendarUtilities'
 
 export default defineComponent({
   name: 'Calendar',
@@ -185,6 +191,7 @@ export default defineComponent({
     const { $apiCalls, $store, $i18n, $alerts, $route, $router } = root
     const calendar = useCalendar($apiCalls, $alerts, $store)
     const fileDownloader = useFileDownloader($alerts)
+    const calendarUtilities = useCalendarUtilities()
     const calendarDiv = ref()
     const pageToolbarDiv = ref()
     const downloadingFile = ref(false)
@@ -513,6 +520,7 @@ export default defineComponent({
       calendarDiv,
       pageToolbarDiv,
       calendar,
+      calendarUtilities,
       calValue,
       actionsList,
       currentMonth,

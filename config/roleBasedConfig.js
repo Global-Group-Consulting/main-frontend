@@ -511,6 +511,18 @@ const agente = {
         'actions'
       ]
     },
+    requestsTeam: {
+      columns: [
+        'amount',
+        'user',
+        'referenceAgent',
+        'type',
+        'created_at',
+        ['updated_at', ["lavorazione"]],
+        ['completed_at', ["accettata", "rifiutata"]],
+        'actions'
+      ]
+    },
     movements: {
       columns: [
         "amountChange",

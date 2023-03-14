@@ -41,7 +41,7 @@
         </v-btn>
       </v-toolbar>
 
-      <v-card-title v-html="selectedEvent.name" class="pb-0"></v-card-title>
+      <v-card-title v-html="calendarUtilities.getTitle(selectedEvent)" class="pb-0"></v-card-title>
 
       <v-card-text>
         <span>{{ subtitle }}</span>
@@ -76,6 +76,7 @@ import { CalendarEvent } from '~/@types/Calendar/CalendarEvent'
 import moment from 'moment-timezone'
 import * as events from 'events'
 import { dateFormatter } from '~/plugins/filters'
+import { useCalendarUtilities } from '~/composables/useCalendarUtilities'
 
 export default defineComponent({
   name: 'CalendarEventPreview',
@@ -96,6 +97,7 @@ export default defineComponent({
   events: ['event-deleted'],
   setup (props, { root, emit }) {
     const { $store, $i18n, $alerts, $apiCalls } = root
+    const calendarUtilities = useCalendarUtilities()
     const selectedOpen = ref(false)
     const start = computed(() => moment(props.selectedEvent.start))
     const end = computed(() => moment(props.selectedEvent.end))
@@ -221,6 +223,7 @@ export default defineComponent({
       sections,
       color,
       isReadonly,
+      calendarUtilities,
       onEditClick,
       onDeleteClick
     }
