@@ -101,7 +101,6 @@ export class BasicApiCall {
   }
 
   /**
-   *
    * @param {ApiCallsParams | String | {}} params
    * @returns {Promise<any>}
    * @protected
@@ -143,6 +142,54 @@ export class BasicApiCall {
       Object.assign(callParams, params)
     }
 
+    return this._call(callParams)
+  }
+  
+  /**
+   *
+   * @param {ApiCallsParams | String | {}} params
+   * @returns {Promise<any>}
+   * @protected
+   */
+  async patch(params) {
+    /**
+     * @type {CallParams}
+     */
+    const callParams = {
+      method: 'patch'
+    }
+    
+    if (typeof params === 'string') {
+      callParams.endPoint = params
+    } else {
+      // merges users params with default ones
+      Object.assign(callParams, params)
+    }
+    
+    return this._call(callParams)
+  }
+  
+  /**
+   *
+   * @param {ApiCallsParams | String | {}} params
+   * @returns {Promise<any>}
+   * @protected
+   */
+  async delete(params) {
+    /**
+     * @type {CallParams}
+     */
+    const callParams = {
+      method: 'delete'
+    }
+    
+    if (typeof params === 'string') {
+      callParams.endPoint = params
+    } else {
+      // merges users params with default ones
+      Object.assign(callParams, params)
+    }
+    
     return this._call(callParams)
   }
 }
