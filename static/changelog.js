@@ -1,11 +1,17 @@
-module.exports = `<h2 id="v202small24022023small">v 2.0.2 - <small>24/02/2023</small></h2>
+module.exports = `<h2 id="v204small17032023small">v 2.0.4 - <small>17/03/2023</small></h2>
 <h3 id="aggiunte">Aggiunte</h3>
+<ul>
+<li>Possibilità di aggiungere commenti agli eventi del calendario</li>
+<li>Icona con nome agente per gli eventi calendario</li>
+</ul>
+<h2 id="v202small24022023small">v 2.0.2 - <small>24/02/2023</small></h2>
+<h3 id="aggiunte-1">Aggiunte</h3>
 <ul>
 <li>Calendario completo su dashboard agenti</li>
 <li>Possibilità di creare appuntamenti per clienti non ancora registrati</li>
 </ul>
 <h2 id="v201small10022023small">v 2.0.1 - <small>10/02/2023</small></h2>
-<h3 id="aggiunte-1">Aggiunte</h3>
+<h3 id="aggiunte-2">Aggiunte</h3>
 <ul>
 <li>Calendario Agenti per gestione appuntamenti</li>
 </ul>
@@ -20,7 +26,7 @@ module.exports = `<h2 id="v202small24022023small">v 2.0.2 - <small>24/02/2023</s
 <li>Spostato sezione CLUB in app dedicata</li>
 <li>Migliorato profilo utente</li>
 </ul>
-<h3 id="aggiunte-2">Aggiunte</h3>
+<h3 id="aggiunte-3">Aggiunte</h3>
 <ul>
 <li>Aggiunta possibilità di filtrare i movimenti di un utente</li>
 <li>Aggiunta pagina calendario</li>
@@ -35,7 +41,7 @@ module.exports = `<h2 id="v202small24022023small">v 2.0.2 - <small>24/02/2023</s
 <ul>
 <li>Risolto bug che non permetteva di riscuotere tutti gli interessi maturati</li>
 </ul>
-<h3 id="aggiunte-3">Aggiunte</h3>
+<h3 id="aggiunte-4">Aggiunte</h3>
 <ul>
 <li>Statistiche dashboard Admin e Serv. Clienti.</li>
 <li>Possibilità di indicare i grammi in oro per le richieste di versamento</li>
@@ -49,7 +55,7 @@ module.exports = `<h2 id="v202small24022023small">v 2.0.2 - <small>24/02/2023</s
 <li>Aggiornati componenti interni dell'applicazione (campo valuta, tabelle, pagina richieste)</li>
 <li>Nella tabella utenti, sotto "Stato Account", mostra se un utente è sospeso. Al click apre l'anagrafica.</li>
 </ul>
-<h3 id="aggiunte-4">Aggiunte</h3>
+<h3 id="aggiunte-5">Aggiunte</h3>
 <ul>
 <li>Possibilità agli admin di creare richieste per conto del cliente.</li>
 <li>Colonna gold in tabella utenti che indica il Club Pack di un utente.</li>
@@ -65,7 +71,7 @@ module.exports = `<h2 id="v202small24022023small">v 2.0.2 - <small>24/02/2023</s
 <li>Sistemato problema con il calcolo dei brite disponibili nel profilo del Club</li>
 <li>Permette di inserire caratteri alfanumerici come numero tessera socio club </li>
 </ul>
-<h3 id="aggiunte-5">Aggiunte</h3>
+<h3 id="aggiunte-6">Aggiunte</h3>
 <ul>
 <li>Aggiunta possibilità per gli agenti di creare richiesta automatiche o ricorsive di riscossione delle proprie provvigioni.</li>
 <li>Permette ai superadmin di modificare le email degli utenti</li>
@@ -80,7 +86,7 @@ module.exports = `<h2 id="v202small24022023small">v 2.0.2 - <small>24/02/2023</s
 <li>Aggiunto simbolo diverso per indicare i campi che momentaneamente non sono obbligatori perchè utente in bozza, ma che
 lo saranno quando si cercherà di attivare l'utente</li>
 </ul>
-<h3 id="aggiunte-6">Aggiunte</h3>
+<h3 id="aggiunte-7">Aggiunte</h3>
 <ul>
 <li>Aggiunto possibilità di trasferimento provvigioni da agente di riferimento a subagente</li>
 <li>In fase di approvazione richiesta, permette di cambiare l'importo di quest'ultima</li>
@@ -93,7 +99,7 @@ lo saranno quando si cercherà di attivare l'utente</li>
 <li>Abbassato l'età minima per apertura account a 14 anni</li>
 <li>Mostra i log delle versioni solo per gli utenti amministrativi</li>
 </ul>
-<h3 id="aggiunte-7">Aggiunte</h3>
+<h3 id="aggiunte-8">Aggiunte</h3>
 <ul>
 <li>Aggiunto pulsante per passare dall'anagrafica al profilo e viceversa</li>
 <li>Popup termini e condizioni nella pagina del contratto</li>
@@ -105,7 +111,7 @@ lo saranno quando si cercherà di attivare l'utente</li>
 <li>Implementata logica log firma contratto.</li>
 <li>Rimosso riferimenti a date nei preventivi</li>
 </ul>
-<h3 id="aggiunte-8">Aggiunte</h3>
+<h3 id="aggiunte-9">Aggiunte</h3>
 <ul>
 <li>Pulsante rimozione manuale Brite</li>
 <li>Pulsante aggiunta manuale Provvigioni</li>
@@ -119,12 +125,12 @@ lo saranno quando si cercherà di attivare l'utente</li>
 <li>Menu "altro" in mobile, non mostra più gli elementi già visibili nella barra inferiore</li>
 <li>Calcolatrice spostato aggiunta movimenti direttamente nella tabella</li>
 </ul>
-<h3 id="aggiunte-9">Aggiunte</h3>
+<h3 id="aggiunte-10">Aggiunte</h3>
 <ul>
 <li>Tabella con elenco contratti in attesa di firma nella dashboard admin</li>
 </ul>
 <h2 id="v170small23022020small">v 1.7.0 - <small>23/02/2020</small></h2>
-<h3 id="aggiunte-10">Aggiunte</h3>
+<h3 id="aggiunte-11">Aggiunte</h3>
 <ul>
 <li>Campo "IBAN", "BIC" e "Note" nel report excel delle richieste</li>
 <li>Aggiunto campo "Tipologia Provvigioni squadra" in caso di agente con subagenti</li>
@@ -143,13 +149,13 @@ lo saranno quando si cercherà di attivare l'utente</li>
 <li>Modale che mostra i clienti permette di vedere anche i sottoclienti di un subagente</li>
 </ul>
 <h2 id="v163small06022020small">v 1.6.3 - <small>06/02/2020</small></h2>
-<h3 id="aggiunte-11">Aggiunte</h3>
+<h3 id="aggiunte-12">Aggiunte</h3>
 <ul>
 <li>Pulsanti per scaricare il preventivo corrente</li>
 <li>Menù per il download delle ricevute nell'elenco movimenti</li>
 </ul>
 <h2 id="v162small28012020small">v 1.6.2 - <small>28/01/2020</small></h2>
-<h3 id="aggiunte-12">Aggiunte</h3>
+<h3 id="aggiunte-13">Aggiunte</h3>
 <ul>
 <li>Barra di ricerca nell'elenco degli utenti</li>
 <li>Barra di navigazione in mobile</li>
@@ -160,7 +166,7 @@ lo saranno quando si cercherà di attivare l'utente</li>
 <li>Lettura tabelle in mobile </li>
 </ul>
 <h2 id="v161small05012021small">v 1.6.1 - <small>05/01/2021</small></h2>
-<h3 id="aggiunte-13">Aggiunte</h3>
+<h3 id="aggiunte-14">Aggiunte</h3>
 <ul>
 <li>Transizioni al cambio delle pagine</li>
 <li>Aggiunta lista dei cambiamenti per ogni versione</li>
@@ -172,7 +178,7 @@ lo saranno quando si cercherà di attivare l'utente</li>
 <li>Cambiato popup comunicazioni chat, da schermo intero a popup normale</li>
 </ul>
 <h2 id="v160small05012021small">v 1.6.0 - <small>05/01/2021</small></h2>
-<h3 id="aggiunte-14">Aggiunte</h3>
+<h3 id="aggiunte-15">Aggiunte</h3>
 <ul>
 <li>Sezione "Gold / Global club" in anagrafica utente</li>
 <li>Pulsante "Riscossione gold" in pagina richieste</li>
@@ -183,7 +189,7 @@ lo saranno quando si cercherà di attivare l'utente</li>
 <li>Grafico dashboard agenti e clienti - ora mostra anche 6 mesi futuri </li>
 </ul>
 <h2 id="v150small04012021small">v 1.5.0 - <small>04/01/2021</small></h2>
-<h3 id="aggiunte-15">Aggiunte</h3>
+<h3 id="aggiunte-16">Aggiunte</h3>
 <ul>
 <li>Campo "metodo pagamento iniziale"</li>
 <li>Campo "investimento iniziale in oro"</li>

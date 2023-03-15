@@ -1,5 +1,10 @@
 [comment]: <> (## Non ancora rilasciato)
 
+## v 2.0.4 - <small>17/03/2023</small>
+### Aggiunte
+- Possibilità di aggiungere commenti agli eventi del calendario
+- Icona con nome agente per gli eventi calendario
+
 ## v 2.0.2 - <small>24/02/2023</small>
 ### Aggiunte
 - Calendario completo su dashboard agenti
