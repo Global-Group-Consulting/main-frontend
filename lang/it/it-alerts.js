@@ -250,15 +250,24 @@ export default {
     "set-read-text": "Sei sicuro di voler segnare come letta la news <strong>{title}</strong>?",
     "set-read-confirmBtnText": "Si, segna come letta",
     "set-read-cancelBtnText": "Annulla",
-    "set-read-success": "News aggiornata correttamente!",
+    'set-read-success': 'News aggiornata correttamente!'
   },
   calendarEvents: {
-    "delete-event-title": "",
-    "delete-event-text": "Sei sicuro di voler cancellare l'evento <strong>{title}</strong>? L'operazione non è reversibile.",
-    "delete-event-confirmBtnText": "Si, cancella",
-    "delete-event-cancelBtnText": "Annulla",
-    "delete-event-success": "Evento cancellato correttamente!",
-    "create-event-success": "Evento creato correttamente!",
-    "update-event-success": "Evento aggiornato correttamente!",
+    'delete-event-title': '',
+    'delete-event-text': 'Sei sicuro di voler cancellare l\'evento <strong>{title}</strong>? L\'operazione non è reversibile.',
+    'delete-event-confirmBtnText': 'Si, cancella',
+    'delete-event-cancelBtnText': 'Annulla',
+    'delete-event-success': 'Evento cancellato correttamente!',
+    'create-event-success': 'Evento creato correttamente!',
+    'update-event-success': 'Evento aggiornato correttamente!'
+  },
+  calendarEventComments: {
+    'delete-comment-title': '',
+    'delete-comment-text': 'Sei sicuro di voler cancellare questo commento? L\'operazione non è reversibile.',
+    'delete-comment-confirmBtnText': 'Si, cancella',
+    'delete-comment-cancelBtnText': 'Annulla',
+    'delete-comment-success': 'Commento cancellato correttamente!',
+    'create-comment-success': 'Commento creato correttamente!',
+    'update-comment-success': 'Commento aggiornato correttamente!'
   }
 }
