@@ -65,6 +65,12 @@
             <v-list-item-title class="text-wrap" v-html="section.text"></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+
+        <v-divider class="mt-3"></v-divider>
+
+        <CalendarEventComments :event="selectedEvent"
+                               :mustReload="selectedOpen"
+                               @comments-read="$emit('comments-read', $event)"></CalendarEventComments>
       </v-card-text>
     </v-card>
   </v-menu>
