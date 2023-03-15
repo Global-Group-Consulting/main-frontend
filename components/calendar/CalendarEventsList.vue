@@ -8,8 +8,15 @@
           <CalendarEventIcon :event="event" :color="calendarUtilities.getColor(event)"></CalendarEventIcon>
         </v-list-item-icon>
 
-        <v-list-item-content>
-          <v-list-item-title v-html="calendarUtilities.getTitle(event)" class="text-wrap"></v-list-item-title>
+        <v-list-item-content class="overflow-visible">
+          <v-list-item-title class="overflow-visible">
+            <v-badge left color="error" v-if="event.unreadComments.length"
+                     icon="mdi-comment-alert" class="mt-0">
+              <span v-html="calendarUtilities.getTitle(event)" class="text-wrap"></span>
+            </v-badge>
+
+            <span v-else v-html="calendarUtilities.getTitle(event)" class="text-wrap"></span>
+          </v-list-item-title>
           <v-list-item-subtitle v-html="getSubtitle(event)"></v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
