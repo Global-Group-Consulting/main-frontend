@@ -44,7 +44,17 @@
           <div class="pl-1" :data-event-id="item.event._id">
             <CalendarEventIcon :event="item.event" x-small></CalendarEventIcon>
 
-            {{ calendarUtilities.getTitle(item.event) }}
+            <v-badge left color="error"
+                     v-if="item.event.unreadComments && item.event.unreadComments.length"
+                     overlap
+                     bordered
+                     offset-x="4px"
+                     offset-y="4px"
+                     dot class="mt-0">
+              {{ calendarUtilities.getTitle(item.event) }}
+            </v-badge>
+
+            <template v-else>{{ calendarUtilities.getTitle(item.event) }}</template>
 
             <template v-if="calType !== 'month'">
               <template v-if="!item.singline"><br></template>
@@ -61,6 +71,7 @@
           :left="calendar.activeEvent.value.left"
           :bottom="calendar.activeEvent.value.bottom"
           @opened="scrollToEvent(calendar.activeEvent.value.selectedEvent._id)"
+          @comments-read="onCommentsRead"
           show-as-preview
       ></CalendarEventPreview>
     </v-card-text>
@@ -196,6 +207,16 @@ export default defineComponent({
       }
     }
 
+    // triggered when all comments are read
+    function onCommentsRead (eventId: string) {
+      // find the updated event
+      const updatedEvent = events.value.find(e => e._id === eventId)
+
+      if (updatedEvent) {
+        updatedEvent.unreadComments = []
+      }
+    }
+
     /**
      * Watch visibleEvents change and emit an update:visibleEvents event
      */
@@ -241,7 +262,8 @@ export default defineComponent({
       calendarChange,
       getEventColor,
       showDayDetails,
-      scrollToEvent
+      scrollToEvent,
+      onCommentsRead
     }
   }
 })

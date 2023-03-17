@@ -1,5 +1,6 @@
 import { CalendarCategory } from '~/@types/Calendar/CalendarCategory'
 import { User } from '~/@types/UserFormData'
+import { CalendarEventComment } from '~/@types/Calendar/CalendarEventComment'
 
 export interface CalendarEvent {
   readonly _id: string
@@ -41,6 +42,7 @@ export interface CalendarEvent {
   
   client: Pick<User, '_id' | 'firstName' | 'lastName'>
   clientName?: string
-  
   isPublic: boolean
+  
+  unreadComments: Pick<CalendarEventComment, '_id' | 'authorId' | 'eventId'>[]
 }
