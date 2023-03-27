@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="flex-grow-1">
     <div v-if="comments.length && !fetchError">
       <v-list color="transparent overflow-auto" max-height="300px"
               two-line dense tile
@@ -147,6 +147,8 @@ export default defineComponent({
       } catch (e: any) {
         fetchError.value = e.message
       }
+
+      emit("data-loaded")
     }
 
     async function onSubmitClick () {
