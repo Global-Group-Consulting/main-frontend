@@ -64,7 +64,6 @@
             </v-list-item-action>
           </v-list-item>
         </UseElementVisibility>
-
       </v-list>
 
       <v-divider></v-divider>
@@ -126,8 +125,9 @@ export default defineComponent({
 
     const canAdd = computed(() => {
       return $store.getters['user/userIsAdmin']
-          || $store.getters['user/current']._id === props.event.authorId
-          || (props.event.userIds || []).find(_id => _id === $store.getters['user/current']._id)
+          || !props.event.isPublic // allow to comment only if is not public. This for all events created by subagents
+      // || $store.getters['user/current']._id === props.event.authorId
+      // || (props.event.userIds || []).find(_id => _id === $store.getters['user/current']._id)
     })
 
     const checkCanEdit = (comment: CalendarEventComment) => {
