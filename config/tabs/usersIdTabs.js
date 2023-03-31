@@ -4,6 +4,7 @@ import UserRoles from "../../enums/UserRoles";
 export default function (formContext) {
   const userType = computed(() => [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(+formContext.userRole.value) ? 'admin' : 'user')
   const userIsAgent = computed(() => +formContext.userRole.value === UserRoles.AGENTE)
+  const userOnlyClub = computed(() => formContext.formData.value.userOnlyClub)
 
   return [
     {
@@ -25,7 +26,7 @@ export default function (formContext) {
       title: 'contract',
       cardTitle: 'contract',
       schema: "contractData",
-      if: userType.value === "user"
+      if: userType.value === 'user' && !userOnlyClub.value
     },
     {
       title: 'agent',

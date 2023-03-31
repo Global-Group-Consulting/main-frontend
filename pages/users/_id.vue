@@ -2,9 +2,9 @@
   <v-layout>
     <v-flex>
       <page-header
-        page-name="usersId"
-        :title="pageTitle"
-        :sub-title="!userIsNew ? pageSubTitle : false "
+          page-name="usersId"
+          :title="pageTitle"
+          :sub-title="pageSubTitle"
       >
         <template v-slot:subtitle>
           <div v-if="!userIsNew">
@@ -87,7 +87,12 @@
               <template v-if="userIsSuspended">Riabilita utente</template>
               <template v-else>Sospendi utente</template>
             </v-tooltip>
+          </div>
 
+          <div>
+            <!-- Set the user as club user -->
+            <v-switch label="Utente solo Club" v-model="formData.userOnlyClub"
+                      :disabled="formData.account_status !== $enums.AccountStatuses.DRAFT"></v-switch>
           </div>
         </template>
       </page-header>
@@ -98,11 +103,6 @@
           $t("alerts.sign-contract-declined", {date: $options.filters.dateHourFormatter(formData.contractDeclinedAt)})
         }}
       </v-alert>
-
-      <!--      <dashboard-blocks :dashboard-data="dashboardData"
-                              class="mb-6"
-                              readonly
-            ></dashboard-blocks>-->
 
       <page-toolbar>
         <template slot="left-block">
@@ -141,30 +141,6 @@
           >
             {{ $t("pages.usersId.btn-confirm-draft-user" + (userType === 'admin' ? '-admin' : '')) }}
           </tooltip-btn>
-
-          <!-- Set as VALIDATED a user that is in status CREATED -->
-          <!--          <tooltip-btn
-                      :tooltip="$t('pages.usersId.btn-validate-user-tooltip')"
-                      icon-name="mdi-account-check"
-                      color="green"
-                      text
-                      v-if="canValidateUser"
-                      @click="askValidateUser"
-                    >
-                      {{ $t("pages.usersId.btn-validate-user") }}
-                    </tooltip-btn>-->
-
-          <!-- Set as INCOMPLETE a user that is in status CREATED -->
-          <!--          <tooltip-btn
-                      :tooltip="$t('pages.usersId.btn-incomplete-user-tooltip')"
-                      icon-name="mdi-account-alert"
-                      color="red"
-                      text
-                      v-if="canValidateUser"
-                      @click="askIncompleteUser"
-                    >
-                      {{ $t("pages.usersId.btn-incomplete-user") }}
-                    </tooltip-btn>-->
 
         </template>
 
@@ -344,29 +320,30 @@
 </template>
 
 <script>
-import PageHeader from "../../components/blocks/PageHeader";
-import DynamicFieldset from "../../components/DynamicFieldset";
-import UserMessage from "../../components/dialogs/UserMessage";
-import FilePreviewer from "../../components/dialogs/FilePreviewer";
-import StatusChangeDialog from "../../components/dialogs/StatusChangeDialog";
-import MovementsListDialog from "../../components/dialogs/MovementsListDialog";
+import PageHeader from '../../components/blocks/PageHeader'
+import DynamicFieldset from '../../components/DynamicFieldset'
+import UserMessage from '../../components/dialogs/UserMessage'
+import FilePreviewer from '../../components/dialogs/FilePreviewer'
+import StatusChangeDialog from '../../components/dialogs/StatusChangeDialog'
+import MovementsListDialog from '../../components/dialogs/MovementsListDialog'
 
-import {kebabCase} from "lodash"
-import {onBeforeMount, reactive, ref, computed} from "@vue/composition-api";
+import { kebabCase } from 'lodash'
+import { onBeforeMount, reactive, ref, computed } from '@vue/composition-api'
 
-import AccountStatuses from "../../enums/AccountStatuses";
-import userDetails from "~/functions/userDetails";
-import pageBasic from "~/functions/pageBasic";
-import usersForm from "../../functions/usersForm";
-import Permissions from "../../functions/permissions";
-import SigningLogsPopup from "~/components/elements/SigningLogsPopup";
-import PageToolbar from "~/components/blocks/PageToolbar";
-import {UsersPermissions} from "@/functions/acl/enums/users.permissions";
-import DashboardBlocks from "../../components/DashboardBlocks";
-import UserRoleChangeDialog from "../../components/dialogs/UserRoleChangeDialog";
+import AccountStatuses from '../../enums/AccountStatuses'
+import userDetails from '~/functions/userDetails'
+import pageBasic from '~/functions/pageBasic'
+import usersForm from '../../functions/usersForm'
+import Permissions from '../../functions/permissions'
+import SigningLogsPopup from '~/components/elements/SigningLogsPopup'
+import PageToolbar from '~/components/blocks/PageToolbar'
+import { UsersPermissions } from '@/functions/acl/enums/users.permissions'
+import DashboardBlocks from '../../components/DashboardBlocks'
+import UserRoleChangeDialog from '../../components/dialogs/UserRoleChangeDialog'
+import { userFormatter } from '~/plugins/filters'
 
 export default {
-  name: "_id",
+  name: '_id',
   components: {
     UserRoleChangeDialog,
     DashboardBlocks,
@@ -427,8 +404,13 @@ export default {
       const formData = userForm.formData.value;
 
       return (
-        (formData.account_status === AccountStatuses.DRAFT &&
-          [$enums.UserRoles.ADMIN, $enums.UserRoles.SERV_CLIENTI].includes(formData.role))
+          formData.account_status === AccountStatuses.DRAFT
+          && (
+              // the form user is admin or service client
+              [$enums.UserRoles.ADMIN, $enums.UserRoles.SERV_CLIENTI].includes(formData.role)
+              // the form user is userOnlyClub
+              || formData.userOnlyClub
+          )
       );
     });
 
@@ -450,19 +432,24 @@ export default {
       );
     });
 
-    // Only for agents and clients
+    // Only for agents and clients that are not userOnlyClub
     const canConfirmDraftUser = computed(() => {
       const refAgent = userForm.formData.value.referenceAgent;
 
       return (
-        (
-          $auth.user.id === refAgent
-          || (
-            [$enums.UserRoles.AGENTE, $enums.UserRoles.ADMIN, $enums.UserRoles.SERV_CLIENTI].includes($auth.user.role)
-            && [$enums.UserRoles.AGENTE, $enums.UserRoles.CLIENTE].includes(userForm.formData.value.role)
+          !userForm.formData.value.userOnlyClub
+          && (
+              // auth user is the referenceAgent
+              $auth.user.id === refAgent
+              || (
+                  // auth user is admin or service client
+                  [$enums.UserRoles.AGENTE, $enums.UserRoles.ADMIN, $enums.UserRoles.SERV_CLIENTI].includes($auth.user.role)
+                  // the form user an agent or a client
+                  && [$enums.UserRoles.AGENTE, $enums.UserRoles.CLIENTE].includes(userForm.formData.value.role)
+              )
           )
-        )
-        && userForm.formData.value.account_status === $enums.AccountStatuses.DRAFT
+          // Accoount status is draft
+          && userForm.formData.value.account_status === $enums.AccountStatuses.DRAFT
       );
     });
 
