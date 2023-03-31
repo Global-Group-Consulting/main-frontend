@@ -35,7 +35,10 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
     personType: PersonTypes.FISICA,
     clubPack: ClubPacks.UNSUBSCRIBED,
     gold: true,
-    suspended: false
+    suspended: false,
+    userOnlyClub: false,
+    contractPercentage: 0,
+    contractInitialInvestment: 0,
   })
   const initialEmail = ref();
   const initialRole = ref();
@@ -76,7 +79,8 @@ export default function ({$route, $apiCalls, $alerts, $router, $i18n, $set, $aut
     userLegalReprItaly,
     userType,
     showReferenceAgent,
-    permissions
+    permissions,
+    formData
   }))
 
   const formSchemas = Object.keys(usersDataSchema).reduce((acc, _key) => {
