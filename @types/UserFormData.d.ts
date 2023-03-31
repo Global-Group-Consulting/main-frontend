@@ -71,6 +71,7 @@ export interface User {
   clients: number
   commissionsAssigned: any
   roles: AclUserRoles[]
+  userOnlyClub: boolean
 }
 
 export interface UserDataSchema extends User {

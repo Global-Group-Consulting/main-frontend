@@ -5,8 +5,10 @@
       :activator="selectedElement"
       offset-x
       max-width="400px"
+      offset-overflow
       :left="left"
       :bottom="bottom"
+      ref="menuEl"
   >
     <v-card
         color="grey lighten-4"
@@ -43,7 +45,7 @@
 
       <v-card-title v-html="calendarUtilities.getTitle(selectedEvent)" class="pb-0"></v-card-title>
 
-      <v-card-text>
+      <v-card-text class="d-flex flex-column" style="max-height: 70vh">
         <span>{{ subtitle }}</span>
 
         <v-list-item class="ps-0" dense
@@ -70,7 +72,8 @@
 
         <CalendarEventComments :event="selectedEvent"
                                :mustReload="selectedOpen"
-                               @comments-read="$emit('comments-read', $event)"></CalendarEventComments>
+                               @comments-read="$emit('comments-read', $event)"
+                               @data-loaded="menuEl.updateDimensions()"></CalendarEventComments>
       </v-card-text>
     </v-card>
   </v-menu>
@@ -107,6 +110,7 @@ export default defineComponent({
     const selectedOpen = ref(false)
     const start = computed(() => moment(props.selectedEvent.start))
     const end = computed(() => moment(props.selectedEvent.end))
+    const menuEl = ref()
 
     const sections = computed(() => {
       return [
@@ -207,6 +211,8 @@ export default defineComponent({
     }
 
     watch(() => props.selectedElement, () => {
+      menuEl.value.updateDimensions()
+
       if (selectedOpen.value) {
         selectedOpen.value = false
         requestAnimationFrame(() => requestAnimationFrame(() => changeState(true)))
@@ -224,6 +230,7 @@ export default defineComponent({
     })
 
     return {
+      menuEl,
       selectedOpen,
       subtitle,
       sections,
