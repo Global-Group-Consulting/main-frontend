@@ -92,7 +92,7 @@
           <div>
             <!-- Set the user as club user -->
             <v-switch label="Utente solo Club" v-model="formData.userOnlyClub"
-                      :disabled="formData.account_status !== $enums.AccountStatuses.DRAFT || userIsNew"></v-switch>
+                      :disabled="formData.account_status !== $enums.AccountStatuses.DRAFT && !userIsNew"></v-switch>
           </div>
         </template>
       </page-header>
