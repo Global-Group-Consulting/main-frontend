@@ -285,7 +285,8 @@ export default defineComponent({
         filterData({
           ...paginationSettings,
           filters: activeFilters.value,
-          sortBy: selectedTab.value.paginationDto?.sortBy
+          sortBy: selectedTab.value.paginationDto?.sortBy,
+          sortDesc: selectedTab.value.paginationDto?.sortDesc
         })
       } else {
         fetchData(paginationSettings)
@@ -307,9 +308,11 @@ export default defineComponent({
 
       // if are active filters, we refresh the filters tab too
       if (areActiveFilters.value) {
+
         filterData({
           filters: activeFilters.value,
-          sortBy: filtersTab.value.paginationDto?.sortBy
+          sortBy: filtersTab.value.paginationDto?.sortBy,
+          sortDesc: filtersTab.value.paginationDto?.sortDesc
         })
       }
     }
@@ -372,7 +375,8 @@ export default defineComponent({
       if (root.$store.getters['filters/areActiveFilters']) {
         filterData({
           filters: activeFilters.value,
-          sortBy: filtersTab.value.paginationDto?.sortBy
+          sortBy: filtersTab.value.paginationDto?.sortBy,
+          sortDesc: filtersTab.value.paginationDto?.sortDesc
         })
       }
     })
