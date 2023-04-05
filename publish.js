@@ -14,8 +14,5 @@ shell.exec('npm version patch')
 // get new version
 const version = require('./package.json').version
 
-// create tag for new version
-shell.exec(`git tag v${version}`)
-
 // push all to origin
 shell.exec(`git push origin main`, { silent: true })
