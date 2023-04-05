@@ -89,7 +89,7 @@
             </v-tooltip>
           </div>
 
-          <div>
+          <div v-if="$store.getters['user/userIsAdmin']">
             <!-- Set the user as club user -->
             <v-switch label="Utente solo Club" v-model="formData.userOnlyClub"
                       :disabled="formData.account_status !== $enums.AccountStatuses.DRAFT && !userIsNew"></v-switch>
