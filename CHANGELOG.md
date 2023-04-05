@@ -1,5 +1,13 @@
 [comment]: <> (## Non ancora rilasciato)
 
+## v 2.0.7 - <small>05/04/2023</small>
+### Aggiunte
+- Possibilità d'impostare un utente "solo club"
+
+### Miglioramenti
+- Cambiata grafica schermata Riscossione Gold 
+- Possibilità di assegnare 0 come valore provvigioni per un agente
+
 ## v 2.0.4 - <small>17/03/2023</small>
 ### Aggiunte
 - Possibilità di aggiungere commenti agli eventi del calendario

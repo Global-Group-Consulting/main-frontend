@@ -16,7 +16,7 @@
     "lint": "eslint --ext .ts,.js,.vue .",
     "test": "jest",
     "test:watch": "jest --watch",
-    "deploy": "git push heroku master"
+    "publish": "node publish.js"
   },
   "dependencies": {
     "@adonisjs/websocket-client": "^1.0.9",

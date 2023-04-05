@@ -4,18 +4,15 @@ const shell = require('shelljs')
 const branch = shell.exec('git rev-parse --abbrev-ref HEAD', { silent: true }).stdout
 
 // if not, then we throw an error
-if (branch !== 'main') {
-  throw new Error('You are not on the main branch')
+if (branch.trim() !== 'master') {
+  throw new Error('You are not on the main branch. You\'re on ' + branch)
 }
-
-//  build the changelog
-require('./changelog')
 
 // bump version patch
 shell.exec('npm version patch')
 
 // get new version
-const version = require('../package.json').version
+const version = require('./package.json').version
 
 // create tag for new version
 shell.exec(`git tag v${version}`)
