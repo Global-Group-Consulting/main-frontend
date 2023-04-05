@@ -123,7 +123,8 @@ export default {
           newValueItem && selection.value.push(item.name)
         }
 
-        if (!newValueItem || newValueItem.percent <= 0) {
+        // allow value of 0 as requested on issue #543e5b68ea254d66b062baecbec35e12
+        if (!newValueItem || newValueItem.percent < 0) {
           item.value = item.defaultValue
         } else if (+newValueItem.percent !== +item.value) {
           item.value = newValueItem.percent || item.defaultValue
