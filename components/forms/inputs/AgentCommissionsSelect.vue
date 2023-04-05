@@ -104,7 +104,7 @@ export default {
         // i'm using an array because in the future i could add more info on each element
         acc.push({
           name: curr,
-          percent: +currItem.value || null
+          percent: +currItem.value ?? null
         })
 
         return acc
@@ -126,8 +126,10 @@ export default {
         // allow value of 0 as requested on issue #543e5b68ea254d66b062baecbec35e12
         if (!newValueItem || newValueItem.percent < 0) {
           item.value = item.defaultValue
+
+          onChange()
         } else if (+newValueItem.percent !== +item.value) {
-          item.value = newValueItem.percent || item.defaultValue
+          item.value = newValueItem.percent ?? item.defaultValue
         }
       }
     }, { immediate: true, deep: true })
