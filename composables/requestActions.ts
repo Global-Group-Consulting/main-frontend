@@ -142,9 +142,9 @@ export function useRequestActions (ctx: SetupContext) {
     $store.dispatch('dialog/updateStatus', {
       title: $i18n.t('dialogs.requests.title-withdrawal-gold'),
       id: 'RequestDialogGold',
-      fullscreen: true,
-      theme: 'global-club',
-      noActions: true,
+      // fullscreen: true,
+      // theme: 'global-club',
+      // noActions: true,
       data: {
         type: type || RequestTypes.RISC_CAPITALE
       }
