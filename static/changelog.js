@@ -1,9 +1,14 @@
-module.exports = `<h2 id="v207small05042023small">v 2.0.7 - <small>05/04/2023</small></h2>
+module.exports = `<h2 id="v209small11042023small">v 2.0.9 - <small>11/04/2023</small></h2>
+<h3 id="miglioramenti">Miglioramenti</h3>
+<ul>
+<li>Cambiato il sistema di notifiche</li>
+</ul>
+<h2 id="v207small05042023small">v 2.0.7 - <small>05/04/2023</small></h2>
 <h3 id="aggiunte">Aggiunte</h3>
 <ul>
 <li>Possibilità d'impostare un utente "solo club"</li>
 </ul>
-<h3 id="miglioramenti">Miglioramenti</h3>
+<h3 id="miglioramenti-1">Miglioramenti</h3>
 <ul>
 <li>Cambiata grafica schermata Riscossione Gold </li>
 <li>Possibilità di assegnare 0 come valore provvigioni per un agente</li>
@@ -26,7 +31,7 @@ module.exports = `<h2 id="v207small05042023small">v 2.0.7 - <small>05/04/2023</s
 <li>Calendario Agenti per gestione appuntamenti</li>
 </ul>
 <h2 id="v200small21012023small">v 2.0.0 - <small>21/01/2023</small></h2>
-<h3 id="miglioramenti-1">Miglioramenti</h3>
+<h3 id="miglioramenti-2">Miglioramenti</h3>
 <ul>
 <li>Aggiunto paginazione lato server sulla pagina utenti e richieste</li>
 <li>Migliorata velocità caricamento dati</li>
@@ -47,7 +52,7 @@ module.exports = `<h2 id="v207small05042023small">v 2.0.7 - <small>05/04/2023</s
 <li>Miglioramenti generali prestazioni</li>
 </ul>
 <h2 id="v1811small20102021small">v 1.8.11 - <small>20/10/2021</small></h2>
-<h3 id="miglioramenti-2">Miglioramenti</h3>
+<h3 id="miglioramenti-3">Miglioramenti</h3>
 <ul>
 <li>Risolto bug che non permetteva di riscuotere tutti gli interessi maturati</li>
 </ul>
@@ -59,7 +64,7 @@ module.exports = `<h2 id="v207small05042023small">v 2.0.7 - <small>05/04/2023</s
 <li>Aggiunti pulsanti per azioni rapide sempre visibili nelle tabelle</li>
 </ul>
 <h2 id="v1810small21052020small">v 1.8.10 - <small>21/05/2020</small></h2>
-<h3 id="miglioramenti-3">Miglioramenti</h3>
+<h3 id="miglioramenti-4">Miglioramenti</h3>
 <ul>
 <li>Sistemato bug che non permetteva il download delle integrazioni.</li>
 <li>Aggiornati componenti interni dell'applicazione (campo valuta, tabelle, pagina richieste)</li>
@@ -75,7 +80,7 @@ module.exports = `<h2 id="v207small05042023small">v 2.0.7 - <small>05/04/2023</s
 <li>Sistema di filtri nell'elenco utenti, richieste e club</li>
 </ul>
 <h2 id="v189small28042020small">v 1.8.9 - <small>28/04/2020</small></h2>
-<h3 id="miglioramenti-4">Miglioramenti</h3>
+<h3 id="miglioramenti-5">Miglioramenti</h3>
 <ul>
 <li>Aggiornate icone che indicano le note all'interno delle tabelle</li>
 <li>Sistemato problema con il calcolo dei brite disponibili nel profilo del Club</li>
@@ -87,7 +92,7 @@ module.exports = `<h2 id="v207small05042023small">v 2.0.7 - <small>05/04/2023</s
 <li>Permette ai superadmin di modificare le email degli utenti</li>
 </ul>
 <h2 id="v188small15042020small">v 1.8.8 - <small>15/04/2020</small></h2>
-<h3 id="miglioramenti-5">Miglioramenti</h3>
+<h3 id="miglioramenti-6">Miglioramenti</h3>
 <ul>
 <li>Anagrafica, campi obbligatori solo se non bozza.</li>
 <li>Aggiornata tabella richieste da evadere in dashboard</li>
@@ -103,7 +108,7 @@ lo saranno quando si cercherà di attivare l'utente</li>
 <li>Aggiunti blocchi riepilogativi in elenco utenti relativi agli stati</li>
 </ul>
 <h2 id="v187small12042020small">v 1.8.7 - <small>12/04/2020</small></h2>
-<h3 id="miglioramenti-6">Miglioramenti</h3>
+<h3 id="miglioramenti-7">Miglioramenti</h3>
 <ul>
 <li>Aggiornata pagina del profilo degli utenti</li>
 <li>Abbassato l'età minima per apertura account a 14 anni</li>
@@ -115,7 +120,7 @@ lo saranno quando si cercherà di attivare l'utente</li>
 <li>Popup termini e condizioni nella pagina del contratto</li>
 </ul>
 <h2 id="v180small01042020small">v 1.8.0 - <small>01/04/2020</small></h2>
-<h3 id="miglioramenti-7">Miglioramenti</h3>
+<h3 id="miglioramenti-8">Miglioramenti</h3>
 <ul>
 <li>Aggiornata logica di creazione ed attivazione account.</li>
 <li>Implementata logica log firma contratto.</li>
@@ -128,7 +133,7 @@ lo saranno quando si cercherà di attivare l'utente</li>
 <li>Pulsante per reinviare il contratto da firmare</li>
 </ul>
 <h2 id="v173small13032020small">v 1.7.3 - <small>13/03/2020</small></h2>
-<h3 id="miglioramenti-8">Miglioramenti</h3>
+<h3 id="miglioramenti-9">Miglioramenti</h3>
 <ul>
 <li>Risolti problemi richieste di riscossione in mobile</li>
 <li>Sistemato menu inferiore su iPhone lasciando spazio per la home line</li>
@@ -151,7 +156,7 @@ lo saranno quando si cercherà di attivare l'utente</li>
 <li>Aggiunta sezione dedicata ai ruoli e permessi di tutti gli utenti</li>
 <li>Comunicazioni - Aggiunta tab dedicata al Global Club</li>
 </ul>
-<h3 id="miglioramenti-9">Miglioramenti</h3>
+<h3 id="miglioramenti-10">Miglioramenti</h3>
 <ul>
 <li>Spostato impostazioni agente (anagrafica utente) in tab dedicata</li>
 <li>Aggiunta colonna Brite Parziali nella calcolatrice</li>
@@ -171,7 +176,7 @@ lo saranno quando si cercherà di attivare l'utente</li>
 <li>Barra di navigazione in mobile</li>
 <li>Calcolatrice per preventivi</li>
 </ul>
-<h3 id="miglioramenti-10">Miglioramenti</h3>
+<h3 id="miglioramenti-11">Miglioramenti</h3>
 <ul>
 <li>Lettura tabelle in mobile </li>
 </ul>
@@ -182,7 +187,7 @@ lo saranno quando si cercherà di attivare l'utente</li>
 <li>Aggiunta lista dei cambiamenti per ogni versione</li>
 <li>Email nel caso di notifica in app non letta entro 30 minuti</li>
 </ul>
-<h3 id="miglioramenti-11">Miglioramenti</h3>
+<h3 id="miglioramenti-12">Miglioramenti</h3>
 <ul>
 <li>Grafica splash screen iniziale</li>
 <li>Cambiato popup comunicazioni chat, da schermo intero a popup normale</li>
@@ -194,7 +199,7 @@ lo saranno quando si cercherà di attivare l'utente</li>
 <li>Pulsante "Riscossione gold" in pagina richieste</li>
 <li>Modale per "Riscossione Gold" per riscossione interessi o prelievo oro fisico</li>
 </ul>
-<h3 id="miglioramenti-12">Miglioramenti</h3>
+<h3 id="miglioramenti-13">Miglioramenti</h3>
 <ul>
 <li>Grafico dashboard agenti e clienti - ora mostra anche 6 mesi futuri </li>
 </ul>
@@ -208,7 +213,7 @@ lo saranno quando si cercherà di attivare l'utente</li>
 <li>Pulsante per scaricare la contabile di un versamento</li>
 <li>Pulsante per scaricare il report dei bonifici da effettuare</li>
 </ul>
-<h3 id="miglioramenti-13">Miglioramenti</h3>
+<h3 id="miglioramenti-14">Miglioramenti</h3>
 <ul>
 <li>Corretta validazione tipologia utente in anagrafica</li>
 <li>Aggiornata la grafica del menu laterale e barra di navigazione</li>
