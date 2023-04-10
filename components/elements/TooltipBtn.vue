@@ -3,7 +3,7 @@
     <template v-slot:activator="{ on, attrs }">
       <component :is="noBtnTag ? 'div' : 'v-btn'" v-on="on" v-bind="$attrs"
                  @click="$emit('click', $event)"
-                 :class="noBtnTag && color ?  color + '--text' : ''"
+                 :class="classes"
                  :depressed="loading"
                  :disabled="loading"
                  :loading="loading"
@@ -24,8 +24,12 @@
 </template>
 
 <script>
+import { computed } from '@vue/composition-api'
+import VBtn from 'vuetify/lib/components/VBtn'
+
 export default {
   name: 'TooltipBtn',
+  components: { VBtn },
   props: {
     tooltip: String,
     iconName: String,
@@ -44,6 +48,22 @@ export default {
     },
     color: {
       type: String
+    }
+  },
+  setup (props, { attrs }) {
+    const classes = computed(() => {
+      const classes = attrs.class ? attrs.class.split(' ') : []
+
+      console.log(classes)
+      if (props.noBtnTag && props.color) {
+        classes.push(`${props.color}--text`)
+      }
+
+      return classes
+    })
+
+    return {
+      classes
     }
   }
 }
