@@ -1,12 +1,12 @@
 // @ts-ignore
 import Swal from 'sweetalert2/dist/sweetalert2.js'
-import Toasted from 'vue-toasted';
+import Toasted, { ToastObject, ToastOptions } from 'vue-toasted'
 // @ts-ignore
 import Vue from 'vue'
 
-import ToastedOptions from "../config/vue-toasted"
-import {Context, Plugin} from "@nuxt/types";
-import { SweetAlertOptions, SweetAlertResult } from 'sweetalert2'
+import ToastedOptions from '../config/vue-toasted'
+import { Context, Plugin } from '@nuxt/types'
+import { SweetAlertIcon, SweetAlertOptions, SweetAlertPosition, SweetAlertResult } from 'sweetalert2'
 
 Vue.use(Toasted, ToastedOptions)
 
@@ -58,30 +58,29 @@ declare module 'vuex/types/index' {
   }
 }
 
-
 export class Alerts {
   private i18n
   private store
   
   public instance: any
-
-  constructor(context: Context) {
+  
+  constructor (context: Context) {
     this.i18n = context.app.i18n
     this.store = context.app.store
     this.instance = Swal
   }
-
-  close() {
+  
+  close () {
     Swal.close()
   }
-
-  success(settings: AlertSettings = {}) {
+  
+  success (settings: AlertSettings = {}) {
     if (typeof settings === 'string') {
       settings = {
         title: settings
       }
     }
-
+    
     const defaultSettings = {
       title: 'Operazione eseguita correttamente!',
       text: '',
@@ -236,7 +235,7 @@ export class Alerts {
         try {
           if (preConfirm) {
             await preConfirm(value)
-
+            
             return this.toastSuccess(`${key}-success`)
           }
         } catch (er) {
@@ -245,9 +244,21 @@ export class Alerts {
       }
     })
   }
-
-  toastSuccess(message: string) {
-    Vue.toasted.success(this.i18n.t("alerts." + message) as string)
+  
+  toastSuccess (message: string) {
+    Vue.toasted.success(this.i18n.t('alerts.' + message) as string)
+  }
+  
+  toast (text: string, settings: ToastOptions) {
+    Vue.toasted.show(text, {
+      icon: settings.icon,
+      duration: settings.duration ?? 4000,
+      type: settings.type,
+      position: settings.position,
+      // theme: settings.theme ?? "bubble",
+      iconPack: 'mdi',
+      action: settings.action
+    })
   }
 }
 

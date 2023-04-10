@@ -10,15 +10,16 @@ services:
       - "3330:3000"
     environment:
       - API_URL=http://local.api.globalgroup.consulting/
+#      - CLUB_APP_URL=https://private.stg.globalclub.it
+      - CLUB_APP_URL=http://local.private.globalclub.it
+      - NEWS_APP_URL=http://local.news.globalgroup.consulting
+      - SOCKET_URL=wss://local.api.globalgroup.consulting
       - APP_CLIENT_KEY=7BpSpC4q8gg2QSR
-      - CLUB_APP_URL=https://private.stg.globalclub.it
       - FAVICON_VERSION=Lbxoegj4RJ
       - HOST=0.0.0.0
       - PORT=3000
-      - NEWS_APP_URL=https://news.stg.globalgroup.consulting
       - NODE_ENV=development
       - NODE_OPTIONS=--max-old-space-size=4096
       - NPM_CONFIG_PRODUCTION=false
-      - SOCKET_URL=wss://localhost:3333
 volumes:
   nodemodules: { }
