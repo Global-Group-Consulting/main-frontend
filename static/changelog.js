@@ -1,4 +1,4 @@
-module.exports = `<h2 id="v209small11042023small">v 2.0.9 - <small>11/04/2023</small></h2>
+module.exports = `<h2 id="v208small11042023small">v 2.0.8 - <small>11/04/2023</small></h2>
 <h3 id="miglioramenti">Miglioramenti</h3>
 <ul>
 <li>Cambiato il sistema di notifiche</li>
