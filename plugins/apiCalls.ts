@@ -24,6 +24,7 @@ import { MovementApi } from '~/plugins/apiCalls/Movement'
 import { CalendarEventsApi } from '~/plugins/apiCalls/CalendarEventsApi'
 import { CalendarCategoriesApi } from '~/plugins/apiCalls/CalendarCategoriesApi'
 import { CalendarEventCommentsApi } from '~/plugins/apiCalls/CalendarEventCommentsApi'
+import { NotificationsApi } from '~/plugins/apiCalls/NotificationsApi'
 
 interface IApiCalls extends ApiCalls {
   [key: string]: any
@@ -72,6 +73,7 @@ export class ApiCalls extends BasicApiCall {
   public calendarEventsApi!: CalendarEventsApi
   public calendarCategoriesApi!: CalendarCategoriesApi
   public calendarEventCommentsApi!: CalendarEventCommentsApi
+  public notificationsApi!: NotificationsApi
   
   constructor (context: any) {
     super(context)
@@ -92,6 +94,7 @@ export class ApiCalls extends BasicApiCall {
     this.calendarEventsApi = new CalendarEventsApi(context)
     this.calendarCategoriesApi = new CalendarCategoriesApi(context)
     this.calendarEventCommentsApi = new CalendarEventCommentsApi(context)
+    this.notificationsApi = new NotificationsApi(context)
   }
   
   async userCreate (data: any) {

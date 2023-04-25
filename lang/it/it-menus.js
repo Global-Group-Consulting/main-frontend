@@ -16,7 +16,7 @@ export default {
   "cancelRequest": "Annulla richiesta",
   "adminCancelRequest": "Storna richiesta",
   "approveUser": "Attiva account",
-  "noNotifications": "Nessuna nuova notifica",
+  "noNotifications": "Complimenti, hai letto tutte le notifiche!",
   "downloadReceipt": "Scarica integrazione",
   "lastMonth": "Ultimo mese",
   "last2Month": "Ultimi 2 mese",

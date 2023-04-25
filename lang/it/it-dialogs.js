@@ -21,7 +21,7 @@ export default {
     'btn-back': 'Indietro',
     'btn-close': 'Chiudi',
     'btn-send': 'Invia richiesta',
-    'btn-send-club': 'Procedi con la richiesta',
+    'btn-send-club': 'Invia richiesta',
     'btn-accept': 'Approva',
     'btn-chat': 'Prendi in carico',
     'btn-reject': 'Rifiuta',

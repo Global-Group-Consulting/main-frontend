@@ -1,6 +1,6 @@
 {
   "name": "ggc-frontend",
-  "version": "2.0.6",
+  "version": "2.0.8",
   "description": "Global Group Consulting frontend app.",
   "private": true,
   "engines": {
@@ -16,7 +16,7 @@
     "lint": "eslint --ext .ts,.js,.vue .",
     "test": "jest",
     "test:watch": "jest --watch",
-    "deploy": "git push heroku master"
+    "publish": "node publish.js"
   },
   "dependencies": {
     "@adonisjs/websocket-client": "^1.0.9",
@@ -64,6 +64,7 @@
     "nuxt": "^2.14.0",
     "nuxt-i18n": "^6.15.1",
     "portal-vue": "^2.1.7",
+    "shelljs": "^0.8.5",
     "showdown": "^1.9.1",
     "sweetalert2": "^10.0.2",
     "tippy.js": "^6.2.7",

@@ -39,7 +39,7 @@ export class BasicApiCall {
       params: params.params || null,
       data: params.body || null
     }, params)
-
+    
     if (!_settings.setLoading && _settings.loadingDispatcher) {
       _settings.setLoading = true
     }

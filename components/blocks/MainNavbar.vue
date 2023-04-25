@@ -49,7 +49,8 @@
           Calendario
         </v-tooltip>
 
-        <v-menu offset-y max-width="350"
+        <NotificationsMenu></NotificationsMenu>
+<!--        <v-menu offset-y max-width="350"
                 :disabled="!notifications.connected">
           <template v-slot:activator="{ on, attrs }">
             <v-btn v-on="on" v-bind="attrs"
@@ -73,7 +74,7 @@
 
           <v-list>
             <v-list-item v-if="unreadMessages.length === 0">
-              <v-list-item-title class="font-italic grey--text">{{ $t('menus.noNotifications') }}...</v-list-item-title>
+              <v-list-item-title class="font-italic grey&#45;&#45;text">{{ $t('menus.noNotifications') }}...</v-list-item-title>
             </v-list-item>
 
             <v-list-item v-for="message of unreadMessages"
@@ -99,7 +100,7 @@
               </v-list-item-action>
             </v-list-item>
           </v-list>
-        </v-menu>
+        </v-menu>-->
 
         <account-menu v-if="$vuetify.breakpoint.smAndUp">
           <template v-slot:menu-activator="{on}">
@@ -124,7 +125,7 @@
 </template>
 
 <script>
-import socketNotificationsFn from '~/functions/socket/notifications'
+// import socketNotificationsFn from '~/functions/socket/notifications'
 import socketAccountFn from '~/functions/socket/account'
 import { computed, onMounted, ref } from '@vue/composition-api'
 import CommunicationNewDialog from '~/components/dialogs/CommunicationNewDialog'
@@ -179,7 +180,7 @@ export default {
       onBugReported,
       dynamicClasses,
       // ...socketAccountFn(root),
-      ...socketNotificationsFn(root)
+      // ...socketNotificationsFn(root)
     }
   }
 }
