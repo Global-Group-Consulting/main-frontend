@@ -3,59 +3,44 @@
     <portal to="dialog-pre-content"></portal>
 
     <portal to="dialog-content">
-      <div class="d-flex justify-center" style="margin-bottom: -100px; margin-top: -16px">
+      <!-- Removed as requested in issue #c8ae12dfdc284f3e9b1f73706c20a4a4 -->
+      <!-- <div class="d-flex justify-center" style="margin-bottom: -100px; margin-top: -16px">
         <v-img src="global_club/bg_wide.jpg" max-width="600px" eager transition="fade"></v-img>
+      </div>-->
+
+      <v-form :disabled="!!readonly" @submit.prevent="">
+
+        <!--            <div>
+                      <v-card flat class="py-10" light>-->
+        <!--        <v-card-text v-if="currentStep === 0">-->
+        <dynamic-fieldset
+            ref="dialogForm"
+            :schema="formSchema"
+            v-model="formData"
+            immediate-update
+            fill-row
+        />
+        <!--        </v-card-text>-->
+        <!--
+                        <v-card-text v-else>
+                          <WithdrawalCards @input="withdrawalCards.onWithdrawalCardsInput"
+                                           @error="withdrawalCards.cardsHasErrors = $event"
+                                           :available-amount="formData.requestAmount"></WithdrawalCards>
+                        </v-card-text>
+                      </v-card>
+                    </div>-->
+      </v-form>
+    </portal>
+
+    <portal to="dialog-actions-right">
+      <div>
+        <v-btn text @click="withdrawalCards.onBack">
+          {{ $t('dialogs.requests.btn-' + (currentStep === 0 ? 'cancel' : 'back')) }}
+        </v-btn>
+        <v-btn text dark color="primary" @click="onFormSubmit">
+          {{ $t('dialogs.requests.btn-send-club') }}
+        </v-btn>
       </div>
-
-      <v-row justify="center">
-        <v-col lg="6" md="8" sm="12">
-          <v-form :disabled="!!readonly" @submit.prevent="">
-
-            <!-- <v-tabs height="58px"
-                                grow
-                                slider-color="#ffcf5f"
-                                :show-arrows="false"
-                                class="global-club-tabs"
-                                v-model="currentTab"
-                        >
-                          <v-tab :key="'brite'" v-html="$t('dialogs.requests.tab-brite')"></v-tab>
-                          <v-tab :key="'gold'" v-html="$t('dialogs.requests.tab-gold')"></v-tab>
-                        </v-tabs>-->
-            <div>
-              <v-card flat class="py-10" light>
-                <v-card-text v-if="currentStep === 0">
-                  <dynamic-fieldset
-                      ref="dialogForm"
-                      :schema="formSchema"
-                      v-model="formData"
-                      immediate-update
-                      fill-row
-                  />
-                </v-card-text>
-
-                <v-card-text v-else>
-                  <WithdrawalCards @input="withdrawalCards.onWithdrawalCardsInput"
-                                   @error="withdrawalCards.cardsHasErrors = $event"
-                                   :available-amount="formData.requestAmount"></WithdrawalCards>
-                </v-card-text>
-              </v-card>
-            </div>
-
-            <v-card dark>
-              <v-card-text class="d-flex justify-end">
-                <div>
-                  <v-btn outlined dark color="grey" @click="withdrawalCards.onBack">
-                    {{ $t('dialogs.requests.btn-' + (currentStep === 0 ? 'cancel' : 'back')) }}
-                  </v-btn>
-                  <v-btn depressed dark color="primary" @click="onFormSubmit">
-                    {{ $t('dialogs.requests.btn-send-club') }}
-                  </v-btn>
-                </div>
-              </v-card-text>
-            </v-card>
-          </v-form>
-        </v-col>
-      </v-row>
     </portal>
   </div>
 </template>

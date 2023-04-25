@@ -54,12 +54,12 @@ function briteSchema (context) {
           component: 'money-input',
           disabled: true
         },
-        clubCardNumber: {
+        /*clubCardNumber: {
           disabled: !!context.$auth.user.clubCardNumber,
           validations: {
             required: {}
           }
-        }
+        }*/
       }
     }, {
       colsBreakpoints: {
