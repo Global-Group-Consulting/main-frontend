@@ -187,6 +187,7 @@ const defaults = {
     requests: {
       columns: [
         'amount',
+        'currency',
         'user',
         'referenceAgent',
         'type',

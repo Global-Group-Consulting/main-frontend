@@ -48,6 +48,12 @@ export default {
   "send-request-brite-confirmBtnText": "Si, invia",
   "send-request-brite-cancelBtnText": "Annulla",
   "send-request-brite-success": "Richiesta inviata correttamente!",
+  
+  "send-request-crypto-title": "",
+  "send-request-crypto-text": "Sei sicuro di voler inviare la nuova richiesta di <strong>{type}</strong> del valore di <strong>{amount}</strong> in <strong>{crypto}</strong>?",
+  "send-request-crypto-confirmBtnText": "Si, invia",
+  "send-request-crypto-cancelBtnText": "Annulla",
+  "send-request-crypto-success": "Richiesta inviata correttamente!",
 
   "send-request-gold-title": "",
   "send-request-gold-text": "Sei sicuro di voler inviare la nuova richiesta di <strong>Prelievo oro fisico</strong> del valore di <strong>{amount}</strong>?",

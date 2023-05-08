@@ -239,5 +239,9 @@ export default {
     [CalendarCategoryVisibility.ADMINS]: 'Admin',
     [CalendarCategoryVisibility.CUSTOMER_SERVICES]: 'Servizio Clienti',
     [CalendarCategoryVisibility.AGENTS]: 'Agenti'
+  },
+  requestDialog: {
+    "crypto-currency": "Criptovaluta",
+    "crypto-address": "Indirizzo criptovaluta",
   }
 }

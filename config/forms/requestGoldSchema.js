@@ -6,6 +6,9 @@
  * @property { {data : {type: number}, readonly: boolean} } dialogData
  */
 
+import CryptoCurrency from '~/enums/CryptoCurrency'
+import CurrencyType from '~/enums/CurrencyType'
+
 /**
  *
  * @param {ComputedContext} context
@@ -46,6 +49,8 @@ function goldSchema (context) {
  * @returns {import('../../@types/FormSchema').FormSchema[]}
  */
 function briteSchema (context) {
+  const requestingCrypto = context.formData.currency === CurrencyType.CRYPTO
+  
   return [
     {
       maxCols: 2,
@@ -53,7 +58,7 @@ function briteSchema (context) {
         availableAmount: {
           component: 'money-input',
           disabled: true
-        },
+        }
         /*clubCardNumber: {
           disabled: !!context.$auth.user.clubCardNumber,
           validations: {
@@ -85,9 +90,29 @@ function briteSchema (context) {
             }
           }
         },
+        cryptoCurrency: {
+          label: 'requestDialog.crypto-currency',
+          component: 'v-select',
+          items: CryptoCurrency.list,
+          if: requestingCrypto,
+          validations: {
+            requiredIf: {
+              params: () => requestingCrypto
+            }
+          }
+        },
+        cryptoAddress: {
+          label: 'requestDialog.crypto-address',
+          if: requestingCrypto,
+          validations: {
+            requiredIf: {
+              params: () => requestingCrypto
+            }
+          }
+        },
         notes: {
           component: 'v-textarea',
-          label: "request-notes",
+          label: 'request-notes',
           hint: 'request-notes-hint',
           persistentHint: true,
           validations: {

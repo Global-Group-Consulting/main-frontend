@@ -9,7 +9,7 @@ export default {
     'btn-send': 'Invia'
   },
   requests: {
-    'title-withdrawal-3': 'Nuova richiesta di prelievo deposit Classic',
+    'title-withdrawal-3': 'Nuova richiesta di prelievo deposito Classic',
     'title-withdrawal-4': 'Nuova richiesta di riscossione rendite Classic',
     'title-withdrawal-5': 'Nuova richiesta di riscossione provvigioni',
     'title-withdrawal-gold': 'Nuova richiesta di riscossione Gold',
