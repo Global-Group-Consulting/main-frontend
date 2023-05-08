@@ -225,7 +225,7 @@ export default function (context) {
         cryptoCurrency: {
           label: 'requestDialog.crypto-currency',
           component: 'v-select',
-          items: CryptoCurrency.list,
+          items: CryptoCurrency.list.filter(crypto => [CryptoCurrency.BITCOIN, CryptoCurrency.ETHEREUM].includes(crypto.value)),
           if: requestingCrypto,
           validations: {
             requiredIf: {
