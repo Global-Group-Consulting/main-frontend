@@ -246,6 +246,7 @@ const defaults = {
         "movementType",
         "clubPack",
         "cards",
+        "crypto",
         "iban",
         "notes",
         "reqNotes",

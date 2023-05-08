@@ -36,6 +36,11 @@ export default {
     value: 'cards',
     component: "CellReportCards",
   },
+  "crypto": {
+    text: "tables.reports.crypto",
+    value: "crypto",
+    component: "CellReportCrypto",
+  },
   "iban": {
     text: 'tables.reports.iban',
     value: 'user.contractIban',
