@@ -13,6 +13,8 @@ import UserRoles from "~/enums/UserRoles";
 import {moneyFormatter, userFormatter} from "~/plugins/filters";
 import {CardsList} from '~/config/cardsList';
 import moment from 'moment-timezone'
+import CryptoCurrency from '~/enums/CryptoCurrency'
+import CurrencyType from '~/enums/CurrencyType'
 
 function getRequestTypeList(list, context) {
   const userType = [UserRoles.ADMIN, UserRoles.SERV_CLIENTI].includes(+context.$auth.user.role) ? "admin" : "user";
@@ -113,7 +115,10 @@ export default function (context) {
   })
   const showAttachmentInput = computed(() => readonly && context.formData.files && context.formData.files.length > 0)
   const attachmentRequired = computed(() => !readonly && context.formData.type === context.$enums.RequestTypes.VERSAMENTO && context.$auth.user.role === UserRoles.AGENTE)
-
+  const requestingCrypto = context.formData.currency === CurrencyType.CRYPTO
+  
+  const currency = context.formData.currency === CurrencyType.CRYPTO ? CurrencyType.EURO : context.formData.currency
+  
   return [
     {
       cols: {
@@ -130,7 +135,7 @@ export default function (context) {
     {
       cols: {
         wallet: {
-          label: "walletType",
+          label: 'walletType',
           component: null,
           items: context.$enums.WalletTypes,
           disabled: true,
@@ -138,48 +143,33 @@ export default function (context) {
           if: context.$enums.UserRoles.CLIENTE !== context.$auth.user.role
             && ![context.$enums.RequestTypes.VERSAMENTO, context.$enums.RequestTypes.RISC_CAPITALE].includes(context.formData.type)
         },
+        availableAmount: {
+          disabled: true,
+          component: 'money-input',
+          currency: currency,
+          if: (!readonly && (!isVersamento || context.formData.type === RequestTypes.RISC_CAPITALE)) || readonly
+        }
       }
     },
-    /* {
-      cols: {
-        currency: {
-          label: "currencyType",
-          if: (!readonly && !isVersamento) || readonly,
-          component: !readonly ? 'v-select' : null,
-          formatter: readonly ? (value) => context.$i18n.t(`enums.CurrencyType.${context.$enums.CurrencyType.getIdName(value)}`) : null,
-          items: context.$enums.CurrencyType,
-          disabled: context.formData.type === context.$enums.RequestTypes.VERSAMENTO || readonly,
-        },
-      }
-    }, */
+    
     {
       cols: {
         targetUser: {
           disabled: true,
           formatter: (item) => {
-            return item.firstName + " " + item.lastName + ` (${item.email})`
+            return item.firstName + ' ' + item.lastName + ` (${item.email})`
           },
-          if: [RequestTypes.COMMISSION_MANUAL_ADD, RequestTypes.DEPOSIT_REPAYMENT].includes(context.formData.type),
-        }
-      }
-    },
-    {
-      cols: {
-        availableAmount: {
-          disabled: true,
-          component: 'money-input',
-          currency: context.formData.currency,
-          if: (!readonly && (!isVersamento || context.formData.type === RequestTypes.RISC_CAPITALE)) || readonly,
+          if: [RequestTypes.COMMISSION_MANUAL_ADD, RequestTypes.DEPOSIT_REPAYMENT].includes(context.formData.type)
         }
       }
     },
     {
       cols: {
         amount: {
-          label: "requestAmount",
+          label: 'requestAmount',
           component: context.formData.autoWithdrawlAll ? '' : 'money-input',
           disabled: readonly || context.formData.autoWithdrawlAll,
-          currency: context.formData.currency,
+          currency: currency,
           showBrite: false,
           showMax: context.formData.wallet === 2,
           message: getAmountMessage(context),
@@ -195,8 +185,60 @@ export default function (context) {
             multipleOf: {
               params: [RequestTypes.VERSAMENTO, RequestTypes.RISC_PROVVIGIONI].includes(context.formData.type) ? null : {
                 step: 50,
-                until: context.$store.getters["settings/globalSettings"].cardsRequestMinAmount
+                until: context.$store.getters['settings/globalSettings'].cardsRequestMinAmount
               }
+            }
+          }
+        }
+      }
+    },
+    {
+      if: !!context.formData.cryptoCurrency && readonly,
+      cols: {
+        cryptoCurrency: {
+          label: 'requestDialog.crypto-currency',
+          formatter: (value, item) => {
+            return CryptoCurrency.list.find(crypto => crypto.value === value).text
+          },
+          readonly: true,
+          disabled: true
+        },
+        cryptoAddress: {
+          label: 'requestDialog.crypto-address',
+          readonly: true,
+          disabled: true
+        }
+      }
+    },
+    {
+      cols: {
+        goldAmount: {
+          type: 'number',
+          if: context.$enums.RequestTypes.VERSAMENTO === context.formData.type,
+          disabled: readonly,
+          prefix: 'gr.'
+        }
+      }
+    },
+    {
+      cols: {
+        cryptoCurrency: {
+          label: 'requestDialog.crypto-currency',
+          component: 'v-select',
+          items: CryptoCurrency.list,
+          if: requestingCrypto,
+          validations: {
+            requiredIf: {
+              params: () => requestingCrypto
+            }
+          }
+        },
+        cryptoAddress: {
+          label: 'requestDialog.crypto-address',
+          if: requestingCrypto,
+          validations: {
+            requiredIf: {
+              params: () => requestingCrypto
             }
           }
         },
@@ -204,36 +246,22 @@ export default function (context) {
     },
     {
       cols: {
-        goldAmount: {
-          type: "number",
-          if: context.$enums.RequestTypes.VERSAMENTO === context.formData.type,
-          disabled: readonly,
-          prefix: "gr.",
-        }
-      }
-    },
-    {
-      cols: {
         created_at: {
-          label: "requestCreatedAt",
+          label: 'requestCreatedAt',
           component: 'date-picker',
           if: !isNew,
           disabled: true,
-          "prepend-icon": "",
-          "prepend-inner-icon": "mdi-calendar",
+          'prepend-icon': '',
+          'prepend-inner-icon': 'mdi-calendar'
         },
-      }
-    },
-    {
-      cols: {
         completed_at: {
-          label: "requestCompletedAt",
+          label: 'requestCompletedAt',
           if: isCompleted,
           disabled: true,
-          formatter: "dateHourFormatter",
-          "prepend-icon": "",
-          "prepend-inner-icon": "mdi-calendar",
-        },
+          formatter: 'dateHourFormatter',
+          'prepend-icon': '',
+          'prepend-inner-icon': 'mdi-calendar'
+        }
       }
     },
     {

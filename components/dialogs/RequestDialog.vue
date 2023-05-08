@@ -108,6 +108,11 @@
           :loading="!dataLoaded"
           type="list-item-two-line@4"
       >
+        <v-tabs grow @change="onCurrencyTabChange" v-if="showCryptoTab">
+          <v-tab>Euro</v-tab>
+          <v-tab>Crypto</v-tab>
+        </v-tabs>
+
         <v-form :disabled="!!readonly" @submit.prevent="" v-if="currentStep === 0">
           <dynamic-fieldset
               ref="dialogForm"
@@ -154,6 +159,9 @@ import RequestTypes from '~/enums/RequestTypes'
 import RequestStatus from '~/enums/RequestStatus'
 import withdrawalsCards, { WithdrawalCardsData } from '~/functions/withdrawalsCards'
 import { computed } from '@vue/composition-api'
+import CurrencyType from '~/enums/CurrencyType'
+import { SelectOption } from '~/@types/components/SelectInput'
+import CryptoCurrency from '~/enums/CryptoCurrency'
 
 interface FormData {
   wallet: number
@@ -176,7 +184,9 @@ interface FormData {
   cancelReason: string
   notes: string
   userId: string,
-  cards: { amount: number, id: string }[]
+  cards: { amount: number, id: string }[],
+  cryptoAddress?: string
+  cryptoCurrency?: string
 }
 
 @Component({
@@ -198,7 +208,9 @@ export default class RequestDialog extends Vue {
     clubPack: this.$enums.ClubPacks.UNSUBSCRIBED,
     autoWithdrawlAll: null,
     autoWithdrawlAllRecursively: false,
-    cards: []
+    cards: [],
+    cryptoAddress: '',
+    cryptoCurrency: ''
   }
 
   dataLoaded = false
@@ -394,6 +406,10 @@ export default class RequestDialog extends Vue {
     return this.$store.getters['user/userIsAdmin']
   }
 
+  get showCryptoTab () {
+    return this.formData.type === this.$enums.RequestTypes.RISC_CAPITALE && !this.dialogData.readonly
+  }
+
   close () {
     this.$refs.dialogForm?.reset()
     this.$store.dispatch('dialog/updateStatus', false)
@@ -453,6 +469,8 @@ export default class RequestDialog extends Vue {
         return
       }
 
+      const cryptoRequest = this.formData.currency === CurrencyType.CRYPTO
+
       const data = {
         amount: this.formData.amount,
         goldAmount: this.formData.goldAmount,
@@ -464,7 +482,9 @@ export default class RequestDialog extends Vue {
         requestAttachment: this.formData.requestAttachment,
         autoWithdrawlAll: this.formData.autoWithdrawlAll,
         autoWithdrawlAllRecursively: this.formData.autoWithdrawlAllRecursively,
-        cards: this.formData.cards
+        cards: this.formData.cards,
+        cryptoAddress: cryptoRequest ? this.formData.cryptoAddress : '',
+        cryptoCurrency: cryptoRequest ? this.formData.cryptoCurrency : ''
       }
 
       if ((data.amount || 0) <= this.wallet.interestAmount
@@ -491,15 +511,22 @@ export default class RequestDialog extends Vue {
         }
       }
 
-      const reqTypeFormatted = this.$t('enums.RequestTypes.' + this.$enums.RequestTypes.get(data.type).id)
+      let reqTypeFormatted = this.$t('enums.RequestTypes.' + this.$enums.RequestTypes.get(data.type).id)
+      let transKey = data.autoWithdrawlAll ? `-all${data.autoWithdrawlAllRecursively ? '-recursive' : ''}` : ''
+
+      if (cryptoRequest) {
+        reqTypeFormatted = 'Prelievo in Crypto'
+        transKey = '-crypto'
+      }
 
       await this.$alerts.askBeforeAction({
         key: 'send-request',
         settings: {
-          html: this.$t(`alerts.send-request${data.autoWithdrawlAll ? `-all${data.autoWithdrawlAllRecursively ? '-recursive' : ''}` : ''}-text`, {
+          html: this.$t(`alerts.send-request${transKey}-text`, {
             ...data,
             type: reqTypeFormatted,
-            amount: '€ ' + moneyFormatter(data.amount)
+            amount: '€ ' + moneyFormatter(data.amount),
+            crypto: CryptoCurrency.list.find((c: SelectOption) => c.value === data.cryptoCurrency)?.text
           }) as string
         },
         preConfirm: async () => {
@@ -534,6 +561,18 @@ export default class RequestDialog extends Vue {
     } catch (er) {
       console.log(er)
     }
+  }
+
+  onCurrencyTabChange (activeTab: number) {
+    switch (activeTab) {
+      case 0:
+        this.formData.currency = this.$enums.CurrencyType.EURO
+        break
+      case 1:
+        this.formData.currency = this.$enums.CurrencyType.CRYPTO
+        break
+    }
+
   }
 
   @Watch('availableAmount', { immediate: true })

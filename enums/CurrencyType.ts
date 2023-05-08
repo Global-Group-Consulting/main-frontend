@@ -4,6 +4,7 @@ class CurrencyType extends BasicEnum {
   public EURO = 1
   public BRITE = 2
   public GOLD = 3
+  public CRYPTO = 4
 
   constructor() {
     super('CurrencyType')
@@ -21,6 +22,10 @@ class CurrencyType extends BasicEnum {
         id: 'gold',
         symbol: 'Au'
       },
+      [this.CRYPTO]: {
+        id: 'crypto',
+        symbol: '€'
+      }
     }
   }
 }

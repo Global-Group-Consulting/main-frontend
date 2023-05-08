@@ -8,6 +8,11 @@
         <v-img src="global_club/bg_wide.jpg" max-width="600px" eager transition="fade"></v-img>
       </div>-->
 
+      <v-tabs grow @change="onCurrencyTabChange">
+        <v-tab>Gold</v-tab>
+        <v-tab>Crypto</v-tab>
+      </v-tabs>
+
       <v-form :disabled="!!readonly" @submit.prevent="">
 
         <!--            <div>
@@ -55,6 +60,8 @@ import WalletTypes from '~/enums/WalletTypes'
 import CurrencyType from '~/enums/CurrencyType'
 import { moneyFormatter } from '~/plugins/filters'
 import withdrawalsCards from '~/functions/withdrawalsCards'
+import CryptoCurrency from '~/enums/CryptoCurrency'
+import { SelectOption } from '~/@types/components/SelectInput'
 
 interface FormData {
   id?: string
@@ -71,7 +78,9 @@ interface FormData {
   status?: any
   requestIban?: string
   requestAmount?: number,
-  cards?: { amount: number, id: string }[]
+  cards?: { amount: number, id: string }[],
+  cryptoAddress?: string
+  cryptoCurrency?: string
 }
 
 @Component({
@@ -95,7 +104,9 @@ export default class RequestDialogGold extends Vue {
     iban: '',
     userId: '',
     notes: '',
-    cards: []
+    cards: [],
+    cryptoAddress: '',
+    cryptoCurrency: ''
   }
 
   $refs!: {
@@ -147,7 +158,7 @@ export default class RequestDialogGold extends Vue {
   }
 
   onClose () {
-    this.formElement.reset()
+    this.formElement?.reset()
     this.$store.dispatch('dialog/updateStatus', false)
   }
 
@@ -166,6 +177,8 @@ export default class RequestDialogGold extends Vue {
         return
       }
 
+      const cryptoRequest = this.formData.currency === CurrencyType.CRYPTO
+
       const data: Partial<FormData> = {
         amount: this.formData.requestAmount || 0,
         iban: this.formData.requestIban || '',
@@ -174,20 +187,24 @@ export default class RequestDialogGold extends Vue {
         type: this.formData.type,
         typeClub: this.formData.typeClub,
         wallet: this.formData.wallet,
-        currency: this.formData.currency,
         notes: this.formData.notes,
-        cards: this.formData.cards
+        cards: this.formData.cards,
+        currency: this.formData.currency,
+        cryptoAddress: cryptoRequest ? this.formData.cryptoAddress : '',
+        cryptoCurrency: cryptoRequest ? this.formData.cryptoCurrency : ''
       }
+      const cryptoList = CryptoCurrency.list
 
       await this.$alerts.askBeforeAction({
-        key: 'send-request-' + data.typeClub,
+        key: 'send-request-' + (cryptoRequest ? 'crypto' : data.typeClub),
         preConfirm: async () => {
           const result = await this.$apiCalls.requests.createRequest(data)
           this.$nuxt.$emit('requests:newAdded', result.status)
         },
         data: {
           type: this.$t('enums.RequestTypes.' + this.$enums.RequestTypes.get(data.type).id),
-          amount: this.formatAmountForAlert(data)
+          amount: cryptoRequest ? '€ ' + moneyFormatter(data.amount) : this.formatAmountForAlert(data),
+          crypto: cryptoList.find((c: SelectOption) => c.value === data.cryptoCurrency)?.text
         }
       })
 
@@ -197,6 +214,18 @@ export default class RequestDialogGold extends Vue {
     } catch (er) {
       console.log(er)
     }
+  }
+
+  onCurrencyTabChange (activeTab: number) {
+    switch (activeTab) {
+      case 0:
+        this.formData.currency = this.$enums.CurrencyType.BRITE
+        break
+      case 1:
+        this.formData.currency = this.$enums.CurrencyType.CRYPTO
+        break
+    }
+
   }
 
   formatAmountForAlert (data: Partial<FormData>): string {

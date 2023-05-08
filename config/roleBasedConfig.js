@@ -187,6 +187,7 @@ const defaults = {
     requests: {
       columns: [
         'amount',
+        'currency',
         'user',
         'referenceAgent',
         'type',
@@ -245,6 +246,7 @@ const defaults = {
         "movementType",
         "clubPack",
         "cards",
+        "crypto",
         "iban",
         "notes",
         "reqNotes",

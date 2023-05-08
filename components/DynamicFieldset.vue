@@ -163,21 +163,30 @@ export default {
   },
   methods: {
     getColumns(row) {
-      if (Object.keys(row.cols).length === 1 && this.fillRow) {
-        return;
+      const totalCols = Object.keys(row.cols).length
+      const visibleCols = Object.values(row.cols).filter(col => col.if).length
+
+      if (totalCols === 1 && this.fillRow) {
+        return
       }
 
       const toReturn = row.colsBreakpoints || {
-        cols: "12",
-        sm: "6",
-        lg: "4"
-      };
-
-      if (row.maxCols) {
-        toReturn.lg = 12 / row.maxCols;
+        cols: '12',
+        sm: '6',
+        lg: '4'
       }
 
-      return toReturn;
+      if (row.maxCols) {
+        toReturn.lg = 12 / row.maxCols
+      } else if (!row.colsBreakpoints) {
+        toReturn.lg = 12 / visibleCols
+      }
+
+      if (!row.colsBreakpoints && toReturn.lg === 12) {
+        toReturn.sm = 12
+      }
+
+      return toReturn
     },
     getValue(field, key) {
       let value = this.value[key];

@@ -112,5 +112,6 @@ export default {
     "reference-agent": "Agente riferimento",
     "created-at": "Data creazione",
     "cards": "Carte prepagate",
+    "crypto": "Cryptovalute",
   }
 }
