@@ -1,5 +1,9 @@
 [comment]: <> (## Non ancora rilasciato)
 
+## v 2.0.9 - <small>08/05/2023</small>
+### Aggiunte
+- Possibilità di prelevare deposito e riscuotere rendite in criptovaluta
+
 ## v 2.0.8 - <small>11/04/2023</small>
 ### Miglioramenti
 - Cambiato il sistema di notifiche
