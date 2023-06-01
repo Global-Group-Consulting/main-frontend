@@ -258,6 +258,7 @@ const defaults = {
       columns: [
         'user',
         'role',
+        'lastUpdate',
         'time'
       ]
     }

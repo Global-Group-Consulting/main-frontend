@@ -2,13 +2,10 @@
 import { computed, ComputedRef, defineComponent, inject, onMounted, Ref, ref, watch } from '@vue/composition-api'
 import { ReportsPermissions } from '~/functions/acl/enums/reports.permissions'
 import { ApiCalls } from '~/plugins/apiCalls'
-import moment from 'moment-timezone'
-import humanizeDuration from 'humanize-duration'
 import { PaginationDto } from '~/@types/pagination/PaginationDto'
 import analyticFiltersSchema from '~/config/forms/filters/analyticFiltersSchema'
 import { Filter } from '~/@types/Filter'
-import { DynamicTab } from '~/@types/components/DynamicTab'
-import { ITimer } from '~/composables/analytics'
+import moment from 'moment-timezone'
 
 export default defineComponent({
   name: 'Analytics',
@@ -34,6 +31,15 @@ export default defineComponent({
           item: 'user'
         }
       },
+      'lastUpdate': {
+        text: 'tables.analytics.lastUpdate',
+        value: 'lastUpdate',
+        width: '15%',
+        component: 'CellDate',
+        componentSettings: {
+          includeTime: true
+        }
+      },
       'time': {
         text: 'tables.analytics.time',
         value: 'totalTime',
@@ -45,12 +51,15 @@ export default defineComponent({
     const tabsList: Ref<any[]> = ref<any[]>([
       {
         id: 'analytics',
-        title: 'Utilizzo',
+        title: 'Utilizzo (oggi)',
         data: null,
         loading: true,
         updateData: (paginationDto: any) => fetchData(Object.assign(paginationDto, { filters: activeTabData.value.paginationDto.filters }), 'analytics'),
         paginationDto: {
-          sortBy: ['user']
+          sortBy: ['user'],
+          filters: {
+            day: moment().startOf('day').format('YYYY-MM-DD')
+          }
         }
       },
       {
@@ -63,8 +72,7 @@ export default defineComponent({
           sortBy: ['user']
         }
       }
-        ]
-    )
+    ])
     const filtersSchema = computed(() => analyticFiltersSchema.call(root))
     const visibileTabsList = computed(() => tabsList.value.filter(tab => tab.id === 'filters' && areActiveFilters.value || tab.id !== 'filters'))
     const activeTabData = computed(() => visibileTabsList.value[currentTab.value])
@@ -91,33 +99,6 @@ export default defineComponent({
       }
 
       targetTab.loading = false
-    }
-
-    function formatDuration (seconds: number) {
-      return humanizeDuration(seconds * 1000, {
-        language: 'it',
-        largest: 2,
-        units: ['d', 'h', 'm', 's'],
-        round: true
-      })
-    }
-
-    function formatTimers (timers: ITimer[][]): ITimer[] {
-      const toReturn: Record<string, ITimer & { totalTime?: number }> = {}
-
-      timers.map(timer => {
-        timer.forEach(t => {
-          if (!toReturn[t.pageName]) {
-            toReturn[t.pageName] = t
-          }
-
-          const totalTime = toReturn[t.pageName].totalTime || 0
-
-          toReturn[t.pageName].totalTime = totalTime + t.timeOnPage
-        })
-      })
-
-      return Object.values(toReturn).sort((a: ITimer, b: ITimer) => a.pageName.localeCompare(b.pageName))
     }
 
     /**
@@ -151,9 +132,7 @@ export default defineComponent({
       currentTab,
       tabsList,
       visibileTabsList,
-      fetchData,
-      formatDuration,
-      formatTimers
+      fetchData
     }
   }
 })
@@ -172,7 +151,7 @@ export default defineComponent({
       >
       </PageToolbar>
 
-      <v-tabs v-model="currentTab" v-if="visibileTabsList.length > 1">
+      <v-tabs v-model="currentTab">
         <v-tab v-for="(tab, i) of visibileTabsList" :key="i">
           {{ tab.title }}
         </v-tab>
@@ -191,18 +170,7 @@ export default defineComponent({
                                 @update:pagination="tab.updateData"
                 >
                   <template v-slot:item.totalTime="{item, value}">
-                    <CardTooltip :title="formatDuration(value)">
-                      <v-list dense>
-                        <v-list-item v-for="timer in formatTimers(item.timers)" :key="timer.pageName"
-                                     style="min-height: 30px">
-                          <v-list-item-content>
-                            <small><strong>{{ timer.pageName }}</strong>: {{
-                                formatDuration(timer.timeOnPage)
-                              }}</small>
-                          </v-list-item-content>
-                        </v-list-item>
-                      </v-list>
-                    </CardTooltip>
+                    <AnalyticsTimeDetails :item="item" :value="value"></AnalyticsTimeDetails>
                   </template>
                 </PaginatedTable>
               </v-skeleton-loader>

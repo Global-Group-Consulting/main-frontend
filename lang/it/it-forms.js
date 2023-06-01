@@ -241,7 +241,10 @@ export default {
     [CalendarCategoryVisibility.AGENTS]: 'Agenti'
   },
   requestDialog: {
-    "crypto-currency": "Criptovaluta",
-    "crypto-address": "Indirizzo criptovaluta",
+    'crypto-currency': 'Criptovaluta',
+    'crypto-address': 'Indirizzo criptovaluta'
+  },
+  analytics: {
+    'filters-day': 'Data / Giorno'
   }
 }

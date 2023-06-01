@@ -15,6 +15,17 @@ export interface ITimer {
   timeOnPage: number
 }
 
+export interface IAnalytics {
+  lastUpdate: string
+  sessionDates: number[]
+  sessionIds: string[]
+  timers: ITimer[][]
+  totalTime: number
+  updatedDates: string[]
+  user: Partial<User>
+  _id: string
+}
+
 let timer: any = null
 let session: Session
 let apiCalls: ApiCalls

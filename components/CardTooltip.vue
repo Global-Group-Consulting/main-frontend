@@ -1,5 +1,5 @@
 <template>
-  <v-menu offset-y>
+  <v-menu offset-y :close-on-content-click="closeOnContentClick">
     <template v-slot:activator="{ on, attrs }">
       <a class="text-decoration-underline-dotted" v-on="on" v-bind="attrs" v-html="title"/>
     </template>
@@ -14,16 +14,23 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api'
+import { defineComponent, ref } from '@vue/composition-api'
 
 export default defineComponent({
   name: 'CardTooltip',
   props: {
-    title: String
+    title: String,
+    closeOnContentClick: {
+      type: Boolean,
+      default: true
+    }
   },
   setup (props) {
+    const opened = ref(false)
 
-    return {}
+    return {
+      opened
+    }
   }
 })
 </script>
