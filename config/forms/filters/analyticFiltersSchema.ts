@@ -28,12 +28,19 @@ export default function (this: Vue): FormSchema[] {
           clearable: true,
           items: getValidRoleOptions(this.$i18n)
         },
-       /* minTime: {
-          label: 'minTime'
-        },
-        maxTime: {
-          label: 'maxTime'
-        }*/
+        day: {
+          component: 'date-picker',
+          label: 'analytics.filters-day',
+          clearable: false,
+          startByYear: false,
+          defaultValue: new Date().toISOString().split('T')[0]
+        }
+        /* minTime: {
+           label: 'minTime'
+         },
+         maxTime: {
+           label: 'maxTime'
+         }*/
         
       }
     }

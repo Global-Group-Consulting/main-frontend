@@ -116,5 +116,6 @@ export default {
   },
   analytics: {
     time: "Tempo utilizzo",
+    lastUpdate: "Ultima operazione",
   }
 }
