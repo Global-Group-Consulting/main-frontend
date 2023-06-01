@@ -36,9 +36,10 @@ export default defineComponent({
         value: 'lastUpdate',
         width: '15%',
         component: 'CellDate',
+        sortable: false,
         componentSettings: {
           includeTime: true
-        }
+        },
       },
       'time': {
         text: 'tables.analytics.time',
