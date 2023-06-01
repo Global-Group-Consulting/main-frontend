@@ -21,6 +21,7 @@ import Drawer from "~/components/drawer/Drawer";
 import DynamicDialog from "@/components/DynamicDialog.vue";
 import MainNavbar from "@/components/blocks/MainNavbar.vue";
 import BottomDrawer from "@/components/drawer/BottomDrawer.vue";
+import { useAnalytics } from '~/composables/analytics'
 
 export default {
   components: {BottomDrawer, MainNavbar, DynamicDialog, Drawer},
@@ -35,6 +36,9 @@ export default {
       this.drawerModel = !this.drawerModel;
     }
   },
+  mounted () {
+    useAnalytics(this.$store.getters['user/current'], this.$router, this.$apiCalls)
+  }
 };
 </script>
 

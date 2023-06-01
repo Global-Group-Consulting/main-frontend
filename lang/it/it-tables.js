@@ -113,5 +113,8 @@ export default {
     "created-at": "Data creazione",
     "cards": "Carte prepagate",
     "crypto": "Cryptovalute",
+  },
+  analytics: {
+    time: "Tempo utilizzo",
   }
 }

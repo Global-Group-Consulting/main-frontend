@@ -243,15 +243,22 @@ const defaults = {
       columns: [
         "user",
         "amountChange",
-        "movementType",
-        "clubPack",
-        "cards",
-        "crypto",
-        "iban",
-        "notes",
-        "reqNotes",
-        "referenceAgent",
-        "createdAt",
+        'movementType',
+        'clubPack',
+        'cards',
+        'crypto',
+        'iban',
+        'notes',
+        'reqNotes',
+        'referenceAgent',
+        'createdAt'
+      ]
+    },
+    analytics: {
+      columns: [
+        'user',
+        'role',
+        'time'
       ]
     }
   },
