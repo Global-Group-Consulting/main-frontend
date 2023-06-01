@@ -25,6 +25,7 @@ import { CalendarEventsApi } from '~/plugins/apiCalls/CalendarEventsApi'
 import { CalendarCategoriesApi } from '~/plugins/apiCalls/CalendarCategoriesApi'
 import { CalendarEventCommentsApi } from '~/plugins/apiCalls/CalendarEventCommentsApi'
 import { NotificationsApi } from '~/plugins/apiCalls/NotificationsApi'
+import { AnalyticsApi } from '~/plugins/apiCalls/AnalyticsApi'
 
 interface IApiCalls extends ApiCalls {
   [key: string]: any
@@ -74,6 +75,7 @@ export class ApiCalls extends BasicApiCall {
   public calendarCategoriesApi!: CalendarCategoriesApi
   public calendarEventCommentsApi!: CalendarEventCommentsApi
   public notificationsApi!: NotificationsApi
+  public analyticsApi!: AnalyticsApi
   
   constructor (context: any) {
     super(context)
@@ -95,6 +97,7 @@ export class ApiCalls extends BasicApiCall {
     this.calendarCategoriesApi = new CalendarCategoriesApi(context)
     this.calendarEventCommentsApi = new CalendarEventCommentsApi(context)
     this.notificationsApi = new NotificationsApi(context)
+    this.analyticsApi = new AnalyticsApi(context)
   }
   
   async userCreate (data: any) {

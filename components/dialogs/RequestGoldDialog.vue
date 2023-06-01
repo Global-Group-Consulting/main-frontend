@@ -8,10 +8,10 @@
         <v-img src="global_club/bg_wide.jpg" max-width="600px" eager transition="fade"></v-img>
       </div>-->
 
-      <v-tabs grow @change="onCurrencyTabChange">
+<!--      <v-tabs grow @change="onCurrencyTabChange">
         <v-tab>Gold</v-tab>
         <v-tab>Crypto</v-tab>
-      </v-tabs>
+      </v-tabs>-->
 
       <v-form :disabled="!!readonly" @submit.prevent="">
 
