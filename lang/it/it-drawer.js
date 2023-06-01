@@ -29,5 +29,6 @@ export default {
   'bottom-account': "Account",
   'bottom-other': "Altro",
   'bottom-users': "Utenti",
-  'calendar': "Calendario"
+  'calendar': "Calendario",
+  'analytics': "Analisi Utilizzo"
 }

@@ -217,5 +217,8 @@ export default {
   },
   calendar: {
     title: "Calendario"
+  },
+  analytics: {
+    title: "Analisi utilizzo"
   }
 }

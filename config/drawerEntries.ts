@@ -161,6 +161,14 @@ export default function (context: Vue): DrawerEntry[] {
 export function BottomDrawerEntries(context: Vue): DrawerEntry[] {
   return [
     {
+      id: 'analytics',
+      text: 'analytics',
+      icon: 'mdi-poll',
+      link: '/analytics',
+      // @ts-ignore
+      if: context.$store.getters['user/userIsAdmin']
+    },
+    {
       id: 'calendar',
       text: 'calendar',
       icon: 'mdi-calendar',

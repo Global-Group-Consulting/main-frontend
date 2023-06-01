@@ -54,7 +54,6 @@ export default {
     const classes = computed(() => {
       const classes = attrs.class ? attrs.class.split(' ') : []
 
-      console.log(classes)
       if (props.noBtnTag && props.color) {
         classes.push(`${props.color}--text`)
       }

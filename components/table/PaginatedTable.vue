@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, onMounted, PropType, ref } from '@vue/composition-api'
+import { computed, ComputedRef, defineComponent, onMounted, PropType, ref, UnwrapRef } from '@vue/composition-api'
 import { PaginatedResult } from '~/@types/pagination/PaginatedResult'
 import { TableSchema } from '~/@types/config/TableSchema'
 import UserRoles from '~/enums/UserRoles'
@@ -69,7 +69,7 @@ export default defineComponent({
       required: true
     },
     columns: {
-      type: Object as PropType<Record<string, TableSchema>>,
+      type: Object as PropType<Record<string, TableSchema> | UnwrapRef<Record<string, TableSchema>>>,
       required: true
     },
     tableKey: {

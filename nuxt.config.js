@@ -147,7 +147,7 @@ export default {
   },
 
   router: {
-    middleware: ['storeFetch', 'auth', 'authJWT', 'aclAuth']
+    middleware: ['storeFetch', 'auth', 'authJWT', 'aclAuth', 'analyticsTime']
   },
 
   serverMiddleware: [
