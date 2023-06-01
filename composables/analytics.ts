@@ -10,7 +10,7 @@ export interface ISession {
   timers: ITimer[]
 }
 
-interface ITimer {
+export interface ITimer {
   pageName: string
   timeOnPage: number
 }
