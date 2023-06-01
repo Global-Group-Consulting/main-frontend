@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, inject, onMounted, ref, watch } from '@vue/composition-api'
+import { computed, ComputedRef, defineComponent, inject, onMounted, Ref, ref, watch } from '@vue/composition-api'
 import { ReportsPermissions } from '~/functions/acl/enums/reports.permissions'
 import { ApiCalls } from '~/plugins/apiCalls'
 import moment from 'moment-timezone'
@@ -8,6 +8,7 @@ import { PaginationDto } from '~/@types/pagination/PaginationDto'
 import analyticFiltersSchema from '~/config/forms/filters/analyticFiltersSchema'
 import { Filter } from '~/@types/Filter'
 import { DynamicTab } from '~/@types/components/DynamicTab'
+import { ITimer } from '~/composables/analytics'
 
 export default defineComponent({
   name: 'Analytics',
@@ -41,27 +42,27 @@ export default defineComponent({
       }
     })
 
-    const tabsList = ref<any[]>([
-          {
-            id: 'analytics',
-            title: 'Utilizzo',
-            data: null,
-            loading: true,
-            updateData: (paginationDto: any) => fetchData(Object.assign(paginationDto, { filters: activeTabData.value.paginationDto.filters }), 'analytics'),
-            paginationDto: {
-              sortBy: ['user']
-            }
-          },
-          {
-            id: 'filters',
-            title: 'Filtri',
-            data: null,
-            loading: true,
-            updateData: (paginationDto: any) => fetchData(Object.assign(paginationDto, { filters: activeTabData.value.paginationDto.filters }), 'filters'),
-            paginationDto: {
-              sortBy: ['user']
-            }
-          }
+    const tabsList: Ref<any[]> = ref<any[]>([
+      {
+        id: 'analytics',
+        title: 'Utilizzo',
+        data: null,
+        loading: true,
+        updateData: (paginationDto: any) => fetchData(Object.assign(paginationDto, { filters: activeTabData.value.paginationDto.filters }), 'analytics'),
+        paginationDto: {
+          sortBy: ['user']
+        }
+      },
+      {
+        id: 'filters',
+        title: 'Filtri',
+        data: null,
+        loading: true,
+        updateData: (paginationDto: any) => fetchData(Object.assign(paginationDto, { filters: activeTabData.value.paginationDto.filters }), 'filters'),
+        paginationDto: {
+          sortBy: ['user']
+        }
+      }
         ]
     )
     const filtersSchema = computed(() => analyticFiltersSchema.call(root))
@@ -102,14 +103,17 @@ export default defineComponent({
     }
 
     function formatTimers (timers: ITimer[][]): ITimer[] {
-      const toReturn: any = {}
+      const toReturn: Record<string, ITimer & { totalTime?: number }> = {}
 
       timers.map(timer => {
         timer.forEach(t => {
           if (!toReturn[t.pageName]) {
             toReturn[t.pageName] = t
           }
-          toReturn[t.pageName].totalTime += t.timeOnPage
+
+          const totalTime = toReturn[t.pageName].totalTime || 0
+
+          toReturn[t.pageName].totalTime = totalTime + t.timeOnPage
         })
       })
 
