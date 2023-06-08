@@ -56,7 +56,7 @@ export default function ({ $apiCalls, $set, $options, $i18n }) {
   async function fetchMovementsList(userId) {
     const data = await $apiCalls.movementApi.fetchMovementsList(userId);
 
-    $set(movementsList, "value", data);
+    $set(movementsList, "value", data.data);
   }
 
   return {
