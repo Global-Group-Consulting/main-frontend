@@ -569,7 +569,11 @@ Ringraziandola per la collaborazione; L'aspettiamo!
           input: 'checkbox',
           inputPlaceholder: 'Ho letto quanto summenzionato!',
           inputValidator: (result) => {
-            return !result && 'E\' necessario confermare di aver letto il messaggio'
+            if (!result) {
+              return 'E\' necessario confermare di aver letto il messaggio'
+            }
+
+            return null
           }
         })
       }
