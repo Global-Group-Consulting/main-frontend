@@ -557,6 +557,23 @@ export default class RequestDialog extends Vue {
         }
       })
 
+      if (data.type === this.$enums.RequestTypes.RISC_CAPITALE) {
+        await this.$alerts.ask({
+          html: `Gentile cliente la ringraziamo per aver effettuato la richiesta, la sua pratica è stata presa in carico.<br><br>
+Per la definizione della sua richiesta le chiediamo gentilmente di prender appuntamento col suo referente presso nostre sedi, per la firma dell'apposito modulo di restituzione deposito.<br><br>
+Ringraziandola per la collaborazione; L'aspettiamo!
+`,
+          confirmButtonText: 'Continua',
+          icon: "info",
+          showCancelButton: false,
+          input: 'checkbox',
+          inputPlaceholder: 'Ho letto quanto summenzionato!',
+          inputValidator: (result) => {
+            return !result && 'E\' necessario confermare di aver letto il messaggio'
+          }
+        })
+      }
+
       this.close()
     } catch (er) {
       console.log(er)
