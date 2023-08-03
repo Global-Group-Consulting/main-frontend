@@ -144,6 +144,10 @@ export default defineComponent({
       if (item.movementType === MovementTypes.INTEREST_RECAPITALIZED) {
         return 'yellow lighten-5'
       }
+
+      if (item.movementType.toString() === 'temp') {
+        return 'grey lighten-4 grey--text'
+      }
     }
 
     /**

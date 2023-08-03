@@ -40,6 +40,10 @@ export default defineComponent({
         text = $i18n.t(`enums.RequestTypes.${RequestTypes.getIdName(reqType)}`)
       }
 
+      if(props.item.movementType.toString() === "temp"){
+        text += " (in lavorazione)"
+      }
+
       if (props.item.movementType === MovementTypes.DEPOSIT_REPAYMENT && props.item.app === 'club') {
         text += ' Club'
       }
