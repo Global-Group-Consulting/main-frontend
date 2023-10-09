@@ -192,5 +192,10 @@ export default {
     'title': 'Lista categorie',
     'btn-cancel': 'Annulla',
     'btn-confirm': 'Salva',
+  },
+  inlineMovementDialog: {
+    'title': 'Modifica movimento',
+    "titleDeposit": "Modifica Deposito",
+    "titleInterestAmount": "Modifica Rendite",
   }
 }

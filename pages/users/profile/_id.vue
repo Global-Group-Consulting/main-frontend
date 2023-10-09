@@ -52,6 +52,10 @@
       <agent-request-repayment
           v-if="$store.getters['user/userIsAgente'] && $store.getters['dialog/dialogId'] === 'AgentRequestRepayment'"
       />
+
+      <communication-new-dialog
+          v-if="$store.getters['dialog/dialogId'] === 'CommunicationNewDialog'"
+      ></communication-new-dialog>
     </v-flex>
   </v-layout>
 </template>
