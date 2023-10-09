@@ -25,7 +25,23 @@
                               :loading="tab.loading"
                               :item-class="getItemClass"
                               @update:pagination="onPaginationChanged"
-              ></PaginatedTable>
+              >
+                <template v-slot:item.deposit="{item, value}">
+                  <InlineMovementDialog :cell-data="item"
+                                        field="deposit"
+                                        :value="value"
+                                        @saved="reloadData"
+                                        v-if="$store.getters['user/userIsSuperAdmin']"/>
+                </template>
+
+                <template v-slot:item.interestAmount="{item, value}">
+                  <InlineMovementDialog :cell-data="item"
+                                        field="interestAmount"
+                                        :value="value"
+                                        @saved="reloadData"
+                                        v-if="$store.getters['user/userIsSuperAdmin']"/>
+                </template>
+              </PaginatedTable>
             </v-skeleton-loader>
           </v-tab-item>
         </v-tabs-items>
@@ -145,7 +161,8 @@ export default defineComponent({
         return 'yellow lighten-5'
       }
 
-      if (item.movementType.toString() === 'temp') {
+      // faccio === false in modo da non prendere in considerazione le richieste che non hanno la proprietà approved
+      if (item.movementType === MovementTypes.DEPOSIT_COLLECTED && item.approved === false) {
         return 'grey lighten-4 grey--text'
       }
     }
