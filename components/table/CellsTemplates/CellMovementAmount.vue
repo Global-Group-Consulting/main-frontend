@@ -17,8 +17,18 @@ export default defineComponent({
     value: Number
   },
   setup (props) {
-    const sign = computed(() => MovementTypes.OUT_MOVEMENT_TYPES.includes(props.item.movementType) ? '-' : '+')
+    const sign = computed(() => {
+      if (props.item.movementType.toString() === 'temp') {
+        return ''
+      }
+
+      return MovementTypes.OUT_MOVEMENT_TYPES.includes(props.item.movementType) ? '-' : '+'
+    })
     const color = computed(() => {
+      if (props.item.movementType.toString() === 'temp') {
+        return ''
+      }
+
       return sign.value === '-' ? 'red--text' : 'green--text'
     })
     const amount = computed(() => {

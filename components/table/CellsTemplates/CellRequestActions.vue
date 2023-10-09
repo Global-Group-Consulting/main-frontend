@@ -8,7 +8,8 @@
         </v-btn>
       </template>
 
-      <span>Contabile assente</span>
+      <span v-if="item.type === $enums.RequestTypes.VERSAMENTO">Contabile assente</span>
+      <span v-else-if="item.type === $enums.RequestTypes.RISC_CAPITALE">Modulo assente</span>
     </v-tooltip>
 
     <v-tooltip bottom v-for="(menu, i) of alwaysVisibleOptions" :key="i">
@@ -168,8 +169,13 @@ export default class CellRequestActions extends Vue {
   }
 
   get missingAttachment () {
-    return this.item.type === RequestTypes.VERSAMENTO &&
+    let isMissing = [RequestTypes.VERSAMENTO, RequestTypes.RISC_CAPITALE].includes(this.item.type) &&
         (this.item.files?.length === 0 && this.item.hasAttachments === false)
+
+    // only if the user is not a client and the doc is missing and request is RISC_CAPITALE OR request is VERSAMENTO
+    let canUpload = (!this.$store.getters['user/userIsCliente'] && [RequestTypes.RISC_CAPITALE].includes(this.item.type)) || [RequestTypes.VERSAMENTO].includes(this.item.type)
+
+    return isMissing && canUpload
   }
 
   async addAttachment () {

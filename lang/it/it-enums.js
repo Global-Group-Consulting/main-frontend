@@ -70,7 +70,8 @@ export default {
   'CurrencyType': {
     'euro': 'Euro',
     'brite': 'Brite',
-    'gold': 'Gold'
+    'gold': 'Gold',
+    'crypto': 'Cripto valuta'
   },
   'MovementTypes': {
     "initialDeposit": "Versamento iniziale",

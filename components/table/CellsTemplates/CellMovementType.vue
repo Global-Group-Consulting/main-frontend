@@ -1,9 +1,13 @@
 <template>
-  <CardTooltip :title="movementType" v-if="hasNotes">
-    <span v-html="notes"></span>
-  </CardTooltip>
+  <div>
+    <CardTooltip :title="movementType" v-if="hasNotes">
+      <span v-html="notes"></span>
+    </CardTooltip>
 
-  <div v-else v-html="movementType"></div>
+    <div v-else v-html="movementType"></div>
+
+    <div style="font-size: .75rem; font-style: italic; color: gray" v-if="$store.getters['user/userIsSuperAdmin']">{{ item._id }}</div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -38,6 +42,10 @@ export default defineComponent({
 
       if (reqType && !movementToAvoid.includes(props.item.movementType)) {
         text = $i18n.t(`enums.RequestTypes.${RequestTypes.getIdName(reqType)}`)
+      }
+
+      if(props.item.movementType.toString() === "temp"){
+        text += " (in lavorazione)"
       }
 
       if (props.item.movementType === MovementTypes.DEPOSIT_REPAYMENT && props.item.app === 'club') {

@@ -41,4 +41,14 @@ export class MovementApi extends BasicApiCall {
       endPoint: '/api/movements/status' + (data && data.userId ? `/${data.userId}` : '')
     })
   }
+  
+  async update (movementId: string, field: string, amount: number) {
+    return await this.post({
+      endPoint: '/api/movements/' + movementId + '/update',
+      body: {
+        field,
+        amount
+      }
+    })
+  }
 }
