@@ -46,6 +46,7 @@ export interface Movement {
   notes: string
   requestType: string
   app: string
+  approved: boolean
 }
 
 export interface AddMovementDto {

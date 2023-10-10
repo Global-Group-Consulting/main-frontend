@@ -68,7 +68,7 @@ export default class CalculatorMovementDialog extends Vue {
     const value = this.localValue
 
     try {
-      await this.$apiCalls.movementApi.update(movementId, field, value)
+      await this.$apiCalls.movementApi.update(movementId, field, +value)
 
       this.$emit('saved')
     } catch (e) {
