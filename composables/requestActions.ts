@@ -98,6 +98,19 @@ export function useRequestActions (ctx: SetupContext) {
 
      */
     
+    if (reqType === RequestTypes.RISC_CAPITALE) {
+      if (!$auth.user.contractIban || !$auth.user.contractIban.trim().toLowerCase().startsWith('it')) {
+        $alerts.info({
+          title: 'Iban anagrafica non valido',
+          html: `Per poter procedere con questa richiesta è necessario inserire un IBAN (SEPA) <strong>Italiano</strong> nella propria anagrafica.<br>
+               Per impostarlo, premere sul <a href="/users/${$auth.user.id}">seguente link</a> e poi,
+               dalla sezione <strong>Contratto</strong> compilare la voce <strong>IBAN Cliente</strong>.`
+        })
+        
+        return
+      }
+    }
+    
     if ($auth.user.autoWithdrawlAll && reqType === RequestTypes.RISC_PROVVIGIONI) {
       $alerts.info({
         title: '',
@@ -128,10 +141,10 @@ export function useRequestActions (ctx: SetupContext) {
       return
     }
     
-    if (!$auth.user.contractIban) {
+    if (!$auth.user.contractIban || !$auth.user.contractIban.trim().toLowerCase().startsWith('it')) {
       $alerts.info({
-        title: 'Iban mancante nell\'anagrafica',
-        html: `Per poter procedere con questa richiesta è necessario inserire il proprio IBAN (SEPA) nella propria anagrafica.
+        title: 'Iban anagrafica non valido',
+        html: `Per poter procedere con questa richiesta è necessario inserire un IBAN (SEPA) <strong>Italiano</strong> nella propria anagrafica.<br>
                Per impostarlo, premere sul <a href="/users/${$auth.user.id}">seguente link</a> e poi,
                dalla sezione <strong>Contratto</strong> compilare la voce <strong>IBAN Cliente</strong>.`
       })

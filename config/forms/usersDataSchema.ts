@@ -399,7 +399,11 @@ export function contractData (formContext: FormContext) {
     },
     {
       cols: {
-        'contractIban': {},
+        'contractIban': {
+          validations: {
+            ibanIta: {}
+          }
+        },
         'contractBic': {},
         'contractNotes': {
           component: 'v-textarea',

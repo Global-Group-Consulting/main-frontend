@@ -50,6 +50,14 @@ Validators.minDate = (params) => helpers.withParams(
     return dateValue > dateRefValue
   })
 
+Validators.ibanIta = (value) => {
+  if(!value) {
+    return true
+  }
+  
+  return value.trim().toLowerCase().startsWith('it')
+}
+
 export const validationRules = schema => {
   const toReturn = {};
 

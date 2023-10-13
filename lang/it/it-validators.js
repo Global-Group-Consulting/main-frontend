@@ -15,4 +15,5 @@ export default {
   dateToOld: "Non è possibile inserire una data antecedente al 1 del mese precedente.",
   multipleOf: "L'importo inserito deve essere un multiplo di {step}, in quanto la cifra è inferiore alla soglia minima di € {until}.",
   minDate: "La data inserita non è valida. Deve essere successiva a {min}.",
+  ibanIta: "Sono ammessi solo IBAN italiani.",
 }
