@@ -105,6 +105,11 @@ export const getters = {
   userIsSuperAdmin: (state, getters, rootState) => {
     return !!rootState.auth.user.superAdmin
   },
+  isItalian: (state, getters, rootState) => {
+    const user = rootState.auth.user;
+    
+    return user.legalRepresentativeCountry?.toLowerCase() === 'it'
+  },
   canAddUsers: (state, getters) => getters.userRole !== UserRoles.CLIENTE,
   canAddUsers_admin: (state, getters) => !!getters.userIsSuperAdmin,
   canAddUsers_servClienti: (state, getters) => !!getters.userIsSuperAdmin,

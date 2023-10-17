@@ -98,7 +98,7 @@ export function useRequestActions (ctx: SetupContext) {
 
      */
     
-    if (reqType === RequestTypes.RISC_CAPITALE) {
+    if (reqType === RequestTypes.RISC_CAPITALE && $store.getters['user/isItalian']) {
       if (!$auth.user.contractIban || !$auth.user.contractIban.trim().toLowerCase().startsWith('it')) {
         $alerts.info({
           title: 'Iban anagrafica non valido',

@@ -400,9 +400,9 @@ export function contractData (formContext: FormContext) {
     {
       cols: {
         'contractIban': {
-          validations: {
+          validations: formContext.formData.legalRepresentativeCountry?.toLowerCase() === 'it' ? {
             ibanIta: {}
-          }
+          } : {}
         },
         'contractBic': {},
         'contractNotes': {
