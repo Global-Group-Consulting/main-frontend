@@ -51,6 +51,7 @@ const defaults = {
         "amountChange",
         "movementType",
         "createdAt",
+        "completedAt",
         "deposit",
         "interestAmount"
       ]
@@ -337,6 +338,7 @@ const admin = {
         "amountChange",
         "movementType",
         "createdAt",
+        "completedAt",
         "deposit",
         "interestAmount"
       ]
@@ -395,6 +397,7 @@ const servClienti = {
         "amountChange",
         "movementType",
         "createdAt",
+        "completedAt",
         "deposit",
         "interestAmount"
       ]
@@ -457,6 +460,7 @@ const cliente = {
         "amountChange",
         "movementType",
         "createdAt",
+        "completedAt",
         "deposit",
         "interestAmount",
         "actions"
@@ -538,6 +542,7 @@ const agente = {
         "amountChange",
         "movementType",
         "createdAt",
+        "completedAt",
         "deposit",
         "interestAmount",
         "actions"

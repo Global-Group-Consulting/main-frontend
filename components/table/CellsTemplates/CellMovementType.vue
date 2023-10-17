@@ -1,11 +1,22 @@
 <template>
   <div>
-    <CardTooltip :title="movementType" v-if="hasNotes">
-      <span v-html="notes"></span>
-    </CardTooltip>
+    <div class="d-flex align-center">
+      <v-tooltip bottom v-if="item.requestType === RequestTypes.RISC_CAPITALE && item.approved === false">
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on">
+            <v-icon color="warning">mdi-timer-sand</v-icon>
+          </v-btn>
+        </template>
 
-    <div v-else v-html="movementType"></div>
+        <span>In Lavorazione </span>
+      </v-tooltip>
 
+      <CardTooltip :title="movementType" v-if="hasNotes">
+        <span v-html="notes"></span>
+      </CardTooltip>
+
+      <div v-else v-html="movementType"></div>
+    </div>
     <div style="font-size: .75rem; font-style: italic; color: gray" v-if="$store.getters['user/userIsSuperAdmin']">{{ item._id }}</div>
   </div>
 </template>
@@ -62,7 +73,8 @@ export default defineComponent({
     return {
       hasNotes,
       movementType,
-      notes
+      notes,
+      RequestTypes
     }
   }
 })

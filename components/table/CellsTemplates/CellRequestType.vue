@@ -28,6 +28,8 @@
 
       Vedi l'utente destinatario
     </v-tooltip>
+
+    <div style="font-size: .75rem; font-style: italic; color: gray" v-if="$store.getters['user/userIsSuperAdmin']">{{ item._id }}</div>
   </div>
 </template>
 
