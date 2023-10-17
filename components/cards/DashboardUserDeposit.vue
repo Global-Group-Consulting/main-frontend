@@ -20,6 +20,8 @@
           <v-list-item-title class="font-weight-bold">
             <template v-if="!formatAsInt">€ {{ moneyFormatter(item.value) }}</template>
             <template v-else>{{ item.value }}</template>
+            <small style="font-weight: normal; font-style: italic" v-if="item.valueExtra"
+                   v-html="item.valueExtra"></small>
           </v-list-item-title>
           <v-list-item-subtitle>{{ item.label }}</v-list-item-subtitle>
         </v-list-item-content>
@@ -50,6 +52,7 @@ import { moneyFormatter } from '~/plugins/filters'
 import RequestTypes from '~/enums/RequestTypes'
 import CommissionsAddDialog from '~/components/dialogs/CommissionsAddDialog.vue'
 import { DashboardBlockAction, DashboardBlockData } from '~/@types/Dashboard'
+import { formatCurrency } from '~/plugins/filters/currency'
 
 export default defineComponent({
   name: 'DashboardUserDeposit',
@@ -75,6 +78,7 @@ export default defineComponent({
 
     const data = ref({
       deposit: 0,
+      depositRaw: 0,
       interestAmount: 0,
       depositCollected: 0,
       interestsCollected: 0,
@@ -161,7 +165,8 @@ export default defineComponent({
           label: 'Deposito',
           icon: 'mdi-cloud-upload',
           color: 'blue',
-          value: data.value.deposit,
+          value: data.value.depositRaw,
+          valueExtra: data.value.depositRaw !== data.value.deposit ? `(${formatCurrency(data.value.deposit)} disponibile)` : '',
           actions: [
             {
               label: 'Versa',
