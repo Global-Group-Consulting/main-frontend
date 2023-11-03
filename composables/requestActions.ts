@@ -102,7 +102,7 @@ export function useRequestActions (ctx: SetupContext) {
       if (!$auth.user.contractIban || !$auth.user.contractIban.trim().toLowerCase().startsWith('it')) {
         $alerts.info({
           title: 'Iban anagrafica non valido',
-          html: `Per poter procedere con questa richiesta è necessario inserire un IBAN (SEPA) <strong>Italiano</strong> nella propria anagrafica.<br>
+          html: `Per poter procedere con questa richiesta è necessario inserire un IBAN (SEPA) ${$store.getters['user/isItalian'] ? '<strong>Italiano</strong>' : ''} nella propria anagrafica.<br>
                Per impostarlo, premere sul <a href="/users/${$auth.user.id}">seguente link</a> e poi,
                dalla sezione <strong>Contratto</strong> compilare la voce <strong>IBAN Cliente</strong>.`
         })
@@ -141,10 +141,12 @@ export function useRequestActions (ctx: SetupContext) {
       return
     }
     
-    if (!$auth.user.contractIban || !$auth.user.contractIban.trim().toLowerCase().startsWith('it')) {
+    // se non c'è un iban
+    // oppure se l'utente è italiano e l'iban non è italiano
+    if (!$auth.user.contractIban || ($store.getters['user/isItalian'] && !$auth.user.contractIban.trim().toLowerCase().startsWith('it'))) {
       $alerts.info({
         title: 'Iban anagrafica non valido',
-        html: `Per poter procedere con questa richiesta è necessario inserire un IBAN (SEPA) <strong>Italiano</strong> nella propria anagrafica.<br>
+        html: `Per poter procedere con questa richiesta è necessario inserire un IBAN (SEPA) ${$store.getters['user/isItalian'] ? '<strong>Italiano</strong>' : ''} nella propria anagrafica.<br>
                Per impostarlo, premere sul <a href="/users/${$auth.user.id}">seguente link</a> e poi,
                dalla sezione <strong>Contratto</strong> compilare la voce <strong>IBAN Cliente</strong>.`
       })
